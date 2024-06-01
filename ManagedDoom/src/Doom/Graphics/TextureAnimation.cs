@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
 namespace ManagedDoom
@@ -28,6 +29,7 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Load texture animation info: ");
+                var start = Stopwatch.GetTimestamp();
 
                 var list = new List<TextureAnimationInfo>();
 
@@ -73,7 +75,7 @@ namespace ManagedDoom
 
                 Animations = list.ToArray();
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

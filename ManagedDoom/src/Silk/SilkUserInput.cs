@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
 using Silk.NET.Input;
@@ -32,6 +33,7 @@ namespace ManagedDoom.Silk
             try
             {
                 Console.Write("Initialize user input: ");
+                var start = Stopwatch.GetTimestamp();
 
                 this.config = config;
                 this.window = window;
@@ -39,8 +41,8 @@ namespace ManagedDoom.Silk
                 input = window.CreateInput();
 
                 keyboard = input.Keyboards[0];
-                keyboard.KeyDown += (sender, key, value) => doom.KeyDown(key);
-                keyboard.KeyUp += (sender, key, value) => doom.KeyUp(key);
+                keyboard.KeyDown += (_, key, _) => doom.KeyDown(key);
+                keyboard.KeyUp += (_, key, _) => doom.KeyUp(key);
 
                 weaponKeys = new bool[7];
                 turnHeld = 0;
@@ -51,7 +53,7 @@ namespace ManagedDoom.Silk
                     mouseGrabbed = false;
                 }
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

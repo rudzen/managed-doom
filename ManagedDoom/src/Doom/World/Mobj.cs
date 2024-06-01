@@ -232,8 +232,7 @@ namespace ManagedDoom
                 st.MobjAction?.Invoke(World, this);
 
                 state = st.Next;
-            }
-            while (Tics == 0);
+            } while (Tics == 0);
 
             return true;
         }
@@ -243,12 +242,9 @@ namespace ManagedDoom
             var options = World.Options;
             if (options.FastMonsters || options.Skill == GameSkill.Nightmare)
             {
-                if (state.Number is >= (int)MobjState.SargRun1 and <= (int)MobjState.SargPain2)
-                {
-                    return state.Tics >> 1;
-                }
-
-                return state.Tics;
+                return state.Number is >= (int)MobjState.SargRun1 and <= (int)MobjState.SargPain2
+                    ? state.Tics >> 1
+                    : state.Tics;
             }
 
             return state.Tics;
@@ -256,15 +252,7 @@ namespace ManagedDoom
 
         private void NightmareRespawn()
         {
-            MapThing sp;
-            if (SpawnPoint != null)
-            {
-                sp = SpawnPoint;
-            }
-            else
-            {
-                sp = MapThing.Empty;
-            }
+            var sp = SpawnPoint ?? MapThing.Empty;
 
             // Somthing is occupying it's position?
             if (!World.ThingMovement.CheckPosition(this, sp.X, sp.Y))
@@ -277,9 +265,11 @@ namespace ManagedDoom
 
             // Spawn a teleport fog at old spot.
             var fog1 = ta.SpawnMobj(
-                X, Y,
-                Subsector.Sector.FloorHeight,
-                MobjType.Tfog);
+                x: X,
+                y: Y,
+                z: Subsector.Sector.FloorHeight,
+                type: MobjType.Tfog
+            );
 
             // Initiate teleport sound.
             World.StartSound(fog1, Sfx.TELEPT, SfxType.Misc);
@@ -288,8 +278,11 @@ namespace ManagedDoom
             var ss = Geometry.PointInSubsector(sp.X, sp.Y, World.Map);
 
             var fog2 = ta.SpawnMobj(
-                sp.X, sp.Y,
-                ss.Sector.FloorHeight, MobjType.Tfog);
+                x: sp.X,
+                y: sp.Y,
+                z: ss.Sector.FloorHeight,
+                type: MobjType.Tfog
+            );
 
             World.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
 
@@ -335,32 +328,17 @@ namespace ManagedDoom
 
         public Fixed GetInterpolatedX(Fixed frameFrac)
         {
-            if (interpolate)
-            {
-                return oldX + frameFrac * (X - oldX);
-            }
-
-            return X;
+            return interpolate ? oldX + frameFrac * (X - oldX) : X;
         }
 
         public Fixed GetInterpolatedY(Fixed frameFrac)
         {
-            if (interpolate)
-            {
-                return oldY + frameFrac * (Y - oldY);
-            }
-
-            return Y;
+            return interpolate ? oldY + frameFrac * (Y - oldY) : Y;
         }
 
         public Fixed GetInterpolatedZ(Fixed frameFrac)
         {
-            if (interpolate)
-            {
-                return oldZ + frameFrac * (Z - oldZ);
-            }
-
-            return Z;
+            return interpolate ? oldZ + frameFrac * (Z - oldZ) : Z;
         }
 
         public World World { get; }

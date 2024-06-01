@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
 using Silk.NET.OpenGL;
@@ -31,6 +32,7 @@ namespace ManagedDoom.Silk
             try
             {
                 Console.Write("Initialize video: ");
+                var start = Stopwatch.GetTimestamp();
 
                 renderer = new Renderer(config, content);
 
@@ -59,7 +61,7 @@ namespace ManagedDoom.Silk
 
                 Resize(window.Size.X, window.Size.Y);
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

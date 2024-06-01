@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
@@ -32,12 +33,11 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Load sprites: ");
+                var start = Stopwatch.GetTimestamp();
 
                 var temp = new Dictionary<string, List<SpriteInfo>>();
                 for (var i = 0; i < (int)Sprite.Count; i++)
-                {
-                    temp.TryAdd(DoomInfo.SpriteNames[i], new List<SpriteInfo>());
-                }
+                    temp.TryAdd(DoomInfo.SpriteNames[i], []);
 
                 var cache = new Dictionary<int, Patch>();
 
@@ -53,9 +53,7 @@ namespace ManagedDoom
                         var rotation = wad.LumpInfos[lump].Name[5] - '0';
 
                         while (list.Count < frame + 1)
-                        {
                             list.Add(new SpriteInfo());
-                        }
 
                         if (rotation == 0)
                         {
@@ -84,9 +82,7 @@ namespace ManagedDoom
                         var rotation = wad.LumpInfos[lump].Name[7] - '0';
 
                         while (list.Count < frame + 1)
-                        {
                             list.Add(new SpriteInfo());
-                        }
 
                         if (rotation == 0)
                         {
@@ -127,7 +123,7 @@ namespace ManagedDoom
                     spriteDefs[i] = new SpriteDef(frames);
                 }
 
-                Console.WriteLine("OK (" + cache.Count + " sprites)");
+                Console.WriteLine("OK (" + cache.Count + " sprites) [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

@@ -20,78 +20,78 @@ namespace ManagedDoom.Video
 {
     public sealed class StatusBarRenderer
     {
-        public static readonly int Height = 32;
+        public const int Height = 32;
 
         // Ammo number pos.
-        private static readonly int ammoWidth = 3;
-        private static readonly int ammoX = 44;
-        private static readonly int ammoY = 171;
+        private const int ammoWidth = 3;
+        private const int ammoX = 44;
+        private const int ammoY = 171;
 
         // Health number pos.
-        private static readonly int healthX = 90;
-        private static readonly int healthY = 171;
+        private const int healthX = 90;
+        private const int healthY = 171;
 
         // Weapon pos.
-        private static readonly int armsX = 111;
-        private static readonly int armsY = 172;
-        private static readonly int armsBackgroundX = 104;
-        private static readonly int armsBackgroundY = 168;
-        private static readonly int armsSpaceX = 12;
-        private static readonly int armsSpaceY = 10;
+        private const int armsX = 111;
+        private const int armsY = 172;
+        private const int armsBackgroundX = 104;
+        private const int armsBackgroundY = 168;
+        private const int armsSpaceX = 12;
+        private const int armsSpaceY = 10;
 
         // Frags pos.
-        private static readonly int fragsWidth = 2;
-        private static readonly int fragsX = 138;
-        private static readonly int fragsY = 171;
+        private const int fragsWidth = 2;
+        private const int fragsX = 138;
+        private const int fragsY = 171;
 
         // Armor number pos.
-        private static readonly int armorX = 221;
-        private static readonly int armorY = 171;
+        private const int armorX = 221;
+        private const int armorY = 171;
 
         // Key icon positions.
-        private static readonly int key0Width = 8;
-        private static readonly int key0X = 239;
-        private static readonly int key0Y = 171;
-        private static readonly int key1Width = key0Width;
-        private static readonly int key1X = 239;
-        private static readonly int key1Y = 181;
-        private static readonly int key2Width = key0Width;
-        private static readonly int key2X = 239;
-        private static readonly int key2Y = 191;
+        private const int key0Width = 8;
+        private const int key0X = 239;
+        private const int key0Y = 171;
+        private const int key1Width = key0Width;
+        private const int key1X = 239;
+        private const int key1Y = 181;
+        private const int key2Width = key0Width;
+        private const int key2X = 239;
+        private const int key2Y = 191;
 
         // Ammunition counter.
-        private static readonly int ammo0Width = 3;
-        private static readonly int ammo0X = 288;
-        private static readonly int ammo0Y = 173;
-        private static readonly int ammo1Width = ammo0Width;
-        private static readonly int ammo1X = 288;
-        private static readonly int ammo1Y = 179;
-        private static readonly int ammo2Width = ammo0Width;
-        private static readonly int ammo2X = 288;
-        private static readonly int ammo2Y = 191;
-        private static readonly int ammo3Wdth = ammo0Width;
-        private static readonly int ammo3X = 288;
-        private static readonly int ammo3Y = 185;
+        private const int ammo0Width = 3;
+        private const int ammo0X = 288;
+        private const int ammo0Y = 173;
+        private const int ammo1Width = ammo0Width;
+        private const int ammo1X = 288;
+        private const int ammo1Y = 179;
+        private const int ammo2Width = ammo0Width;
+        private const int ammo2X = 288;
+        private const int ammo2Y = 191;
+        private const int ammo3Wdth = ammo0Width;
+        private const int ammo3X = 288;
+        private const int ammo3Y = 185;
 
         // Indicate maximum ammunition.
         // Only needed because backpack exists.
-        private static readonly int maxAmmo0Width = 3;
-        private static readonly int maxAmmo0X = 314;
-        private static readonly int maxAmmo0Y = 173;
-        private static readonly int maxAmmo1Width = maxAmmo0Width;
-        private static readonly int maxAmmo1X = 314;
-        private static readonly int maxAmmo1Y = 179;
-        private static readonly int maxAmmo2Width = maxAmmo0Width;
-        private static readonly int maxAmmo2X = 314;
-        private static readonly int maxAmmo2Y = 191;
-        private static readonly int maxAmmo3Width = maxAmmo0Width;
-        private static readonly int maxAmmo3X = 314;
-        private static readonly int maxAmmo3Y = 185;
+        private const int maxAmmo0Width = 3;
+        private const int maxAmmo0X = 314;
+        private const int maxAmmo0Y = 173;
+        private const int maxAmmo1Width = maxAmmo0Width;
+        private const int maxAmmo1X = 314;
+        private const int maxAmmo1Y = 179;
+        private const int maxAmmo2Width = maxAmmo0Width;
+        private const int maxAmmo2X = 314;
+        private const int maxAmmo2Y = 191;
+        private const int maxAmmo3Width = maxAmmo0Width;
+        private const int maxAmmo3X = 314;
+        private const int maxAmmo3Y = 185;
 
-        private static readonly int faceX = 143;
-        private static readonly int faceY = 168;
-        private static readonly int faceBackgroundX = 143;
-        private static readonly int faceBackgroundY = 169;
+        private const int faceX = 143;
+        private const int faceY = 168;
+        private const int faceBackgroundX = 143;
+        private const int faceBackgroundY = 169;
 
         private readonly DrawScreen screen;
 
@@ -120,18 +120,25 @@ namespace ManagedDoom.Video
 
             scale = screen.Width / 320;
 
-            ready = new NumberWidget();
-            ready.Patches = patches.TallNumbers;
-            ready.Width = ammoWidth;
-            ready.X = ammoX;
-            ready.Y = ammoY;
+            ready = new NumberWidget
+            {
+                Patches = patches.TallNumbers,
+                Width = ammoWidth,
+                X = ammoX,
+                Y = ammoY
+            };
 
-            health = new PercentWidget();
-            health.NumberWidget.Patches = patches.TallNumbers;
-            health.NumberWidget.Width = 3;
-            health.NumberWidget.X = healthX;
-            health.NumberWidget.Y = healthY;
-            health.Patch = patches.TallPercent;
+            health = new PercentWidget
+            {
+                NumberWidget =
+                {
+                    Patches = patches.TallNumbers,
+                    Width = 3,
+                    X = healthX,
+                    Y = healthY
+                },
+                Patch = patches.TallPercent
+            };
 
             armor = new PercentWidget();
             armor.NumberWidget.Patches = patches.TallNumbers;
@@ -140,27 +147,38 @@ namespace ManagedDoom.Video
             armor.NumberWidget.Y = armorY;
             armor.Patch = patches.TallPercent;
 
-            ammo = new NumberWidget[(int)AmmoType.Count];
-            ammo[0] = new NumberWidget();
-            ammo[0].Patches = patches.ShortNumbers;
-            ammo[0].Width = ammo0Width;
-            ammo[0].X = ammo0X;
-            ammo[0].Y = ammo0Y;
-            ammo[1] = new NumberWidget();
-            ammo[1].Patches = patches.ShortNumbers;
-            ammo[1].Width = ammo1Width;
-            ammo[1].X = ammo1X;
-            ammo[1].Y = ammo1Y;
-            ammo[2] = new NumberWidget();
-            ammo[2].Patches = patches.ShortNumbers;
-            ammo[2].Width = ammo2Width;
-            ammo[2].X = ammo2X;
-            ammo[2].Y = ammo2Y;
-            ammo[3] = new NumberWidget();
-            ammo[3].Patches = patches.ShortNumbers;
-            ammo[3].Width = ammo3Wdth;
-            ammo[3].X = ammo3X;
-            ammo[3].Y = ammo3Y;
+            // AmmoType.Count
+            ammo =
+            [
+                new NumberWidget
+                {
+                    Patches = patches.ShortNumbers,
+                    Width = ammo0Width,
+                    X = ammo0X,
+                    Y = ammo0Y
+                },
+                new NumberWidget
+                {
+                    Patches = patches.ShortNumbers,
+                    Width = ammo1Width,
+                    X = ammo1X,
+                    Y = ammo1Y
+                },
+                new NumberWidget
+                {
+                    Patches = patches.ShortNumbers,
+                    Width = ammo2Width,
+                    X = ammo2X,
+                    Y = ammo2Y
+                },
+                new NumberWidget
+                {
+                    Patches = patches.ShortNumbers,
+                    Width = ammo3Wdth,
+                    X = ammo3X,
+                    Y = ammo3Y
+                }
+            ];
 
             maxAmmo = new NumberWidget[(int)AmmoType.Count];
             maxAmmo[0] = new NumberWidget();
@@ -252,9 +270,7 @@ namespace ManagedDoom.Video
                 }
 
                 for (var i = 0; i < weapons.Length; i++)
-                {
                     DrawMultIcon(weapons[i], player.WeaponOwned[i + 1] ? 1 : 0);
-                }
             }
             else
             {
@@ -282,14 +298,8 @@ namespace ManagedDoom.Video
 
             for (var i = 0; i < 3; i++)
             {
-                if (player.Cards[i + 3])
-                {
-                    DrawMultIcon(keys[i], i + 3);
-                }
-                else if (player.Cards[i])
-                {
-                    DrawMultIcon(keys[i], i);
-                }
+                var value = player.Cards[i + 3] ? i + 3 : i;
+                DrawMultIcon(keys[i], value);
             }
         }
 
@@ -318,9 +328,7 @@ namespace ManagedDoom.Video
             x = widget.X - digits * w;
 
             if (num == 1994)
-            {
                 return;
-            }
 
             x = widget.X;
 
@@ -357,6 +365,8 @@ namespace ManagedDoom.Video
                     scale * widget.Y,
                     scale);
             }
+            
+            //screen.DrawText("MHFJDSHFJKDHSJKFHDSJKFDS", 100, 100, 1);
         }
 
         private void DrawPercent(PercentWidget per, int value)
@@ -380,7 +390,6 @@ namespace ManagedDoom.Video
         }
 
 
-
         private class NumberWidget
         {
             public int X;
@@ -389,7 +398,7 @@ namespace ManagedDoom.Video
             public Patch[] Patches;
         }
 
-        private class PercentWidget
+        private sealed class PercentWidget
         {
             public readonly NumberWidget NumberWidget = new NumberWidget();
             public Patch Patch;
@@ -426,6 +435,7 @@ namespace ManagedDoom.Video
                     TallNumbers[i] = Patch.FromWad(wad, "STTNUM" + i);
                     ShortNumbers[i] = Patch.FromWad(wad, "STYSNUM" + i);
                 }
+
                 TallMinus = Patch.FromWad(wad, "STTMINUS");
                 TallPercent = Patch.FromWad(wad, "STTPRCNT");
 
@@ -450,6 +460,7 @@ namespace ManagedDoom.Video
                 {
                     FaceBackground[i] = Patch.FromWad(wad, "STFB" + i);
                 }
+
                 Faces = new Patch[StatusBar.Face.FaceCount];
                 var faceCount = 0;
                 for (var i = 0; i < StatusBar.Face.PainFaceCount; i++)
@@ -458,12 +469,14 @@ namespace ManagedDoom.Video
                     {
                         Faces[faceCount++] = Patch.FromWad(wad, "STFST" + i + j);
                     }
+
                     Faces[faceCount++] = Patch.FromWad(wad, "STFTR" + i + "0");
                     Faces[faceCount++] = Patch.FromWad(wad, "STFTL" + i + "0");
                     Faces[faceCount++] = Patch.FromWad(wad, "STFOUCH" + i);
                     Faces[faceCount++] = Patch.FromWad(wad, "STFEVL" + i);
                     Faces[faceCount++] = Patch.FromWad(wad, "STFKILL" + i);
                 }
+
                 Faces[faceCount++] = Patch.FromWad(wad, "STFGOD0");
                 Faces[faceCount++] = Patch.FromWad(wad, "STFDEAD0");
             }

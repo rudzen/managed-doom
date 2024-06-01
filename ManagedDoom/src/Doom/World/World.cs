@@ -16,7 +16,7 @@
 
 namespace ManagedDoom
 {
-    public sealed partial class World
+    public sealed class World
     {
         private bool doneFirstTic;
         private bool completed;

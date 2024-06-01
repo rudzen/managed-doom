@@ -14,9 +14,9 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
 namespace ManagedDoom
@@ -25,8 +25,8 @@ namespace ManagedDoom
     {
         private readonly World world;
 
-        public Map(GameContent resorces, World world)
-            : this(resorces.Wad, resorces.Textures, resorces.Flats, resorces.Animation, world)
+        public Map(GameContent resources, World world)
+            : this(resources.Wad, resources.Textures, resources.Flats, resources.Animation, world)
         {
         }
 
@@ -34,6 +34,8 @@ namespace ManagedDoom
         {
             try
             {
+                var start = Stopwatch.GetTimestamp();
+
                 this.Textures = textures;
                 this.Flats = flats;
                 this.Animation = animation;
@@ -41,24 +43,16 @@ namespace ManagedDoom
 
                 var options = world.Options;
 
-                string name;
-                if (wad.GameMode == GameMode.Commercial)
-                {
-                    name = "MAP" + options.Map.ToString("00");
-                }
-                else
-                {
-                    name = "E" + options.Episode + "M" + options.Map;
-                }
+                var name = wad.GameMode == GameMode.Commercial
+                    ? "MAP" + options.Map.ToString("00")
+                    : "E" + options.Episode + "M" + options.Map;
 
-                Console.Write("Load map '" + name + "': ");
+                Console.Write($"Load map '{name}': ");
 
                 var map = wad.GetLumpNumber(name);
 
                 if (map == -1)
-                {
                     throw new Exception("Map '" + name + "' was not found!");
-                }
 
                 Vertices = Vertex.FromWad(wad, map + 4);
                 Sectors = Sector.FromWad(wad, map + 8, flats);
@@ -75,27 +69,11 @@ namespace ManagedDoom
 
                 SkyTexture = GetSkyTextureByMapName(name);
 
-                if (options.GameMode == GameMode.Commercial)
-                {
-                    switch (options.MissionPack)
-                    {
-                        case MissionPack.Plutonia:
-                            Title = DoomInfo.MapTitles.Plutonia[options.Map - 1];
-                            break;
-                        case MissionPack.Tnt:
-                            Title = DoomInfo.MapTitles.Tnt[options.Map - 1];
-                            break;
-                        default:
-                            Title = DoomInfo.MapTitles.Doom2[options.Map - 1];
-                            break;
-                    }
-                }
-                else
-                {
-                    Title = DoomInfo.MapTitles.Doom[options.Episode - 1][options.Map - 1];
-                }
+                Title = options.GameMode == GameMode.Commercial
+                    ? DoomInfo.MapTitles.GetMapTitle(options.MissionPack, options.Map - 1)
+                    : DoomInfo.MapTitles.Doom[options.Episode - 1][options.Map - 1];
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {
@@ -111,13 +89,12 @@ namespace ManagedDoom
 
             foreach (var line in Lines)
             {
-                if (line.Special != 0)
+                if (line.Special == 0) continue;
+                line.SoundOrigin = new Mobj(world)
                 {
-                    var so = new Mobj(world);
-                    so.X = (line.Vertex1.X + line.Vertex2.X) / 2;
-                    so.Y = (line.Vertex1.Y + line.Vertex2.Y) / 2;
-                    line.SoundOrigin = so;
-                }
+                    X = (line.Vertex1.X + line.Vertex2.X) / 2,
+                    Y = (line.Vertex1.Y + line.Vertex2.Y) / 2
+                };
             }
 
             foreach (var sector in Sectors)
@@ -127,26 +104,25 @@ namespace ManagedDoom
 
                 foreach (var line in Lines)
                 {
-                    if (line.FrontSector == sector || line.BackSector == sector)
-                    {
-                        sectorLines.Add(line);
-                        Box.AddPoint(boundingBox, line.Vertex1.X, line.Vertex1.Y);
-                        Box.AddPoint(boundingBox, line.Vertex2.X, line.Vertex2.Y);
-                    }
+                    if (line.FrontSector != sector && line.BackSector != sector) continue;
+                    sectorLines.Add(line);
+                    Box.AddPoint(boundingBox, line.Vertex1.X, line.Vertex1.Y);
+                    Box.AddPoint(boundingBox, line.Vertex2.X, line.Vertex2.Y);
                 }
 
                 sector.Lines = sectorLines.ToArray();
 
                 // Set the degenmobj_t to the middle of the bounding box.
-                sector.SoundOrigin = new Mobj(world);
-                sector.SoundOrigin.X = (boundingBox[Box.Right] + boundingBox[Box.Left]) / 2;
-                sector.SoundOrigin.Y = (boundingBox[Box.Top] + boundingBox[Box.Bottom]) / 2;
+                sector.SoundOrigin = new Mobj(world)
+                {
+                    X = (boundingBox[Box.Right] + boundingBox[Box.Left]) / 2,
+                    Y = (boundingBox[Box.Top] + boundingBox[Box.Bottom]) / 2
+                };
 
                 sector.BlockBox = new int[4];
-                int block;
 
                 // Adjust bounding box to map blocks.
-                block = (boundingBox[Box.Top] - BlockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+                var block = (boundingBox[Box.Top] - BlockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
                 block = block >= BlockMap.Height ? BlockMap.Height - 1 : block;
                 sector.BlockBox[Box.Top] = block;
 
@@ -167,31 +143,15 @@ namespace ManagedDoom
         private Texture GetSkyTextureByMapName(string name)
         {
             if (name.Length == 4)
-            {
-                switch (name[1])
-                {
-                    case '1':
-                        return Textures["SKY1"];
-                    case '2':
-                        return Textures["SKY2"];
-                    case '3':
-                        return Textures["SKY3"];
-                    default:
-                        return Textures["SKY4"];
-                }
-            }
+                return Textures[$"SKY{name[1]}"];
 
-            var number = int.Parse(name.Substring(3));
-            if (number <= 11)
+            var number = int.Parse(name[3..]);
+            return number switch
             {
-                return Textures["SKY1"];
-            }
-
-            if (number <= 21)
-            {
-                return Textures["SKY2"];
-            }
-            return Textures["SKY3"];
+                <= 11 => Textures["SKY1"],
+                <= 21 => Textures["SKY2"],
+                _     => Textures["SKY3"]
+            };
         }
 
         public ITextureLookup Textures { get; }
@@ -243,19 +203,13 @@ namespace ManagedDoom
         {
             Bgm bgm;
             if (options.GameMode == GameMode.Commercial)
-            {
                 bgm = Bgm.RUNNIN + options.Map - 1;
-            }
             else
             {
                 if (options.Episode < 4)
-                {
                     bgm = Bgm.E1M1 + (options.Episode - 1) * 9 + options.Map - 1;
-                }
                 else
-                {
                     bgm = e4BgmList[options.Map - 1];
-                }
             }
 
             return bgm;

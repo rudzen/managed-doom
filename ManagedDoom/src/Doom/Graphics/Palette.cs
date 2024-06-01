@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
@@ -40,6 +41,7 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Load palette: ");
+                var start = Stopwatch.GetTimestamp();
 
                 data = wad.ReadLump("PLAYPAL");
 
@@ -48,7 +50,7 @@ namespace ManagedDoom
                 for (var i = 0; i < palettes.Length; i++)
                     palettes[i] = new uint[256];
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

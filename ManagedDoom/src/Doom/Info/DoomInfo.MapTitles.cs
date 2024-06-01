@@ -15,6 +15,7 @@
 
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
@@ -22,7 +23,18 @@ namespace ManagedDoom
     {
         public static class MapTitles
         {
-            public static IReadOnlyList<IReadOnlyList<DoomString>> Doom = new DoomString[][]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static DoomString GetMapTitle(MissionPack missionPack, int mapNumber)
+            {
+                return missionPack switch
+                {
+                    MissionPack.Plutonia => Plutonia[mapNumber],
+                    MissionPack.Tnt      => Tnt[mapNumber],
+                    _                    => Doom2[mapNumber]
+                };
+            }
+            
+            public static readonly IReadOnlyList<IReadOnlyList<DoomString>> Doom = new DoomString[][]
             {
                 [
                     Strings.HUSTR_E1M1,
@@ -73,7 +85,7 @@ namespace ManagedDoom
                 ]
             };
 
-            public static IReadOnlyList<DoomString> Doom2 = new DoomString[]
+            public static readonly IReadOnlyList<DoomString> Doom2 = new[]
             {
                 Strings.HUSTR_1,
                 Strings.HUSTR_2,
@@ -109,7 +121,7 @@ namespace ManagedDoom
                 Strings.HUSTR_32
             };
 
-            public static IReadOnlyList<DoomString> Plutonia = new DoomString[]
+            public static readonly IReadOnlyList<DoomString> Plutonia = new[]
             {
                 Strings.PHUSTR_1,
                 Strings.PHUSTR_2,
@@ -145,7 +157,7 @@ namespace ManagedDoom
                 Strings.PHUSTR_32
             };
 
-            public static IReadOnlyList<DoomString> Tnt = new DoomString[]
+            public static readonly IReadOnlyList<DoomString> Tnt = new[]
             {
                 Strings.THUSTR_1,
                 Strings.THUSTR_2,

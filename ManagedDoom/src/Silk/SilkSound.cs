@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
 using DrippyAL;
@@ -58,6 +59,7 @@ namespace ManagedDoom.Silk
             try
             {
                 Console.Write("Initialize sound: ");
+                var start = Stopwatch.GetTimestamp();
 
                 this.config = config;
 
@@ -76,9 +78,7 @@ namespace ManagedDoom.Silk
                     var name = "DS" + DoomInfo.SfxNames[i].ToString().ToUpper();
                     var lump = content.Wad.GetLumpNumber(name);
                     if (lump == -1)
-                    {
                         continue;
-                    }
 
                     var samples = GetSamples(content.Wad, name, out var sampleRate, out var sampleCount);
                     if (!samples.IsEmpty)
@@ -103,7 +103,7 @@ namespace ManagedDoom.Silk
 
                 lastUpdate = DateTime.MinValue;
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

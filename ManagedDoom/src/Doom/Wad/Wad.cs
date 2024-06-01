@@ -17,6 +17,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Open WAD files: ");
+                var start = Stopwatch.GetTimestamp();
 
                 names = new List<string>(fileNames.Length);
                 streams = new List<Stream>(fileNames.Length);
@@ -55,7 +57,7 @@ namespace ManagedDoom
                 MissionPack = GetMissionPack(names);
                 GameVersion = GetGameVersion(names);
 
-                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(Path.GetFileName)) + ")");
+                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(Path.GetFileName)) + ") [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {

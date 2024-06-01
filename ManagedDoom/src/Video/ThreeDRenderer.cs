@@ -22,7 +22,7 @@ namespace ManagedDoom.Video
 {
     public sealed class ThreeDRenderer
     {
-        public static readonly int MaxScreenSize = 9;
+        public const int MaxScreenSize = 9;
 
         private readonly ColorMap colorMap;
         private readonly ITextureLookup textures;

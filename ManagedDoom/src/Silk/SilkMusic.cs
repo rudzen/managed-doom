@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using DrippyAL;
@@ -37,6 +38,7 @@ namespace ManagedDoom.Silk
             try
             {
                 Console.Write("Initialize music: ");
+                var start = Stopwatch.GetTimestamp();
 
                 this.config = config;
                 this.wad = content.Wad;
@@ -44,7 +46,7 @@ namespace ManagedDoom.Silk
                 stream = new MusStream(this, config, device, sfPath);
                 current = Bgm.NONE;
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {
@@ -258,9 +260,8 @@ namespace ManagedDoom.Silk
 
                 events = new MusEvent[128];
                 for (var i = 0; i < events.Length; i++)
-                {
                     events[i] = new MusEvent();
-                }
+                
                 eventCount = 0;
 
                 lastVolume = new int[16];
@@ -270,15 +271,11 @@ namespace ManagedDoom.Silk
                 blockWrote = BlockLength;
             }
 
-            private static void CheckHeader(byte[] data)
+            private static void CheckHeader(ReadOnlySpan<byte> data)
             {
                 for (var p = 0; p < MusHeader.Length; p++)
-                {
                     if (data[p] != MusHeader[p])
-                    {
                         throw new Exception("Invalid format!");
-                    }
-                }
             }
 
             public void RenderWaveform(Synthesizer synthesizer, Span<float> left, Span<float> right)

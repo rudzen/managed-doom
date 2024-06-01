@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 
 namespace ManagedDoom
@@ -123,18 +122,18 @@ namespace ManagedDoom
             ArmorPoints = 0;
             ArmorType = 0;
 
-            Array.Clear(Powers, 0, Powers.Length);
-            Array.Clear(Cards, 0, Cards.Length);
+            Array.Clear(Powers);
+            Array.Clear(Cards);
             Backpack = false;
 
-            Array.Clear(Frags, 0, Frags.Length);
+            Array.Clear(Frags);
 
             ReadyWeapon = 0;
             PendingWeapon = 0;
 
-            Array.Clear(WeaponOwned, 0, WeaponOwned.Length);
-            Array.Clear(Ammo, 0, Ammo.Length);
-            Array.Clear(MaxAmmo, 0, MaxAmmo.Length);
+            Array.Clear(WeaponOwned);
+            Array.Clear(Ammo);
+            Array.Clear(MaxAmmo);
 
             UseDown = false;
             AttackDown = false;
@@ -162,9 +161,7 @@ namespace ManagedDoom
             ColorMap = 0;
 
             foreach (var psp in PlayerSprites)
-            {
                 psp.Clear();
-            }
 
             DidSecret = false;
 
@@ -188,16 +185,16 @@ namespace ManagedDoom
             ArmorPoints = 0;
             ArmorType = 0;
 
-            Array.Clear(Powers, 0, Powers.Length);
-            Array.Clear(Cards, 0, Cards.Length);
+            Array.Clear(Powers);
+            Array.Clear(Cards);
             Backpack = false;
 
             ReadyWeapon = WeaponType.Pistol;
             PendingWeapon = WeaponType.Pistol;
 
-            Array.Clear(WeaponOwned, 0, WeaponOwned.Length);
-            Array.Clear(Ammo, 0, Ammo.Length);
-            Array.Clear(MaxAmmo, 0, MaxAmmo.Length);
+            Array.Clear(WeaponOwned);
+            Array.Clear(Ammo);
+            Array.Clear(MaxAmmo);
 
             WeaponOwned[(int)WeaponType.Fist] = true;
             WeaponOwned[(int)WeaponType.Pistol] = true;
@@ -230,9 +227,7 @@ namespace ManagedDoom
             ColorMap = 0;
 
             foreach (var psp in PlayerSprites)
-            {
                 psp.Clear();
-            }
 
             DidSecret = false;
 
@@ -243,8 +238,8 @@ namespace ManagedDoom
 
         public void FinishLevel()
         {
-            Array.Clear(Powers, 0, Powers.Length);
-            Array.Clear(Cards, 0, Cards.Length);
+            Array.Clear(Powers);
+            Array.Clear(Cards);
 
             // Cancel invisibility.
             Mobj.Flags &= ~MobjFlags.Shadow;
@@ -287,28 +282,19 @@ namespace ManagedDoom
         public Fixed GetInterpolatedViewZ(Fixed frameFrac)
         {
             // Without the second condition, flicker will occur on the first frame.
-            if (interpolate && Mobj.World.LevelTime > 1)
-            {
-                return oldViewZ + frameFrac * (ViewZ - oldViewZ);
-            }
-
-            return ViewZ;
+            return interpolate && Mobj.World.LevelTime > 1
+                ? oldViewZ + frameFrac * (ViewZ - oldViewZ)
+                : ViewZ;
         }
 
         public Angle GetInterpolatedAngle(Fixed frameFrac)
         {
-            if (interpolate)
-            {
-                var delta = Mobj.Angle - oldAngle;
-                if (delta < Angle.Ang180)
-                {
-                    return oldAngle + Angle.FromDegree(frameFrac.ToDouble() * delta.ToDegree());
-                }
+            if (!interpolate) return Mobj.Angle;
+            var delta = Mobj.Angle - oldAngle;
 
-                return oldAngle - Angle.FromDegree(frameFrac.ToDouble() * (360.0 - delta.ToDegree()));
-            }
-
-            return Mobj.Angle;
+            return delta < Angle.Ang180
+                ? oldAngle + Angle.FromDegree(frameFrac.ToDouble() * delta.ToDegree())
+                : oldAngle - Angle.FromDegree(frameFrac.ToDouble() * (360.0 - delta.ToDegree()));
         }
 
         public int Number { get; }

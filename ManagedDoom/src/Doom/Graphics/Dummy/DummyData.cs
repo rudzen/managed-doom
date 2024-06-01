@@ -52,7 +52,6 @@ namespace ManagedDoom
         }
 
 
-
         private static readonly Dictionary<int, Texture> dummyTextures = new Dictionary<int, Texture>();
 
         public static Texture GetTexture(int height)
@@ -62,11 +61,12 @@ namespace ManagedDoom
 
             var patch = new[] { new TexturePatch(0, 0, GetPatch()) };
 
-            dummyTextures.Add(height, new Texture("DUMMY", false, 64, height, patch));
+            texture = new Texture("DUMMY", false, 64, height, patch);
 
-            return dummyTextures[height];
+            dummyTextures.TryAdd(height, texture);
+
+            return texture;
         }
-
 
 
         private static Flat dummyFlat;
@@ -93,7 +93,6 @@ namespace ManagedDoom
 
             return dummyFlat;
         }
-
 
 
         private static Flat dummySkyFlat;

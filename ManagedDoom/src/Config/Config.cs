@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace ManagedDoom
@@ -95,6 +96,7 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Restore settings: ");
+                var start = Stopwatch.GetTimestamp();
 
                 var dic = new Dictionary<string, string>();
                 foreach (var line in File.ReadLines(path))
@@ -139,7 +141,7 @@ namespace ManagedDoom
 
                 IsRestoredFromFile = true;
 
-                Console.WriteLine("OK");
+                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch
             {
