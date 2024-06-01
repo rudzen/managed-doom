@@ -39,12 +39,15 @@ namespace ManagedDoom.Video
             for (var i = 1; i < Y.Length; i++)
             {
                 var r = (random.Next() % 3) - 1;
-                Y[i] = Y[i] switch
+                Y[i] = (short)(Y[i - 1] + r);
+                if (Y[i] > 0)
                 {
-                    > 0 => 0,
-                    -16 => -15,
-                    _   => (short)(Y[i - 1] + r)
-                };
+                    Y[i] = 0;
+                }
+                else if (Y[i] == -16)
+                {
+                    Y[i] = -15;
+                }
             }
         }
 
