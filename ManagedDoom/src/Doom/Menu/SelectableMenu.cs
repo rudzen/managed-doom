@@ -136,15 +136,13 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Left)
             {
-                var toggle = Choice as ToggleMenuItem;
-                if (toggle != null)
+                if (Choice is ToggleMenuItem toggle)
                 {
                     toggle.Down();
                     Menu.StartSound(Sfx.PISTOL);
                 }
 
-                var slider = Choice as SliderMenuItem;
-                if (slider != null)
+                if (Choice is SliderMenuItem slider)
                 {
                     slider.Down();
                     Menu.StartSound(Sfx.STNMOV);
@@ -153,15 +151,13 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Right)
             {
-                var toggle = Choice as ToggleMenuItem;
-                if (toggle != null)
+                if (Choice is ToggleMenuItem toggle)
                 {
                     toggle.Up();
                     Menu.StartSound(Sfx.PISTOL);
                 }
 
-                var slider = Choice as SliderMenuItem;
-                if (slider != null)
+                if (Choice is SliderMenuItem slider)
                 {
                     slider.Up();
                     Menu.StartSound(Sfx.STNMOV);
@@ -170,15 +166,13 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Enter)
             {
-                var toggle = Choice as ToggleMenuItem;
-                if (toggle != null)
+                if (Choice is ToggleMenuItem toggle)
                 {
                     toggle.Up();
                     Menu.StartSound(Sfx.PISTOL);
                 }
 
-                var simple = Choice as SimpleMenuItem;
-                if (simple != null)
+                if (Choice is SimpleMenuItem simple)
                 {
                     if (simple.Selectable)
                     {

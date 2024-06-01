@@ -1475,9 +1475,7 @@ namespace ManagedDoom
 				{
 					foreach (var thinker in world.Thinkers)
 					{
-						var dest = thinker as Mobj;
-
-						if (dest == null)
+						if (thinker is not Mobj dest)
 						{
 							// Not a mobj.
 							continue;

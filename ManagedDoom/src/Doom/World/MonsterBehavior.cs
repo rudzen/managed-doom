@@ -1509,8 +1509,7 @@ namespace ManagedDoom
 
             foreach (var thinker in world.Thinkers)
             {
-                var mobj = thinker as Mobj;
-                if (mobj != null && mobj.Type == MobjType.Skull)
+                if (thinker is Mobj mobj && mobj.Type == MobjType.Skull)
                 {
                     count++;
                 }
@@ -1697,8 +1696,7 @@ namespace ManagedDoom
             // Scan the remaining thinkers to see if all bosses are dead.
             foreach (var thinker in world.Thinkers)
             {
-                var mo2 = thinker as Mobj;
-                if (mo2 == null)
+                if (thinker is not Mobj mo2)
                 {
                     continue;
                 }
@@ -1768,8 +1766,7 @@ namespace ManagedDoom
             // to see if all Keens are dead
             foreach (var thinker in world.Thinkers)
             {
-                var mo2 = thinker as Mobj;
-                if (mo2 == null)
+                if (thinker is not Mobj mo2)
                 {
                     continue;
                 }
@@ -1813,8 +1810,7 @@ namespace ManagedDoom
 
             foreach (var thinker in world.Thinkers)
             {
-                var mobj = thinker as Mobj;
-                if (mobj == null)
+                if (thinker is not Mobj mobj)
                 {
                     // Not a mobj.
                     continue;

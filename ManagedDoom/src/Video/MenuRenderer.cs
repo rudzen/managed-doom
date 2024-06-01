@@ -39,44 +39,37 @@ namespace ManagedDoom.Video
 
         public void Render(DoomMenu menu)
         {
-            var selectable = menu.Current as SelectableMenu;
-            if (selectable != null)
+            if (menu.Current is SelectableMenu selectable)
             {
                 DrawSelectableMenu(selectable);
             }
 
-            var save = menu.Current as SaveMenu;
-            if (save != null)
+            if (menu.Current is SaveMenu save)
             {
                 DrawSaveMenu(save);
             }
 
-            var load = menu.Current as LoadMenu;
-            if (load != null)
+            if (menu.Current is LoadMenu load)
             {
                 DrawLoadMenu(load);
             }
 
-            var yesNo = menu.Current as YesNoConfirm;
-            if (yesNo != null)
+            if (menu.Current is YesNoConfirm yesNo)
             {
                 DrawText(yesNo.Text);
             }
 
-            var pressAnyKey = menu.Current as PressAnyKey;
-            if (pressAnyKey != null)
+            if (menu.Current is PressAnyKey pressAnyKey)
             {
                 DrawText(pressAnyKey.Text);
             }
 
-            var quit = menu.Current as QuitConfirm;
-            if (quit != null)
+            if (menu.Current is QuitConfirm quit)
             {
                 DrawText(quit.Text);
             }
 
-            var help = menu.Current as HelpScreen;
-            if (help != null)
+            if (menu.Current is HelpScreen help)
             {
                 DrawHelp(help);
             }
@@ -144,26 +137,22 @@ namespace ManagedDoom.Video
 
         private void DrawMenuItem(DoomMenu menu, MenuItem item)
         {
-            var simple = item as SimpleMenuItem;
-            if (simple != null)
+            if (item is SimpleMenuItem simple)
             {
                 DrawSimpleMenuItem(simple);
             }
 
-            var toggle = item as ToggleMenuItem;
-            if (toggle != null)
+            if (item is ToggleMenuItem toggle)
             {
                 DrawToggleMenuItem(toggle);
             }
 
-            var slider = item as SliderMenuItem;
-            if (slider != null)
+            if (item is SliderMenuItem slider)
             {
                 DrawSliderMenuItem(slider);
             }
 
-            var textBox = item as TextBoxMenuItem;
-            if (textBox != null)
+            if (item is TextBoxMenuItem textBox)
             {
                 DrawTextBoxMenuItem(textBox, menu.Tics);
             }

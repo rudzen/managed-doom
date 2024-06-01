@@ -335,8 +335,7 @@ namespace ManagedDoom
             var count = 0;
             foreach (var thinker in world.Thinkers)
             {
-                var mobj = thinker as Mobj;
-                if (mobj != null &&
+                if (thinker is Mobj mobj &&
                     mobj.Player == null &&
                     ((mobj.Flags & MobjFlags.CountKill) != 0 || mobj.Type == MobjType.Skull) &&
                     mobj.Health > 0)

@@ -288,8 +288,7 @@ namespace ManagedDoom.Video
         {
             foreach (var thinker in world.Thinkers)
             {
-                var mobj = thinker as Mobj;
-                if (mobj != null)
+                if (thinker is Mobj mobj)
                 {
                     DrawCharacter(mobj, thingTriangle, greens);
                 }

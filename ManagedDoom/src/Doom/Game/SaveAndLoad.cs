@@ -175,8 +175,7 @@ namespace ManagedDoom
                 // Read in saved thinkers.
                 foreach (var thinker in thinkers)
                 {
-                    var mobj = thinker as Mobj;
-                    if (mobj != null)
+                    if (thinker is Mobj mobj)
                     {
                         data[ptr++] = (byte)ThinkerClass.Mobj;
                         PadPointer();
@@ -267,8 +266,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var ceiling = thinker as CeilingMove;
-                        if (ceiling != null)
+                        if (thinker is CeilingMove ceiling)
                         {
                             data[ptr++] = (byte)SpecialClass.Ceiling;
                             PadPointer();
@@ -288,8 +286,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var door = thinker as VerticalDoor;
-                        if (door != null)
+                        if (thinker is VerticalDoor door)
                         {
                             data[ptr++] = (byte)SpecialClass.Door;
                             PadPointer();
@@ -307,8 +304,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var floor = thinker as FloorMove;
-                        if (floor != null)
+                        if (thinker is FloorMove floor)
                         {
                             data[ptr++] = (byte)SpecialClass.Floor;
                             PadPointer();
@@ -327,8 +323,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var plat = thinker as Platform;
-                        if (plat != null)
+                        if (thinker is Platform plat)
                         {
                             data[ptr++] = (byte)SpecialClass.Plat;
                             PadPointer();
@@ -350,8 +345,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var flash = thinker as LightFlash;
-                        if (flash != null)
+                        if (thinker is LightFlash flash)
                         {
                             data[ptr++] = (byte)SpecialClass.Flash;
                             PadPointer();
@@ -368,8 +362,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var strobe = thinker as StrobeFlash;
-                        if (strobe != null)
+                        if (thinker is StrobeFlash strobe)
                         {
                             data[ptr++] = (byte)SpecialClass.Strobe;
                             PadPointer();
@@ -386,8 +379,7 @@ namespace ManagedDoom
                     }
 
                     {
-                        var glow = thinker as GlowingLight;
-                        if (glow != null)
+                        if (thinker is GlowingLight glow)
                         {
                             data[ptr++] = (byte)SpecialClass.Glow;
                             PadPointer();
@@ -671,8 +663,7 @@ namespace ManagedDoom
                 // Remove all the current thinkers.
                 foreach (var thinker in thinkers)
                 {
-                    var mobj = thinker as Mobj;
-                    if (mobj != null)
+                    if (thinker is Mobj mobj)
                     {
                         ta.RemoveMobj(mobj);
                     }

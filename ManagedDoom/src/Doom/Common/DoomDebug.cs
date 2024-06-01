@@ -67,8 +67,7 @@ namespace ManagedDoom
             var hash = 0;
             foreach (var thinker in world.Thinkers)
             {
-                var mobj = thinker as Mobj;
-                if (mobj != null)
+                if (thinker is Mobj mobj)
                 {
                     hash = CombineHash(hash, GetMobjHash(mobj));
                 }
@@ -117,8 +116,7 @@ namespace ManagedDoom
             {
                 foreach (var thinker in world.Thinkers)
                 {
-                    var mobj = thinker as Mobj;
-                    if (mobj != null)
+                    if (thinker is Mobj mobj)
                     {
                         writer.WriteLine(GetMobjCsv(mobj));
                     }
