@@ -32,9 +32,7 @@ namespace ManagedDoom
             p = 0;
 
             if (data[p++] != 109)
-            {
                 throw new Exception("Demo is from a different game version!");
-            }
 
             this.data = data;
 
@@ -59,36 +57,26 @@ namespace ManagedDoom
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
                 if (Options.Players[i].InGame)
-                {
                     playerCount++;
-                }
             }
             if (playerCount >= 2)
-            {
                 Options.NetGame = true;
-            }
         }
 
         public Demo(string fileName) : this(File.ReadAllBytes(fileName))
         {
         }
 
-        public bool ReadCmd(TicCmd[] cmds)
+        public bool ReadCmd(ReadOnlySpan<TicCmd> cmds)
         {
             if (p == data.Length)
-            {
                 return false;
-            }
 
             if (data[p] == 0x80)
-            {
                 return false;
-            }
 
             if (p + 4 * playerCount > data.Length)
-            {
                 return false;
-            }
 
             var players = Options.Players;
             for (var i = 0; i < Player.MaxPlayerCount; i++)

@@ -23,7 +23,7 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 10;
 
-        public static MapThing Empty = new MapThing(
+        public static readonly MapThing Empty = new MapThing(
             Fixed.Zero,
             Fixed.Zero,
             Angle.Ang0,

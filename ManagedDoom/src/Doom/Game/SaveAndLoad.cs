@@ -25,10 +25,10 @@ namespace ManagedDoom
     /// </summary>
     public static class SaveAndLoad
     {
-        public static readonly int DescriptionSize = 24;
+        public const int DescriptionSize = 24;
 
-        private static readonly int versionSize = 16;
-        private static readonly int saveBufferSize = 360 * 1024;
+        private const int versionSize = 16;
+        private const int saveBufferSize = 360 * 1024;
 
         private enum ThinkerClass
         {
@@ -94,7 +94,7 @@ namespace ManagedDoom
 
             private void WriteVersion()
             {
-                var version = "version 109";
+                const string version = "version 109";
                 for (var i = 0; i < version.Length; i++)
                 {
                     data[ptr + i] = (byte)version[i];

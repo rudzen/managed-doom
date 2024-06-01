@@ -90,16 +90,14 @@ namespace ManagedDoom
 		/// <summary>
 		/// Advance the game one frame.
 		/// </summary>
-		public UpdateResult Update(TicCmd[] cmds)
+		public UpdateResult Update(ReadOnlySpan<TicCmd> cmds)
 		{
 			// Do player reborns if needed.
-			var players = Options.Players;
+			var players = Options.Players.AsSpan();
 			for (var i = 0; i < Player.MaxPlayerCount; i++)
 			{
 				if (players[i].InGame && players[i].PlayerState == PlayerState.Reborn)
-				{
 					DoReborn(i);
-				}
 			}
 
 			// Do things to change the game state.

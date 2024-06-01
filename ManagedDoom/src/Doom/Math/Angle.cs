@@ -20,7 +20,7 @@ using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
-    public struct Angle
+    public readonly struct Angle
     {
         public static readonly Angle Ang0 = new Angle(0x00000000);
         public static readonly Angle Ang45 = new Angle(0x20000000);

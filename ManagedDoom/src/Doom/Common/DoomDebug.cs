@@ -16,18 +16,32 @@
 
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ManagedDoom
 {
     public static class DoomDebug
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CombineHash(int a, int b)
         {
             return (3 * a) ^ b;
         }
 
-        public static int GetMobjHash(Mobj mobj)
+        public static int GetMobjHash(World world)
+        {
+            var hash = 0;
+            foreach (var thinker in world.Thinkers)
+            {
+                if (thinker is Mobj mobj)
+                    hash = CombineHash(hash, GetMobjHash(mobj));
+            }
+
+            return hash;
+        }
+
+        private static int GetMobjHash(Mobj mobj)
         {
             var hash = 0;
 
@@ -59,19 +73,6 @@ namespace ManagedDoom
             hash = CombineHash(hash, mobj.ReactionTime);
             hash = CombineHash(hash, mobj.Threshold);
 
-            return hash;
-        }
-
-        public static int GetMobjHash(World world)
-        {
-            var hash = 0;
-            foreach (var thinker in world.Thinkers)
-            {
-                if (thinker is Mobj mobj)
-                {
-                    hash = CombineHash(hash, GetMobjHash(mobj));
-                }
-            }
             return hash;
         }
 
@@ -122,7 +123,14 @@ namespace ManagedDoom
             }
         }
 
-        public static int GetSectorHash(Sector sector)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetSectorHash(World world)
+        {
+            return world.Map.Sectors.Aggregate(0, (current, sector) => CombineHash(current, GetSectorHash(sector)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int GetSectorHash(Sector sector)
         {
             var hash = 0;
 
@@ -131,11 +139,6 @@ namespace ManagedDoom
             hash = CombineHash(hash, sector.LightLevel);
 
             return hash;
-        }
-
-        public static int GetSectorHash(World world)
-        {
-            return world.Map.Sectors.Aggregate(0, (current, sector) => CombineHash(current, GetSectorHash(sector)));
         }
     }
 }
