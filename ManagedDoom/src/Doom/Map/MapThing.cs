@@ -14,8 +14,8 @@
 //
 
 
-
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
@@ -44,6 +44,22 @@ namespace ManagedDoom
             this.Flags = flags;
         }
 
+        private static MapThing FromData(ReadOnlySpan<byte> data)
+        {
+            var x = BitConverter.ToInt16(data[..2]);
+            var y = BitConverter.ToInt16(data.Slice(2, 2));
+            var angle = BitConverter.ToInt16(data.Slice(4, 2));
+            var type = BitConverter.ToInt16(data.Slice(6, 2));
+            var flags = BitConverter.ToInt16(data.Slice(8, 2));
+
+            return new MapThing(
+                Fixed.FromInt(x),
+                Fixed.FromInt(y),
+                new Angle(Angle.Ang45.Data * (uint)(angle / 45)),
+                type,
+                (ThingFlags)flags);
+        }
+
         public static MapThing FromData(byte[] data, int offset)
         {
             var x = BitConverter.ToInt16(data, offset);
@@ -64,21 +80,29 @@ namespace ManagedDoom
         {
             var length = wad.GetLumpSize(lump);
             if (length % dataSize != 0)
-            {
                 throw new Exception();
-            }
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var things = new MapThing[count];
+            var buffer = ArrayPool<byte>.Shared.Rent(length);
+            var bufferSpan = buffer.AsSpan(0, length);
 
-            for (var i = 0; i < count; i++)
+            try
             {
-                var offset = dataSize * i;
-                things[i] = FromData(data, offset);
-            }
+                wad.ReadLump(lump, bufferSpan);
+                var count = length / dataSize;
+                var things = new MapThing[count];
 
-            return things;
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = dataSize * i;
+                    things[i] = FromData(bufferSpan.Slice(offset, 10));
+                }
+
+                return things;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
         }
 
         public Fixed X { get; }

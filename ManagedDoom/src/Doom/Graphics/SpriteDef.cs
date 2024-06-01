@@ -14,15 +14,6 @@
 //
 
 
-namespace ManagedDoom
-{
-    public sealed class SpriteDef
-    {
-        public SpriteDef(SpriteFrame[] frames)
-        {
-            this.Frames = frames;
-        }
+namespace ManagedDoom;
 
-        public SpriteFrame[] Frames { get; }
-    }
-}
+public sealed record SpriteDef(SpriteFrame[] Frames);

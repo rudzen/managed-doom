@@ -73,12 +73,10 @@ namespace ManagedDoom
             choice = items[index];
         }
 
-        public override bool DoEvent(DoomEvent e)
+        public override bool DoEvent(in DoomEvent e)
         {
             if (e.Type != EventType.KeyDown)
-            {
                 return true;
-            }
 
             if (e.Key == DoomKey.Up)
             {
@@ -95,9 +93,7 @@ namespace ManagedDoom
             if (e.Key == DoomKey.Enter)
             {
                 if (DoLoad(index))
-                {
                     Menu.Close();
-                }
                 Menu.StartSound(Sfx.PISTOL);
             }
 
@@ -112,13 +108,12 @@ namespace ManagedDoom
 
         public bool DoLoad(int slotNumber)
         {
-            if (Menu.SaveSlots[slotNumber] != null)
-            {
-                Menu.Doom.LoadGame(slotNumber);
-                return true;
-            }
+            var slotExists = Menu.SaveSlots[slotNumber] != null;
 
-            return false;
+            if (slotExists)
+                Menu.Doom.LoadGame(slotNumber);
+
+            return slotExists;
         }
 
         public IReadOnlyList<string> Name => name;

@@ -17,6 +17,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -148,17 +149,23 @@ namespace ManagedDoom
         public byte[] ReadLump(int number)
         {
             var lumpInfo = lumpInfos[number];
-
             var data = new byte[lumpInfo.Size];
 
             lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
             var read = lumpInfo.Stream.Read(data, 0, lumpInfo.Size);
             if (read != lumpInfo.Size)
-            {
                 throw new Exception("Failed to read the lump " + number + ".");
-            }
 
             return data;
+        }
+
+        public void ReadLump(int number, Span<byte> buffer)
+        {
+            var lumpInfo = lumpInfos[number];
+            lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
+            var read = lumpInfo.Stream.Read(buffer);
+            if (read != lumpInfo.Size)
+                throw new Exception("Failed to read the lump " + number + ".");
         }
 
         public byte[] ReadLump(string name)
@@ -189,69 +196,86 @@ namespace ManagedDoom
         private static GameVersion GetGameVersion(IReadOnlyList<string> names)
         {
             foreach (var name in names)
-            {
-                switch (name.ToLower())
-                {
-                    case "doom2":
-                    case "freedoom2":
-                        return GameVersion.Version109;
-                    case "doom":
-                    case "doom1":
-                    case "freedoom1":
-                        return GameVersion.Ultimate;
-                    case "plutonia":
-                    case "tnt":
-                        return GameVersion.Final;
-                }
-            }
+                if (TryGetGameVersion(name, out var gameVersion))
+                    return gameVersion;
 
             return GameVersion.Version109;
+        }
+
+        [SkipLocalsInit]
+        private static bool TryGetGameVersion(ReadOnlySpan<char> name, out GameVersion gameVersion)
+        {
+            gameVersion = default;
+
+            Span<char> lower = stackalloc char[name.Length];
+            name.ToLower(lower, CultureInfo.InvariantCulture);
+
+            if (lower is "doom2" or "freedoom2")
+                gameVersion = GameVersion.Version109;
+            if (lower is "doom" or "doom1" or "freedoom1")
+                gameVersion = GameVersion.Ultimate;
+            if (lower is "plutonia" or "tnt")
+                gameVersion = GameVersion.Final;
+
+            return gameVersion != default;
         }
 
         private static GameMode GetGameMode(IReadOnlyList<string> names)
         {
             foreach (var name in names)
-            {
-                switch (name.ToLower())
-                {
-                    case "doom2":
-                    case "plutonia":
-                    case "tnt":
-                    case "freedoom2":
-                        return GameMode.Commercial;
-                    case "doom":
-                    case "freedoom1":
-                        return GameMode.Retail;
-                    case "doom1":
-                        return GameMode.Shareware;
-                }
-            }
+                if (TryGetGameGameMode(name, out var gameMode))
+                    return gameMode;
 
             return GameMode.Indetermined;
         }
 
+        [SkipLocalsInit]
+        private static bool TryGetGameGameMode(ReadOnlySpan<char> name, out GameMode gameMode)
+        {
+            gameMode = default;
+
+            Span<char> lower = stackalloc char[name.Length];
+            name.ToLower(lower, CultureInfo.InvariantCulture);
+
+            if (lower is "doom2" or "plutonia" or "tnt" or "freedoom2")
+                gameMode = GameMode.Commercial;
+            if (lower is "doom" or "freedoom1")
+                gameMode = GameMode.Retail;
+            if (lower is "doom1")
+                gameMode = GameMode.Shareware;
+
+            return gameMode != default;
+        }
+        
         private static MissionPack GetMissionPack(IReadOnlyList<string> names)
         {
             foreach (var name in names)
-            {
-                switch (name.ToLower())
-                {
-                    case "plutonia":
-                        return MissionPack.Plutonia;
-                    case "tnt":
-                        return MissionPack.Tnt;
-                }
-            }
+                if (TryGetMissionPack(name, out var missionPack))
+                    return missionPack;
 
             return MissionPack.Doom2;
+        }
+
+        [SkipLocalsInit]
+        private static bool TryGetMissionPack(ReadOnlySpan<char> name, out MissionPack missionPack)
+        {
+            missionPack = default;
+            
+            Span<char> lower = stackalloc char[name.Length];
+            name.ToLower(lower, CultureInfo.InvariantCulture);
+
+            if (lower is "plutonia")
+                missionPack = MissionPack.Plutonia;
+            if (lower is "tnt")
+                missionPack = MissionPack.Tnt;
+
+            return missionPack != default;
         }
 
         public IReadOnlyList<string> Names => names;
         public IReadOnlyList<LumpInfo> LumpInfos => lumpInfos;
         public GameVersion GameVersion { get; }
-
         public GameMode GameMode { get; }
-
         public MissionPack MissionPack { get; }
     }
 }

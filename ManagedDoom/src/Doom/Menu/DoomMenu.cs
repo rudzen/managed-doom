@@ -285,24 +285,20 @@ namespace ManagedDoom
             SaveSlots = new SaveSlots();
         }
 
-        public bool DoEvent(DoomEvent e)
+        public bool DoEvent(in DoomEvent e)
         {
             if (Active)
             {
-                if (Current.DoEvent(e))
-                {
+                if (Current.DoEvent(in e))
                     return true;
-                }
 
-                if (e.Key == DoomKey.Escape && e.Type == EventType.KeyDown)
-                {
+                if (e is { Key: DoomKey.Escape, Type: EventType.KeyDown })
                     Close();
-                }
 
                 return true;
             }
 
-            if (e.Key == DoomKey.Escape && e.Type == EventType.KeyDown)
+            if (e is { Key: DoomKey.Escape, Type: EventType.KeyDown })
             {
                 SetCurrent(main);
                 Open();
@@ -331,9 +327,7 @@ namespace ManagedDoom
             Current?.Update();
 
             if (Active && !Doom.Options.NetGame)
-            {
                 Doom.PauseGame();
-            }
         }
 
         public void SetCurrent(MenuDef next)
@@ -352,9 +346,7 @@ namespace ManagedDoom
             Active = false;
 
             if (!Doom.Options.NetGame)
-            {
                 Doom.ResumeGame();
-            }
         }
 
         public void StartSound(Sfx sfx)
@@ -398,9 +390,7 @@ namespace ManagedDoom
         public void QuickSave()
         {
             if (save.LastSaveSlot == -1)
-            {
                 ShowSaveScreen();
-            }
             else
             {
                 var desc = SaveSlots[save.LastSaveSlot];
@@ -423,8 +413,6 @@ namespace ManagedDoom
                     DoomInfo.Strings.QSAVESPOT,
                     null);
                 SetCurrent(pak);
-                Open();
-                StartSound(Sfx.SWTCHN);
             }
             else
             {
@@ -434,9 +422,10 @@ namespace ManagedDoom
                     ((string)DoomInfo.Strings.QLPROMPT).Replace("%s", desc),
                     () => load.DoLoad(save.LastSaveSlot));
                 SetCurrent(confirm);
-                Open();
-                StartSound(Sfx.SWTCHN);
             }
+            
+            Open();
+            StartSound(Sfx.SWTCHN);
         }
 
         public void EndGame()

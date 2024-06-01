@@ -14,26 +14,9 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom;
+
+public sealed record Column(int TopDelta, byte[] Data, int Offset, int Length)
 {
-    public sealed class Column
-    {
-        public const int Last = 0xFF;
-
-        public Column(int topDelta, byte[] data, int offset, int length)
-        {
-            this.TopDelta = topDelta;
-            this.Data = data;
-            this.Offset = offset;
-            this.Length = length;
-        }
-
-        public int TopDelta { get; }
-
-        public byte[] Data { get; }
-
-        public int Offset { get; }
-
-        public int Length { get; }
-    }
+    public const int Last = 0xFF;
 }

@@ -14,24 +14,6 @@
 //
 
 
-namespace ManagedDoom
-{
-    public sealed class AnimationDef
-    {
-        public AnimationDef(bool isTexture, string endName, string startName, int speed)
-        {
-            this.IsTexture = isTexture;
-            this.EndName = endName;
-            this.StartName = startName;
-            this.Speed = speed;
-        }
+namespace ManagedDoom;
 
-        public bool IsTexture { get; }
-
-        public string EndName { get; }
-
-        public string StartName { get; }
-
-        public int Speed { get; }
-    }
-}
+public sealed record AnimationDef(bool IsTexture, string EndName, string StartName, int Speed);

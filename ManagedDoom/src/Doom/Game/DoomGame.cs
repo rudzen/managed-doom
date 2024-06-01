@@ -514,19 +514,14 @@ namespace ManagedDoom
 			DoLoadLevel();
 		}
 
-		public bool DoEvent(DoomEvent e)
+		public bool DoEvent(in DoomEvent e)
 		{
-			if (State == GameState.Level)
+			return State switch
 			{
-				return World.DoEvent(e);
-			}
-
-			if (State == GameState.Finale)
-			{
-				return Finale.DoEvent(e);
-			}
-
-			return false;
+				GameState.Level  => World.DoEvent(in e),
+				GameState.Finale => Finale.DoEvent(in e),
+				_                => false
+			};
 		}
 
 		private void DoReborn(int playerNumber)

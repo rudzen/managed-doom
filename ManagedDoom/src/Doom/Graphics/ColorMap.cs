@@ -22,7 +22,7 @@ namespace ManagedDoom
 {
     public sealed class ColorMap
     {
-        public static readonly int Inverse = 32;
+        public const int Inverse = 32;
 
         private readonly byte[][] data;
 

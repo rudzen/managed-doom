@@ -69,10 +69,10 @@ namespace ManagedDoom
         private void InitSwitchList()
         {
             var list = new List<int>();
-            foreach (var tuple in DoomInfo.SwitchNames)
+            foreach (var (tex1, tex2) in DoomInfo.SwitchNames)
             {
-                var texNum1 = GetNumber(tuple.Item1);
-                var texNum2 = GetNumber(tuple.Item2);
+                var texNum1 = GetNumber(tex1);
+                var texNum2 = GetNumber(tex2);
                 if (texNum1 != -1 && texNum2 != -1)
                 {
                     list.Add(texNum1);

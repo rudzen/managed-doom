@@ -320,7 +320,7 @@ namespace ManagedDoom
             var line = 1;
             var pos = 0;
 
-            var sb1 = new StringBuilder();
+            var sb1 = new StringBuilder(16);
             for (var i = 0; i < length1; i++)
             {
                 if (pos == data[line].Length)
@@ -336,7 +336,7 @@ namespace ManagedDoom
                 }
             }
 
-            var sb2 = new StringBuilder();
+            var sb2 = new StringBuilder(16);
             for (var i = 0; i < length2; i++)
             {
                 if (pos == data[line].Length)

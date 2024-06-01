@@ -59,17 +59,6 @@ namespace ManagedDoom
 
         public Action Action { get; }
 
-        public bool Selectable
-        {
-            get
-            {
-                if (selectable == null)
-                {
-                    return true;
-                }
-
-                return selectable();
-            }
-        }
+        public bool Selectable => selectable == null || selectable();
     }
 }

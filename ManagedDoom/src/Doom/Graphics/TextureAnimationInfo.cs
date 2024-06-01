@@ -14,27 +14,6 @@
 //
 
 
-namespace ManagedDoom
-{
-    public sealed class TextureAnimationInfo
-    {
-        public TextureAnimationInfo(bool isTexture, int picNum, int basePic, int numPics, int speed)
-        {
-            this.IsTexture = isTexture;
-            this.PicNum = picNum;
-            this.BasePic = basePic;
-            this.NumPics = numPics;
-            this.Speed = speed;
-        }
+namespace ManagedDoom;
 
-        public bool IsTexture { get; }
-
-        public int PicNum { get; }
-
-        public int BasePic { get; }
-
-        public int NumPics { get; }
-
-        public int Speed { get; }
-    }
-}
+public sealed record TextureAnimationInfo(bool IsTexture, int PicNum, int BasePic, int NumPics, int Speed);

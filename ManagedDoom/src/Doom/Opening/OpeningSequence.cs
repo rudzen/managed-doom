@@ -236,13 +236,18 @@ namespace ManagedDoom
         {
             State = OpeningSequenceState.Demo;
 
-            demo = new Demo(content.Wad.ReadLump(lump));
-            demo.Options.GameVersion = options.GameVersion;
-            demo.Options.GameMode = options.GameMode;
-            demo.Options.MissionPack = options.MissionPack;
-            demo.Options.Video = options.Video;
-            demo.Options.Sound = options.Sound;
-            demo.Options.Music = options.Music;
+            demo = new Demo(content.Wad.ReadLump(lump))
+            {
+                Options =
+                {
+                    GameVersion = options.GameVersion,
+                    GameMode = options.GameMode,
+                    MissionPack = options.MissionPack,
+                    Video = options.Video,
+                    Sound = options.Sound,
+                    Music = options.Music
+                }
+            };
 
             DemoGame = new DoomGame(content, demo.Options);
             DemoGame.DeferedInitNew();

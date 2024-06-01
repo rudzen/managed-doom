@@ -20,24 +20,13 @@ using System.Collections.Generic;
 
 namespace ManagedDoom
 {
-    public sealed class Patch
+    public sealed record Patch(string Name,
+        int Width,
+        int Height,
+        int LeftOffset,
+        int TopOffset,
+        Column[][] Columns)
     {
-        public Patch(
-            string name,
-            int width,
-            int height,
-            int leftOffset,
-            int topOffset,
-            Column[][] columns)
-        {
-            this.Name = name;
-            this.Width = width;
-            this.Height = height;
-            this.LeftOffset = leftOffset;
-            this.TopOffset = topOffset;
-            this.Columns = columns;
-        }
-
         public static Patch FromData(string name, byte[] data)
         {
             var width = BitConverter.ToInt16(data, 0);
@@ -56,9 +45,7 @@ namespace ManagedDoom
                 {
                     var topDelta = data[p];
                     if (topDelta == Column.Last)
-                    {
                         break;
-                    }
                     var length = data[p + 1];
                     var offset = p + 3;
                     cs.Add(new Column(topDelta, data, offset, length));
@@ -91,9 +78,7 @@ namespace ManagedDoom
                 {
                     var topDelta = data[p];
                     if (topDelta == Column.Last)
-                    {
                         break;
-                    }
                     var length = data[p + 1];
                     var offset = p + 3;
                     need = Math.Max(offset + 128, need);
@@ -102,26 +87,12 @@ namespace ManagedDoom
             }
 
             if (data.Length < need)
-            {
                 Array.Resize(ref data, need);
-            }
         }
 
         public override string ToString()
         {
             return Name;
         }
-
-        public string Name { get; }
-
-        public int Width { get; }
-
-        public int Height { get; }
-
-        public int LeftOffset { get; }
-
-        public int TopOffset { get; }
-
-        public Column[][] Columns { get; }
     }
 }

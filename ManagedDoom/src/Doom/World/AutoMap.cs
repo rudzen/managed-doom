@@ -269,15 +269,12 @@ namespace ManagedDoom
                     return true;
                 }
             }
-            else if (e.Key == DoomKey.C)
+            else if (e is { Key: DoomKey.C, Type: EventType.KeyDown })
             {
-                if (e.Type == EventType.KeyDown)
-                {
-                    marks.Clear();
-                    nextMarkNumber = 0;
-                    world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKSCLEARED);
-                    return true;
-                }
+                marks.Clear();
+                nextMarkNumber = 0;
+                world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKSCLEARED);
+                return true;
             }
 
             return false;

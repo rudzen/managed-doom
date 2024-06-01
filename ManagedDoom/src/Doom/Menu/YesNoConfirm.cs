@@ -31,12 +31,10 @@ namespace ManagedDoom
             this.action = action;
         }
 
-        public override bool DoEvent(DoomEvent e)
+        public override bool DoEvent(in DoomEvent e)
         {
             if (e.Type != EventType.KeyDown)
-            {
                 return true;
-            }
 
             if (e.Key is DoomKey.Y or DoomKey.Enter or DoomKey.Space)
             {

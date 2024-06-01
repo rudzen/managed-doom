@@ -94,30 +94,25 @@ namespace ManagedDoom
             Choice = items[index];
         }
 
-        public override bool DoEvent(DoomEvent e)
+        public override bool DoEvent(in DoomEvent e)
         {
             if (e.Type != EventType.KeyDown)
-            {
                 return true;
-            }
 
             if (textInput != null)
             {
                 var result = textInput.DoEvent(e);
 
-                if (textInput.State == TextInputState.Canceled)
+                switch (textInput.State)
                 {
-                    textInput = null;
-                }
-                else if (textInput.State == TextInputState.Finished)
-                {
-                    textInput = null;
+                    case TextInputState.Canceled:
+                    case TextInputState.Finished:
+                        textInput = null;
+                        break;
                 }
 
                 if (result)
-                {
                     return true;
-                }
             }
 
             if (e.Key == DoomKey.Up)
@@ -176,13 +171,9 @@ namespace ManagedDoom
                     {
                         simple.Action?.Invoke();
                         if (simple.Next != null)
-                        {
                             Menu.SetCurrent(simple.Next);
-                        }
                         else
-                        {
                             Menu.Close();
-                        }
                     }
                     Menu.StartSound(Sfx.PISTOL);
                     return true;

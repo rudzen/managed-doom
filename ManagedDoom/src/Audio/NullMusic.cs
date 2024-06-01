@@ -22,12 +22,7 @@ namespace ManagedDoom.Audio
 
         public static NullMusic GetInstance()
         {
-            if (instance == null)
-            {
-                instance = new NullMusic();
-            }
-
-            return instance;
+            return instance ??= new NullMusic();
         }
 
         public void StartMusic(Bgm bgm, bool loop)
@@ -38,10 +33,7 @@ namespace ManagedDoom.Audio
 
         public int Volume
         {
-            get
-            {
-                return 0;
-            }
+            get => 0;
 
             set
             {

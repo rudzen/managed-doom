@@ -14,31 +14,37 @@
 //
 
 
+using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
     public sealed class SaveSlots
     {
-        private static readonly int slotCount = 6;
-        private static readonly int descriptionSize = 24;
+        private const int slotCount = 6;
+        private const int descriptionSize = 24;
 
         private string[] slots;
 
+        [SkipLocalsInit]
         private void ReadSlots()
         {
-            slots = new string[slotCount];
+            if (slots == null)
+                slots = new string[slotCount];
+            else
+                Array.Clear(slots);
 
             var directory = ConfigUtilities.GetExeDirectory();
-            var buffer = new byte[descriptionSize];
+            Span<byte> buffer = stackalloc byte[descriptionSize];
             for (var i = 0; i < slots.Length; i++)
             {
-                var path = Path.Combine(directory, "doomsav" + i + ".dsg");
+                var path = Path.Combine(directory, $"doomsav{i}.dsg");
                 if (File.Exists(path))
                 {
                     using var reader = new FileStream(path, FileMode.Open, FileAccess.Read);
-                    reader.Read(buffer, 0, buffer.Length);
-                    slots[i] = DoomInterop.ToString(buffer, 0, buffer.Length);
+                    var read = reader.Read(buffer);
+                    slots[i] = DoomInterop.ToString(buffer[..read]);
                 }
             }
         }
@@ -48,9 +54,7 @@ namespace ManagedDoom
             get
             {
                 if (slots == null)
-                {
                     ReadSlots();
-                }
 
                 return slots[number];
             }

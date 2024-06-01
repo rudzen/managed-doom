@@ -14,28 +14,12 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom;
+
+public sealed record Flat(string Name, byte[] Data)
 {
-    public sealed class Flat
+    public override string ToString()
     {
-        public Flat(string name, byte[] data)
-        {
-            this.Name = name;
-            this.Data = data;
-        }
-
-        public static Flat FromData(string name, byte[] data)
-        {
-            return new Flat(name, data);
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public string Name { get; }
-
-        public byte[] Data { get; }
+        return Name;
     }
 }

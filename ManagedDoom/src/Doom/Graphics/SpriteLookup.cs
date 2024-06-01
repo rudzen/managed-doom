@@ -185,7 +185,7 @@ namespace ManagedDoom
         public SpriteDef this[Sprite sprite] => spriteDefs[(int)sprite];
 
 
-        private class SpriteInfo
+        private sealed class SpriteInfo
         {
             public readonly Patch[] Patches;
             public readonly bool[] Flip;

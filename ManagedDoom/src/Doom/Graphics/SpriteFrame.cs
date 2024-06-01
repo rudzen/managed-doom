@@ -14,21 +14,6 @@
 //
 
 
-namespace ManagedDoom
-{
-    public sealed class SpriteFrame
-    {
-        public SpriteFrame(bool rotate, Patch[] patches, bool[] flip)
-        {
-            this.Rotate = rotate;
-            this.Patches = patches;
-            this.Flip = flip;
-        }
+namespace ManagedDoom;
 
-        public bool Rotate { get; }
-
-        public Patch[] Patches { get; }
-
-        public bool[] Flip { get; }
-    }
-}
+public sealed record SpriteFrame(bool Rotate, Patch[] Patches, bool[] Flip);

@@ -116,11 +116,8 @@ namespace ManagedDoom.Silk
         public int Volume
         {
             get => config.audio_musicvolume;
-
             set => config.audio_musicvolume = value;
         }
-
-
 
         private class MusStream : IDisposable
         {

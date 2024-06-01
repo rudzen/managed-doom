@@ -31,7 +31,7 @@ namespace ManagedDoom
         {
         }
 
-        public abstract bool DoEvent(DoomEvent e);
+        public abstract bool DoEvent(in DoomEvent e);
 
         public DoomMenu Menu { get; }
     }

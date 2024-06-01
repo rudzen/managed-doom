@@ -47,17 +47,13 @@ namespace ManagedDoom
         public void Reset()
         {
             if (reset != null)
-            {
                 SliderPosition = reset();
-            }
         }
 
         public void Up()
         {
             if (SliderPosition < SliderLength - 1)
-            {
                 SliderPosition++;
-            }
 
             action?.Invoke(SliderPosition);
         }
@@ -65,9 +61,7 @@ namespace ManagedDoom
         public void Down()
         {
             if (SliderPosition > 0)
-            {
                 SliderPosition--;
-            }
 
             action?.Invoke(SliderPosition);
         }

@@ -224,7 +224,7 @@ namespace ManagedDoom
             return validCount;
         }
 
-        public bool DoEvent(DoomEvent e)
+        public bool DoEvent(in DoomEvent e)
         {
             if (!Options.NetGame && !Options.DemoPlayback)
             {
@@ -239,7 +239,7 @@ namespace ManagedDoom
                 }
             }
 
-            if (e.Key == DoomKey.Tab && e.Type == EventType.KeyDown)
+            if (e is { Key: DoomKey.Tab, Type: EventType.KeyDown })
             {
                 if (AutoMap.Visible)
                 {
@@ -252,7 +252,7 @@ namespace ManagedDoom
                 return true;
             }
 
-            if (e.Key == DoomKey.F12 && e.Type == EventType.KeyDown)
+            if (e is { Key: DoomKey.F12, Type: EventType.KeyDown })
             {
                 if (Options.DemoPlayback || Options.Deathmatch == 0)
                 {

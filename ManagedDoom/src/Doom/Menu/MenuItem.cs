@@ -18,10 +18,6 @@ namespace ManagedDoom
 {
     public abstract class MenuItem
     {
-        private MenuItem()
-        {
-        }
-
         public MenuItem(int skullX, int skullY, MenuDef next)
         {
             this.SkullX = skullX;

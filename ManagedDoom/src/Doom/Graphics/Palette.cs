@@ -22,13 +22,13 @@ namespace ManagedDoom
 {
     public sealed class Palette
     {
-        public static readonly int DamageStart = 1;
-        public static readonly int DamageCount = 8;
+        public const int DamageStart = 1;
+        public const int DamageCount = 8;
 
-        public static readonly int BonusStart = 9;
-        public static readonly int BonusCount = 4;
+        public const int BonusStart = 9;
+        public const int BonusCount = 4;
 
-        public static readonly int IronFeet = 13;
+        public const int IronFeet = 13;
 
         private readonly byte[] data;
 

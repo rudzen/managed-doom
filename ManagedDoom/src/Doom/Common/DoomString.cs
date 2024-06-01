@@ -14,7 +14,10 @@
 //
 
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom
 {
@@ -31,10 +34,9 @@ namespace ManagedDoom
             this.original = original;
             replaced = original;
 
-            if (!valueTable.ContainsKey(original))
-            {
-                valueTable.Add(original, this);
-            }
+            ref var current = ref CollectionsMarshal.GetValueRefOrAddDefault(valueTable, original, out var exists);
+            if (!exists)
+                current = this;
         }
 
         public DoomString(string name, string original) : this(original)
@@ -56,18 +58,16 @@ namespace ManagedDoom
 
         public static void ReplaceByValue(string original, string replaced)
         {
-            if (valueTable.TryGetValue(original, out var ds))
-            {
+            ref var ds = ref CollectionsMarshal.GetValueRefOrNullRef(valueTable, original);
+            if (!Unsafe.IsNullRef(ref ds))
                 ds.replaced = replaced;
-            }
         }
 
         public static void ReplaceByName(string name, string value)
         {
-            if (nameTable.TryGetValue(name, out var ds))
-            {
+            ref var ds = ref CollectionsMarshal.GetValueRefOrNullRef(nameTable, name);
+            if (!Unsafe.IsNullRef(ref ds))
                 ds.replaced = value;
-            }
         }
     }
 }

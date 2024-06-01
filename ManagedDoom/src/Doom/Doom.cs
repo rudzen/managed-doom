@@ -198,20 +198,20 @@ namespace ManagedDoom
 
                 if (State == DoomState.Game)
                 {
-                    if (e.Key == DoomKey.Pause && e.Type == EventType.KeyDown)
+                    if (e is { Key: DoomKey.Pause, Type: EventType.KeyDown })
                     {
                         sendPause = true;
                         continue;
                     }
 
-                    if (Game.DoEvent(e))
+                    if (Game.DoEvent(in e))
                     {
                         continue;
                     }
                 }
                 else if (State == DoomState.DemoPlayback)
                 {
-                    DemoPlayback.DoEvent(e);
+                    DemoPlayback.DoEvent(in e);
                 }
             }
 

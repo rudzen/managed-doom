@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class Player
     {
-        public static readonly int MaxPlayerCount = 4;
+        public const int MaxPlayerCount = 4;
 
         public static readonly Fixed NormalViewHeight = Fixed.FromInt(41);
 

@@ -31,7 +31,7 @@ namespace ManagedDoom
             this.action = action;
         }
 
-        public override bool DoEvent(DoomEvent e)
+        public override bool DoEvent(in DoomEvent e)
         {
             if (e.Type == EventType.KeyDown)
             {
@@ -39,8 +39,6 @@ namespace ManagedDoom
 
                 Menu.Close();
                 Menu.StartSound(Sfx.SWTCHX);
-
-                return true;
             }
 
             return true;

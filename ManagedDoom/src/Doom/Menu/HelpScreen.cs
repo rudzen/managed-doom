@@ -37,7 +37,7 @@ namespace ManagedDoom
             Page = pageCount - 1;
         }
 
-        public override bool DoEvent(DoomEvent e)
+        public override bool DoEvent(in DoomEvent e)
         {
             if (e.Type != EventType.KeyDown)
             {

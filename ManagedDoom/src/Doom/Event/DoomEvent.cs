@@ -14,18 +14,6 @@
 //
 
 
-namespace ManagedDoom
-{
-    public sealed class DoomEvent
-    {
-        public DoomEvent(EventType type, DoomKey key)
-        {
-            this.Type = type;
-            this.Key = key;
-        }
+namespace ManagedDoom;
 
-        public EventType Type { get; }
-
-        public DoomKey Key { get; }
-    }
-}
+public readonly record struct DoomEvent(EventType Type, DoomKey Key);

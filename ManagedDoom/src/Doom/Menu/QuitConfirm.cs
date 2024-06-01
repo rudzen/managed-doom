@@ -74,17 +74,13 @@ namespace ManagedDoom
             text = (list[random.Next() % list.Count] + "\n\n" + DoomInfo.Strings.PRESSYN).Split('\n');
         }
 
-        public override bool DoEvent(DoomEvent e)
+        public override bool DoEvent(in DoomEvent e)
         {
             if (endCount != -1)
-            {
                 return true;
-            }
 
             if (e.Type != EventType.KeyDown)
-            {
                 return true;
-            }
 
             switch (e.Key)
             {
@@ -92,8 +88,7 @@ namespace ManagedDoom
                 {
                     endCount = 0;
 
-                    Sfx sfx;
-                    sfx = Menu.Options.GameMode == GameMode.Commercial
+                    var sfx = Menu.Options.GameMode == GameMode.Commercial
                         ? doom2QuitSoundList[random.Next() % doom2QuitSoundList.Length]
                         : doomQuitSoundList[random.Next() % doomQuitSoundList.Length];
                     Menu.StartSound(sfx);
@@ -111,14 +106,10 @@ namespace ManagedDoom
         public override void Update()
         {
             if (endCount != -1)
-            {
                 endCount++;
-            }
 
             if (endCount == 50)
-            {
                 app.Quit();
-            }
         }
 
         public IReadOnlyList<string> Text => text;

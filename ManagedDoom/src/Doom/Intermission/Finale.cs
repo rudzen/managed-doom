@@ -481,7 +481,7 @@ namespace ManagedDoom
 			}
 		}
 
-		public bool DoEvent(DoomEvent e)
+		public bool DoEvent(in DoomEvent e)
 		{
 			if (Stage != 2)
 			{
