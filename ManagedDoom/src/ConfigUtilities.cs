@@ -46,7 +46,7 @@ namespace ManagedDoom
             return Path.Combine(GetExeDirectory(), "managed-doom.cfg");
         }
 
-        public static string GetDefaultIwadPath()
+        private static string GetDefaultIwadPath()
         {
             var exeDirectory = GetExeDirectory();
             var currentDirectory = Directory.GetCurrentDirectory();

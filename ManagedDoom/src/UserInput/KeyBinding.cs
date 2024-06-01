@@ -33,16 +33,14 @@ namespace ManagedDoom
             mouseButtons = [];
         }
 
-        public KeyBinding(IReadOnlyList<DoomKey> keys)
+        public KeyBinding(DoomKey[] keys, DoomMouseButton[] mouseButtons)
         {
-            this.keys = keys.ToArray();
-            this.mouseButtons = [];
+            this.keys = keys;
+            this.mouseButtons = mouseButtons;
         }
 
-        public KeyBinding(IReadOnlyList<DoomKey> keys, IReadOnlyList<DoomMouseButton> mouseButtons)
+        public KeyBinding(DoomKey[] keys) : this(keys, [])
         {
-            this.keys = keys.ToArray();
-            this.mouseButtons = mouseButtons.ToArray();
         }
 
         public override string ToString()
@@ -51,9 +49,7 @@ namespace ManagedDoom
             var mouseValues = mouseButtons.Select(DoomMouseButtonEx.ToString);
             var values = keyValues.Concat(mouseValues).ToArray();
             if (values.Length > 0)
-            {
                 return string.Join(", ", values);
-            }
 
             return "none";
         }
@@ -61,9 +57,7 @@ namespace ManagedDoom
         public static KeyBinding Parse(string value)
         {
             if (value == "none")
-            {
                 return empty;
-            }
 
             var split = value.Split(',');
             
@@ -87,7 +81,7 @@ namespace ManagedDoom
                 }
             }
 
-            return new KeyBinding(keys, mouseButtons);
+            return new KeyBinding(keys.ToArray(), mouseButtons.ToArray());
         }
 
         public IReadOnlyList<DoomKey> Keys => keys;

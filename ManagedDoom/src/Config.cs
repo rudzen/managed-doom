@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,103 +22,50 @@ namespace ManagedDoom
 {
     public sealed class Config
     {
-        public KeyBinding key_forward;
-        public KeyBinding key_backward;
-        public KeyBinding key_strafeleft;
-        public KeyBinding key_straferight;
-        public KeyBinding key_turnleft;
-        public KeyBinding key_turnright;
-        public KeyBinding key_fire;
-        public KeyBinding key_use;
-        public KeyBinding key_run;
-        public KeyBinding key_strafe;
+        public KeyBinding key_forward { get; init; }
+        public KeyBinding key_backward { get; init; }
+        public KeyBinding key_strafeleft { get; init; }
+        public KeyBinding key_straferight { get; init; }
+        public KeyBinding key_turnleft { get; init; }
+        public KeyBinding key_turnright { get; init; }
+        public KeyBinding key_fire { get; init; }
+        public KeyBinding key_use { get; init; }
+        public KeyBinding key_run { get; init; }
+        public KeyBinding key_strafe { get; init; }
 
-        public int mouse_sensitivity;
-        public bool mouse_disableyaxis;
+        public int mouse_sensitivity { get; set; }
+        public bool mouse_disableyaxis { get; init; }
 
-        public bool game_alwaysrun;
+        public bool game_alwaysrun { get; init; }
 
-        public int video_screenwidth;
-        public int video_screenheight;
-        public bool video_fullscreen;
-        public bool video_highresolution;
-        public bool video_displaymessage;
-        public int video_gamescreensize;
-        public int video_gammacorrection;
-        public int video_fpsscale;
+        public int video_screenwidth { get; set; }
+        public int video_screenheight { get; set; }
+        public bool video_fullscreen { get; init; }
+        public bool video_highresolution { get; init; }
+        public bool video_displaymessage { get; set; }
+        public int video_gamescreensize { get; set; }
+        public int video_gammacorrection { get; set; }
+        public int video_fpsscale { get; set; }
 
-        public int audio_soundvolume;
-        public int audio_musicvolume;
-        public bool audio_randompitch;
-        public string audio_soundfont;
-        public bool audio_musiceffect;
+        public int audio_soundvolume { get; set; }
+        public int audio_musicvolume { get; set; }
+        public bool audio_randompitch { get; init; }
+        public string audio_soundfont { get; init; }
+        public bool audio_musiceffect { get; init; }
 
         // Default settings.
         public Config()
         {
-            key_forward = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.Up,
-                    DoomKey.W
-                });
-            key_backward = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.Down,
-                    DoomKey.S
-                });
-            key_strafeleft = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.A
-                });
-            key_straferight = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.D
-                });
-            key_turnleft = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.Left
-                });
-            key_turnright = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.Right
-                });
-            key_fire = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.LControl,
-                    DoomKey.RControl
-                },
-                new DoomMouseButton[]
-                {
-                    DoomMouseButton.Mouse1
-                });
-            key_use = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.Space
-                },
-                new DoomMouseButton[]
-                {
-                    DoomMouseButton.Mouse2
-                });
-            key_run = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.LShift,
-                    DoomKey.RShift
-                });
-            key_strafe = new KeyBinding(
-                new DoomKey[]
-                {
-                    DoomKey.LAlt,
-                    DoomKey.RAlt
-                });
+            key_forward = new KeyBinding([DoomKey.Up, DoomKey.W]);
+            key_backward = new KeyBinding([DoomKey.Down, DoomKey.S]);
+            key_strafeleft = new KeyBinding([DoomKey.A]);
+            key_straferight = new KeyBinding([DoomKey.D]);
+            key_turnleft = new KeyBinding([DoomKey.Left]);
+            key_turnright = new KeyBinding([DoomKey.Right]);
+            key_fire = new KeyBinding([DoomKey.LControl, DoomKey.RControl], [DoomMouseButton.Mouse1]);
+            key_use = new KeyBinding([DoomKey.Space], [DoomMouseButton.Mouse2]);
+            key_run = new KeyBinding([DoomKey.LShift, DoomKey.RShift]);
+            key_strafe = new KeyBinding([DoomKey.LAlt, DoomKey.RAlt]);
 
             mouse_sensitivity = 8;
             mouse_disableyaxis = false;
@@ -270,14 +216,10 @@ namespace ManagedDoom
             if (dic.TryGetValue(name, out var stringValue))
             {
                 if (stringValue == "true")
-                {
                     return true;
-                }
 
                 if (stringValue == "false")
-                {
                     return false;
-                }
             }
 
             return defaultValue;
@@ -286,9 +228,7 @@ namespace ManagedDoom
         private static KeyBinding GetKeyBinding(Dictionary<string, string> dic, string name, KeyBinding defaultValue)
         {
             if (dic.TryGetValue(name, out var stringValue))
-            {
                 return KeyBinding.Parse(stringValue);
-            }
 
             return defaultValue;
         }

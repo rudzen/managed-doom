@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Runtime.InteropServices;
 
@@ -197,13 +196,13 @@ namespace ManagedDoom.Video
                 colors = palette[GetPaletteNumber(doom.Game.World.ConsolePlayer)];
             }
             else if (doom.State == DoomState.Opening &&
-                doom.Opening.State == OpeningSequenceState.Demo &&
-                doom.Opening.DemoGame.State == GameState.Level)
+                     doom.Opening.State == OpeningSequenceState.Demo &&
+                     doom.Opening.DemoGame.State == GameState.Level)
             {
                 colors = palette[GetPaletteNumber(doom.Opening.DemoGame.World.ConsolePlayer)];
             }
             else if (doom.State == DoomState.DemoPlayback &&
-                doom.DemoPlayback.Game.State == GameState.Level)
+                     doom.DemoPlayback.Game.State == GameState.Level)
             {
                 colors = palette[GetPaletteNumber(doom.DemoPlayback.Game.World.ConsolePlayer)];
             }
@@ -296,7 +295,7 @@ namespace ManagedDoom.Video
                 palette += Palette.BonusStart;
             }
             else if (player.Powers[(int)PowerType.IronFeet] > 4 * 32 ||
-                (player.Powers[(int)PowerType.IronFeet] & 8) != 0)
+                     (player.Powers[(int)PowerType.IronFeet] & 8) != 0)
             {
                 palette = Palette.IronFeet;
             }
@@ -331,7 +330,6 @@ namespace ManagedDoom.Video
         public bool DisplayMessage
         {
             get => config.video_displaymessage;
-
             set => config.video_displaymessage = value;
         }
 
@@ -340,7 +338,6 @@ namespace ManagedDoom.Video
         public int GammaCorrectionLevel
         {
             get => config.video_gammacorrection;
-
             set
             {
                 config.video_gammacorrection = value;
