@@ -34,13 +34,7 @@ namespace ManagedDoom.Audio
         {
         }
 
-        public int MaxVolume
-        {
-            get
-            {
-                return 15;
-            }
-        }
+        public int MaxVolume => 15;
 
         public int Volume
         {

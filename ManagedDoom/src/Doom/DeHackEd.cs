@@ -717,7 +717,7 @@ namespace ManagedDoom
         {
             foreach (var ch in value)
             {
-                if (!('0' <= ch && ch <= '9'))
+                if (!(ch is >= '0' and <= '9'))
                 {
                     return false;
                 }

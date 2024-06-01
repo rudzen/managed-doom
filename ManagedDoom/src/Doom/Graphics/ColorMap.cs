@@ -54,20 +54,8 @@ namespace ManagedDoom
             }
         }
 
-        public byte[] this[int index]
-        {
-            get
-            {
-                return data[index];
-            }
-        }
+        public byte[] this[int index] => data[index];
 
-        public byte[] FullBright
-        {
-            get
-            {
-                return data[0];
-            }
-        }
+        public byte[] FullBright => data[0];
     }
 }

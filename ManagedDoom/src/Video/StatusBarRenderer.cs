@@ -14,6 +14,8 @@
 //
 
 
+using System.Linq;
+
 namespace ManagedDoom.Video
 {
     public sealed class StatusBarRenderer
@@ -256,11 +258,7 @@ namespace ManagedDoom.Video
             }
             else
             {
-                var sum = 0;
-                for (var i = 0; i < player.Frags.Length; i++)
-                {
-                    sum += player.Frags[i];
-                }
+                var sum = player.Frags.Sum();
                 DrawNumber(frags, sum);
             }
 
@@ -307,14 +305,12 @@ namespace ManagedDoom.Video
 
             if (neg)
             {
-                if (digits == 2 && num < -9)
+                num = digits switch
                 {
-                    num = -9;
-                }
-                else if (digits == 3 && num < -99)
-                {
-                    num = -99;
-                }
+                    2 when num < -9  => -9,
+                    3 when num < -99 => -99,
+                    _                => num
+                };
 
                 num = -num;
             }

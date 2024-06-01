@@ -585,8 +585,6 @@ namespace ManagedDoom
         {
             UpdateAnimatedBack();
 
-            bool stillticking;
-
             if (accelerateStage && dmState != 4)
             {
                 accelerateStage = false;
@@ -619,50 +617,46 @@ namespace ManagedDoom
                     StartSound(Sfx.PISTOL);
                 }
 
-                stillticking = false;
+                var stillticking = false;
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (Options.Players[i].InGame)
+                    if (!Options.Players[i].InGame) continue;
+                    for (var j = 0; j < Player.MaxPlayerCount; j++)
                     {
-                        for (var j = 0; j < Player.MaxPlayerCount; j++)
+                        if (!Options.Players[j].InGame || DeathmatchFrags[i][j] == scores[i].Frags[j]) continue;
+                        if (scores[i].Frags[j] < 0)
                         {
-                            if (Options.Players[j].InGame && DeathmatchFrags[i][j] != scores[i].Frags[j])
-                            {
-                                if (scores[i].Frags[j] < 0)
-                                {
-                                    DeathmatchFrags[i][j]--;
-                                }
-                                else
-                                {
-                                    DeathmatchFrags[i][j]++;
-                                }
-
-                                if (DeathmatchFrags[i][j] > 99)
-                                {
-                                    DeathmatchFrags[i][j] = 99;
-                                }
-
-                                if (DeathmatchFrags[i][j] < -99)
-                                {
-                                    DeathmatchFrags[i][j] = -99;
-                                }
-
-                                stillticking = true;
-                            }
+                            DeathmatchFrags[i][j]--;
+                        }
+                        else
+                        {
+                            DeathmatchFrags[i][j]++;
                         }
 
-                        DeathmatchTotals[i] = GetFragSum(i);
-
-                        if (DeathmatchTotals[i] > 99)
+                        if (DeathmatchFrags[i][j] > 99)
                         {
-                            DeathmatchTotals[i] = 99;
+                            DeathmatchFrags[i][j] = 99;
                         }
 
-                        if (DeathmatchTotals[i] < -99)
+                        if (DeathmatchFrags[i][j] < -99)
                         {
-                            DeathmatchTotals[i] = -99;
+                            DeathmatchFrags[i][j] = -99;
                         }
+
+                        stillticking = true;
+                    }
+
+                    DeathmatchTotals[i] = GetFragSum(i);
+
+                    if (DeathmatchTotals[i] > 99)
+                    {
+                        DeathmatchTotals[i] = 99;
+                    }
+
+                    if (DeathmatchTotals[i] < -99)
+                    {
+                        DeathmatchTotals[i] = -99;
                     }
 
                 }

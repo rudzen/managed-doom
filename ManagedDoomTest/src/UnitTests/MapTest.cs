@@ -8,7 +8,7 @@ namespace ManagedDoomTest.UnitTests
     [TestClass]
     public class MapTest
     {
-        private static readonly double maxRadius = 32;
+        private const double MaxRadius = 32;
 
         [TestMethod]
         public void LoadE1M1()
@@ -30,13 +30,13 @@ namespace ManagedDoomTest.UnitTests
 
                 CollectionAssert.AreEqual(sLines, sector.Lines);
 
-                var minX = sLines.Min(line => Fixed.Min(line.Vertex1.X, line.Vertex2.X).ToDouble()) - maxRadius;
+                var minX = sLines.Min(line => Fixed.Min(line.Vertex1.X, line.Vertex2.X).ToDouble()) - MaxRadius;
                 minX = Math.Max(minX, mapMinX);
-                var maxX = sLines.Max(line => Fixed.Max(line.Vertex1.X, line.Vertex2.X).ToDouble()) + maxRadius;
+                var maxX = sLines.Max(line => Fixed.Max(line.Vertex1.X, line.Vertex2.X).ToDouble()) + MaxRadius;
                 maxX = Math.Min(maxX, mapMaxX);
-                var minY = sLines.Min(line => Fixed.Min(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) - maxRadius;
+                var minY = sLines.Min(line => Fixed.Min(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) - MaxRadius;
                 minY = Math.Max(minY, mapMinY);
-                var maxY = sLines.Max(line => Fixed.Max(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) + maxRadius;
+                var maxY = sLines.Max(line => Fixed.Max(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) + MaxRadius;
                 maxY = Math.Min(maxY, mapMaxY);
 
                 var bboxTop = (map.BlockMap.OriginY + BlockMap.BlockSize * (sector.BlockBox[Box.Top] + 1)).ToDouble();
@@ -76,13 +76,13 @@ namespace ManagedDoomTest.UnitTests
 
                 CollectionAssert.AreEqual(sLines, sector.Lines);
 
-                var minX = sLines.Min(line => Fixed.Min(line.Vertex1.X, line.Vertex2.X).ToDouble()) - maxRadius;
+                var minX = sLines.Min(line => Fixed.Min(line.Vertex1.X, line.Vertex2.X).ToDouble()) - MaxRadius;
                 minX = Math.Max(minX, mapMinX);
-                var maxX = sLines.Max(line => Fixed.Max(line.Vertex1.X, line.Vertex2.X).ToDouble()) + maxRadius;
+                var maxX = sLines.Max(line => Fixed.Max(line.Vertex1.X, line.Vertex2.X).ToDouble()) + MaxRadius;
                 maxX = Math.Min(maxX, mapMaxX);
-                var minY = sLines.Min(line => Fixed.Min(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) - maxRadius;
+                var minY = sLines.Min(line => Fixed.Min(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) - MaxRadius;
                 minY = Math.Max(minY, mapMinY);
-                var maxY = sLines.Max(line => Fixed.Max(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) + maxRadius;
+                var maxY = sLines.Max(line => Fixed.Max(line.Vertex1.Y, line.Vertex2.Y).ToDouble()) + MaxRadius;
                 maxY = Math.Min(maxY, mapMaxY);
 
                 var bboxTop = (map.BlockMap.OriginY + BlockMap.BlockSize * (sector.BlockBox[Box.Top] + 1)).ToDouble();

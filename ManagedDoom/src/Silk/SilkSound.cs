@@ -518,20 +518,11 @@ namespace ManagedDoom.Silk
             }
         }
 
-        public int MaxVolume
-        {
-            get
-            {
-                return 15;
-            }
-        }
+        public int MaxVolume => 15;
 
         public int Volume
         {
-            get
-            {
-                return config.audio_soundvolume;
-            }
+            get => config.audio_soundvolume;
 
             set
             {

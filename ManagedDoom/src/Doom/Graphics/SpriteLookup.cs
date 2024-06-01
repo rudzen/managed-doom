@@ -182,14 +182,7 @@ namespace ManagedDoom
             return cache[lump];
         }
 
-        public SpriteDef this[Sprite sprite]
-        {
-            get
-            {
-                return spriteDefs[(int)sprite];
-            }
-        }
-
+        public SpriteDef this[Sprite sprite] => spriteDefs[(int)sprite];
 
 
         private class SpriteInfo

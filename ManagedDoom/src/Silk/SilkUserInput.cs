@@ -556,25 +556,13 @@ namespace ManagedDoom.Silk
             }
         }
 
-        public int MaxMouseSensitivity
-        {
-            get
-            {
-                return 15;
-            }
-        }
+        public int MaxMouseSensitivity => 15;
 
         public int MouseSensitivity
         {
-            get
-            {
-                return config.mouse_sensitivity;
-            }
+            get => config.mouse_sensitivity;
 
-            set
-            {
-                config.mouse_sensitivity = value;
-            }
+            set => config.mouse_sensitivity = value;
         }
     }
 }

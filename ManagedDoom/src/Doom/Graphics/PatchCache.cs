@@ -15,6 +15,7 @@
 
 
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom
 {
@@ -27,19 +28,21 @@ namespace ManagedDoom
         {
             this.wad = wad;
 
-            cache = new Dictionary<string, Patch>();
+            cache = new Dictionary<string, Patch>(32);
         }
 
         public Patch this[string name]
         {
             get
             {
-                if (!cache.TryGetValue(name, out var patch))
-                {
-                    patch = Patch.FromWad(wad, name);
-                    cache.Add(name, patch);
-                }
-                return patch;
+                ref var p2 = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, name, out var exists);
+
+                if (exists)
+                    return p2;
+
+                p2 = Patch.FromWad(wad, name);
+
+                return p2;
             }
         }
 

@@ -47,13 +47,7 @@ namespace ManagedDoom
             return replaced;
         }
 
-        public char this[int index]
-        {
-            get
-            {
-                return replaced[index];
-            }
-        }
+        public char this[int index] => replaced[index];
 
         public static implicit operator string(DoomString ds)
         {

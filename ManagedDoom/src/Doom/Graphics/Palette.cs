@@ -85,12 +85,6 @@ namespace ManagedDoom
             return Math.Pow(x, p);
         }
 
-        public uint[] this[int paletteNumber]
-        {
-            get
-            {
-                return palettes[paletteNumber];
-            }
-        }
+        public uint[] this[int paletteNumber] => palettes[paletteNumber];
     }
 }

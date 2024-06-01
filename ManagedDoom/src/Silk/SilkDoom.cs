@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using Silk.NET.Input;
 using Silk.NET.Input.Glfw;
@@ -37,6 +38,7 @@ namespace ManagedDoom.Silk
         {
             try
             {
+                var start = Stopwatch.GetTimestamp();
                 this.args = args;
 
                 GlfwWindowing.RegisterPlatform();
@@ -60,6 +62,9 @@ namespace ManagedDoom.Silk
                 window.Render += OnRender;
                 window.Resize += OnResize;
                 window.Closing += OnClose;
+
+                var end = Stopwatch.GetElapsedTime(start);
+                Console.WriteLine("Startup time: " + end);
             }
             catch (Exception e)
             {
@@ -137,6 +142,7 @@ namespace ManagedDoom.Silk
             {
                 var frameFrac = Fixed.FromInt(frameCount % fpsScale + 1) / fpsScale;
                 video.Render(doom, frameFrac);
+                //Console.WriteLine("FPS: " + window.FramesPerSecond);
             }
             catch (Exception e)
             {

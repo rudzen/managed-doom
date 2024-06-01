@@ -77,34 +77,34 @@ namespace ManagedDoom
 
         private static string GetMobjCsv(Mobj mobj)
         {
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(1024);
 
-            sb.Append(mobj.X.Data).Append(",");
-            sb.Append(mobj.Y.Data).Append(",");
-            sb.Append(mobj.Z.Data).Append(",");
+            sb.Append(mobj.X.Data).Append(',');
+            sb.Append(mobj.Y.Data).Append(',');
+            sb.Append(mobj.Z.Data).Append(',');
 
-            sb.Append((int)mobj.Angle.Data).Append(",");
-            sb.Append((int)mobj.Sprite).Append(",");
-            sb.Append(mobj.Frame).Append(",");
+            sb.Append((int)mobj.Angle.Data).Append(',');
+            sb.Append((int)mobj.Sprite).Append(',');
+            sb.Append(mobj.Frame).Append(',');
 
-            sb.Append(mobj.FloorZ.Data).Append(",");
-            sb.Append(mobj.CeilingZ.Data).Append(",");
+            sb.Append(mobj.FloorZ.Data).Append(',');
+            sb.Append(mobj.CeilingZ.Data).Append(',');
 
-            sb.Append(mobj.Radius.Data).Append(",");
-            sb.Append(mobj.Height.Data).Append(",");
+            sb.Append(mobj.Radius.Data).Append(',');
+            sb.Append(mobj.Height.Data).Append(',');
 
-            sb.Append(mobj.MomX.Data).Append(",");
-            sb.Append(mobj.MomY.Data).Append(",");
-            sb.Append(mobj.MomZ.Data).Append(",");
+            sb.Append(mobj.MomX.Data).Append(',');
+            sb.Append(mobj.MomY.Data).Append(',');
+            sb.Append(mobj.MomZ.Data).Append(',');
 
-            sb.Append((int)mobj.Tics).Append(",");
-            sb.Append((int)mobj.Flags).Append(",");
-            sb.Append(mobj.Health).Append(",");
+            sb.Append((int)mobj.Tics).Append(',');
+            sb.Append((int)mobj.Flags).Append(',');
+            sb.Append(mobj.Health).Append(',');
 
-            sb.Append((int)mobj.MoveDir).Append(",");
-            sb.Append(mobj.MoveCount).Append(",");
+            sb.Append((int)mobj.MoveDir).Append(',');
+            sb.Append(mobj.MoveCount).Append(',');
 
-            sb.Append(mobj.ReactionTime).Append(",");
+            sb.Append(mobj.ReactionTime).Append(',');
             sb.Append(mobj.Threshold);
 
             return sb.ToString();

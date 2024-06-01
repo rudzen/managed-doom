@@ -616,8 +616,7 @@ namespace ManagedDoom
                     else if ((thing.Flags & MobjFlags.Missile) != 0)
                     {
                         // Explode a missile.
-                        if (currentCeilingLine != null &&
-                            currentCeilingLine.BackSector != null &&
+                        if (currentCeilingLine is { BackSector: not null } &&
                             currentCeilingLine.BackSector.CeilingFlat == world.Map.SkyFlatNumber)
                         {
                             // Hack to prevent missiles exploding against the sky.

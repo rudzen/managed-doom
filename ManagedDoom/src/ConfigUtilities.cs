@@ -49,23 +49,16 @@ namespace ManagedDoom
         public static string GetDefaultIwadPath()
         {
             var exeDirectory = GetExeDirectory();
+            var currentDirectory = Directory.GetCurrentDirectory();
             foreach (var name in iwadNames)
             {
                 var path = Path.Combine(exeDirectory, name);
                 if (File.Exists(path))
-                {
                     return path;
-                }
-            }
 
-            var currentDirectory = Directory.GetCurrentDirectory();
-            foreach (var name in iwadNames)
-            {
-                var path = Path.Combine(currentDirectory, name);
+                path = Path.Combine(currentDirectory, name);
                 if (File.Exists(path))
-                {
                     return path;
-                }
             }
 
             throw new Exception("No IWAD was found!");
@@ -77,25 +70,22 @@ namespace ManagedDoom
             return iwadNames.Contains(name);
         }
 
-        public static string[] GetWadPaths(CommandLineArgs args)
+        public static IEnumerable<string> GetWadPaths(CommandLineArgs args)
         {
-            var wadPaths = new List<string>();
-
             if (args.iwad.Present)
             {
-                wadPaths.Add(args.iwad.Value);
+                yield return args.iwad.Value;
             }
             else
             {
-                wadPaths.Add(GetDefaultIwadPath());
+                yield return GetDefaultIwadPath();
             }
 
             if (args.file.Present)
             {
-                wadPaths.AddRange(args.file.Value);
+                foreach (var path in args.file.Value)
+                    yield return path;
             }
-
-            return wadPaths.ToArray();
         }
     }
 }

@@ -55,10 +55,7 @@ namespace ManagedDoom
                 return slots[number];
             }
 
-            set
-            {
-                slots[number] = value;
-            }
+            set => slots[number] = value;
         }
 
         public int Count => slots.Length;

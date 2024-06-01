@@ -1509,7 +1509,7 @@ namespace ManagedDoom
 
             foreach (var thinker in world.Thinkers)
             {
-                if (thinker is Mobj mobj && mobj.Type == MobjType.Skull)
+                if (thinker is Mobj { Type: MobjType.Skull })
                 {
                     count++;
                 }

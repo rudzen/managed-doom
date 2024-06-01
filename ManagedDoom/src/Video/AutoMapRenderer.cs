@@ -36,7 +36,7 @@ namespace ManagedDoom.Video
             -pr + 3 * pr / 8, 0, -pr + pr / 8, -pr / 4
         ];
 
-        private static readonly float tr = 16;
+        private const float tr = 16;
 
         private static readonly float[] thingTriangle =
         [

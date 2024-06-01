@@ -47,20 +47,11 @@ namespace ManagedDoom.UserInput
         {
         }
 
-        public int MaxMouseSensitivity
-        {
-            get
-            {
-                return 9;
-            }
-        }
+        public int MaxMouseSensitivity => 9;
 
         public int MouseSensitivity
         {
-            get
-            {
-                return 3;
-            }
+            get => 3;
 
             set
             {

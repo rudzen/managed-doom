@@ -14,6 +14,7 @@
 //
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace ManagedDoom
 {
     public sealed class KeyBinding
     {
-        public static readonly KeyBinding Empty = new KeyBinding();
+        private static readonly KeyBinding empty = new();
 
         private readonly DoomKey[] keys;
         private readonly DoomMouseButton[] mouseButtons;
@@ -46,8 +47,8 @@ namespace ManagedDoom
 
         public override string ToString()
         {
-            var keyValues = keys.Select(key => DoomKeyEx.ToString(key));
-            var mouseValues = mouseButtons.Select(button => DoomMouseButtonEx.ToString(button));
+            var keyValues = keys.Select(DoomKeyEx.ToString);
+            var mouseValues = mouseButtons.Select(DoomMouseButtonEx.ToString);
             var values = keyValues.Concat(mouseValues).ToArray();
             if (values.Length > 0)
             {
@@ -61,23 +62,25 @@ namespace ManagedDoom
         {
             if (value == "none")
             {
-                return Empty;
+                return empty;
             }
 
-            var keys = new List<DoomKey>();
-            var mouseButtons = new List<DoomMouseButton>();
+            var split = value.Split(',');
+            
+            var keys = new List<DoomKey>(split.Length);
+            var mouseButtons = new List<DoomMouseButton>(split.Length);
 
-            var split = value.Split(',').Select(x => x.Trim());
             foreach (var s in split)
             {
-                var key = DoomKeyEx.Parse(s);
+                var span = s.AsSpan().Trim();
+                var key = DoomKeyEx.Parse(span);
                 if (key != DoomKey.Unknown)
                 {
                     keys.Add(key);
                     continue;
                 }
 
-                var mouseButton = DoomMouseButtonEx.Parse(s);
+                var mouseButton = DoomMouseButtonEx.Parse(span);
                 if (mouseButton != DoomMouseButton.Unknown)
                 {
                     mouseButtons.Add(mouseButton);

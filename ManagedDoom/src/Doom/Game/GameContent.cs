@@ -56,11 +56,9 @@ namespace ManagedDoom
 
         public void Dispose()
         {
-            if (Wad != null)
-            {
-                Wad.Dispose();
-                Wad = null;
-            }
+            if (Wad == null) return;
+            Wad.Dispose();
+            Wad = null;
         }
 
         public Wad Wad { get; private set; }

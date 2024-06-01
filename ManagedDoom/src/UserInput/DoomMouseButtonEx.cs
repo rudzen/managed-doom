@@ -14,6 +14,8 @@
 //
 
 
+using System;
+
 namespace ManagedDoom
 {
     public static class DoomMouseButtonEx
@@ -37,23 +39,17 @@ namespace ManagedDoom
             }
         }
 
-        public static DoomMouseButton Parse(string value)
+        public static DoomMouseButton Parse(ReadOnlySpan<char> value)
         {
-            switch (value)
+            return value switch
             {
-                case "mouse1":
-                    return DoomMouseButton.Mouse1;
-                case "mouse2":
-                    return DoomMouseButton.Mouse2;
-                case "mouse3":
-                    return DoomMouseButton.Mouse3;
-                case "mouse4":
-                    return DoomMouseButton.Mouse4;
-                case "mouse5":
-                    return DoomMouseButton.Mouse5;
-                default:
-                    return DoomMouseButton.Unknown;
-            }
+                "mouse1" => DoomMouseButton.Mouse1,
+                "mouse2" => DoomMouseButton.Mouse2,
+                "mouse3" => DoomMouseButton.Mouse3,
+                "mouse4" => DoomMouseButton.Mouse4,
+                "mouse5" => DoomMouseButton.Mouse5,
+                _        => DoomMouseButton.Unknown
+            };
         }
     }
 }

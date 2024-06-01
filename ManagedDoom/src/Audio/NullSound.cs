@@ -22,12 +22,7 @@ namespace ManagedDoom.Audio
 
         public static NullSound GetInstance()
         {
-            if (instance == null)
-            {
-                instance = new NullSound();
-            }
-
-            return instance;
+            return instance ??= new NullSound();
         }
 
         public void SetListener(Mobj listerner)
@@ -66,24 +61,12 @@ namespace ManagedDoom.Audio
         {
         }
 
-        public int MaxVolume
-        {
-            get
-            {
-                return 15;
-            }
-        }
+        public int MaxVolume => 15;
 
         public int Volume
         {
-            get
-            {
-                return 0;
-            }
-
-            set
-            {
-            }
+            get => 0;
+            set { }
         }
     }
 }

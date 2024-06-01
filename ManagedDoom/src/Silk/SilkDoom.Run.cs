@@ -1,4 +1,9 @@
 ﻿using System;
+#if WINDOWS_RELEASE
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
+#endif
 using Silk.NET.Windowing;
 
 namespace ManagedDoom.Silk
@@ -63,9 +68,7 @@ namespace ManagedDoom.Silk
 
                 var gameTime = TimeSpan.Zero;
                 var gameTimeStep = TimeSpan.FromSeconds(1.0 / targetFps);
-
-                var sw = new Stopwatch();
-                sw.Start();
+                var startTime = Stopwatch.GetTimestamp();
 
                 while (true)
                 {
@@ -79,21 +82,16 @@ namespace ManagedDoom.Silk
 
                     if (!window.IsClosing)
                     {
-                        if (sw.Elapsed < gameTime)
-                        {
-                            window.DoRender();
-                            var sleepTime = gameTime - sw.Elapsed;
-                            var ms = (int)sleepTime.TotalMilliseconds;
-                            if (ms > 0)
-                            {
-                                Sleep(ms);
-                            }
-                        }
+                        var elap = Stopwatch.GetElapsedTime(startTime);
+                        if (elap >= gameTime) continue;
+                        window.DoRender();
+                        var sleepTime = gameTime - elap;
+                        var ms = (int)sleepTime.TotalMilliseconds;
+                        if (ms > 0)
+                            Sleep(ms);
                     }
                     else
-                    {
                         break;
-                    }
                 }
 
                 window.DoEvents();

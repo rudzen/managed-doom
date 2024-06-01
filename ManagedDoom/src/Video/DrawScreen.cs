@@ -161,7 +161,7 @@ namespace ManagedDoom.Video
                 }
 
                 var index = (int)ch;
-                if ('a' <= index && index <= 'z')
+                if (index is >= 'a' and <= 'z')
                 {
                     index = index - 'a' + 'A';
                 }
@@ -194,7 +194,7 @@ namespace ManagedDoom.Video
             }
 
             var index = (int)ch;
-            if ('a' <= index && index <= 'z')
+            if (index is >= 'a' and <= 'z')
             {
                 index = index - 'a' + 'A';
             }
@@ -226,7 +226,7 @@ namespace ManagedDoom.Video
                 }
 
                 var index = (int)ch;
-                if ('a' <= index && index <= 'z')
+                if (index is >= 'a' and <= 'z')
                 {
                     index = index - 'a' + 'A';
                 }
@@ -256,7 +256,7 @@ namespace ManagedDoom.Video
             }
 
             var index = (int)ch;
-            if ('a' <= index && index <= 'z')
+            if (index is >= 'a' and <= 'z')
             {
                 index = index - 'a' + 'A';
             }
@@ -288,7 +288,7 @@ namespace ManagedDoom.Video
                 }
 
                 var index = (int)ch;
-                if ('a' <= index && index <= 'z')
+                if (index is >= 'a' and <= 'z')
                 {
                     index = index - 'a' + 'A';
                 }

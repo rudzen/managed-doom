@@ -46,7 +46,7 @@ namespace ManagedDoom
 			target.Flags |= MobjFlags.Corpse | MobjFlags.DropOff;
 			target.Height = new Fixed(target.Height.Data >> 2);
 
-			if (source != null && source.Player != null)
+			if (source is { Player: not null })
 			{
 				// Count for intermission.
 				if ((target.Flags & MobjFlags.CountKill) != 0)

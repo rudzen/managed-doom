@@ -425,7 +425,7 @@ namespace ManagedDoom
                 thing.Tics = 1;
             }
 
-            if (damage <= 12 && damage >= 9)
+            if (damage is <= 12 and >= 9)
             {
                 thing.SetState(MobjState.Blood2);
             }

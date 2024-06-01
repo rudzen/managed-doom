@@ -106,40 +106,26 @@ namespace ManagedDoom.Silk
         {
             Console.WriteLine("Shutdown music.");
 
-            if (stream != null)
-            {
-                stream.Dispose();
-                stream = null;
-            }
+            if (stream == null) return;
+            stream.Dispose();
+            stream = null;
         }
 
-        public int MaxVolume
-        {
-            get
-            {
-                return 15;
-            }
-        }
+        public int MaxVolume => 15;
 
         public int Volume
         {
-            get
-            {
-                return config.audio_musicvolume;
-            }
+            get => config.audio_musicvolume;
 
-            set
-            {
-                config.audio_musicvolume = value;
-            }
+            set => config.audio_musicvolume = value;
         }
 
 
 
         private class MusStream : IDisposable
         {
-            private static readonly int latency = 200;
-            private static readonly int blockLength = 2048;
+            private const int latency = 200;
+            private const int blockLength = 2048;
 
             private readonly SilkMusic parent;
             private readonly Config config;
@@ -199,24 +185,10 @@ namespace ManagedDoom.Silk
                 for (var t = 0; t < blockLength; t++)
                 {
                     var sampleLeft = (int)(a * left[t]);
-                    if (sampleLeft < short.MinValue)
-                    {
-                        sampleLeft = short.MinValue;
-                    }
-                    else if (sampleLeft > short.MaxValue)
-                    {
-                        sampleLeft = short.MaxValue;
-                    }
+                    sampleLeft = Math.Clamp(sampleLeft, short.MinValue, short.MaxValue);
 
                     var sampleRight = (int)(a * right[t]);
-                    if (sampleRight < short.MinValue)
-                    {
-                        sampleRight = short.MinValue;
-                    }
-                    else if (sampleRight > short.MaxValue)
-                    {
-                        sampleRight = short.MaxValue;
-                    }
+                    sampleRight = Math.Clamp(sampleRight, short.MinValue, short.MaxValue);
 
                     samples[pos++] = (short)sampleLeft;
                     samples[pos++] = (short)sampleRight;
@@ -225,12 +197,10 @@ namespace ManagedDoom.Silk
 
             public void Dispose()
             {
-                if (audioStream != null)
-                {
-                    audioStream.Stop();
-                    audioStream.Dispose();
-                    audioStream = null;
-                }
+                if (audioStream == null) return;
+                audioStream.Stop();
+                audioStream.Dispose();
+                audioStream = null;
             }
         }
 
@@ -245,8 +215,8 @@ namespace ManagedDoom.Silk
 
         private class MusDecoder : IDecoder
         {
-            public static readonly int SampleRate = 44100;
-            public static readonly int BlockLength = SampleRate / 140;
+            public const int SampleRate = 44100;
+            public const int BlockLength = SampleRate / 140;
 
             public static readonly byte[] MusHeader =
             [

@@ -315,20 +315,11 @@ namespace ManagedDoom.Video
 
         public int WipeHeight { get; }
 
-        public int MaxWindowSize
-        {
-            get
-            {
-                return ThreeDRenderer.MaxScreenSize;
-            }
-        }
+        public int MaxWindowSize => ThreeDRenderer.MaxScreenSize;
 
         public int WindowSize
         {
-            get
-            {
-                return threeD.WindowSize;
-            }
+            get => threeD.WindowSize;
 
             set
             {
@@ -339,31 +330,16 @@ namespace ManagedDoom.Video
 
         public bool DisplayMessage
         {
-            get
-            {
-                return config.video_displaymessage;
-            }
+            get => config.video_displaymessage;
 
-            set
-            {
-                config.video_displaymessage = value;
-            }
+            set => config.video_displaymessage = value;
         }
 
-        public int MaxGammaCorrectionLevel
-        {
-            get
-            {
-                return gammaCorrectionParameters.Length - 1;
-            }
-        }
+        public int MaxGammaCorrectionLevel => gammaCorrectionParameters.Length - 1;
 
         public int GammaCorrectionLevel
         {
-            get
-            {
-                return config.video_gammacorrection;
-            }
+            get => config.video_gammacorrection;
 
             set
             {

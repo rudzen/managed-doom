@@ -47,10 +47,7 @@ namespace ManagedDoom.Video
 
         public int WindowSize
         {
-            get
-            {
-                return 7;
-            }
+            get => 7;
 
             set
             {
@@ -59,10 +56,7 @@ namespace ManagedDoom.Video
 
         public bool DisplayMessage
         {
-            get
-            {
-                return true;
-            }
+            get => true;
 
             set
             {
@@ -73,10 +67,7 @@ namespace ManagedDoom.Video
 
         public int GammaCorrectionLevel
         {
-            get
-            {
-                return 2;
-            }
+            get => 2;
 
             set
             {

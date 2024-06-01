@@ -346,7 +346,7 @@ namespace ManagedDoom.Video
                 fixedLight[i] = new byte[Math.Max(maxScaleLight, maxZLight)][];
             }
 
-            var distMap = 2;
+            const int distMap = 2;
 
             // Calculate the light levels to use for each level / distance combination.
             for (var i = 0; i < lightLevelCount; i++)
@@ -2920,19 +2920,12 @@ namespace ManagedDoom.Video
             // Get light level.
             var spriteLightLevel = (player.Mobj.Subsector.Sector.LightLevel >> lightSegShift) + extraLight;
 
-            byte[][] spriteLights;
-            if (spriteLightLevel < 0)
+            var spriteLights = spriteLightLevel switch
             {
-                spriteLights = scaleLight[0];
-            }
-            else if (spriteLightLevel >= lightLevelCount)
-            {
-                spriteLights = scaleLight[lightLevelCount - 1];
-            }
-            else
-            {
-                spriteLights = scaleLight[spriteLightLevel];
-            }
+                < 0                => scaleLight[0],
+                >= lightLevelCount => scaleLight[lightLevelCount - 1],
+                _                  => scaleLight[spriteLightLevel]
+            };
 
             bool fuzz;
             if (player.Powers[(int)PowerType.Invisibility] > 4 * 32 ||
@@ -2961,10 +2954,7 @@ namespace ManagedDoom.Video
 
         public int WindowSize
         {
-            get
-            {
-                return windowSize;
-            }
+            get => windowSize;
 
             set
             {

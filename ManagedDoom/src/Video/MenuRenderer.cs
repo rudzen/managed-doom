@@ -14,6 +14,7 @@
 //
 
 
+using System;
 using System.Collections.Generic;
 
 namespace ManagedDoom.Video
@@ -212,7 +213,7 @@ namespace ManagedDoom.Video
 
             if (!item.Editing)
             {
-                var text = item.Text != null ? item.Text : emptyText;
+                var text = item.Text ?? emptyText;
                 DrawMenuText(text, item.ItemX + 8, item.ItemY);
             }
             else

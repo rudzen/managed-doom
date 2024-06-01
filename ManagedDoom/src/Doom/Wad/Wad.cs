@@ -29,6 +29,10 @@ namespace ManagedDoom
         private readonly List<Stream> streams;
         private readonly List<LumpInfo> lumpInfos;
 
+        public Wad(IEnumerable<string> fileNames) : this(fileNames.ToArray())
+        {
+        }
+        
         public Wad(params string[] fileNames)
         {
             try

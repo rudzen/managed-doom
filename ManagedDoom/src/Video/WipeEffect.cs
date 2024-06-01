@@ -16,6 +16,8 @@
 
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Video
 {
@@ -37,15 +39,12 @@ namespace ManagedDoom.Video
             for (var i = 1; i < Y.Length; i++)
             {
                 var r = (random.Next() % 3) - 1;
-                Y[i] = (short)(Y[i - 1] + r);
-                if (Y[i] > 0)
+                Y[i] = Y[i] switch
                 {
-                    Y[i] = 0;
-                }
-                else if (Y[i] == -16)
-                {
-                    Y[i] = -15;
-                }
+                    > 0 => 0,
+                    -16 => -15,
+                    _   => (short)(Y[i - 1] + r)
+                };
             }
         }
 
@@ -72,12 +71,7 @@ namespace ManagedDoom.Video
                 }
             }
 
-            if (done)
-            {
-                return UpdateResult.Completed;
-            }
-
-            return UpdateResult.None;
+            return done ? UpdateResult.Completed : UpdateResult.None;
         }
 
         public short[] Y { get; }
