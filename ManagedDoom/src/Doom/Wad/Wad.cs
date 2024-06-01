@@ -14,17 +14,21 @@
 //
 
 
-
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom
 {
     public sealed class Wad : IDisposable
     {
+        private readonly record struct WadHeader(string Id, int LumpCount, int LumpInfoTableOffset);
+
         private readonly List<string> names;
         private readonly List<Stream> streams;
         private readonly List<LumpInfo> lumpInfos;
@@ -32,7 +36,7 @@ namespace ManagedDoom
         public Wad(IEnumerable<string> fileNames) : this(fileNames.ToArray())
         {
         }
-        
+
         public Wad(params string[] fileNames)
         {
             try
@@ -41,18 +45,16 @@ namespace ManagedDoom
 
                 names = new List<string>(fileNames.Length);
                 streams = new List<Stream>(fileNames.Length);
-                lumpInfos = new List<LumpInfo>();
+                lumpInfos = [];
 
                 foreach (var fileName in fileNames)
-                {
                     AddFile(fileName);
-                }
 
                 GameMode = GetGameMode(names);
                 MissionPack = GetMissionPack(names);
                 GameVersion = GetGameVersion(names);
 
-                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(x => Path.GetFileName(x))) + ")");
+                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(Path.GetFileName)) + ")");
             }
             catch (Exception e)
             {
@@ -69,58 +71,75 @@ namespace ManagedDoom
             var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
             streams.Add(stream);
 
-            int lumpCount;
-            int lumpInfoTableOffset;
-            {
-                var data = new byte[12];
-                if (stream.Read(data, 0, data.Length) != data.Length)
-                {
-                    throw new Exception("Failed to read the WAD file.");
-                }
-
-                var identification = DoomInterop.ToString(data, 0, 4);
-                lumpCount = BitConverter.ToInt32(data, 4);
-                lumpInfoTableOffset = BitConverter.ToInt32(data, 8);
-                if (identification != "IWAD" && identification != "PWAD")
-                {
-                    throw new Exception("The file is not a WAD file.");
-                }
-            }
+            var wadHeader = ReadWadHeader(stream);
 
             {
-                var data = new byte[LumpInfo.DataSize * lumpCount];
-                stream.Seek(lumpInfoTableOffset, SeekOrigin.Begin);
-                if (stream.Read(data, 0, data.Length) != data.Length)
-                {
-                    throw new Exception("Failed to read the WAD file.");
-                }
+                var size = LumpInfo.DataSize * wadHeader.LumpCount;
+                var data = ArrayPool<byte>.Shared.Rent(size);
+                stream.Seek(wadHeader.LumpInfoTableOffset, SeekOrigin.Begin);
 
-                for (var i = 0; i < lumpCount; i++)
+                try
                 {
-                    var offset = LumpInfo.DataSize * i;
-                    var lumpInfo = new LumpInfo(
-                        DoomInterop.ToString(data, offset + 8, 8),
-                        stream,
-                        BitConverter.ToInt32(data, offset),
-                        BitConverter.ToInt32(data, offset + 4));
-                    lumpInfos.Add(lumpInfo);
+                    var read = stream.Read(data);
+
+                    if (read != size)
+                        throw new Exception("Failed to read the WAD file.");
+
+                    var slice = data.AsSpan(0, read);
+
+                    for (var i = 0; i < wadHeader.LumpCount; i++)
+                    {
+                        var offset = LumpInfo.DataSize * i;
+                        var lumpInfo = new LumpInfo(
+                            DoomInterop.ToString(slice.Slice(offset + 8, 8)),
+                            stream,
+                            BitConverter.ToInt32(slice.Slice(offset, 4)),
+                            BitConverter.ToInt32(slice.Slice(offset + 4, 4)));
+                        lumpInfos.Add(lumpInfo);
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(data);
                 }
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SkipLocalsInit]
+        private static WadHeader ReadWadHeader(FileStream stream)
+        {
+            const int headerSize = 12;
+
+            Span<byte> data = stackalloc byte[headerSize];
+
+            if (stream.Read(data) != headerSize)
+                throw new Exception("Failed to read the WAD file.");
+
+            var identification = DoomInterop.ToString(data[..4]);
+            var lumpCount = BitConverter.ToInt32(data.Slice(4, 4));
+            var lumpInfoTableOffset = BitConverter.ToInt32(data.Slice(8, 4));
+
+            if (!IsValidWadId(identification))
+                throw new Exception("The file is not a WAD file.");
+
+            return new(identification, lumpCount, lumpInfoTableOffset);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetLumpNumber(string name)
         {
-            for (var i = lumpInfos.Count - 1; i >= 0; i--)
+            var lumpSpan = CollectionsMarshal.AsSpan(lumpInfos);
+            for (var i = lumpSpan.Length - 1; i >= 0; i--)
             {
-                if (lumpInfos[i].Name == name)
-                {
+                if (lumpSpan[i].Name == name)
                     return i;
-                }
             }
 
             return -1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetLumpSize(int number)
         {
             return lumpInfos[number].Size;
@@ -147,9 +166,7 @@ namespace ManagedDoom
             var lumpNumber = GetLumpNumber(name);
 
             if (lumpNumber == -1)
-            {
                 throw new Exception("The lump '" + name + "' was not found.");
-            }
 
             return ReadLump(lumpNumber);
         }
@@ -159,11 +176,14 @@ namespace ManagedDoom
             Console.WriteLine("Close WAD files.");
 
             foreach (var stream in streams)
-            {
                 stream.Dispose();
-            }
 
             streams.Clear();
+        }
+
+        private static bool IsValidWadId(ReadOnlySpan<char> wadId)
+        {
+            return wadId is "IWAD" or "PWAD";
         }
 
         private static GameVersion GetGameVersion(IReadOnlyList<string> names)

@@ -14,32 +14,39 @@
 //
 
 
+using System;
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom
 {
     public static class DoomInterop
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToString(byte[] data, int offset, int maxLength)
         {
-            var length = 0;
-            for (var i = 0; i < maxLength; i++)
+            return ToString(data.AsSpan(offset, maxLength));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SkipLocalsInit]
+        public static string ToString(ReadOnlySpan<byte> data)
+        {
+            const byte zero = 0;
+
+            Span<char> chars = stackalloc char[data.Length];
+            var pos = 0;
+
+            foreach (var t in data)
             {
-                if (data[offset + i] == 0)
-                {
+                var c = t;
+                if (c == zero)
                     break;
-                }
-                length++;
-            }
-            var chars = new char[length];
-            for (var i = 0; i < chars.Length; i++)
-            {
-                var c = data[offset + i];
-                if ('a' <= c && c <= 'z')
-                {
+                if (c >= 'a' && c <= 'z')
                     c -= 0x20;
-                }
-                chars[i] = (char)c;
+                chars[pos++] = (char)c;
             }
-            return new string(chars);
+            
+            return new string(chars[..pos]);
         }
     }
 }
