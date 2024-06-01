@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
 namespace ManagedDoom
@@ -45,9 +46,7 @@ namespace ManagedDoom
                 var count = data.Length / (3 * 256);
                 palettes = new uint[count][];
                 for (var i = 0; i < palettes.Length; i++)
-                {
                     palettes[i] = new uint[256];
-                }
 
                 Console.WriteLine("OK");
             }
@@ -58,7 +57,7 @@ namespace ManagedDoom
             }
         }
 
-        public void ResetColors(double p)
+        public void ResetColors(in double p)
         {
             for (var i = 0; i < palettes.Length; i++)
             {
@@ -80,6 +79,7 @@ namespace ManagedDoom
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double CorrectionCurve(double x, double p)
         {
             return Math.Pow(x, p);

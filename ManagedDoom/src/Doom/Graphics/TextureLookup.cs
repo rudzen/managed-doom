@@ -14,8 +14,8 @@
 //
 
 
-
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -49,9 +49,7 @@ namespace ManagedDoom
             {
                 var lumpNumber = wad.GetLumpNumber("TEXTURE" + n);
                 if (lumpNumber == -1)
-                {
                     break;
-                }
 
                 var data = wad.ReadLump(lumpNumber);
                 var count = BitConverter.ToInt32(data, 0);
@@ -79,6 +77,7 @@ namespace ManagedDoom
                     list.Add(texNum2);
                 }
             }
+
             SwitchList = list.ToArray();
         }
 
@@ -105,28 +104,52 @@ namespace ManagedDoom
             {
                 var name = patchNames[i];
 
+                var lumpNumber = wad.GetLumpNumber(name);
+                
                 // This check is necessary to avoid crash in DOOM1.WAD.
-                if (wad.GetLumpNumber(name) == -1)
-                {
+                if (lumpNumber == -1)
                     continue;
-                }
 
-                var data = wad.ReadLump(name);
-                patches[i] = Patch.FromData(name, data);
+                var lumpSize = wad.GetLumpSize(lumpNumber);
+                var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+                try
+                {
+                    var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                    wad.ReadLump(lumpNumber, lumpBuffer);
+                    patches[i] = Patch.FromData(name, lumpBuffer.ToArray());
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(lumpData);
+                }
             }
+
             return patches;
         }
 
         private static string[] LoadPatchNames(Wad wad)
         {
-            var data = wad.ReadLump("PNAMES");
-            var count = BitConverter.ToInt32(data, 0);
-            var names = new string[count];
-            for (var i = 0; i < names.Length; i++)
+            const string lumpName = "PNAMES";
+            var lumpNumber = wad.GetLumpNumber(lumpName);
+            var lumpSize = wad.GetLumpSize(lumpNumber);
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+            try
             {
-                names[i] = DoomInterop.ToString(data, 4 + 8 * i, 8);
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lumpNumber, lumpBuffer);
+
+                var count = BitConverter.ToInt32(lumpBuffer[..4]);
+                var names = new string[count];
+                for (var i = 0; i < names.Length; i++)
+                    names[i] = DoomInterop.ToString(lumpBuffer.Slice(4 + 8 * i, 8));
+                return names;
             }
-            return names;
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
+            }
         }
 
         public IEnumerator<Texture> GetEnumerator()

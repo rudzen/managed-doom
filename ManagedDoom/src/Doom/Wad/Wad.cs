@@ -146,6 +146,7 @@ namespace ManagedDoom
             return lumpInfos[number].Size;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ReadLump(int number)
         {
             var lumpInfo = lumpInfos[number];

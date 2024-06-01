@@ -14,8 +14,8 @@
 //
 
 
-
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
@@ -27,6 +27,14 @@ namespace ManagedDoom
         {
             this.X = x;
             this.Y = y;
+        }
+
+        public static Vertex FromData(ReadOnlySpan<byte> data)
+        {
+            var x = BitConverter.ToInt16(data);
+            var y = BitConverter.ToInt16(data.Slice(2, 2));
+
+            return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
         }
 
         public static Vertex FromData(byte[] data, int offset)
@@ -41,21 +49,29 @@ namespace ManagedDoom
         {
             var length = wad.GetLumpSize(lump);
             if (length % dataSize != 0)
-            {
                 throw new Exception();
-            }
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var vertices = new Vertex[count]; ;
+            var data = ArrayPool<byte>.Shared.Rent(length);
 
-            for (var i = 0; i < count; i++)
+            try
             {
-                var offset = dataSize * i;
-                vertices[i] = FromData(data, offset);
-            }
+                var lumpBuffer = data.AsSpan(0, length);
+                wad.ReadLump(lump, lumpBuffer);
+                var count = length / dataSize;
+                var vertices = new Vertex[count];
 
-            return vertices;
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = dataSize * i;
+                    vertices[i] = FromData(lumpBuffer[offset..]);
+                }
+
+                return vertices;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(data);
+            }
         }
 
         public Fixed X { get; }

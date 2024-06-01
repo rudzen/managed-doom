@@ -20,20 +20,20 @@ using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
-    public struct Fixed
+    public readonly struct Fixed
     {
         public const int FracBits = 16;
         public const int FracUnit = 1 << FracBits;
 
-        public static readonly Fixed Zero = new Fixed(0);
-        public static readonly Fixed One = new Fixed(FracUnit);
+        public static readonly Fixed Zero = new(0);
+        public static readonly Fixed One = new(FracUnit);
 
-        public static readonly Fixed MaxValue = new Fixed(int.MaxValue);
-        public static readonly Fixed MinValue = new Fixed(int.MinValue);
+        public static readonly Fixed MaxValue = new(int.MaxValue);
+        public static readonly Fixed MinValue = new(int.MinValue);
 
-        public static readonly Fixed Epsilon = new Fixed(1);
-        public static readonly Fixed OnePlusEpsilon = new Fixed(FracUnit + 1);
-        public static readonly Fixed OneMinusEpsilon = new Fixed(FracUnit - 1);
+        public static readonly Fixed Epsilon = new(1);
+        public static readonly Fixed OnePlusEpsilon = new(FracUnit + 1);
+        public static readonly Fixed OneMinusEpsilon = new(FracUnit - 1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Fixed(int data)

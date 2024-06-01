@@ -36,19 +36,16 @@ namespace ManagedDoom
             "FREEDOOM1.WAD"
         ];
 
-        public static string GetExeDirectory()
-        {
-            return Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-        }
+        public static string GetExeDirectory => Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
         public static string GetConfigPath()
         {
-            return Path.Combine(GetExeDirectory(), "managed-doom.cfg");
+            return Path.Combine(GetExeDirectory, "managed-doom.cfg");
         }
 
         private static string GetDefaultIwadPath()
         {
-            var exeDirectory = GetExeDirectory();
+            var exeDirectory = GetExeDirectory;
             var currentDirectory = Directory.GetCurrentDirectory();
             foreach (var name in iwadNames)
             {

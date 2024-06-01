@@ -40,14 +40,9 @@ namespace ManagedDoom
             var front = line.FrontSector;
             var back = line.BackSector;
 
-            if (front.CeilingHeight < back.CeilingHeight)
-            {
-                OpenTop = front.CeilingHeight;
-            }
-            else
-            {
-                OpenTop = back.CeilingHeight;
-            }
+            OpenTop = front.CeilingHeight < back.CeilingHeight
+                ? front.CeilingHeight
+                : back.CeilingHeight;
 
             if (front.FloorHeight > back.FloorHeight)
             {

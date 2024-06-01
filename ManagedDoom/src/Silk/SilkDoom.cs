@@ -11,7 +11,7 @@ using DrippyAL;
 
 namespace ManagedDoom.Silk
 {
-    public partial class SilkDoom : IDisposable
+    public partial class SilkDoom
     {
         private readonly CommandLineArgs args;
 

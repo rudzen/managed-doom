@@ -14,13 +14,14 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
-    public sealed record Patch(string Name,
+    public sealed record Patch(
+        string Name,
         int Width,
         int Height,
         int LeftOffset,
@@ -63,6 +64,7 @@ namespace ManagedDoom
                 columns);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Patch FromWad(Wad wad, string name)
         {
             return FromData(name, wad.ReadLump(name));

@@ -36,14 +36,10 @@ namespace ManagedDoom
 
             foreach (var lump in EnumerateSprites(wad))
             {
-                var name = wad.LumpInfos[lump].Name.Substring(0, 4);
+                var name = wad.LumpInfos[lump].Name[..4];
 
-                if (!temp.ContainsKey(name))
-                {
+                if (!temp.TryGetValue(name, out var list))
                     continue;
-                }
-
-                var list = temp[name];
 
                 {
                     var frame = wad.LumpInfos[lump].Name[4] - 'A';

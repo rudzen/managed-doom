@@ -84,7 +84,7 @@ namespace ManagedDoom.Video
             WipeHeight = screen.Height / scale;
             wipeBuffer = new byte[screen.Data.Length];
 
-            palette.ResetColors(gammaCorrectionParameters[config.video_gammacorrection]);
+            palette.ResetColors(in gammaCorrectionParameters[config.video_gammacorrection]);
         }
 
         public void RenderDoom(Doom doom, Fixed frameFrac)
@@ -341,7 +341,7 @@ namespace ManagedDoom.Video
             set
             {
                 config.video_gammacorrection = value;
-                palette.ResetColors(gammaCorrectionParameters[config.video_gammacorrection]);
+                palette.ResetColors(in gammaCorrectionParameters[config.video_gammacorrection]);
             }
         }
     }

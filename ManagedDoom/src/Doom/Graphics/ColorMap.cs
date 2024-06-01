@@ -14,8 +14,10 @@
 //
 
 
-
 using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
 namespace ManagedDoom
@@ -31,27 +33,48 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Load color map: ");
+                var start = Stopwatch.GetTimestamp();
 
-                var raw = wad.ReadLump("COLORMAP");
-                var num = raw.Length / 256;
-                data = new byte[num][];
-                for (var i = 0; i < num; i++)
+                const string lump = "COLORMAP";
+
+                var lumpNumber = wad.GetLumpNumber(lump);
+                var lumpSize = wad.GetLumpSize(lumpNumber);
+
+                var raw = ArrayPool<byte>.Shared.Rent(lumpSize);
+                var lumpBuffer = raw.AsSpan()[..lumpSize];
+
+                try
                 {
-                    data[i] = new byte[256];
-                    var offset = 256 * i;
-                    for (var c = 0; c < 256; c++)
-                    {
-                        data[i][c] = raw[offset + c];
-                    }
-                }
+                    wad.ReadLump(lumpNumber, lumpBuffer);
+                    var num = lumpSize / 256;
 
-                Console.WriteLine("OK");
+                    data = new byte[num][];
+                    for (var i = 0; i < num; i++)
+                    {
+                        data[i] = new byte[256];
+                        var offset = 256 * i;
+                        for (var c = 0; c < 256; c++)
+                        {
+                            data[i][c] = raw[offset + c];
+                        }
+                    }
+                    
+                    Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(raw);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine("Failed");
                 ExceptionDispatchInfo.Throw(e);
             }
+        }
+
+        private static void ReadLumpData()
+        {
         }
 
         public byte[] this[int index] => data[index];

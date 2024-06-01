@@ -29,13 +29,13 @@ namespace ManagedDoom
         // See SubstNullMobj().
         private readonly Mobj dummy;
 
-        public World(GameContent resorces, GameOptions options, DoomGame game)
+        public World(GameContent resources, GameOptions options, DoomGame game)
         {
             this.Options = options;
             this.Game = game;
             this.Random = options.Random;
 
-            Map = new Map(resorces, this);
+            Map = new Map(resources, this);
 
             Thinkers = new Thinkers(this);
             Specials = new Specials(this);
@@ -110,26 +110,17 @@ namespace ManagedDoom
             var players = Options.Players;
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
                 if (players[i].InGame)
-                {
                     players[i].UpdateFrameInterpolationInfo();
-                }
-            }
+            
             Thinkers.UpdateFrameInterpolationInfo();
 
             foreach (var sector in Map.Sectors)
-            {
                 sector.UpdateFrameInterpolationInfo();
-            }
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
                 if (players[i].InGame)
-                {
                     PlayerBehavior.PlayerThink(players[i]);
-                }
-            }
 
             Thinkers.Run();
             Specials.Update();
@@ -141,14 +132,10 @@ namespace ManagedDoom
             LevelTime++;
 
             if (completed)
-            {
                 return UpdateResult.Completed;
-            }
 
             if (doneFirstTic)
-            {
                 return UpdateResult.None;
-            }
 
             doneFirstTic = true;
             return UpdateResult.NeedWipe;
@@ -156,10 +143,8 @@ namespace ManagedDoom
 
         private void LoadThings()
         {
-            for (var i = 0; i < Map.Things.Length; i++)
+            foreach (var mt in Map.Things)
             {
-                var mt = Map.Things[i];
-
                 var spawn = true;
 
                 // Do not spawn cool, new monsters if not commercial.
@@ -183,9 +168,7 @@ namespace ManagedDoom
                 }
 
                 if (!spawn)
-                {
                     break;
-                }
 
                 ThingAllocation.SpawnMapThing(mt);
             }
@@ -231,33 +214,21 @@ namespace ManagedDoom
                 Cheat.DoEvent(e);
             }
 
-            if (AutoMap.Visible)
-            {
-                if (AutoMap.DoEvent(e))
-                {
-                    return true;
-                }
-            }
+            if (AutoMap.Visible && AutoMap.DoEvent(e)) return true;
 
             if (e is { Key: DoomKey.Tab, Type: EventType.KeyDown })
             {
                 if (AutoMap.Visible)
-                {
                     AutoMap.Close();
-                }
                 else
-                {
                     AutoMap.Open();
-                }
                 return true;
             }
 
             if (e is { Key: DoomKey.F12, Type: EventType.KeyDown })
             {
                 if (Options.DemoPlayback || Options.Deathmatch == 0)
-                {
                     ChangeDisplayPlayer();
-                }
                 return true;
             }
 

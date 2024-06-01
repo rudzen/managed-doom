@@ -59,10 +59,8 @@ namespace ManagedDoom
 
         public int GetNumber(string name)
         {
-            if (nameToNumber.ContainsKey(name))
-            {
-                return nameToNumber[name];
-            }
+            if (nameToNumber.TryGetValue(name, out var number))
+                return number;
 
             return -1;
         }

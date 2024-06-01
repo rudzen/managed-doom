@@ -17,7 +17,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom
 {
@@ -41,14 +43,10 @@ namespace ManagedDoom
 
                 foreach (var lump in EnumerateSprites(wad))
                 {
-                    var name = wad.LumpInfos[lump].Name.Substring(0, 4);
+                    var name = wad.LumpInfos[lump].Name[..4];
 
-                    if (!temp.ContainsKey(name))
-                    {
+                    if (!temp.TryGetValue(name, out var list))
                         continue;
-                    }
-
-                    var list = temp[name];
 
                     {
                         var frame = wad.LumpInfos[lump].Name[4] - 'A';
@@ -146,7 +144,7 @@ namespace ManagedDoom
             {
                 var name = wad.LumpInfos[lump].Name;
 
-                if (name.StartsWith("S"))
+                if (name.StartsWith('S'))
                 {
                     if (name.EndsWith("_END"))
                     {
@@ -164,22 +162,17 @@ namespace ManagedDoom
                 if (spriteSection)
                 {
                     if (wad.LumpInfos[lump].Size > 0)
-                    {
                         yield return lump;
-                    }
                 }
             }
         }
 
         private static Patch CachedRead(int lump, Wad wad, Dictionary<int, Patch> cache)
         {
-            if (!cache.ContainsKey(lump))
-            {
-                var name = wad.LumpInfos[lump].Name;
-                cache.Add(lump, Patch.FromData(name, wad.ReadLump(lump)));
-            }
-
-            return cache[lump];
+            ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, lump, out var exists);
+            if (exists) return value;
+            var name = wad.LumpInfos[lump].Name;
+            return value = Patch.FromData(name, wad.ReadLump(lump));
         }
 
         public SpriteDef this[Sprite sprite] => spriteDefs[(int)sprite];
@@ -198,13 +191,8 @@ namespace ManagedDoom
 
             public void CheckCompletion()
             {
-                for (var i = 0; i < Patches.Length; i++)
-                {
-                    if (Patches[i] == null)
-                    {
-                        throw new Exception("Missing sprite!");
-                    }
-                }
+                if (Patches.Any(t => t == null))
+                    throw new Exception("Missing sprite!");
             }
 
             public bool HasRotation()
@@ -212,9 +200,7 @@ namespace ManagedDoom
                 for (var i = 1; i < Patches.Length; i++)
                 {
                     if (Patches[i] != Patches[0])
-                    {
                         return true;
-                    }
                 }
 
                 return false;

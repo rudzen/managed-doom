@@ -69,7 +69,7 @@ namespace ManagedDoom.Silk
             }
         }
 
-        public unsafe void Render(Doom doom, Fixed frameFrac)
+        public void Render(Doom doom, Fixed frameFrac)
         {
             renderer.Render(doom, textureData, frameFrac);
 

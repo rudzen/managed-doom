@@ -67,9 +67,7 @@ namespace ManagedDoom
         {
             index--;
             if (index < 0)
-            {
                 index = items.Length - 1;
-            }
 
             choice = items[index];
         }
@@ -78,9 +76,7 @@ namespace ManagedDoom
         {
             index++;
             if (index >= items.Length)
-            {
                 index = 0;
-            }
 
             choice = items[index];
         }
@@ -106,28 +102,24 @@ namespace ManagedDoom
                     return true;
             }
 
-            if (e.Key == DoomKey.Up)
+            switch (e.Key)
             {
-                Up();
-                Menu.StartSound(Sfx.PSTOP);
-            }
-
-            if (e.Key == DoomKey.Down)
-            {
-                Down();
-                Menu.StartSound(Sfx.PSTOP);
-            }
-
-            if (e.Key == DoomKey.Enter)
-            {
-                textInput = choice.Edit(() => DoSave(index));
-                Menu.StartSound(Sfx.PISTOL);
-            }
-
-            if (e.Key == DoomKey.Escape)
-            {
-                Menu.Close();
-                Menu.StartSound(Sfx.SWTCHX);
+                case DoomKey.Up:
+                    Up();
+                    Menu.StartSound(Sfx.PSTOP);
+                    break;
+                case DoomKey.Down:
+                    Down();
+                    Menu.StartSound(Sfx.PSTOP);
+                    break;
+                case DoomKey.Enter:
+                    textInput = choice.Edit(() => DoSave(index));
+                    Menu.StartSound(Sfx.PISTOL);
+                    break;
+                case DoomKey.Escape:
+                    Menu.Close();
+                    Menu.StartSound(Sfx.SWTCHX);
+                    break;
             }
 
             return true;

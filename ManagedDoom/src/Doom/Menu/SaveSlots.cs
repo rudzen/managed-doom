@@ -35,7 +35,7 @@ namespace ManagedDoom
             else
                 Array.Clear(slots);
 
-            var directory = ConfigUtilities.GetExeDirectory();
+            var directory = ConfigUtilities.GetExeDirectory;
             Span<byte> buffer = stackalloc byte[descriptionSize];
             for (var i = 0; i < slots.Length; i++)
             {

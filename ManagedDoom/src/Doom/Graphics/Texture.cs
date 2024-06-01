@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 
@@ -92,6 +91,7 @@ namespace ManagedDoom
                     {
                         compositeColumnCount++;
                     }
+
                     columns[x] = patch.Columns[x - patch.OriginX];
                 }
             }
@@ -117,13 +117,15 @@ namespace ManagedDoom
                         {
                             continue;
                         }
+
                         var patchColumn = patch.Columns[px];
                         DrawColumnInCache(
-                            patchColumn,
-                            column.Data,
-                            column.Offset,
-                            patch.OriginY,
-                            height);
+                            source: patchColumn,
+                            destination: column.Data,
+                            destinationOffset: column.Offset,
+                            destinationY: patch.OriginY,
+                            destinationHeight: height
+                        );
                     }
 
                     columns[x] = [column];
@@ -165,11 +167,12 @@ namespace ManagedDoom
                 if (length > 0)
                 {
                     Array.Copy(
-                        column.Data,
-                        sourceIndex,
-                        destination,
-                        destinationIndex,
-                        length);
+                        sourceArray: column.Data,
+                        sourceIndex: sourceIndex,
+                        destinationArray: destination,
+                        destinationIndex: destinationIndex,
+                        length: length
+                    );
                 }
             }
         }

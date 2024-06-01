@@ -57,19 +57,17 @@ namespace ManagedDoom.Silk
         public void StartMusic(Bgm bgm, bool loop)
         {
             if (bgm == current)
-            {
                 return;
-            }
 
-            var lump = "D_" + DoomInfo.BgmNames[(int)bgm].ToString().ToUpper();
-            var data = wad.ReadLump(lump);
+            var lumpName = "D_" + DoomInfo.BgmNames[(int)bgm].ToString().ToUpper();
+            var data = wad.ReadLump(lumpName);
             var decoder = ReadData(data, loop);
             stream.SetDecoder(decoder);
 
             current = bgm;
         }
 
-        private IDecoder ReadData(byte[] data, bool loop)
+        private static IDecoder ReadData(byte[] data, bool loop)
         {
             var isMus = true;
             for (var i = 0; i < MusDecoder.MusHeader.Length; i++)
@@ -160,9 +158,7 @@ namespace ManagedDoom.Silk
                 reserved = decoder;
 
                 if (audioStream.State == PlaybackState.Stopped)
-                {
                     audioStream.Play(OnGetData);
-                }
             }
 
             private void OnGetData(short[] samples)

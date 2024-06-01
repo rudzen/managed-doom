@@ -29,8 +29,8 @@ namespace ManagedDoom
                 return dummyPatch;
             }
 
-            var width = 64;
-            var height = 128;
+            const int width = 64;
+            const int height = 128;
 
             var data = new byte[height + 32];
             for (var y = 0; y < data.Length; y++)
@@ -39,8 +39,8 @@ namespace ManagedDoom
             }
 
             var columns = new Column[width][];
-            var c1 = new Column[] { new Column(0, data, 0, height) };
-            var c2 = new Column[] { new Column(0, data, 32, height) };
+            var c1 = new[] { new Column(0, data, 0, height) };
+            var c2 = new[] { new Column(0, data, 32, height) };
             for (var x = 0; x < width; x++)
             {
                 columns[x] = x / 32 % 2 == 0 ? c1 : c2;
@@ -57,12 +57,10 @@ namespace ManagedDoom
 
         public static Texture GetTexture(int height)
         {
-            if (dummyTextures.ContainsKey(height))
-            {
-                return dummyTextures[height];
-            }
+            if (dummyTextures.TryGetValue(height, out var texture))
+                return texture;
 
-            var patch = new TexturePatch[] { new TexturePatch(0, 0, GetPatch()) };
+            var patch = new[] { new TexturePatch(0, 0, GetPatch()) };
 
             dummyTextures.Add(height, new Texture("DUMMY", false, 64, height, patch));
 

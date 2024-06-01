@@ -18,6 +18,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 
 namespace ManagedDoom
@@ -73,6 +75,7 @@ namespace ManagedDoom
             try
             {
                 Console.Write("Load flats: ");
+                var start = Stopwatch.GetTimestamp();
 
                 var firstFlat = wad.GetLumpNumber("F_START") + 1;
                 var lastFlat = wad.GetLumpNumber("F_END") - 1;
@@ -82,13 +85,11 @@ namespace ManagedDoom
 
                 nameToFlat = new Dictionary<string, Flat>();
                 nameToNumber = new Dictionary<string, int>();
-
+                
                 for (var lump = firstFlat; lump <= lastFlat; lump++)
                 {
                     if (wad.GetLumpSize(lump) != 4096)
-                    {
                         continue;
-                    }
 
                     var number = lump - firstFlat;
                     var name = wad.LumpInfos[lump].Name;
@@ -102,7 +103,7 @@ namespace ManagedDoom
                 SkyFlatNumber = nameToNumber["F_SKY1"];
                 SkyFlat = nameToFlat["F_SKY1"];
 
-                Console.WriteLine("OK (" + nameToFlat.Count + " flats)");
+                Console.WriteLine("OK (" + nameToFlat.Count + " flats) [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {
@@ -191,10 +192,8 @@ namespace ManagedDoom
 
         public int GetNumber(string name)
         {
-            if (nameToNumber.ContainsKey(name))
-            {
-                return nameToNumber[name];
-            }
+            if (nameToNumber.TryGetValue(name, out var number))
+                return number;
 
             return -1;
         }
@@ -211,15 +210,7 @@ namespace ManagedDoom
 
         private static int CountLump(Wad wad, string name)
         {
-            var count = 0;
-            foreach (var lump in wad.LumpInfos)
-            {
-                if (lump.Name == name)
-                {
-                    count++;
-                }
-            }
-            return count;
+            return wad.LumpInfos.Count(lump => lump.Name == name);
         }
 
         public int Count => flats.Length;

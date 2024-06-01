@@ -43,8 +43,8 @@ namespace ManagedDoom.Silk
         {
             var monitor = Monitor.GetMainMonitor(null);
 
-            var baseWidth = 640;
-            var baseHeight = 400;
+            const int baseWidth = 640;
+            const int baseHeight = 400;
 
             var currentWidth = baseWidth;
             var currentHeight = baseHeight;
@@ -69,7 +69,7 @@ namespace ManagedDoom.Silk
 
         public static SilkMusic GetMusicInstance(Config config, GameContent content, AudioDevice device)
         {
-            var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory(), config.audio_soundfont);
+            var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.audio_soundfont);
             if (File.Exists(sfPath))
             {
                 return new SilkMusic(config, content, device, sfPath);

@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,32 +23,32 @@ namespace ManagedDoom
 {
     public sealed class CommandLineArgs
     {
-        public readonly Arg<string> iwad;
-        public readonly Arg<string[]> file;
-        public readonly Arg<string[]> deh;
+        public Arg<string> iwad { get; }
+        public Arg<string[]> file { get; }
+        public Arg<string[]> deh { get; }
 
-        public readonly Arg<Tuple<int, int>> warp;
-        public readonly Arg<int> episode;
-        public readonly Arg<int> skill;
+        public Arg<Tuple<int, int>> warp { get; }
+        public Arg<int> episode { get; }
+        public Arg<int> skill { get; }
 
-        public readonly Arg deathmatch;
-        public readonly Arg altdeath;
-        public readonly Arg fast;
-        public readonly Arg respawn;
-        public readonly Arg nomonsters;
-        public readonly Arg solonet;
+        public Arg deathmatch { get; }
+        public Arg altdeath { get; }
+        public Arg fast { get; }
+        public Arg respawn { get; }
+        public Arg nomonsters { get; }
+        public Arg solonet { get; }
 
-        public readonly Arg<string> playdemo;
-        public readonly Arg<string> timedemo;
+        public Arg<string> playdemo { get; }
+        public Arg<string> timedemo { get; }
 
-        public readonly Arg<int> loadgame;
+        public Arg<int> loadgame { get; }
 
-        public readonly Arg nomouse;
-        public readonly Arg nosound;
-        public readonly Arg nosfx;
-        public readonly Arg nomusic;
+        public Arg nomouse { get; }
+        public Arg nosound { get; }
+        public Arg nosfx { get; }
+        public Arg nomusic { get; }
 
-        public readonly Arg nodeh;
+        public Arg nodeh { get; }
 
         public CommandLineArgs(string[] args)
         {
@@ -196,12 +195,11 @@ namespace ManagedDoom
         private static string[] GetValues(string[] args, string name)
         {
             return args
-                .SkipWhile(arg => arg != name)
-                .Skip(1)
-                .TakeWhile(arg => arg[0] != '-')
-                .ToArray();
+                   .SkipWhile(arg => arg != name)
+                   .Skip(1)
+                   .TakeWhile(arg => arg[0] != '-')
+                   .ToArray();
         }
-
 
 
         public readonly struct Arg
