@@ -172,105 +172,101 @@ namespace ManagedDoomTest.UnitTests
         [TestMethod]
         public void PointInSubsectorE1M1()
         {
-            using (var content = GameContent.CreateDummy(WadPath.Doom1))
+            using var content = GameContent.CreateDummy(WadPath.Doom1);
+            var options = new GameOptions();
+            var world = new World(content, options, null);
+            var map = new Map(content, world);
+
+            var ok = 0;
+            var count = 0;
+
+            foreach (var subsector in map.Subsectors)
             {
-                var options = new GameOptions();
-                var world = new World(content, options, null);
-                var map = new Map(content, world);
-
-                var ok = 0;
-                var count = 0;
-
-                foreach (var subsector in map.Subsectors)
+                for (var i = 0; i < subsector.SegCount; i++)
                 {
-                    for (var i = 0; i < subsector.SegCount; i++)
+                    var seg = map.Segs[subsector.FirstSeg + i];
+
+                    var p1x = seg.Vertex1.X.ToDouble();
+                    var p1y = seg.Vertex1.Y.ToDouble();
+                    var p2x = seg.Vertex2.X.ToDouble();
+                    var p2y = seg.Vertex2.Y.ToDouble();
+
+                    var dx = p2x - p1x;
+                    var dy = p2y - p1y;
+                    var length = Math.Sqrt(dx * dx + dy * dy);
+
+                    var centerX = (p1x + p2x) / 2;
+                    var centerY = (p1y + p2y) / 2;
+                    var stepX = dy / length;
+                    var stepY = -dx / length;
+
+                    var targetX = centerX + 3 * stepX;
+                    var targetY = centerY + 3 * stepY;
+
+                    var fx = Fixed.FromDouble(targetX);
+                    var fy = Fixed.FromDouble(targetY);
+
+                    var result = Geometry.PointInSubsector(fx, fy, map);
+
+                    if (result == subsector)
                     {
-                        var seg = map.Segs[subsector.FirstSeg + i];
-
-                        var p1x = seg.Vertex1.X.ToDouble();
-                        var p1y = seg.Vertex1.Y.ToDouble();
-                        var p2x = seg.Vertex2.X.ToDouble();
-                        var p2y = seg.Vertex2.Y.ToDouble();
-
-                        var dx = p2x - p1x;
-                        var dy = p2y - p1y;
-                        var length = Math.Sqrt(dx * dx + dy * dy);
-
-                        var centerX = (p1x + p2x) / 2;
-                        var centerY = (p1y + p2y) / 2;
-                        var stepX = dy / length;
-                        var stepY = -dx / length;
-
-                        var targetX = centerX + 3 * stepX;
-                        var targetY = centerY + 3 * stepY;
-
-                        var fx = Fixed.FromDouble(targetX);
-                        var fy = Fixed.FromDouble(targetY);
-
-                        var result = Geometry.PointInSubsector(fx, fy, map);
-
-                        if (result == subsector)
-                        {
-                            ok++;
-                        }
-                        count++;
+                        ok++;
                     }
+                    count++;
                 }
-
-                Assert.IsTrue((double)ok / count >= 0.995);
             }
+
+            Assert.IsTrue((double)ok / count >= 0.995);
         }
 
         [TestMethod]
         public void PointInSubsectorMap01()
         {
-            using (var content = GameContent.CreateDummy(WadPath.Doom2))
+            using var content = GameContent.CreateDummy(WadPath.Doom2);
+            var options = new GameOptions();
+            var world = new World(content, options, null);
+            var map = new Map(content, world);
+
+            var ok = 0;
+            var count = 0;
+
+            foreach (var subsector in map.Subsectors)
             {
-                var options = new GameOptions();
-                var world = new World(content, options, null);
-                var map = new Map(content, world);
-
-                var ok = 0;
-                var count = 0;
-
-                foreach (var subsector in map.Subsectors)
+                for (var i = 0; i < subsector.SegCount; i++)
                 {
-                    for (var i = 0; i < subsector.SegCount; i++)
+                    var seg = map.Segs[subsector.FirstSeg + i];
+
+                    var p1x = seg.Vertex1.X.ToDouble();
+                    var p1y = seg.Vertex1.Y.ToDouble();
+                    var p2x = seg.Vertex2.X.ToDouble();
+                    var p2y = seg.Vertex2.Y.ToDouble();
+
+                    var dx = p2x - p1x;
+                    var dy = p2y - p1y;
+                    var length = Math.Sqrt(dx * dx + dy * dy);
+
+                    var centerX = (p1x + p2x) / 2;
+                    var centerY = (p1y + p2y) / 2;
+                    var stepX = dy / length;
+                    var stepY = -dx / length;
+
+                    var targetX = centerX + 3 * stepX;
+                    var targetY = centerY + 3 * stepY;
+
+                    var fx = Fixed.FromDouble(targetX);
+                    var fy = Fixed.FromDouble(targetY);
+
+                    var result = Geometry.PointInSubsector(fx, fy, map);
+
+                    if (result == subsector)
                     {
-                        var seg = map.Segs[subsector.FirstSeg + i];
-
-                        var p1x = seg.Vertex1.X.ToDouble();
-                        var p1y = seg.Vertex1.Y.ToDouble();
-                        var p2x = seg.Vertex2.X.ToDouble();
-                        var p2y = seg.Vertex2.Y.ToDouble();
-
-                        var dx = p2x - p1x;
-                        var dy = p2y - p1y;
-                        var length = Math.Sqrt(dx * dx + dy * dy);
-
-                        var centerX = (p1x + p2x) / 2;
-                        var centerY = (p1y + p2y) / 2;
-                        var stepX = dy / length;
-                        var stepY = -dx / length;
-
-                        var targetX = centerX + 3 * stepX;
-                        var targetY = centerY + 3 * stepY;
-
-                        var fx = Fixed.FromDouble(targetX);
-                        var fy = Fixed.FromDouble(targetY);
-
-                        var result = Geometry.PointInSubsector(fx, fy, map);
-
-                        if (result == subsector)
-                        {
-                            ok++;
-                        }
-                        count++;
+                        ok++;
                     }
+                    count++;
                 }
-
-                Assert.IsTrue((double)ok / count >= 0.995);
             }
+
+            Assert.IsTrue((double)ok / count >= 0.995);
         }
 
         [TestMethod]

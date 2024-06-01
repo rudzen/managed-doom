@@ -16,6 +16,8 @@
 
 
 using System;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ManagedDoom
@@ -112,14 +114,12 @@ namespace ManagedDoom
 
         public static void DumpMobjCsv(string path, World world)
         {
-            using (var writer = new System.IO.StreamWriter(path))
+            using var writer = new StreamWriter(path);
+            foreach (var thinker in world.Thinkers)
             {
-                foreach (var thinker in world.Thinkers)
+                if (thinker is Mobj mobj)
                 {
-                    if (thinker is Mobj mobj)
-                    {
-                        writer.WriteLine(GetMobjCsv(mobj));
-                    }
+                    writer.WriteLine(GetMobjCsv(mobj));
                 }
             }
         }
@@ -137,12 +137,7 @@ namespace ManagedDoom
 
         public static int GetSectorHash(World world)
         {
-            var hash = 0;
-            foreach (var sector in world.Map.Sectors)
-            {
-                hash = CombineHash(hash, GetSectorHash(sector));
-            }
-            return hash;
+            return world.Map.Sectors.Aggregate(0, (current, sector) => CombineHash(current, GetSectorHash(sector)));
         }
     }
 }
