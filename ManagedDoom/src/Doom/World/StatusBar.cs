@@ -21,19 +21,18 @@ namespace ManagedDoom
 {
 	public sealed class StatusBar
 	{
-		private World world;
+		private readonly World world;
 
 		// Used for appopriately pained face.
 		private int oldHealth;
 
 		// Used for evil grin.
-		private bool[] oldWeaponsOwned;
+		private readonly bool[] oldWeaponsOwned;
 
 		// Count until face changes.
 		private int faceCount;
 
 		// Current face index.
-		private int faceIndex;
 
 		// A random number per tick.
 		private int randomNumber;
@@ -43,7 +42,7 @@ namespace ManagedDoom
 		private int lastAttackDown;
 		private int lastPainOffset;
 
-		private DoomRandom random;
+		private readonly DoomRandom random;
 
 		public StatusBar(World world)
 		{
@@ -56,7 +55,7 @@ namespace ManagedDoom
 				oldWeaponsOwned,
 				DoomInfo.WeaponInfos.Length);
 			faceCount = 0;
-			faceIndex = 0;
+			FaceIndex = 0;
 			randomNumber = 0;
 			priority = 0;
 			lastAttackDown = -1;
@@ -73,7 +72,7 @@ namespace ManagedDoom
 				oldWeaponsOwned,
 				DoomInfo.WeaponInfos.Length);
 			faceCount = 0;
-			faceIndex = 0;
+			FaceIndex = 0;
 			randomNumber = 0;
 			priority = 0;
 			lastAttackDown = -1;
@@ -96,7 +95,7 @@ namespace ManagedDoom
 				if (player.Health == 0)
 				{
 					priority = 9;
-					faceIndex = Face.DeadIndex;
+					FaceIndex = Face.DeadIndex;
 					faceCount = 1;
 				}
 			}
@@ -122,7 +121,7 @@ namespace ManagedDoom
 						// Evil grin if just picked up weapon.
 						priority = 8;
 						faceCount = Face.EvilGrinDuration;
-						faceIndex = CalcPainOffset() + Face.EvilGrinOffset;
+						FaceIndex = CalcPainOffset() + Face.EvilGrinOffset;
 					}
 				}
 			}
@@ -139,7 +138,7 @@ namespace ManagedDoom
 					if (player.Health - oldHealth > Face.MuchPain)
 					{
 						faceCount = Face.TurnDuration;
-						faceIndex = CalcPainOffset() + Face.OuchOffset;
+						FaceIndex = CalcPainOffset() + Face.OuchOffset;
 					}
 					else
 					{
@@ -163,22 +162,22 @@ namespace ManagedDoom
 						}
 
 						faceCount = Face.TurnDuration;
-						faceIndex = CalcPainOffset();
+						FaceIndex = CalcPainOffset();
 
 						if (diff < Angle.Ang45)
 						{
 							// Head-on.
-							faceIndex += Face.RampageOffset;
+							FaceIndex += Face.RampageOffset;
 						}
 						else if (right)
 						{
 							// Turn face right.
-							faceIndex += Face.TurnOffset;
+							FaceIndex += Face.TurnOffset;
 						}
 						else
 						{
 							// Turn face left.
-							faceIndex += Face.TurnOffset + 1;
+							FaceIndex += Face.TurnOffset + 1;
 						}
 					}
 				}
@@ -193,13 +192,13 @@ namespace ManagedDoom
 					{
 						priority = 7;
 						faceCount = Face.TurnDuration;
-						faceIndex = CalcPainOffset() + Face.OuchOffset;
+						FaceIndex = CalcPainOffset() + Face.OuchOffset;
 					}
 					else
 					{
 						priority = 6;
 						faceCount = Face.TurnDuration;
-						faceIndex = CalcPainOffset() + Face.RampageOffset;
+						FaceIndex = CalcPainOffset() + Face.RampageOffset;
 					}
 				}
 			}
@@ -216,7 +215,7 @@ namespace ManagedDoom
 					else if (--lastAttackDown == 0)
 					{
 						priority = 5;
-						faceIndex = CalcPainOffset() + Face.RampageOffset;
+						FaceIndex = CalcPainOffset() + Face.RampageOffset;
 						faceCount = 1;
 						lastAttackDown = 1;
 					}
@@ -235,7 +234,7 @@ namespace ManagedDoom
 				{
 					priority = 4;
 
-					faceIndex = Face.GodIndex;
+					FaceIndex = Face.GodIndex;
 					faceCount = 1;
 				}
 			}
@@ -243,7 +242,7 @@ namespace ManagedDoom
 			// Look left or look right if the facecount has timed out.
 			if (faceCount == 0)
 			{
-				faceIndex = CalcPainOffset() + (randomNumber % 3);
+				FaceIndex = CalcPainOffset() + (randomNumber % 3);
 				faceCount = Face.StraightFaceDuration;
 				priority = 0;
 			}
@@ -267,8 +266,7 @@ namespace ManagedDoom
 			return lastPainOffset;
 		}
 
-		public int FaceIndex => faceIndex;
-
+		public int FaceIndex { get; private set; }
 
 
 		public static class Face

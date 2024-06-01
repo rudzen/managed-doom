@@ -25,8 +25,8 @@ namespace ManagedDoom.Video
 
         // The vector graphics for the automap.
         // A line drawing of the player pointing right, starting from the middle.
-        private static readonly float[] playerArrow = new float[]
-        {
+        private static readonly float[] playerArrow =
+        [
             -pr + pr / 8, 0, pr, 0, // -----
             pr, 0, pr - pr / 2, pr / 4, // ----->
             pr, 0, pr - pr / 2, -pr / 4,
@@ -34,16 +34,16 @@ namespace ManagedDoom.Video
             -pr + pr / 8, 0, -pr - pr / 8, -pr / 4,
             -pr + 3 * pr / 8, 0, -pr + pr / 8, pr / 4, // >>--->
             -pr + 3 * pr / 8, 0, -pr + pr / 8, -pr / 4
-        };
+        ];
 
         private static readonly float tr = 16;
 
-        private static readonly float[] thingTriangle = new float[]
-        {
+        private static readonly float[] thingTriangle =
+        [
             -0.5F * tr, -0.7F * tr, tr, 0F,
             tr, 0F, -0.5F * tr, 0.7F * tr,
             -0.5F * tr, 0.7F * tr, -0.5F * tr, -0.7F * tr
-        };
+        ];
 
         // For use if I do walls with outsides / insides.
         private static readonly int reds = (256 - 5 * 16);
@@ -74,20 +74,20 @@ namespace ManagedDoom.Video
         private static readonly int secretWallColors = wallColors;
         private static readonly int secretWallRange = wallRange;
 
-        private static readonly int[] playerColors = new int[]
-        {
+        private static readonly int[] playerColors =
+        [
             greens,
             grays,
             browns,
             reds
-        };
+        ];
 
-        private DrawScreen screen;
+        private readonly DrawScreen screen;
 
-        private int scale;
-        private int amWidth;
-        private int amHeight;
-        private float ppu;
+        private readonly int scale;
+        private readonly int amWidth;
+        private readonly int amHeight;
+        private readonly float ppu;
 
         private float minX;
         private float maxX;
@@ -103,7 +103,7 @@ namespace ManagedDoom.Video
         private float renderViewX;
         private float renderViewY;
 
-        private Patch[] markNumbers;
+        private readonly Patch[] markNumbers;
 
         public AutoMapRenderer(Wad wad, DrawScreen screen)
         {
@@ -329,8 +329,8 @@ namespace ManagedDoom.Video
 
         private struct DrawPos
         {
-            public float X;
-            public float Y;
+            public readonly float X;
+            public readonly float Y;
 
             public DrawPos(float x, float y)
             {

@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
 	public sealed class ThingInteraction
 	{
-		private World world;
+		private readonly World world;
 
 		public ThingInteraction(World world)
 		{
@@ -341,7 +341,7 @@ namespace ManagedDoom
 			}
 
 			// Boss spider and cyborg take no damage from concussion.
-			if (thing.Type == MobjType.Cyborg || thing.Type == MobjType.Spider)
+			if (thing.Type is MobjType.Cyborg or MobjType.Spider)
 			{
 				return true;
 			}

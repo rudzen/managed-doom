@@ -26,19 +26,19 @@ namespace ManagedDoom
     {
         public static readonly KeyBinding Empty = new KeyBinding();
 
-        private DoomKey[] keys;
-        private DoomMouseButton[] mouseButtons;
+        private readonly DoomKey[] keys;
+        private readonly DoomMouseButton[] mouseButtons;
 
         private KeyBinding()
         {
-            keys = Array.Empty<DoomKey>();
-            mouseButtons = Array.Empty<DoomMouseButton>();
+            keys = [];
+            mouseButtons = [];
         }
 
         public KeyBinding(IReadOnlyList<DoomKey> keys)
         {
             this.keys = keys.ToArray();
-            this.mouseButtons = Array.Empty<DoomMouseButton>();
+            this.mouseButtons = [];
         }
 
         public KeyBinding(IReadOnlyList<DoomKey> keys, IReadOnlyList<DoomMouseButton> mouseButtons)
@@ -56,10 +56,8 @@ namespace ManagedDoom
             {
                 return string.Join(", ", values);
             }
-            else
-            {
-                return "none";
-            }
+
+            return "none";
         }
 
         public static KeyBinding Parse(string value)

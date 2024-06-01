@@ -22,30 +22,30 @@ namespace ManagedDoom
     public sealed class PlayerBehavior
     {
         public static readonly int[] ForwardMove =
-        {
+        [
             0x19,
             0x32
-        };
+        ];
 
         public static readonly int[] SideMove =
-        {
+        [
             0x18,
             0x28
-        };
+        ];
 
         public static readonly int[] AngleTurn =
-        {
+        [
             640,
             1280,
             320 // For slow turn.
-        };
+        ];
 
         public static readonly int MaxMove = ForwardMove[1];
         public static readonly int SlowTurnTics = 6;
 
 
 
-        private World world;
+        private readonly World world;
 
         public PlayerBehavior(World world)
         {
@@ -438,7 +438,7 @@ namespace ManagedDoom
         }
 
 
-        private static Angle ang5 = new Angle(Angle.Ang90.Data / 18);
+        private static readonly Angle ang5 = new Angle(Angle.Ang90.Data / 18);
 
         /// <summary>
         /// Fall on your face when dying.

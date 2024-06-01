@@ -21,13 +21,11 @@ namespace ManagedDoom
 {
     public sealed class SpriteDef
     {
-        private SpriteFrame[] frames;
-
         public SpriteDef(SpriteFrame[] frames)
         {
-            this.frames = frames;
+            this.Frames = frames;
         }
 
-        public SpriteFrame[] Frames => frames;
+        public SpriteFrame[] Frames { get; }
     }
 }

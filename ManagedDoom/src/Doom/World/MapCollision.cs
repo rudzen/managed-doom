@@ -23,11 +23,6 @@ namespace ManagedDoom
     {
         private World world;
 
-        private Fixed openTop;
-        private Fixed openBottom;
-        private Fixed openRange;
-        private Fixed lowFloor;
-
         public MapCollision(World world)
         {
             this.world = world;
@@ -41,7 +36,7 @@ namespace ManagedDoom
             if (line.BackSide == null)
             {
                 // If the line is single sided, nothing can pass through.
-                openRange = Fixed.Zero;
+                OpenRange = Fixed.Zero;
                 return;
             }
 
@@ -50,30 +45,33 @@ namespace ManagedDoom
 
             if (front.CeilingHeight < back.CeilingHeight)
             {
-                openTop = front.CeilingHeight;
+                OpenTop = front.CeilingHeight;
             }
             else
             {
-                openTop = back.CeilingHeight;
+                OpenTop = back.CeilingHeight;
             }
 
             if (front.FloorHeight > back.FloorHeight)
             {
-                openBottom = front.FloorHeight;
-                lowFloor = back.FloorHeight;
+                OpenBottom = front.FloorHeight;
+                LowFloor = back.FloorHeight;
             }
             else
             {
-                openBottom = back.FloorHeight;
-                lowFloor = front.FloorHeight;
+                OpenBottom = back.FloorHeight;
+                LowFloor = front.FloorHeight;
             }
 
-            openRange = openTop - openBottom;
+            OpenRange = OpenTop - OpenBottom;
         }
 
-        public Fixed OpenTop => openTop;
-        public Fixed OpenBottom => openBottom;
-        public Fixed OpenRange => openRange;
-        public Fixed LowFloor => lowFloor;
+        public Fixed OpenTop { get; private set; }
+
+        public Fixed OpenBottom { get; private set; }
+
+        public Fixed OpenRange { get; private set; }
+
+        public Fixed LowFloor { get; private set; }
     }
 }

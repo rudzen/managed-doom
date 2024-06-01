@@ -21,14 +21,7 @@ namespace ManagedDoom
 {
     public sealed class LightFlash : Thinker
     {
-        private World world;
-
-        private Sector sector;
-        private int count;
-        private int maxLight;
-        private int minLight;
-        private int maxTime;
-        private int minTime;
+        private readonly World world;
 
         public LightFlash(World world)
         {
@@ -37,57 +30,33 @@ namespace ManagedDoom
 
         public override void Run()
         {
-            if (--count > 0)
+            if (--Count > 0)
             {
                 return;
             }
 
-            if (sector.LightLevel == maxLight)
+            if (Sector.LightLevel == MaxLight)
             {
-                sector.LightLevel = minLight;
-                count = (world.Random.Next() & minTime) + 1;
+                Sector.LightLevel = MinLight;
+                Count = (world.Random.Next() & MinTime) + 1;
             }
             else
             {
-                sector.LightLevel = maxLight;
-                count = (world.Random.Next() & maxTime) + 1;
+                Sector.LightLevel = MaxLight;
+                Count = (world.Random.Next() & MaxTime) + 1;
             }
         }
 
-        public Sector Sector
-        {
-            get => sector;
-            set => sector = value;
-        }
+        public Sector Sector { get; set; }
 
-        public int Count
-        {
-            get => count;
-            set => count = value;
-        }
+        public int Count { get; set; }
 
-        public int MaxLight
-        {
-            get => maxLight;
-            set => maxLight = value;
-        }
+        public int MaxLight { get; set; }
 
-        public int MinLight
-        {
-            get => minLight;
-            set => minLight = value;
-        }
+        public int MinLight { get; set; }
 
-        public int MaxTime
-        {
-            get => maxTime;
-            set => maxTime = value;
-        }
+        public int MaxTime { get; set; }
 
-        public int MinTime
-        {
-            get => minTime;
-            set => minTime = value;
-        }
+        public int MinTime { get; set; }
     }
 }

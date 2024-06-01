@@ -26,102 +26,59 @@ namespace ManagedDoom
 
         public static readonly Fixed NormalViewHeight = Fixed.FromInt(41);
 
-        private static readonly string[] defaultPlayerNames = new string[]
-        {
+        private static readonly string[] defaultPlayerNames =
+        [
             "Green",
             "Indigo",
             "Brown",
             "Red"
-        };
-
-        private int number;
-        private string name;
-        private bool inGame;
-
-        private Mobj mobj;
-        private PlayerState playerState;
-        private TicCmd cmd;
+        ];
 
         // Determine POV, including viewpoint bobbing during movement.
         // Focal origin above mobj.Z.
-        private Fixed viewZ;
 
         // Base height above floor for viewz.
-        private Fixed viewHeight;
 
         // Bob / squat speed.
-        private Fixed deltaViewHeight;
 
         // Bounded / scaled total momentum.
-        private Fixed bob;
 
         // This is only used between levels,
         // mobj.Health is used during levels.
-        private int health;
-        private int armorPoints;
 
         // Armor type is 0-2.
-        private int armorType;
 
         // Power ups. invinc and invis are tic counters.
-        private int[] powers;
-        private bool[] cards;
-        private bool backpack;
 
         // Frags, kills of other players.
-        private int[] frags;
-
-        private WeaponType readyWeapon;
 
         // Is WeanponType.NoChange if not changing.
-        private WeaponType pendingWeapon;
-
-        private bool[] weaponOwned;
-        private int[] ammo;
-        private int[] maxAmmo;
 
         // True if button down last tic.
-        private bool attackDown;
-        private bool useDown;
 
         // Bit flags, for cheats and debug.
-        private CheatFlags cheats;
 
         // Refired shots are less accurate.
-        private int refire;
 
         // For intermission stats.
-        private int killCount;
-        private int itemCount;
-        private int secretCount;
 
         // Hint messages.
-        private string message;
-        private int messageTime;
 
         // For screen flashing (red or bright).
-        private int damageCount;
-        private int bonusCount;
 
         // Who did damage (null for floors / ceilings).
-        private Mobj attacker;
 
         // So gun flashes light up areas.
-        private int extraLight;
 
         // Current PLAYPAL, ???
         // can be set to REDCOLORMAP for pain, etc.
-        private int fixedColorMap;
 
         // Player skin colorshift,
         // 0-3 for which color to draw player.
-        private int colorMap;
 
         // Overlay view sprites (gun, etc).
-        private PlayerSpriteDef[] playerSprites;
 
         // True if secret level has been done.
-        private bool didSecret;
 
         // For frame interpolation.
         private bool interpolate;
@@ -130,87 +87,87 @@ namespace ManagedDoom
 
         public Player(int number)
         {
-            this.number = number;
+            this.Number = number;
 
-            name = defaultPlayerNames[number];
+            Name = defaultPlayerNames[number];
 
-            cmd = new TicCmd();
+            Cmd = new TicCmd();
 
-            powers = new int[(int)PowerType.Count];
-            cards = new bool[(int)CardType.Count];
+            Powers = new int[(int)PowerType.Count];
+            Cards = new bool[(int)CardType.Count];
 
-            frags = new int[MaxPlayerCount];
+            Frags = new int[MaxPlayerCount];
 
-            weaponOwned = new bool[(int)WeaponType.Count];
-            ammo = new int[(int)AmmoType.Count];
-            maxAmmo = new int[(int)AmmoType.Count];
+            WeaponOwned = new bool[(int)WeaponType.Count];
+            Ammo = new int[(int)AmmoType.Count];
+            MaxAmmo = new int[(int)AmmoType.Count];
 
-            playerSprites = new PlayerSpriteDef[(int)PlayerSprite.Count];
-            for (var i = 0; i < playerSprites.Length; i++)
+            PlayerSprites = new PlayerSpriteDef[(int)PlayerSprite.Count];
+            for (var i = 0; i < PlayerSprites.Length; i++)
             {
-                playerSprites[i] = new PlayerSpriteDef();
+                PlayerSprites[i] = new PlayerSpriteDef();
             }
         }
 
         public void Clear()
         {
-            mobj = null;
-            playerState = 0;
-            cmd.Clear();
+            Mobj = null;
+            PlayerState = 0;
+            Cmd.Clear();
 
-            viewZ = Fixed.Zero;
-            viewHeight = Fixed.Zero;
-            deltaViewHeight = Fixed.Zero;
-            bob = Fixed.Zero;
+            ViewZ = Fixed.Zero;
+            ViewHeight = Fixed.Zero;
+            DeltaViewHeight = Fixed.Zero;
+            Bob = Fixed.Zero;
 
-            health = 0;
-            armorPoints = 0;
-            armorType = 0;
+            Health = 0;
+            ArmorPoints = 0;
+            ArmorType = 0;
 
-            Array.Clear(powers, 0, powers.Length);
-            Array.Clear(cards, 0, cards.Length);
-            backpack = false;
+            Array.Clear(Powers, 0, Powers.Length);
+            Array.Clear(Cards, 0, Cards.Length);
+            Backpack = false;
 
-            Array.Clear(frags, 0, frags.Length);
+            Array.Clear(Frags, 0, Frags.Length);
 
-            readyWeapon = 0;
-            pendingWeapon = 0;
+            ReadyWeapon = 0;
+            PendingWeapon = 0;
 
-            Array.Clear(weaponOwned, 0, weaponOwned.Length);
-            Array.Clear(ammo, 0, ammo.Length);
-            Array.Clear(maxAmmo, 0, maxAmmo.Length);
+            Array.Clear(WeaponOwned, 0, WeaponOwned.Length);
+            Array.Clear(Ammo, 0, Ammo.Length);
+            Array.Clear(MaxAmmo, 0, MaxAmmo.Length);
 
-            useDown = false;
-            attackDown = false;
+            UseDown = false;
+            AttackDown = false;
 
-            cheats = 0;
+            Cheats = 0;
 
-            refire = 0;
+            Refire = 0;
 
-            killCount = 0;
-            itemCount = 0;
-            secretCount = 0;
+            KillCount = 0;
+            ItemCount = 0;
+            SecretCount = 0;
 
-            message = null;
-            messageTime = 0;
+            Message = null;
+            MessageTime = 0;
 
-            damageCount = 0;
-            bonusCount = 0;
+            DamageCount = 0;
+            BonusCount = 0;
 
-            attacker = null;
+            Attacker = null;
 
-            extraLight = 0;
+            ExtraLight = 0;
 
-            fixedColorMap = 0;
+            FixedColorMap = 0;
 
-            colorMap = 0;
+            ColorMap = 0;
 
-            foreach (var psp in playerSprites)
+            foreach (var psp in PlayerSprites)
             {
                 psp.Clear();
             }
 
-            didSecret = false;
+            DidSecret = false;
 
             interpolate = false;
             oldViewZ = Fixed.Zero;
@@ -219,66 +176,66 @@ namespace ManagedDoom
 
         public void Reborn()
         {
-            mobj = null;
-            playerState = PlayerState.Live;
-            cmd.Clear();
+            Mobj = null;
+            PlayerState = PlayerState.Live;
+            Cmd.Clear();
 
-            viewZ = Fixed.Zero;
-            viewHeight = Fixed.Zero;
-            deltaViewHeight = Fixed.Zero;
-            bob = Fixed.Zero;
+            ViewZ = Fixed.Zero;
+            ViewHeight = Fixed.Zero;
+            DeltaViewHeight = Fixed.Zero;
+            Bob = Fixed.Zero;
 
-            health = DoomInfo.DeHackEdConst.InitialHealth;
-            armorPoints = 0;
-            armorType = 0;
+            Health = DoomInfo.DeHackEdConst.InitialHealth;
+            ArmorPoints = 0;
+            ArmorType = 0;
 
-            Array.Clear(powers, 0, powers.Length);
-            Array.Clear(cards, 0, cards.Length);
-            backpack = false;
+            Array.Clear(Powers, 0, Powers.Length);
+            Array.Clear(Cards, 0, Cards.Length);
+            Backpack = false;
 
-            readyWeapon = WeaponType.Pistol;
-            pendingWeapon = WeaponType.Pistol;
+            ReadyWeapon = WeaponType.Pistol;
+            PendingWeapon = WeaponType.Pistol;
 
-            Array.Clear(weaponOwned, 0, weaponOwned.Length);
-            Array.Clear(ammo, 0, ammo.Length);
-            Array.Clear(maxAmmo, 0, maxAmmo.Length);
+            Array.Clear(WeaponOwned, 0, WeaponOwned.Length);
+            Array.Clear(Ammo, 0, Ammo.Length);
+            Array.Clear(MaxAmmo, 0, MaxAmmo.Length);
 
-            weaponOwned[(int)WeaponType.Fist] = true;
-            weaponOwned[(int)WeaponType.Pistol] = true;
-            ammo[(int)AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
+            WeaponOwned[(int)WeaponType.Fist] = true;
+            WeaponOwned[(int)WeaponType.Pistol] = true;
+            Ammo[(int)AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
             for (var i = 0; i < (int)AmmoType.Count; i++)
             {
-                maxAmmo[i] = DoomInfo.AmmoInfos.Max[i];
+                MaxAmmo[i] = DoomInfo.AmmoInfos.Max[i];
             }
 
             // Don't do anything immediately.
-            useDown = true;
-            attackDown = true;
+            UseDown = true;
+            AttackDown = true;
 
-            cheats = 0;
+            Cheats = 0;
 
-            refire = 0;
+            Refire = 0;
 
-            message = null;
-            messageTime = 0;
+            Message = null;
+            MessageTime = 0;
 
-            damageCount = 0;
-            bonusCount = 0;
+            DamageCount = 0;
+            BonusCount = 0;
 
-            attacker = null;
+            Attacker = null;
 
-            extraLight = 0;
+            ExtraLight = 0;
 
-            fixedColorMap = 0;
+            FixedColorMap = 0;
 
-            colorMap = 0;
+            ColorMap = 0;
 
-            foreach (var psp in playerSprites)
+            foreach (var psp in PlayerSprites)
             {
                 psp.Clear();
             }
 
-            didSecret = false;
+            DidSecret = false;
 
             interpolate = false;
             oldViewZ = Fixed.Zero;
@@ -287,40 +244,40 @@ namespace ManagedDoom
 
         public void FinishLevel()
         {
-            Array.Clear(powers, 0, powers.Length);
-            Array.Clear(cards, 0, cards.Length);
+            Array.Clear(Powers, 0, Powers.Length);
+            Array.Clear(Cards, 0, Cards.Length);
 
             // Cancel invisibility.
-            mobj.Flags &= ~MobjFlags.Shadow;
+            Mobj.Flags &= ~MobjFlags.Shadow;
 
             // Cancel gun flashes.
-            extraLight = 0;
+            ExtraLight = 0;
 
             // Cancel ir gogles.
-            fixedColorMap = 0;
+            FixedColorMap = 0;
 
             // No palette changes.
-            damageCount = 0;
-            bonusCount = 0;
+            DamageCount = 0;
+            BonusCount = 0;
         }
 
         public void SendMessage(string message)
         {
-            if (ReferenceEquals(this.message, (string)DoomInfo.Strings.MSGOFF) &&
+            if (ReferenceEquals(this.Message, (string)DoomInfo.Strings.MSGOFF) &&
                 !ReferenceEquals(message, (string)DoomInfo.Strings.MSGON))
             {
                 return;
             }
 
-            this.message = message;
-            messageTime = 4 * GameConst.TicRate;
+            this.Message = message;
+            MessageTime = 4 * GameConst.TicRate;
         }
 
         public void UpdateFrameInterpolationInfo()
         {
             interpolate = true;
-            oldViewZ = viewZ;
-            oldAngle = mobj.Angle;
+            oldViewZ = ViewZ;
+            oldAngle = Mobj.Angle;
         }
 
         public void DisableFrameInterpolationForOneFrame()
@@ -331,252 +288,106 @@ namespace ManagedDoom
         public Fixed GetInterpolatedViewZ(Fixed frameFrac)
         {
             // Without the second condition, flicker will occur on the first frame.
-            if (interpolate && mobj.World.LevelTime > 1)
+            if (interpolate && Mobj.World.LevelTime > 1)
             {
-                return oldViewZ + frameFrac * (viewZ - oldViewZ);
+                return oldViewZ + frameFrac * (ViewZ - oldViewZ);
             }
-            else
-            {
-                return viewZ;
-            }
+
+            return ViewZ;
         }
 
         public Angle GetInterpolatedAngle(Fixed frameFrac)
         {
             if (interpolate)
             {
-                var delta = mobj.Angle - oldAngle;
+                var delta = Mobj.Angle - oldAngle;
                 if (delta < Angle.Ang180)
                 {
                     return oldAngle + Angle.FromDegree(frameFrac.ToDouble() * delta.ToDegree());
                 }
-                else
-                {
-                    return oldAngle - Angle.FromDegree(frameFrac.ToDouble() * (360.0 - delta.ToDegree()));
-                }
+
+                return oldAngle - Angle.FromDegree(frameFrac.ToDouble() * (360.0 - delta.ToDegree()));
             }
-            else
-            {
-                return mobj.Angle;
-            }
+
+            return Mobj.Angle;
         }
 
-        public int Number => number;
+        public int Number { get; }
 
-        public string Name => name;
+        public string Name { get; }
 
-        public bool InGame
-        {
-            get => inGame;
-            set => inGame = value;
-        }
+        public bool InGame { get; set; }
 
-        public Mobj Mobj
-        {
-            get => mobj;
-            set => mobj = value;
-        }
+        public Mobj Mobj { get; set; }
 
-        public PlayerState PlayerState
-        {
-            get => playerState;
-            set => playerState = value;
-        }
+        public PlayerState PlayerState { get; set; }
 
-        public TicCmd Cmd
-        {
-            get => cmd;
-        }
+        public TicCmd Cmd { get; }
 
-        public Fixed ViewZ
-        {
-            get => viewZ;
-            set => viewZ = value;
-        }
+        public Fixed ViewZ { get; set; }
 
-        public Fixed ViewHeight
-        {
-            get => viewHeight;
-            set => viewHeight = value;
-        }
+        public Fixed ViewHeight { get; set; }
 
-        public Fixed DeltaViewHeight
-        {
-            get => deltaViewHeight;
-            set => deltaViewHeight = value;
-        }
+        public Fixed DeltaViewHeight { get; set; }
 
-        public Fixed Bob
-        {
-            get => bob;
-            set => bob = value;
-        }
+        public Fixed Bob { get; set; }
 
-        public int Health
-        {
-            get => health;
-            set => health = value;
-        }
+        public int Health { get; set; }
 
-        public int ArmorPoints
-        {
-            get => armorPoints;
-            set => armorPoints = value;
-        }
+        public int ArmorPoints { get; set; }
 
-        public int ArmorType
-        {
-            get => armorType;
-            set => armorType = value;
-        }
+        public int ArmorType { get; set; }
 
-        public int[] Powers
-        {
-            get => powers;
-        }
+        public int[] Powers { get; }
 
-        public bool[] Cards
-        {
-            get => cards;
-        }
+        public bool[] Cards { get; }
 
-        public bool Backpack
-        {
-            get => backpack;
-            set => backpack = value;
-        }
+        public bool Backpack { get; set; }
 
-        public int[] Frags
-        {
-            get => frags;
-        }
+        public int[] Frags { get; }
 
-        public WeaponType ReadyWeapon
-        {
-            get => readyWeapon;
-            set => readyWeapon = value;
-        }
+        public WeaponType ReadyWeapon { get; set; }
 
-        public WeaponType PendingWeapon
-        {
-            get => pendingWeapon;
-            set => pendingWeapon = value;
-        }
+        public WeaponType PendingWeapon { get; set; }
 
-        public bool[] WeaponOwned
-        {
-            get => weaponOwned;
-        }
+        public bool[] WeaponOwned { get; }
 
-        public int[] Ammo
-        {
-            get => ammo;
-        }
+        public int[] Ammo { get; }
 
-        public int[] MaxAmmo
-        {
-            get => maxAmmo;
-        }
+        public int[] MaxAmmo { get; }
 
-        public bool AttackDown
-        {
-            get => attackDown;
-            set => attackDown = value;
-        }
+        public bool AttackDown { get; set; }
 
-        public bool UseDown
-        {
-            get => useDown;
-            set => useDown = value;
-        }
+        public bool UseDown { get; set; }
 
-        public CheatFlags Cheats
-        {
-            get => cheats;
-            set => cheats = value;
-        }
+        public CheatFlags Cheats { get; set; }
 
-        public int Refire
-        {
-            get => refire;
-            set => refire = value;
-        }
+        public int Refire { get; set; }
 
-        public int KillCount
-        {
-            get => killCount;
-            set => killCount = value;
-        }
+        public int KillCount { get; set; }
 
-        public int ItemCount
-        {
-            get => itemCount;
-            set => itemCount = value;
-        }
+        public int ItemCount { get; set; }
 
-        public int SecretCount
-        {
-            get => secretCount;
-            set => secretCount = value;
-        }
+        public int SecretCount { get; set; }
 
-        public string Message
-        {
-            get => message;
-            set => message = value;
-        }
+        public string Message { get; set; }
 
-        public int MessageTime
-        {
-            get => messageTime;
-            set => messageTime = value;
-        }
+        public int MessageTime { get; set; }
 
-        public int DamageCount
-        {
-            get => damageCount;
-            set => damageCount = value;
-        }
+        public int DamageCount { get; set; }
 
-        public int BonusCount
-        {
-            get => bonusCount;
-            set => bonusCount = value;
-        }
+        public int BonusCount { get; set; }
 
-        public Mobj Attacker
-        {
-            get => attacker;
-            set => attacker = value;
-        }
+        public Mobj Attacker { get; set; }
 
-        public int ExtraLight
-        {
-            get => extraLight;
-            set => extraLight = value;
-        }
+        public int ExtraLight { get; set; }
 
-        public int FixedColorMap
-        {
-            get => fixedColorMap;
-            set => fixedColorMap = value;
-        }
+        public int FixedColorMap { get; set; }
 
-        public int ColorMap
-        {
-            get => colorMap;
-            set => colorMap = value;
-        }
+        public int ColorMap { get; set; }
 
-        public PlayerSpriteDef[] PlayerSprites
-        {
-            get => playerSprites;
-        }
+        public PlayerSpriteDef[] PlayerSprites { get; }
 
-        public bool DidSecret
-        {
-            get => didSecret;
-            set => didSecret = value;
-        }
+        public bool DidSecret { get; set; }
     }
 }

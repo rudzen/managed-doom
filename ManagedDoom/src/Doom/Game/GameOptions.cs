@@ -24,197 +24,92 @@ namespace ManagedDoom
 {
     public sealed class GameOptions
     {
-        private GameVersion gameVersion;
-        private GameMode gameMode;
-        private MissionPack missionPack;
-
-        private Player[] players;
-        private int consolePlayer;
-
-        private int episode;
-        private int map;
-        private GameSkill skill;
-
-        private bool demoPlayback;
-        private bool netGame;
-
-        private int deathmatch;
-        private bool fastMonsters;
-        private bool respawnMonsters;
-        private bool noMonsters;
-
-        private IntermissionInfo intermissionInfo;
-
-        private DoomRandom random;
-
-        private IVideo video;
-        private ISound sound;
-        private IMusic music;
-        private IUserInput userInput;
-
         public GameOptions()
         {
-            gameVersion = GameVersion.Version109;
-            gameMode = GameMode.Commercial;
-            missionPack = MissionPack.Doom2;
+            GameVersion = GameVersion.Version109;
+            GameMode = GameMode.Commercial;
+            MissionPack = MissionPack.Doom2;
 
-            players = new Player[Player.MaxPlayerCount];
+            Players = new Player[Player.MaxPlayerCount];
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                players[i] = new Player(i);
+                Players[i] = new Player(i);
             }
-            players[0].InGame = true;
-            consolePlayer = 0;
+            Players[0].InGame = true;
+            ConsolePlayer = 0;
 
-            episode = 1;
-            map = 1;
-            skill = GameSkill.Medium;
+            Episode = 1;
+            Map = 1;
+            Skill = GameSkill.Medium;
 
-            demoPlayback = false;
-            netGame = false;
+            DemoPlayback = false;
+            NetGame = false;
 
-            deathmatch = 0;
-            fastMonsters = false;
-            respawnMonsters = false;
-            noMonsters = false;
+            Deathmatch = 0;
+            FastMonsters = false;
+            RespawnMonsters = false;
+            NoMonsters = false;
 
-            intermissionInfo = new IntermissionInfo();
+            IntermissionInfo = new IntermissionInfo();
 
-            random = new DoomRandom();
+            Random = new DoomRandom();
 
-            video = NullVideo.GetInstance();
-            sound = NullSound.GetInstance();
-            music = NullMusic.GetInstance();
-            userInput = NullUserInput.GetInstance();
+            Video = NullVideo.GetInstance();
+            Sound = NullSound.GetInstance();
+            Music = NullMusic.GetInstance();
+            UserInput = NullUserInput.GetInstance();
         }
 
         public GameOptions(CommandLineArgs args, GameContent content) : this()
         {
             if (args.solonet.Present)
             {
-                netGame = true;
+                NetGame = true;
             }
 
-            gameVersion = content.Wad.GameVersion;
-            gameMode = content.Wad.GameMode;
-            missionPack = content.Wad.MissionPack;
+            GameVersion = content.Wad.GameVersion;
+            GameMode = content.Wad.GameMode;
+            MissionPack = content.Wad.MissionPack;
         }
 
-        public GameVersion GameVersion
-        {
-            get => gameVersion;
-            set => gameVersion = value;
-        }
+        public GameVersion GameVersion { get; set; }
 
-        public GameMode GameMode
-        {
-            get => gameMode;
-            set => gameMode = value;
-        }
+        public GameMode GameMode { get; set; }
 
-        public MissionPack MissionPack
-        {
-            get => missionPack;
-            set => missionPack = value;
-        }
+        public MissionPack MissionPack { get; set; }
 
-        public Player[] Players
-        {
-            get => players;
-        }
+        public Player[] Players { get; }
 
-        public int ConsolePlayer
-        {
-            get => consolePlayer;
-            set => consolePlayer = value;
-        }
+        public int ConsolePlayer { get; set; }
 
-        public int Episode
-        {
-            get => episode;
-            set => episode = value;
-        }
+        public int Episode { get; set; }
 
-        public int Map
-        {
-            get => map;
-            set => map = value;
-        }
+        public int Map { get; set; }
 
-        public GameSkill Skill
-        {
-            get => skill;
-            set => skill = value;
-        }
+        public GameSkill Skill { get; set; }
 
-        public bool DemoPlayback
-        {
-            get => demoPlayback;
-            set => demoPlayback = value;
-        }
+        public bool DemoPlayback { get; set; }
 
-        public bool NetGame
-        {
-            get => netGame;
-            set => netGame = value;
-        }
+        public bool NetGame { get; set; }
 
-        public int Deathmatch
-        {
-            get => deathmatch;
-            set => deathmatch = value;
-        }
+        public int Deathmatch { get; set; }
 
-        public bool FastMonsters
-        {
-            get => fastMonsters;
-            set => fastMonsters = value;
-        }
+        public bool FastMonsters { get; set; }
 
-        public bool RespawnMonsters
-        {
-            get => respawnMonsters;
-            set => respawnMonsters = value;
-        }
+        public bool RespawnMonsters { get; set; }
 
-        public bool NoMonsters
-        {
-            get => noMonsters;
-            set => noMonsters = value;
-        }
+        public bool NoMonsters { get; set; }
 
-        public IntermissionInfo IntermissionInfo
-        {
-            get => intermissionInfo;
-        }
+        public IntermissionInfo IntermissionInfo { get; }
 
-        public DoomRandom Random
-        {
-            get => random;
-        }
+        public DoomRandom Random { get; }
 
-        public IVideo Video
-        {
-            get => video;
-            set => video = value;
-        }
+        public IVideo Video { get; set; }
 
-        public ISound Sound
-        {
-            get => sound;
-            set => sound = value;
-        }
+        public ISound Sound { get; set; }
 
-        public IMusic Music
-        {
-            get => music;
-            set => music = value;
-        }
+        public IMusic Music { get; set; }
 
-        public IUserInput UserInput
-        {
-            get => userInput;
-            set => userInput = value;
-        }
+        public IUserInput UserInput { get; set; }
     }
 }

@@ -24,16 +24,16 @@ namespace ManagedDoom.Video
     {
         public static readonly int MaxScreenSize = 9;
 
-        private ColorMap colorMap;
-        private ITextureLookup textures;
-        private IFlatLookup flats;
-        private ISpriteLookup sprites;
+        private readonly ColorMap colorMap;
+        private readonly ITextureLookup textures;
+        private readonly IFlatLookup flats;
+        private readonly ISpriteLookup sprites;
 
-        private DrawScreen screen;
-        private int screenWidth;
-        private int screenHeight;
-        private byte[] screenData;
-        private int drawScale;
+        private readonly DrawScreen screen;
+        private readonly int screenWidth;
+        private readonly int screenHeight;
+        private readonly byte[] screenData;
+        private readonly int drawScale;
 
         private int windowSize;
 
@@ -256,7 +256,7 @@ namespace ManagedDoom.Video
 
         private void ResetPlaneRendering()
         {
-            for (int i = 0; i < windowHeight; i++)
+            for (var i = 0; i < windowHeight; i++)
             {
                 var dy = Fixed.FromInt(i - windowHeight / 2) + Fixed.One / 2;
                 dy = Fixed.Abs(dy);
@@ -553,8 +553,8 @@ namespace ManagedDoom.Video
         // Fuzz effect
         ////////////////////////////////////////////////////////////
 
-        private static sbyte[] fuzzTable = new sbyte[]
-        {
+        private static readonly sbyte[] fuzzTable =
+        [
             1, -1,  1, -1,  1,  1, -1,
             1,  1, -1,  1,  1,  1, -1,
             1,  1,  1, -1, -1, -1, -1,
@@ -562,7 +562,7 @@ namespace ManagedDoom.Video
             1, -1,  1,  1, -1, -1,  1,
             1, -1, -1, -1, -1,  1,  1,
             1,  1, -1,  1,  1, -1,  1
-        };
+        ];
 
         private int fuzzPos;
 
@@ -793,19 +793,19 @@ namespace ManagedDoom.Video
 
 
         private static readonly int[][] viewPosToFrustumTangent =
-        {
-            new[] { 3, 0, 2, 1 },
-            new[] { 3, 0, 2, 0 },
-            new[] { 3, 1, 2, 0 },
-            new[] { 0 },
-            new[] { 2, 0, 2, 1 },
-            new[] { 0, 0, 0, 0 },
-            new[] { 3, 1, 3, 0 },
-            new[] { 0 },
-            new[] { 2, 0, 3, 1 },
-            new[] { 2, 1, 3, 1 },
-            new[] { 2, 1, 3, 0 }
-        };
+        [
+            [3, 0, 2, 1],
+            [3, 0, 2, 0],
+            [3, 1, 2, 0],
+            [0],
+            [2, 0, 2, 1],
+            [0, 0, 0, 0],
+            [3, 1, 3, 0],
+            [0],
+            [2, 0, 3, 1],
+            [2, 1, 3, 1],
+            [2, 1, 3, 0]
+        ];
 
         private bool IsPotentiallyVisible(Fixed[] bbox)
         {
@@ -1272,7 +1272,7 @@ namespace ManagedDoom.Video
 
             var rwScale = ScaleFromGlobalAngle(viewAngle + xToAngle[x1], viewAngle, rwNormalAngle, rwDistance);
 
-            Fixed scale1 = rwScale;
+            var scale1 = rwScale;
             Fixed scale2;
             Fixed rwScaleStep;
             if (x2 > x1)
@@ -1580,7 +1580,7 @@ namespace ManagedDoom.Video
 
             var rwScale = ScaleFromGlobalAngle(viewAngle + xToAngle[x1], viewAngle, rwNormalAngle, rwDistance);
 
-            Fixed scale1 = rwScale;
+            var scale1 = rwScale;
             Fixed scale2;
             Fixed rwScaleStep;
             if (x2 > x1)
@@ -1965,7 +1965,7 @@ namespace ManagedDoom.Video
             {
                 midTextureAlt = drawSeg.FrontSectorCeilingHeight < drawSeg.BackSectorCeilingHeight
                     ? drawSeg.FrontSectorCeilingHeight : drawSeg.BackSectorCeilingHeight;
-                midTextureAlt = midTextureAlt - viewZ;
+                midTextureAlt -= viewZ;
             }
             midTextureAlt += seg.SideDef.RowOffset;
 

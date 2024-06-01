@@ -22,13 +22,12 @@ namespace ManagedDoom
 {
     public sealed class SelectableMenu : MenuDef
     {
-        private string[] name;
-        private int[] titleX;
-        private int[] titleY;
-        private MenuItem[] items;
+        private readonly string[] name;
+        private readonly int[] titleX;
+        private readonly int[] titleY;
+        private readonly MenuItem[] items;
 
         private int index;
-        private MenuItem choice;
 
         private TextInput textInput;
 
@@ -38,13 +37,13 @@ namespace ManagedDoom
             int firstChoice,
             params MenuItem[] items) : base(menu)
         {
-            this.name = new[] { name };
-            this.titleX = new[] { titleX };
-            this.titleY = new[] { titleY };
+            this.name = [name];
+            this.titleX = [titleX];
+            this.titleY = [titleY];
             this.items = items;
 
             index = firstChoice;
-            choice = items[index];
+            Choice = items[index];
         }
 
         public SelectableMenu(
@@ -54,13 +53,13 @@ namespace ManagedDoom
             int firstChoice,
             params MenuItem[] items) : base(menu)
         {
-            this.name = new[] { name1, name2 };
-            this.titleX = new[] { titleX1, titleX2 };
-            this.titleY = new[] { titleY1, titleY2 };
+            this.name = [name1, name2];
+            this.titleX = [titleX1, titleX2];
+            this.titleY = [titleY1, titleY2];
             this.items = items;
 
             index = firstChoice;
-            choice = items[index];
+            Choice = items[index];
         }
 
         public override void Open()
@@ -68,16 +67,10 @@ namespace ManagedDoom
             foreach (var item in items)
             {
                 var toggle = item as ToggleMenuItem;
-                if (toggle != null)
-                {
-                    toggle.Reset();
-                }
+                toggle?.Reset();
 
                 var slider = item as SliderMenuItem;
-                if (slider != null)
-                {
-                    slider.Reset();
-                }
+                slider?.Reset();
             }
         }
 
@@ -89,7 +82,7 @@ namespace ManagedDoom
                 index = items.Length - 1;
             }
 
-            choice = items[index];
+            Choice = items[index];
         }
 
         private void Down()
@@ -100,7 +93,7 @@ namespace ManagedDoom
                 index = 0;
             }
 
-            choice = items[index];
+            Choice = items[index];
         }
 
         public override bool DoEvent(DoomEvent e)
@@ -143,14 +136,14 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Left)
             {
-                var toggle = choice as ToggleMenuItem;
+                var toggle = Choice as ToggleMenuItem;
                 if (toggle != null)
                 {
                     toggle.Down();
                     Menu.StartSound(Sfx.PISTOL);
                 }
 
-                var slider = choice as SliderMenuItem;
+                var slider = Choice as SliderMenuItem;
                 if (slider != null)
                 {
                     slider.Down();
@@ -160,14 +153,14 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Right)
             {
-                var toggle = choice as ToggleMenuItem;
+                var toggle = Choice as ToggleMenuItem;
                 if (toggle != null)
                 {
                     toggle.Up();
                     Menu.StartSound(Sfx.PISTOL);
                 }
 
-                var slider = choice as SliderMenuItem;
+                var slider = Choice as SliderMenuItem;
                 if (slider != null)
                 {
                     slider.Up();
@@ -177,22 +170,19 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Enter)
             {
-                var toggle = choice as ToggleMenuItem;
+                var toggle = Choice as ToggleMenuItem;
                 if (toggle != null)
                 {
                     toggle.Up();
                     Menu.StartSound(Sfx.PISTOL);
                 }
 
-                var simple = choice as SimpleMenuItem;
+                var simple = Choice as SimpleMenuItem;
                 if (simple != null)
                 {
                     if (simple.Selectable)
                     {
-                        if (simple.Action != null)
-                        {
-                            simple.Action();
-                        }
+                        simple.Action?.Invoke();
                         if (simple.Next != null)
                         {
                             Menu.SetCurrent(simple.Next);
@@ -206,9 +196,9 @@ namespace ManagedDoom
                     return true;
                 }
 
-                if (choice.Next != null)
+                if (Choice.Next != null)
                 {
-                    Menu.SetCurrent(choice.Next);
+                    Menu.SetCurrent(Choice.Next);
                     Menu.StartSound(Sfx.PISTOL);
                 }
             }
@@ -226,6 +216,6 @@ namespace ManagedDoom
         public IReadOnlyList<int> TitleX => titleX;
         public IReadOnlyList<int> TitleY => titleY;
         public IReadOnlyList<MenuItem> Items => items;
-        public MenuItem Choice => choice;
+        public MenuItem Choice { get; private set; }
     }
 }

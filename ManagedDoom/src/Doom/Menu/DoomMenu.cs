@@ -15,42 +15,30 @@
 
 
 
-using System;
-
 namespace ManagedDoom
 {
     public sealed class DoomMenu
     {
-        private Doom doom;
+        private readonly SelectableMenu main;
+        private readonly SelectableMenu episodeMenu;
+        private readonly SelectableMenu skillMenu;
+        private readonly SelectableMenu optionMenu;
+        private readonly SelectableMenu volume;
+        private readonly LoadMenu load;
+        private readonly SaveMenu save;
+        private readonly HelpScreen help;
 
-        private SelectableMenu main;
-        private SelectableMenu episodeMenu;
-        private SelectableMenu skillMenu;
-        private SelectableMenu optionMenu;
-        private SelectableMenu volume;
-        private LoadMenu load;
-        private SaveMenu save;
-        private HelpScreen help;
-
-        private PressAnyKey thisIsShareware;
-        private PressAnyKey saveFailed;
-        private YesNoConfirm nightmareConfirm;
-        private YesNoConfirm endGameConfirm;
-        private QuitConfirm quitConfirm;
-
-        private MenuDef current;
-
-        private bool active;
-
-        private int tics;
+        private readonly PressAnyKey thisIsShareware;
+        private readonly PressAnyKey saveFailed;
+        private readonly YesNoConfirm nightmareConfirm;
+        private readonly YesNoConfirm endGameConfirm;
+        private readonly QuitConfirm quitConfirm;
 
         private int selectedEpisode;
 
-        private SaveSlots saveSlots;
-
         public DoomMenu(Doom doom)
         {
-            this.doom = doom;
+            this.Doom = doom;
 
             thisIsShareware = new PressAnyKey(
                 this,
@@ -70,7 +58,7 @@ namespace ManagedDoom
             endGameConfirm = new YesNoConfirm(
                 this,
                 DoomInfo.Strings.ENDGAME,
-                () => doom.EndGame());
+                doom.EndGame);
 
             quitConfirm = new QuitConfirm(
                 this,
@@ -287,21 +275,21 @@ namespace ManagedDoom
                 new SimpleMenuItem("M_QUITG", 65, 139, 97, 144, null, quitConfirm));
             }
 
-            current = main;
-            active = false;
+            Current = main;
+            Active = false;
 
-            tics = 0;
+            Tics = 0;
 
             selectedEpisode = 1;
 
-            saveSlots = new SaveSlots();
+            SaveSlots = new SaveSlots();
         }
 
         public bool DoEvent(DoomEvent e)
         {
-            if (active)
+            if (Active)
             {
-                if (current.DoEvent(e))
+                if (Current.DoEvent(e))
                 {
                     return true;
                 }
@@ -313,74 +301,65 @@ namespace ManagedDoom
 
                 return true;
             }
-            else
+
+            if (e.Key == DoomKey.Escape && e.Type == EventType.KeyDown)
             {
-                if (e.Key == DoomKey.Escape && e.Type == EventType.KeyDown)
+                SetCurrent(main);
+                Open();
+                StartSound(Sfx.SWTCHN);
+                return true;
+            }
+
+            if (e.Type == EventType.KeyDown && Doom.State == DoomState.Opening)
+            {
+                if (e.Key is DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl or DoomKey.Escape)
                 {
                     SetCurrent(main);
                     Open();
                     StartSound(Sfx.SWTCHN);
                     return true;
                 }
-
-                if (e.Type == EventType.KeyDown && doom.State == DoomState.Opening)
-                {
-                    if (e.Key == DoomKey.Enter ||
-                        e.Key == DoomKey.Space ||
-                        e.Key == DoomKey.LControl ||
-                        e.Key == DoomKey.RControl ||
-                        e.Key == DoomKey.Escape)
-                    {
-                        SetCurrent(main);
-                        Open();
-                        StartSound(Sfx.SWTCHN);
-                        return true;
-                    }
-                }
-
-                return false;
             }
+
+            return false;
         }
 
         public void Update()
         {
-            tics++;
+            Tics++;
 
-            if (current != null)
-            {
-                current.Update();
-            }
+            Current?.Update();
 
-            if (active && !doom.Options.NetGame)
+            if (Active && !Doom.Options.NetGame)
             {
-                doom.PauseGame();
+                Doom.PauseGame();
             }
         }
 
         public void SetCurrent(MenuDef next)
         {
-            current = next;
-            current.Open();
+            Current = next;
+            Current.Open();
         }
 
         public void Open()
         {
-            active = true;
+            Active = true;
         }
 
         public void Close()
         {
-            active = false;
+            Active = false;
 
-            if (!doom.Options.NetGame)
+            if (!Doom.Options.NetGame)
             {
-                doom.ResumeGame();
+                Doom.ResumeGame();
             }
         }
 
         public void StartSound(Sfx sfx)
         {
-            doom.Options.Sound.StartSound(sfx);
+            Doom.Options.Sound.StartSound(sfx);
         }
 
         public void NotifySaveFailed()
@@ -424,7 +403,7 @@ namespace ManagedDoom
             }
             else
             {
-                var desc = saveSlots[save.LastSaveSlot];
+                var desc = SaveSlots[save.LastSaveSlot];
                 var confirm = new YesNoConfirm(
                     this,
                     ((string)DoomInfo.Strings.QSPROMPT).Replace("%s", desc),
@@ -449,7 +428,7 @@ namespace ManagedDoom
             }
             else
             {
-                var desc = saveSlots[save.LastSaveSlot];
+                var desc = SaveSlots[save.LastSaveSlot];
                 var confirm = new YesNoConfirm(
                     this,
                     ((string)DoomInfo.Strings.QLPROMPT).Replace("%s", desc),
@@ -474,11 +453,15 @@ namespace ManagedDoom
             StartSound(Sfx.SWTCHN);
         }
 
-        public Doom Doom => doom;
-        public GameOptions Options => doom.Options;
-        public MenuDef Current => current;
-        public bool Active => active;
-        public int Tics => tics;
-        public SaveSlots SaveSlots => saveSlots;
+        public Doom Doom { get; }
+
+        public GameOptions Options => Doom.Options;
+        public MenuDef Current { get; private set; }
+
+        public bool Active { get; private set; }
+
+        public int Tics { get; private set; }
+
+        public SaveSlots SaveSlots { get; }
     }
 }

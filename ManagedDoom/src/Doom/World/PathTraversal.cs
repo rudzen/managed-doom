@@ -21,18 +21,17 @@ namespace ManagedDoom
 {
     public sealed class PathTraversal
     {
-        private World world;
+        private readonly World world;
 
-        private Intercept[] intercepts;
+        private readonly Intercept[] intercepts;
         private int interceptCount;
 
         private bool earlyOut;
 
-        private DivLine target;
-        private DivLine trace;
+        private readonly DivLine target;
 
-        private Func<LineDef, bool> lineInterceptFunc;
-        private Func<Mobj, bool> thingInterceptFunc;
+        private readonly Func<LineDef, bool> lineInterceptFunc;
+        private readonly Func<Mobj, bool> thingInterceptFunc;
 
         public PathTraversal(World world)
         {
@@ -45,7 +44,7 @@ namespace ManagedDoom
             }
 
             target = new DivLine();
-            trace = new DivLine();
+            Trace = new DivLine();
 
             lineInterceptFunc = AddLineIntercepts;
             thingInterceptFunc = AddThingIntercepts;
@@ -63,18 +62,18 @@ namespace ManagedDoom
             int s2;
 
             // Avoid precision problems with two routines.
-            if (trace.Dx > Fixed.FromInt(16) ||
-                trace.Dy > Fixed.FromInt(16) ||
-                trace.Dx < -Fixed.FromInt(16) ||
-                trace.Dy < -Fixed.FromInt(16))
+            if (Trace.Dx > Fixed.FromInt(16) ||
+                Trace.Dy > Fixed.FromInt(16) ||
+                Trace.Dx < -Fixed.FromInt(16) ||
+                Trace.Dy < -Fixed.FromInt(16))
             {
-                s1 = Geometry.PointOnDivLineSide(line.Vertex1.X, line.Vertex1.Y, trace);
-                s2 = Geometry.PointOnDivLineSide(line.Vertex2.X, line.Vertex2.Y, trace);
+                s1 = Geometry.PointOnDivLineSide(line.Vertex1.X, line.Vertex1.Y, Trace);
+                s2 = Geometry.PointOnDivLineSide(line.Vertex2.X, line.Vertex2.Y, Trace);
             }
             else
             {
-                s1 = Geometry.PointOnLineSide(trace.X, trace.Y, line);
-                s2 = Geometry.PointOnLineSide(trace.X + trace.Dx, trace.Y + trace.Dy, line);
+                s1 = Geometry.PointOnLineSide(Trace.X, Trace.Y, line);
+                s2 = Geometry.PointOnLineSide(Trace.X + Trace.Dx, Trace.Y + Trace.Dy, line);
             }
 
             if (s1 == s2)
@@ -86,7 +85,7 @@ namespace ManagedDoom
             // Hit the line.
             target.MakeFrom(line);
 
-            var frac = InterceptVector(trace, target);
+            var frac = InterceptVector(Trace, target);
 
             if (frac < Fixed.Zero)
             {
@@ -113,7 +112,7 @@ namespace ManagedDoom
         /// </summary>
         private bool AddThingIntercepts(Mobj thing)
         {
-            var tracePositive = (trace.Dx.Data ^ trace.Dy.Data) > 0;
+            var tracePositive = (Trace.Dx.Data ^ Trace.Dy.Data) > 0;
 
             Fixed x1;
             Fixed y1;
@@ -138,8 +137,8 @@ namespace ManagedDoom
                 y2 = thing.Y + thing.Radius;
             }
 
-            var s1 = Geometry.PointOnDivLineSide(x1, y1, trace);
-            var s2 = Geometry.PointOnDivLineSide(x2, y2, trace);
+            var s1 = Geometry.PointOnDivLineSide(x1, y1, Trace);
+            var s2 = Geometry.PointOnDivLineSide(x2, y2, Trace);
 
             if (s1 == s2)
             {
@@ -152,7 +151,7 @@ namespace ManagedDoom
             target.Dx = x2 - x1;
             target.Dy = y2 - y1;
 
-            var frac = InterceptVector(trace, target);
+            var frac = InterceptVector(Trace, target);
 
             if (frac < Fixed.Zero)
             {
@@ -253,10 +252,10 @@ namespace ManagedDoom
                 y1 += Fixed.One;
             }
 
-            trace.X = x1;
-            trace.Y = y1;
-            trace.Dx = x2 - x1;
-            trace.Dy = y2 - y1;
+            Trace.X = x1;
+            Trace.Y = y1;
+            Trace.Dx = x2 - x1;
+            Trace.Dy = y2 - y1;
 
             x1 -= bm.OriginX;
             y1 -= bm.OriginY;
@@ -368,6 +367,6 @@ namespace ManagedDoom
             return TraverseIntercepts(trav, Fixed.One);
         }
 
-        public DivLine Trace => trace;
+        public DivLine Trace { get; }
     }
 }

@@ -25,11 +25,6 @@ namespace ManagedDoom
 
         private World world;
 
-        private Sector sector;
-        private int minLight;
-        private int maxLight;
-        private int direction;
-
         public GlowingLight(World world)
         {
             this.world = world;
@@ -37,52 +32,36 @@ namespace ManagedDoom
 
         public override void Run()
         {
-            switch (direction)
+            switch (Direction)
             {
                 case -1:
                     // Down.
-                    sector.LightLevel -= glowSpeed;
-                    if (sector.LightLevel <= minLight)
+                    Sector.LightLevel -= glowSpeed;
+                    if (Sector.LightLevel <= MinLight)
                     {
-                        sector.LightLevel += glowSpeed;
-                        direction = 1;
+                        Sector.LightLevel += glowSpeed;
+                        Direction = 1;
                     }
                     break;
 
                 case 1:
                     // Up.
-                    sector.LightLevel += glowSpeed;
-                    if (sector.LightLevel >= maxLight)
+                    Sector.LightLevel += glowSpeed;
+                    if (Sector.LightLevel >= MaxLight)
                     {
-                        sector.LightLevel -= glowSpeed;
-                        direction = -1;
+                        Sector.LightLevel -= glowSpeed;
+                        Direction = -1;
                     }
                     break;
             }
         }
 
-        public Sector Sector
-        {
-            get => sector;
-            set => sector = value;
-        }
+        public Sector Sector { get; set; }
 
-        public int MinLight
-        {
-            get => minLight;
-            set => minLight = value;
-        }
+        public int MinLight { get; set; }
 
-        public int MaxLight
-        {
-            get => maxLight;
-            set => maxLight = value;
-        }
+        public int MaxLight { get; set; }
 
-        public int Direction
-        {
-            get => direction;
-            set => direction = value;
-        }
+        public int Direction { get; set; }
     }
 }

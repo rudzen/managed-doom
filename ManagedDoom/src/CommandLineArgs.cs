@@ -152,17 +152,14 @@ namespace ManagedDoom
             var values = GetValues(args, "-warp");
             if (values.Length == 1)
             {
-                int map;
-                if (int.TryParse(values[0], out map))
+                if (int.TryParse(values[0], out var map))
                 {
                     return new Arg<Tuple<int, int>>(Tuple.Create(1, map));
                 }
             }
             else if (values.Length == 2)
             {
-                int episode;
-                int map;
-                if (int.TryParse(values[0], out episode) && int.TryParse(values[1], out map))
+                if (int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map))
                 {
                     return new Arg<Tuple<int, int>>(Tuple.Create(episode, map));
                 }
@@ -187,8 +184,7 @@ namespace ManagedDoom
             var values = GetValues(args, name);
             if (values.Length == 1)
             {
-                int result;
-                if (int.TryParse(values[0], out result))
+                if (int.TryParse(values[0], out var result))
                 {
                     return new Arg<int>(result);
                 }
@@ -208,42 +204,38 @@ namespace ManagedDoom
 
 
 
-        public class Arg
+        public readonly struct Arg
         {
-            private bool present;
-
             public Arg()
             {
-                this.present = false;
+                this.Present = false;
             }
 
             public Arg(bool present)
             {
-                this.present = present;
+                this.Present = present;
             }
 
-            public bool Present => present;
+            public bool Present { get; }
         }
 
-        public class Arg<T>
+        public struct Arg<T>
         {
-            private bool present;
-            private T value;
-
             public Arg()
             {
-                this.present = false;
-                this.value = default;
+                this.Present = false;
+                this.Value = default;
             }
 
             public Arg(T value)
             {
-                this.present = true;
-                this.value = value;
+                this.Present = true;
+                this.Value = value;
             }
 
-            public bool Present => present;
-            public T Value => value;
+            public bool Present { get; }
+
+            public T Value { get; }
         }
     }
 }

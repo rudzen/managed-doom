@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class ThingMovement
     {
-        private World world;
+        private readonly World world;
 
         public ThingMovement(World world)
         {
@@ -49,11 +49,6 @@ namespace ManagedDoom
         private Fixed currentX;
         private Fixed currentY;
         private Fixed[] currentBox;
-
-        private Fixed currentFloorZ;
-        private Fixed currentCeilingZ;
-        private Fixed currentDropoffZ;
-        private bool floatOk;
 
         private LineDef currentCeilingLine;
 
@@ -238,20 +233,20 @@ namespace ManagedDoom
             mc.LineOpening(line);
 
             // Adjust floor / ceiling heights.
-            if (mc.OpenTop < currentCeilingZ)
+            if (mc.OpenTop < CurrentCeilingZ)
             {
-                currentCeilingZ = mc.OpenTop;
+                CurrentCeilingZ = mc.OpenTop;
                 currentCeilingLine = line;
             }
 
-            if (mc.OpenBottom > currentFloorZ)
+            if (mc.OpenBottom > CurrentFloorZ)
             {
-                currentFloorZ = mc.OpenBottom;
+                CurrentFloorZ = mc.OpenBottom;
             }
 
-            if (mc.LowFloor < currentDropoffZ)
+            if (mc.LowFloor < CurrentDropoffZ)
             {
-                currentDropoffZ = mc.LowFloor;
+                CurrentDropoffZ = mc.LowFloor;
             }
 
             // If contacted a special line, add it to the list.
@@ -411,8 +406,8 @@ namespace ManagedDoom
 
             // The base floor / ceiling is from the subsector that contains the point.
             // Any contacted lines the step closer together will adjust them.
-            currentFloorZ = currentDropoffZ = newSubsector.Sector.FloorHeight;
-            currentCeilingZ = newSubsector.Sector.CeilingHeight;
+            CurrentFloorZ = CurrentDropoffZ = newSubsector.Sector.FloorHeight;
+            CurrentCeilingZ = newSubsector.Sector.CeilingHeight;
 
             var validCount = world.GetNewValidCount();
 
@@ -474,7 +469,7 @@ namespace ManagedDoom
         /// </summary>
         public bool TryMove(Mobj thing, Fixed x, Fixed y)
         {
-            floatOk = false;
+            FloatOk = false;
 
             if (!CheckPosition(thing, x, y))
             {
@@ -484,30 +479,30 @@ namespace ManagedDoom
 
             if ((thing.Flags & MobjFlags.NoClip) == 0)
             {
-                if (currentCeilingZ - currentFloorZ < thing.Height)
+                if (CurrentCeilingZ - CurrentFloorZ < thing.Height)
                 {
                     // Doesn't fit.
                     return false;
                 }
 
-                floatOk = true;
+                FloatOk = true;
 
                 if ((thing.Flags & MobjFlags.Teleport) == 0 &&
-                    currentCeilingZ - thing.Z < thing.Height)
+                    CurrentCeilingZ - thing.Z < thing.Height)
                 {
                     // Mobj must lower itself to fit.
                     return false;
                 }
 
                 if ((thing.Flags & MobjFlags.Teleport) == 0 &&
-                    currentFloorZ - thing.Z > Fixed.FromInt(24))
+                    CurrentFloorZ - thing.Z > Fixed.FromInt(24))
                 {
                     // Too big a step up.
                     return false;
                 }
 
                 if ((thing.Flags & (MobjFlags.DropOff | MobjFlags.Float)) == 0 &&
-                    currentFloorZ - currentDropoffZ > Fixed.FromInt(24))
+                    CurrentFloorZ - CurrentDropoffZ > Fixed.FromInt(24))
                 {
                     // Don't stand over a dropoff.
                     return false;
@@ -520,8 +515,8 @@ namespace ManagedDoom
 
             var oldx = thing.X;
             var oldy = thing.Y;
-            thing.FloorZ = currentFloorZ;
-            thing.CeilingZ = currentCeilingZ;
+            thing.FloorZ = CurrentFloorZ;
+            thing.CeilingZ = CurrentCeilingZ;
             thing.X = x;
             thing.Y = y;
 
@@ -692,8 +687,8 @@ namespace ManagedDoom
             }
             else
             {
-                thing.MomX = thing.MomX * friction;
-                thing.MomY = thing.MomY * friction;
+                thing.MomX *= friction;
+                thing.MomY *= friction;
             }
         }
 
@@ -818,11 +813,13 @@ namespace ManagedDoom
         }
 
 
-        public Fixed CurrentFloorZ => currentFloorZ;
-        public Fixed CurrentCeilingZ => currentCeilingZ;
-        public Fixed CurrentDropoffZ => currentDropoffZ;
-        public bool FloatOk => floatOk;
+        public Fixed CurrentFloorZ { get; private set; }
 
+        public Fixed CurrentCeilingZ { get; private set; }
+
+        public Fixed CurrentDropoffZ { get; private set; }
+
+        public bool FloatOk { get; private set; }
 
 
         ////////////////////////////////////////////////////////////
@@ -1137,8 +1134,8 @@ namespace ManagedDoom
 
             // The base floor / ceiling is from the subsector that contains the point.
             // Any contacted lines the step closer together will adjust them.
-            currentFloorZ = currentDropoffZ = ss.Sector.FloorHeight;
-            currentCeilingZ = ss.Sector.CeilingHeight;
+            CurrentFloorZ = CurrentDropoffZ = ss.Sector.FloorHeight;
+            CurrentCeilingZ = ss.Sector.CeilingHeight;
 
             var validcount = world.GetNewValidCount();
 
@@ -1165,8 +1162,8 @@ namespace ManagedDoom
             // the move is ok, so link the thing into its new position
             UnsetThingPosition(thing);
 
-            thing.FloorZ = currentFloorZ;
-            thing.CeilingZ = currentCeilingZ;
+            thing.FloorZ = CurrentFloorZ;
+            thing.CeilingZ = CurrentCeilingZ;
             thing.X = x;
             thing.Y = y;
 

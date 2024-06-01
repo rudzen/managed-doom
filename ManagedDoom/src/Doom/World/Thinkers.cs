@@ -100,25 +100,25 @@ namespace ManagedDoom
 
         public struct ThinkerEnumerator : IEnumerator<Thinker>
         {
-            private Thinkers thinkers;
-            private Thinker current;
+            private readonly Thinkers thinkers;
 
             public ThinkerEnumerator(Thinkers thinkers)
             {
                 this.thinkers = thinkers;
-                current = thinkers.cap;
+                Current = thinkers.cap;
             }
 
             public bool MoveNext()
             {
                 while (true)
                 {
-                    current = current.Next;
-                    if (current == thinkers.cap)
+                    Current = Current.Next;
+                    if (Current == thinkers.cap)
                     {
                         return false;
                     }
-                    else if (current.ThinkerState != ThinkerState.Removed)
+
+                    if (Current.ThinkerState != ThinkerState.Removed)
                     {
                         return true;
                     }
@@ -127,14 +127,14 @@ namespace ManagedDoom
 
             public void Reset()
             {
-                current = thinkers.cap;
+                Current = thinkers.cap;
             }
 
             public void Dispose()
             {
             }
 
-            public Thinker Current => current;
+            public Thinker Current { get; private set; }
 
             object IEnumerator.Current => throw new NotImplementedException();
         }

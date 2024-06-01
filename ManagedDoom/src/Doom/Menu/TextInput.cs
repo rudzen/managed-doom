@@ -23,12 +23,10 @@ namespace ManagedDoom
 {
     public sealed class TextInput
     {
-        private List<char> text;
-        private Action<IReadOnlyList<char>> typed;
-        private Action<IReadOnlyList<char>> finished;
-        private Action canceled;
-
-        private TextInputState state;
+        private readonly List<char> text;
+        private readonly Action<IReadOnlyList<char>> typed;
+        private readonly Action<IReadOnlyList<char>> finished;
+        private readonly Action canceled;
 
         public TextInput(
             IReadOnlyList<char> initialText,
@@ -41,7 +39,7 @@ namespace ManagedDoom
             this.finished = finished;
             this.canceled = canceled;
 
-            state = TextInputState.Typing;
+            State = TextInputState.Typing;
         }
 
         public bool DoEvent(DoomEvent e)
@@ -67,14 +65,14 @@ namespace ManagedDoom
             if (e.Key == DoomKey.Enter && e.Type == EventType.KeyDown)
             {
                 finished(text);
-                state = TextInputState.Finished;
+                State = TextInputState.Finished;
                 return true;
             }
 
             if (e.Key == DoomKey.Escape && e.Type == EventType.KeyDown)
             {
                 canceled();
-                state = TextInputState.Canceled;
+                State = TextInputState.Canceled;
                 return true;
             }
 
@@ -82,6 +80,6 @@ namespace ManagedDoom
         }
 
         public IReadOnlyList<char> Text => text;
-        public TextInputState State => state;
+        public TextInputState State { get; private set; }
     }
 }

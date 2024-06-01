@@ -12,10 +12,10 @@ namespace ManagedDoom.Silk
 {
     public partial class SilkDoom : IDisposable
     {
-        private CommandLineArgs args;
+        private readonly CommandLineArgs args;
 
-        private Config config;
-        private GameContent content;
+        private readonly Config config;
+        private readonly GameContent content;
 
         private IWindow window;
 
@@ -32,8 +32,6 @@ namespace ManagedDoom.Silk
 
         private int fpsScale;
         private int frameCount;
-
-        private Exception exception;
 
         public SilkDoom(CommandLineArgs args)
         {
@@ -72,9 +70,9 @@ namespace ManagedDoom.Silk
 
         private void Quit()
         {
-            if (exception != null)
+            if (Exception != null)
             {
-                ExceptionDispatchInfo.Throw(exception);
+                ExceptionDispatchInfo.Throw(Exception);
             }
         }
 
@@ -124,10 +122,10 @@ namespace ManagedDoom.Silk
             }
             catch (Exception e)
             {
-                exception = e;
+                Exception = e;
             }
 
-            if (exception != null)
+            if (Exception != null)
             {
                 window.Close();
             }
@@ -142,7 +140,7 @@ namespace ManagedDoom.Silk
             }
             catch (Exception e)
             {
-                exception = e;
+                Exception = e;
             }
         }
 
@@ -213,6 +211,6 @@ namespace ManagedDoom.Silk
         }
 
         public string QuitMessage => doom.QuitMessage;
-        public Exception Exception => exception;
+        public Exception Exception { get; private set; }
     }
 }

@@ -25,15 +25,12 @@ namespace ManagedDoom
         private static readonly int maxButtonCount = 32;
         private static readonly int buttonTime = 35;
 
-        private World world;
+        private readonly World world;
 
         private bool levelTimer;
         private int levelTimeCount;
 
-        private Button[] buttonList;
-
-        private int[] textureTranslation;
-        private int[] flatTranslation;
+        private readonly Button[] buttonList;
 
         private LineDef[] scrollLines;
 
@@ -49,16 +46,16 @@ namespace ManagedDoom
                 buttonList[i] = new Button();
             }
 
-            textureTranslation = new int[world.Map.Textures.Count];
-            for (var i = 0; i < textureTranslation.Length; i++)
+            TextureTranslation = new int[world.Map.Textures.Count];
+            for (var i = 0; i < TextureTranslation.Length; i++)
             {
-                textureTranslation[i] = i;
+                TextureTranslation[i] = i;
             }
 
-            flatTranslation = new int[world.Map.Flats.Count];
-            for (var i = 0; i < flatTranslation.Length; i++)
+            FlatTranslation = new int[world.Map.Flats.Count];
+            for (var i = 0; i < FlatTranslation.Length; i++)
             {
-                flatTranslation[i] = i;
+                FlatTranslation[i] = i;
             }
         }
 
@@ -195,35 +192,31 @@ namespace ManagedDoom
 
                     return;
                 }
-                else
+
+                if (switchList[i] == middleTexture)
                 {
-                    if (switchList[i] == middleTexture)
+                    world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
+                    frontSide.MiddleTexture = switchList[i ^ 1];
+
+                    if (useAgain)
                     {
-                        world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
-                        frontSide.MiddleTexture = switchList[i ^ 1];
-
-                        if (useAgain)
-                        {
-                            StartButton(line, ButtonPosition.Middle, switchList[i], buttonTime);
-                        }
-
-                        return;
+                        StartButton(line, ButtonPosition.Middle, switchList[i], buttonTime);
                     }
-                    else
+
+                    return;
+                }
+
+                if (switchList[i] == bottomTexture)
+                {
+                    world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
+                    frontSide.BottomTexture = switchList[i ^ 1];
+
+                    if (useAgain)
                     {
-                        if (switchList[i] == bottomTexture)
-                        {
-                            world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
-                            frontSide.BottomTexture = switchList[i ^ 1];
-
-                            if (useAgain)
-                            {
-                                StartButton(line, ButtonPosition.Bottom, switchList[i], buttonTime);
-                            }
-
-                            return;
-                        }
+                        StartButton(line, ButtonPosition.Bottom, switchList[i], buttonTime);
                     }
+
+                    return;
                 }
             }
         }
@@ -280,11 +273,11 @@ namespace ManagedDoom
                     var pic = anim.BasePic + ((world.LevelTime / anim.Speed + i) % anim.NumPics);
                     if (anim.IsTexture)
                     {
-                        textureTranslation[i] = pic;
+                        TextureTranslation[i] = pic;
                     }
                     else
                     {
-                        flatTranslation[i] = pic;
+                        FlatTranslation[i] = pic;
                     }
                 }
             }
@@ -326,7 +319,8 @@ namespace ManagedDoom
             }
         }
 
-        public int[] TextureTranslation => textureTranslation;
-        public int[] FlatTranslation => flatTranslation;
+        public int[] TextureTranslation { get; }
+
+        public int[] FlatTranslation { get; }
     }
 }

@@ -25,47 +25,33 @@ namespace ManagedDoom
 {
     public class Doom
     {
-        private CommandLineArgs args;
-        private Config config;
-        private GameContent content;
-        private IVideo video;
-        private ISound sound;
+        private readonly CommandLineArgs args;
+        private readonly Config config;
+        private readonly GameContent content;
+        private readonly IVideo video;
+        private readonly ISound sound;
         private IMusic music;
-        private IUserInput userInput;
+        private readonly IUserInput userInput;
 
-        private List<DoomEvent> events;
+        private readonly List<DoomEvent> events;
 
-        private GameOptions options;
+        private readonly TicCmd[] cmds;
 
-        private DoomMenu menu;
-
-        private OpeningSequence opening;
-
-        private DemoPlayback demoPlayback;
-
-        private TicCmd[] cmds;
-        private DoomGame game;
-
-        private WipeEffect wipeEffect;
-        private bool wiping;
-
-        private DoomState currentState;
         private DoomState nextState;
         private bool needWipe;
 
         private bool sendPause;
 
         private bool quit;
-        private string quitMessage;
 
         private bool mouseGrabbed;
 
         public Doom(CommandLineArgs args, Config config, GameContent content, IVideo video, ISound sound, IMusic music, IUserInput userInput)
         {
-            video = video ?? NullVideo.GetInstance();
-            sound = sound ?? NullSound.GetInstance();
-            music = music ?? NullMusic.GetInstance();
-            userInput = userInput ?? NullUserInput.GetInstance();
+            video ??= NullVideo.GetInstance();
+            sound ??= NullSound.GetInstance();
+            music ??= NullMusic.GetInstance();
+            userInput ??= NullUserInput.GetInstance();
 
             this.args = args;
             this.config = config;
@@ -77,34 +63,34 @@ namespace ManagedDoom
 
             events = new List<DoomEvent>();
 
-            options = new GameOptions(args, content);
-            options.Video = video;
-            options.Sound = sound;
-            options.Music = music;
-            options.UserInput = userInput;
+            Options = new GameOptions(args, content);
+            Options.Video = video;
+            Options.Sound = sound;
+            Options.Music = music;
+            Options.UserInput = userInput;
 
-            menu = new DoomMenu(this);
+            Menu = new DoomMenu(this);
 
-            opening = new OpeningSequence(content, options);
+            Opening = new OpeningSequence(content, Options);
 
             cmds = new TicCmd[Player.MaxPlayerCount];
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
                 cmds[i] = new TicCmd();
             }
-            game = new DoomGame(content, options);
+            Game = new DoomGame(content, Options);
 
-            wipeEffect = new WipeEffect(video.WipeBandCount, video.WipeHeight);
-            wiping = false;
+            WipeEffect = new WipeEffect(video.WipeBandCount, video.WipeHeight);
+            Wiping = false;
 
-            currentState = DoomState.None;
+            State = DoomState.None;
             nextState = DoomState.Opening;
             needWipe = false;
 
             sendPause = false;
 
             quit = false;
-            quitMessage = null;
+            QuitMessage = null;
 
             mouseGrabbed = false;
 
@@ -116,70 +102,70 @@ namespace ManagedDoom
             if (args.warp.Present)
             {
                 nextState = DoomState.Game;
-                options.Episode = args.warp.Value.Item1;
-                options.Map = args.warp.Value.Item2;
-                game.DeferedInitNew();
+                Options.Episode = args.warp.Value.Item1;
+                Options.Map = args.warp.Value.Item2;
+                Game.DeferedInitNew();
             }
             else if (args.episode.Present)
             {
                 nextState = DoomState.Game;
-                options.Episode = args.episode.Value;
-                options.Map = 1;
-                game.DeferedInitNew();
+                Options.Episode = args.episode.Value;
+                Options.Map = 1;
+                Game.DeferedInitNew();
             }
 
             if (args.skill.Present)
             {
-                options.Skill = (GameSkill)(args.skill.Value - 1);
+                Options.Skill = (GameSkill)(args.skill.Value - 1);
             }
 
             if (args.deathmatch.Present)
             {
-                options.Deathmatch = 1;
+                Options.Deathmatch = 1;
             }
 
             if (args.altdeath.Present)
             {
-                options.Deathmatch = 2;
+                Options.Deathmatch = 2;
             }
 
             if (args.fast.Present)
             {
-                options.FastMonsters = true;
+                Options.FastMonsters = true;
             }
 
             if (args.respawn.Present)
             {
-                options.RespawnMonsters = true;
+                Options.RespawnMonsters = true;
             }
 
             if (args.nomonsters.Present)
             {
-                options.NoMonsters = true;
+                Options.NoMonsters = true;
             }
 
             if (args.loadgame.Present)
             {
                 nextState = DoomState.Game;
-                game.LoadGame(args.loadgame.Value);
+                Game.LoadGame(args.loadgame.Value);
             }
 
             if (args.playdemo.Present)
             {
                 nextState = DoomState.DemoPlayback;
-                demoPlayback = new DemoPlayback(args, content, options, args.playdemo.Value);
+                DemoPlayback = new DemoPlayback(args, content, Options, args.playdemo.Value);
             }
 
             if (args.timedemo.Present)
             {
                 nextState = DoomState.DemoPlayback;
-                demoPlayback = new DemoPlayback(args, content, options, args.timedemo.Value);
+                DemoPlayback = new DemoPlayback(args, content, Options, args.timedemo.Value);
             }
         }
 
         public void NewGame(GameSkill skill, int episode, int map)
         {
-            game.DeferedInitNew(skill, episode, map);
+            Game.DeferedInitNew(skill, episode, map);
             nextState = DoomState.Game;
         }
 
@@ -190,14 +176,14 @@ namespace ManagedDoom
 
         private void DoEvents()
         {
-            if (wiping)
+            if (Wiping)
             {
                 return;
             }
 
             foreach (var e in events)
             {
-                if (menu.DoEvent(e))
+                if (Menu.DoEvent(e))
                 {
                     continue;
                 }
@@ -210,7 +196,7 @@ namespace ManagedDoom
                     }
                 }
 
-                if (currentState == DoomState.Game)
+                if (State == DoomState.Game)
                 {
                     if (e.Key == DoomKey.Pause && e.Type == EventType.KeyDown)
                     {
@@ -218,14 +204,14 @@ namespace ManagedDoom
                         continue;
                     }
 
-                    if (game.DoEvent(e))
+                    if (Game.DoEvent(e))
                     {
                         continue;
                     }
                 }
-                else if (currentState == DoomState.DemoPlayback)
+                else if (State == DoomState.DemoPlayback)
                 {
-                    demoPlayback.DoEvent(e);
+                    DemoPlayback.DoEvent(e);
                 }
             }
 
@@ -237,39 +223,39 @@ namespace ManagedDoom
             switch (key)
             {
                 case DoomKey.F1:
-                    menu.ShowHelpScreen();
+                    Menu.ShowHelpScreen();
                     return true;
 
                 case DoomKey.F2:
-                    menu.ShowSaveScreen();
+                    Menu.ShowSaveScreen();
                     return true;
 
                 case DoomKey.F3:
-                    menu.ShowLoadScreen();
+                    Menu.ShowLoadScreen();
                     return true;
 
                 case DoomKey.F4:
-                    menu.ShowVolumeControl();
+                    Menu.ShowVolumeControl();
                     return true;
 
                 case DoomKey.F6:
-                    menu.QuickSave();
+                    Menu.QuickSave();
                     return true;
 
                 case DoomKey.F7:
-                    if (currentState == DoomState.Game)
+                    if (State == DoomState.Game)
                     {
-                        menu.EndGame();
+                        Menu.EndGame();
                     }
                     else
                     {
-                        options.Sound.StartSound(Sfx.OOF);
+                        Options.Sound.StartSound(Sfx.OOF);
                     }
                     return true;
 
                 case DoomKey.F8:
                     video.DisplayMessage = !video.DisplayMessage;
-                    if (currentState == DoomState.Game && game.State == GameState.Level)
+                    if (State == DoomState.Game && Game.State == GameState.Level)
                     {
                         string msg;
                         if (video.DisplayMessage)
@@ -280,17 +266,17 @@ namespace ManagedDoom
                         {
                             msg = DoomInfo.Strings.MSGOFF;
                         }
-                        game.World.ConsolePlayer.SendMessage(msg);
+                        Game.World.ConsolePlayer.SendMessage(msg);
                     }
-                    menu.StartSound(Sfx.SWTCHN);
+                    Menu.StartSound(Sfx.SWTCHN);
                     return true;
 
                 case DoomKey.F9:
-                    menu.QuickLoad();
+                    Menu.QuickLoad();
                     return true;
 
                 case DoomKey.F10:
-                    menu.Quit();
+                    Menu.Quit();
                     return true;
 
                 case DoomKey.F11:
@@ -301,7 +287,7 @@ namespace ManagedDoom
                         gcl = 0;
                     }
                     video.GammaCorrectionLevel = gcl;
-                    if (currentState == DoomState.Game && game.State == GameState.Level)
+                    if (State == DoomState.Game && Game.State == GameState.Level)
                     {
                         string msg;
                         if (gcl == 0)
@@ -312,41 +298,37 @@ namespace ManagedDoom
                         {
                             msg = "Gamma correction level " + gcl;
                         }
-                        game.World.ConsolePlayer.SendMessage(msg);
+                        Game.World.ConsolePlayer.SendMessage(msg);
                     }
                     return true;
 
                 case DoomKey.Add:
                 case DoomKey.Quote:
                 case DoomKey.Equal:
-                    if (currentState == DoomState.Game &&
-                        game.State == GameState.Level &&
-                        game.World.AutoMap.Visible)
+                    if (State == DoomState.Game &&
+                        Game.State == GameState.Level &&
+                        Game.World.AutoMap.Visible)
                     {
                         return false;
                     }
-                    else
-                    {
-                        video.WindowSize = Math.Min(video.WindowSize + 1, video.MaxWindowSize);
-                        sound.StartSound(Sfx.STNMOV);
-                        return true;
-                    }
+
+                    video.WindowSize = Math.Min(video.WindowSize + 1, video.MaxWindowSize);
+                    sound.StartSound(Sfx.STNMOV);
+                    return true;
 
                 case DoomKey.Subtract:
                 case DoomKey.Hyphen:
                 case DoomKey.Semicolon:
-                    if (currentState == DoomState.Game &&
-                        game.State == GameState.Level &&
-                        game.World.AutoMap.Visible)
+                    if (State == DoomState.Game &&
+                        Game.State == GameState.Level &&
+                        Game.World.AutoMap.Visible)
                     {
                         return false;
                     }
-                    else
-                    {
-                        video.WindowSize = Math.Max(video.WindowSize - 1, 0);
-                        sound.StartSound(Sfx.STNMOV);
-                        return true;
-                    }
+
+                    video.WindowSize = Math.Max(video.WindowSize - 1, 0);
+                    sound.StartSound(Sfx.STNMOV);
+                    return true;
 
                 default:
                     return false;
@@ -357,23 +339,23 @@ namespace ManagedDoom
         {
             DoEvents();
 
-            if (!wiping)
+            if (!Wiping)
             {
-                menu.Update();
+                Menu.Update();
 
-                if (nextState != currentState)
+                if (nextState != State)
                 {
                     if (nextState != DoomState.Opening)
                     {
-                        opening.Reset();
+                        Opening.Reset();
                     }
 
                     if (nextState != DoomState.DemoPlayback)
                     {
-                        demoPlayback = null;
+                        DemoPlayback = null;
                     }
 
-                    currentState = nextState;
+                    State = nextState;
                 }
 
                 if (quit)
@@ -388,37 +370,37 @@ namespace ManagedDoom
                 }
             }
 
-            if (!wiping)
+            if (!Wiping)
             {
-                switch (currentState)
+                switch (State)
                 {
                     case DoomState.Opening:
-                        if (opening.Update() == UpdateResult.NeedWipe)
+                        if (Opening.Update() == UpdateResult.NeedWipe)
                         {
                             StartWipe();
                         }
                         break;
 
                     case DoomState.DemoPlayback:
-                        var result = demoPlayback.Update();
+                        var result = DemoPlayback.Update();
                         if (result == UpdateResult.NeedWipe)
                         {
                             StartWipe();
                         }
                         else if (result == UpdateResult.Completed)
                         {
-                            Quit("FPS: " + demoPlayback.Fps.ToString("0.0"));
+                            Quit("FPS: " + DemoPlayback.Fps.ToString("0.0"));
                         }
                         break;
 
                     case DoomState.Game:
-                        userInput.BuildTicCmd(cmds[options.ConsolePlayer]);
+                        userInput.BuildTicCmd(cmds[Options.ConsolePlayer]);
                         if (sendPause)
                         {
                             sendPause = false;
-                            cmds[options.ConsolePlayer].Buttons |= (byte)(TicCmdButtons.Special | TicCmdButtons.Pause);
+                            cmds[Options.ConsolePlayer].Buttons |= (byte)(TicCmdButtons.Special | TicCmdButtons.Pause);
                         }
-                        if (game.Update(cmds) == UpdateResult.NeedWipe)
+                        if (Game.Update(cmds) == UpdateResult.NeedWipe)
                         {
                             StartWipe();
                         }
@@ -429,11 +411,11 @@ namespace ManagedDoom
                 }
             }
 
-            if (wiping)
+            if (Wiping)
             {
-                if (wipeEffect.Update() == UpdateResult.Completed)
+                if (WipeEffect.Update() == UpdateResult.Completed)
                 {
-                    wiping = false;
+                    Wiping = false;
                 }
             }
 
@@ -457,7 +439,7 @@ namespace ManagedDoom
             }
             else
             {
-                mouseShouldBeGrabbed = currentState == DoomState.Game && !menu.Active;
+                mouseShouldBeGrabbed = State == DoomState.Game && !Menu.Active;
             }
 
             if (mouseGrabbed)
@@ -480,16 +462,16 @@ namespace ManagedDoom
 
         private void StartWipe()
         {
-            wipeEffect.Start();
+            WipeEffect.Start();
             video.InitializeWipe();
-            wiping = true;
+            Wiping = true;
         }
 
         public void PauseGame()
         {
-            if (currentState == DoomState.Game &&
-                game.State == GameState.Level &&
-                !game.Paused && !sendPause)
+            if (State == DoomState.Game &&
+                Game.State == GameState.Level &&
+                !Game.Paused && !sendPause)
             {
                 sendPause = true;
             }
@@ -497,9 +479,9 @@ namespace ManagedDoom
 
         public void ResumeGame()
         {
-            if (currentState == DoomState.Game &&
-                game.State == GameState.Level &&
-                game.Paused && !sendPause)
+            if (State == DoomState.Game &&
+                Game.State == GameState.Level &&
+                Game.Paused && !sendPause)
             {
                 sendPause = true;
             }
@@ -507,20 +489,18 @@ namespace ManagedDoom
 
         public bool SaveGame(int slotNumber, string description)
         {
-            if (currentState == DoomState.Game && game.State == GameState.Level)
+            if (State == DoomState.Game && Game.State == GameState.Level)
             {
-                game.SaveGame(slotNumber, description);
+                Game.SaveGame(slotNumber, description);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public void LoadGame(int slotNumber)
         {
-            game.LoadGame(slotNumber);
+            Game.LoadGame(slotNumber);
             nextState = DoomState.Game;
         }
 
@@ -532,7 +512,7 @@ namespace ManagedDoom
         public void Quit(string message)
         {
             quit = true;
-            quitMessage = message;
+            QuitMessage = message;
         }
 
         public void PostEvent(DoomEvent e)
@@ -543,14 +523,22 @@ namespace ManagedDoom
             }
         }
 
-        public DoomState State => currentState;
-        public OpeningSequence Opening => opening;
-        public DemoPlayback DemoPlayback => demoPlayback;
-        public GameOptions Options => options;
-        public DoomGame Game => game;
-        public DoomMenu Menu => menu;
-        public WipeEffect WipeEffect => wipeEffect;
-        public bool Wiping => wiping;
-        public string QuitMessage => quitMessage;
+        public DoomState State { get; private set; }
+
+        public OpeningSequence Opening { get; }
+
+        public DemoPlayback DemoPlayback { get; private set; }
+
+        public GameOptions Options { get; }
+
+        public DoomGame Game { get; }
+
+        public DoomMenu Menu { get; }
+
+        public WipeEffect WipeEffect { get; }
+
+        public bool Wiping { get; private set; }
+
+        public string QuitMessage { get; private set; }
     }
 }

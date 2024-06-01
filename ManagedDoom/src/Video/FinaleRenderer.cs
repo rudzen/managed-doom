@@ -21,14 +21,14 @@ namespace ManagedDoom.Video
 {
     public sealed class FinaleRenderer
     {
-        private Wad wad;
-        private IFlatLookup flats;
-        private ISpriteLookup sprites;
+        private readonly Wad wad;
+        private readonly IFlatLookup flats;
+        private readonly ISpriteLookup sprites;
 
-        private DrawScreen screen;
-        private int scale;
+        private readonly DrawScreen screen;
+        private readonly int scale;
 
-        private PatchCache cache;
+        private readonly PatchCache cache;
 
         public FinaleRenderer(GameContent content, DrawScreen screen)
         {
@@ -122,7 +122,7 @@ namespace ManagedDoom.Video
 
             if (finale.ShowTheEnd)
             {
-                string patch = "END0";
+                var patch = "END0";
                 switch (finale.TheEndIndex)
                 {
                     case 1:

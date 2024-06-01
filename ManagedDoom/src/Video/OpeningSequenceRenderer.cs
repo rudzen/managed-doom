@@ -21,10 +21,10 @@ namespace ManagedDoom.Video
 {
     public class OpeningSequenceRenderer
     {
-        private DrawScreen screen;
-        private Renderer parent;
+        private readonly DrawScreen screen;
+        private readonly Renderer parent;
 
-        private PatchCache cache;
+        private readonly PatchCache cache;
 
         public OpeningSequenceRenderer(Wad wad, DrawScreen screen, Renderer parent)
         {

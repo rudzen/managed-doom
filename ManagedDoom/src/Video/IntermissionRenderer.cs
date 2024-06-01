@@ -46,26 +46,26 @@ namespace ManagedDoom.Video
         private static readonly int dmVictimsX = 5;
         private static readonly int dmVictimsY = 50;
 
-        private static readonly string[] mapPictures = new string[]
-        {
+        private static readonly string[] mapPictures =
+        [
             "WIMAP0",
             "WIMAP1",
             "WIMAP2"
-        };
+        ];
 
-        private static readonly string[] playerBoxes = new string[]
-        {
+        private static readonly string[] playerBoxes =
+        [
             "STPB0",
             "STPB1",
             "STPB2",
             "STPB3"
-        };
+        ];
 
-        private static readonly string[] youAreHere = new string[]
-        {
+        private static readonly string[] youAreHere =
+        [
             "WIURH0",
             "WIURH1"
-        };
+        ];
 
         private static readonly string[][] doomLevels;
         private static readonly string[] doom2Levels;
@@ -91,16 +91,16 @@ namespace ManagedDoom.Video
 
 
         private Wad wad;
-        private DrawScreen screen;      
+        private readonly DrawScreen screen;      
 
-        private PatchCache cache;
+        private readonly PatchCache cache;
 
-        private Patch minus;
-        private Patch[] numbers;
-        private Patch percent;
-        private Patch colon;
+        private readonly Patch minus;
+        private readonly Patch[] numbers;
+        private readonly Patch percent;
+        private readonly Patch colon;
 
-        private int scale;
+        private readonly int scale;
 
         public IntermissionRenderer(Wad wad, DrawScreen screen)
         {
@@ -404,14 +404,11 @@ namespace ManagedDoom.Video
                             y);
                     }
                 }
-                else
-                {
-                    // V_DrawPatch(x-SHORT(bp[i]->width)/2,
-                    //   DM_MATRIXY - WI_SPACINGY, FB, bp[i]);
-                    // V_DrawPatch(DM_MATRIXX-SHORT(bp[i]->width)/2,
-                    //   y, FB, bp[i]);
-                }
 
+                // V_DrawPatch(x-SHORT(bp[i]->width)/2,
+                //   DM_MATRIXY - WI_SPACINGY, FB, bp[i]);
+                // V_DrawPatch(DM_MATRIXX-SHORT(bp[i]->width)/2,
+                //   y, FB, bp[i]);
                 x += dmSpacingX;
                 y += spacingY;
             }
@@ -532,7 +529,7 @@ namespace ManagedDoom.Video
         private void DrawEnteringLevelName(Intermission im)
         {
             var wbs = im.Info;
-            int y = titleY;
+            var y = titleY;
 
             string levelName;
             if (im.Options.GameMode != GameMode.Commercial)

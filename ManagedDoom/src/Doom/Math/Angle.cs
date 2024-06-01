@@ -28,18 +28,16 @@ namespace ManagedDoom
         public static readonly Angle Ang180 = new Angle(0x80000000);
         public static readonly Angle Ang270 = new Angle(0xC0000000);
 
-        private uint data;
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Angle(uint data)
         {
-            this.data = data;
+            this.Data = data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Angle(int data)
         {
-            this.data = (uint)data;
+            this.Data = (uint)data;
         }
 
         public static Angle FromRadian(double radian)
@@ -56,26 +54,24 @@ namespace ManagedDoom
 
         public double ToRadian()
         {
-            return 2 * Math.PI * ((double)data / 0x100000000);
+            return 2 * Math.PI * ((double)Data / 0x100000000);
         }
 
         public double ToDegree()
         {
-            return 360 * ((double)data / 0x100000000);
+            return 360 * ((double)Data / 0x100000000);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle Abs(Angle angle)
         {
-            var data = (int)angle.data;
+            var data = (int)angle.Data;
             if (data < 0)
             {
                 return new Angle((uint)-data);
             }
-            else
-            {
-                return angle;
-            }
+
+            return angle;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,73 +83,73 @@ namespace ManagedDoom
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator -(Angle a)
         {
-            return new Angle((uint)-(int)a.data);
+            return new Angle((uint)-(int)a.Data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator +(Angle a, Angle b)
         {
-            return new Angle(a.data + b.data);
+            return new Angle(a.Data + b.Data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator -(Angle a, Angle b)
         {
-            return new Angle(a.data - b.data);
+            return new Angle(a.Data - b.Data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator *(uint a, Angle b)
         {
-            return new Angle(a * b.data);
+            return new Angle(a * b.Data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator *(Angle a, uint b)
         {
-            return new Angle(a.data * b);
+            return new Angle(a.Data * b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator /(Angle a, uint b)
         {
-            return new Angle(a.data / b);
+            return new Angle(a.Data / b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Angle a, Angle b)
         {
-            return a.data == b.data;
+            return a.Data == b.Data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Angle a, Angle b)
         {
-            return a.data != b.data;
+            return a.Data != b.Data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(Angle a, Angle b)
         {
-            return a.data < b.data;
+            return a.Data < b.Data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(Angle a, Angle b)
         {
-            return a.data > b.data;
+            return a.Data > b.Data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(Angle a, Angle b)
         {
-            return a.data <= b.data;
+            return a.Data <= b.Data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(Angle a, Angle b)
         {
-            return a.data >= b.data;
+            return a.Data >= b.Data;
         }
 
         public override bool Equals(object obj)
@@ -163,7 +159,7 @@ namespace ManagedDoom
 
         public override int GetHashCode()
         {
-            return data.GetHashCode();
+            return Data.GetHashCode();
         }
 
         public override string ToString()
@@ -174,7 +170,7 @@ namespace ManagedDoom
         public uint Data
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => data;
+            get;
         }
     }
 }

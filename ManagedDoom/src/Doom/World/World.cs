@@ -21,39 +21,7 @@ namespace ManagedDoom
 {
     public sealed partial class World
     {
-        private GameOptions options;
-        private DoomGame game;
-        private DoomRandom random;
-
-        private Map map;
-
-        private Thinkers thinkers;
-        private Specials specials;
-        private ThingAllocation thingAllocation;
-        private ThingMovement thingMovement;
-        private ThingInteraction thingInteraction;
-        private MapCollision mapCollision;
-        private MapInteraction mapInteraction;
-        private PathTraversal pathTraversal;
-        private Hitscan hitscan;
-        private VisibilityCheck visibilityCheck;
-        private SectorAction sectorAction;
-        private PlayerBehavior playerBehavior;
-        private ItemPickup itemPickup;
-        private WeaponBehavior weaponBehavior;
-        private MonsterBehavior monsterBehavior;
-        private LightingChange lightingChange;
-        private StatusBar statusBar;
-        private AutoMap autoMap;
-        private Cheat cheat;
-
-        private int totalKills;
-        private int totalItems;
-        private int totalSecrets;
-
-        private int levelTime;
         private bool doneFirstTic;
-        private bool secretExit;
         private bool completed;
 
         private int validCount;
@@ -62,35 +30,35 @@ namespace ManagedDoom
 
         // This is for vanilla compatibility.
         // See SubstNullMobj().
-        private Mobj dummy;
+        private readonly Mobj dummy;
 
         public World(GameContent resorces, GameOptions options, DoomGame game)
         {
-            this.options = options;
-            this.game = game;
-            this.random = options.Random;
+            this.Options = options;
+            this.Game = game;
+            this.Random = options.Random;
 
-            map = new Map(resorces, this);
+            Map = new Map(resorces, this);
 
-            thinkers = new Thinkers(this);
-            specials = new Specials(this);
-            thingAllocation = new ThingAllocation(this);
-            thingMovement = new ThingMovement(this);
-            thingInteraction = new ThingInteraction(this);
-            mapCollision = new MapCollision(this);
-            mapInteraction = new MapInteraction(this);
-            pathTraversal = new PathTraversal(this);
-            hitscan = new Hitscan(this);
-            visibilityCheck = new VisibilityCheck(this);
-            sectorAction = new SectorAction(this);
-            playerBehavior = new PlayerBehavior(this);
-            itemPickup = new ItemPickup(this);
-            weaponBehavior = new WeaponBehavior(this);
-            monsterBehavior = new MonsterBehavior(this);
-            lightingChange = new LightingChange(this);
-            statusBar = new StatusBar(this);
-            autoMap = new AutoMap(this);
-            cheat = new Cheat(this);
+            Thinkers = new Thinkers(this);
+            Specials = new Specials(this);
+            ThingAllocation = new ThingAllocation(this);
+            ThingMovement = new ThingMovement(this);
+            ThingInteraction = new ThingInteraction(this);
+            MapCollision = new MapCollision(this);
+            MapInteraction = new MapInteraction(this);
+            PathTraversal = new PathTraversal(this);
+            Hitscan = new Hitscan(this);
+            VisibilityCheck = new VisibilityCheck(this);
+            SectorAction = new SectorAction(this);
+            PlayerBehavior = new PlayerBehavior(this);
+            ItemPickup = new ItemPickup(this);
+            WeaponBehavior = new WeaponBehavior(this);
+            MonsterBehavior = new MonsterBehavior(this);
+            LightingChange = new LightingChange(this);
+            StatusBar = new StatusBar(this);
+            AutoMap = new AutoMap(this);
+            Cheat = new Cheat(this);
 
             options.IntermissionInfo.TotalFrags = 0;
             options.IntermissionInfo.ParTime = 180;
@@ -105,9 +73,9 @@ namespace ManagedDoom
             // Initial height of view will be set by player think.
             options.Players[options.ConsolePlayer].ViewZ = Fixed.Epsilon;
 
-            totalKills = 0;
-            totalItems = 0;
-            totalSecrets = 0;
+            TotalKills = 0;
+            TotalItems = 0;
+            TotalSecrets = 0;
 
             LoadThings();
 
@@ -119,16 +87,16 @@ namespace ManagedDoom
                     if (options.Players[i].InGame)
                     {
                         options.Players[i].Mobj = null;
-                        thingAllocation.DeathMatchSpawnPlayer(i);
+                        ThingAllocation.DeathMatchSpawnPlayer(i);
                     }
                 }
             }
 
-            specials.SpawnSpecials();
+            Specials.SpawnSpecials();
 
-            levelTime = 0;
+            LevelTime = 0;
             doneFirstTic = false;
-            secretExit = false;
+            SecretExit = false;
             completed = false;
 
             validCount = 0;
@@ -142,7 +110,7 @@ namespace ManagedDoom
 
         public UpdateResult Update()
         {
-            var players = options.Players;
+            var players = Options.Players;
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
@@ -151,9 +119,9 @@ namespace ManagedDoom
                     players[i].UpdateFrameInterpolationInfo();
                 }
             }
-            thinkers.UpdateFrameInterpolationInfo();
+            Thinkers.UpdateFrameInterpolationInfo();
 
-            foreach (var sector in map.Sectors)
+            foreach (var sector in Map.Sectors)
             {
                 sector.UpdateFrameInterpolationInfo();
             }
@@ -162,47 +130,43 @@ namespace ManagedDoom
             {
                 if (players[i].InGame)
                 {
-                    playerBehavior.PlayerThink(players[i]);
+                    PlayerBehavior.PlayerThink(players[i]);
                 }
             }
 
-            thinkers.Run();
-            specials.Update();
-            thingAllocation.RespawnSpecials();
+            Thinkers.Run();
+            Specials.Update();
+            ThingAllocation.RespawnSpecials();
 
-            statusBar.Update();
-            autoMap.Update();
+            StatusBar.Update();
+            AutoMap.Update();
 
-            levelTime++;
+            LevelTime++;
 
             if (completed)
             {
                 return UpdateResult.Completed;
             }
-            else
+
+            if (doneFirstTic)
             {
-                if (doneFirstTic)
-                {
-                    return UpdateResult.None;
-                }
-                else
-                {
-                    doneFirstTic = true;
-                    return UpdateResult.NeedWipe;
-                }
+                return UpdateResult.None;
             }
+
+            doneFirstTic = true;
+            return UpdateResult.NeedWipe;
         }
 
         private void LoadThings()
         {
-            for (var i = 0; i < map.Things.Length; i++)
+            for (var i = 0; i < Map.Things.Length; i++)
             {
-                var mt = map.Things[i];
+                var mt = Map.Things[i];
 
                 var spawn = true;
 
                 // Do not spawn cool, new monsters if not commercial.
-                if (options.GameMode != GameMode.Commercial)
+                if (Options.GameMode != GameMode.Commercial)
                 {
                     switch (mt.Type)
                     {
@@ -226,35 +190,35 @@ namespace ManagedDoom
                     break;
                 }
 
-                thingAllocation.SpawnMapThing(mt);
+                ThingAllocation.SpawnMapThing(mt);
             }
         }
 
         public void ExitLevel()
         {
-            secretExit = false;
+            SecretExit = false;
             completed = true;
         }
 
         public void SecretExitLevel()
         {
-            secretExit = true;
+            SecretExit = true;
             completed = true;
         }
 
         public void StartSound(Mobj mobj, Sfx sfx, SfxType type)
         {
-            options.Sound.StartSound(mobj, sfx, type);
+            Options.Sound.StartSound(mobj, sfx, type);
         }
 
         public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume)
         {
-            options.Sound.StartSound(mobj, sfx, type, volume);
+            Options.Sound.StartSound(mobj, sfx, type, volume);
         }
 
         public void StopSound(Mobj mobj)
         {
-            options.Sound.StopSound(mobj);
+            Options.Sound.StopSound(mobj);
         }
 
         public int GetNewValidCount()
@@ -265,14 +229,14 @@ namespace ManagedDoom
 
         public bool DoEvent(DoomEvent e)
         {
-            if (!options.NetGame && !options.DemoPlayback)
+            if (!Options.NetGame && !Options.DemoPlayback)
             {
-                cheat.DoEvent(e);
+                Cheat.DoEvent(e);
             }
 
-            if (autoMap.Visible)
+            if (AutoMap.Visible)
             {
-                if (autoMap.DoEvent(e))
+                if (AutoMap.DoEvent(e))
                 {
                     return true;
                 }
@@ -280,20 +244,20 @@ namespace ManagedDoom
 
             if (e.Key == DoomKey.Tab && e.Type == EventType.KeyDown)
             {
-                if (autoMap.Visible)
+                if (AutoMap.Visible)
                 {
-                    autoMap.Close();
+                    AutoMap.Close();
                 }
                 else
                 {
-                    autoMap.Open();
+                    AutoMap.Open();
                 }
                 return true;
             }
 
             if (e.Key == DoomKey.F12 && e.Type == EventType.KeyDown)
             {
-                if (options.DemoPlayback || options.Deathmatch == 0)
+                if (Options.DemoPlayback || Options.Deathmatch == 0)
                 {
                     ChangeDisplayPlayer();
                 }
@@ -307,7 +271,7 @@ namespace ManagedDoom
         {
             displayPlayer++;
             if (displayPlayer == Player.MaxPlayerCount ||
-                !options.Players[displayPlayer].InGame)
+                !Options.Players[displayPlayer].InGame)
             {
                 displayPlayer = 0;
             }
@@ -330,68 +294,70 @@ namespace ManagedDoom
                 dummy.Flags = 0;
                 return dummy;
             }
-            else
-            {
-                return mobj;
-            }
+
+            return mobj;
         }
 
-        public GameOptions Options => options;
-        public DoomGame Game => game;
-        public DoomRandom Random => random;
+        public GameOptions Options { get; }
 
-        public Map Map => map;
+        public DoomGame Game { get; }
 
-        public Thinkers Thinkers => thinkers;
-        public Specials Specials => specials;
-        public ThingAllocation ThingAllocation => thingAllocation;
-        public ThingMovement ThingMovement => thingMovement;
-        public ThingInteraction ThingInteraction => thingInteraction;
-        public MapCollision MapCollision => mapCollision;
-        public MapInteraction MapInteraction => mapInteraction;
-        public PathTraversal PathTraversal => pathTraversal;
-        public Hitscan Hitscan => hitscan;
-        public VisibilityCheck VisibilityCheck => visibilityCheck;
-        public SectorAction SectorAction => sectorAction;
-        public PlayerBehavior PlayerBehavior => playerBehavior;
-        public ItemPickup ItemPickup => itemPickup;
-        public WeaponBehavior WeaponBehavior => weaponBehavior;
-        public MonsterBehavior MonsterBehavior => monsterBehavior;
-        public LightingChange LightingChange => lightingChange;
-        public StatusBar StatusBar => statusBar;
-        public AutoMap AutoMap => autoMap;
-        public Cheat Cheat => cheat;
+        public DoomRandom Random { get; }
 
-        public int TotalKills
-        {
-            get => totalKills;
-            set => totalKills = value;
-        }
+        public Map Map { get; }
 
-        public int TotalItems
-        {
-            get => totalItems;
-            set => totalItems = value;
-        }
+        public Thinkers Thinkers { get; }
 
-        public int TotalSecrets
-        {
-            get => totalSecrets;
-            set => totalSecrets = value;
-        }
+        public Specials Specials { get; }
 
-        public int LevelTime
-        {
-            get => levelTime;
-            set => levelTime = value;
-        }
+        public ThingAllocation ThingAllocation { get; }
 
-        public int GameTic => game.GameTic;
+        public ThingMovement ThingMovement { get; }
 
-        public bool SecretExit => secretExit;
+        public ThingInteraction ThingInteraction { get; }
 
-        public Player ConsolePlayer => options.Players[options.ConsolePlayer];
-        public Player DisplayPlayer => options.Players[displayPlayer];
+        public MapCollision MapCollision { get; }
+
+        public MapInteraction MapInteraction { get; }
+
+        public PathTraversal PathTraversal { get; }
+
+        public Hitscan Hitscan { get; }
+
+        public VisibilityCheck VisibilityCheck { get; }
+
+        public SectorAction SectorAction { get; }
+
+        public PlayerBehavior PlayerBehavior { get; }
+
+        public ItemPickup ItemPickup { get; }
+
+        public WeaponBehavior WeaponBehavior { get; }
+
+        public MonsterBehavior MonsterBehavior { get; }
+
+        public LightingChange LightingChange { get; }
+
+        public StatusBar StatusBar { get; }
+
+        public AutoMap AutoMap { get; }
+
+        public Cheat Cheat { get; }
+
+        public int TotalKills { get; set; }
+
+        public int TotalItems { get; set; }
+
+        public int TotalSecrets { get; set; }
+
+        public int LevelTime { get; set; }
+
+        public int GameTic => Game.GameTic;
+
+        public bool SecretExit { get; private set; }
+
+        public Player ConsolePlayer => Options.Players[Options.ConsolePlayer];
+        public Player DisplayPlayer => Options.Players[displayPlayer];
         public bool FirstTicIsNotYetDone => ConsolePlayer.ViewZ == Fixed.Epsilon;
     }
 }

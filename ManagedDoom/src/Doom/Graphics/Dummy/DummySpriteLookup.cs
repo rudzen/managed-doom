@@ -22,7 +22,7 @@ namespace ManagedDoom
 {
     public sealed class DummySpriteLookup : ISpriteLookup
     {
-        private SpriteDef[] spriteDefs;
+        private readonly SpriteDef[] spriteDefs;
 
         public DummySpriteLookup(Wad wad)
         {
@@ -140,7 +140,8 @@ namespace ManagedDoom
                         spriteSection = true;
                         continue;
                     }
-                    else if (name.EndsWith("_START"))
+
+                    if (name.EndsWith("_START"))
                     {
                         spriteSection = false;
                         continue;
@@ -169,8 +170,8 @@ namespace ManagedDoom
 
         private class SpriteInfo
         {
-            public Patch[] Patches;
-            public bool[] Flip;
+            public readonly Patch[] Patches;
+            public readonly bool[] Flip;
 
             public SpriteInfo()
             {

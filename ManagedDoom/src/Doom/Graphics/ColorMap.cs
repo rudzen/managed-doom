@@ -24,7 +24,7 @@ namespace ManagedDoom
     {
         public static readonly int Inverse = 32;
 
-        private byte[][] data;
+        private readonly byte[][] data;
 
         public ColorMap(Wad wad)
         {

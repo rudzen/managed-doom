@@ -22,8 +22,8 @@ namespace ManagedDoom
 {
     public sealed class Cheat
     {
-        private static CheatInfo[] list = new CheatInfo[]
-        {
+        private static readonly CheatInfo[] list =
+        [
             new CheatInfo("idfa", (cheat, typed) => cheat.FullAmmo(), false),
             new CheatInfo("idkfa", (cheat, typed) => cheat.FullAmmoAndKeys(), false),
             new CheatInfo("iddqd", (cheat, typed) => cheat.GodMode(), false),
@@ -38,13 +38,13 @@ namespace ManagedDoom
             new CheatInfo("fhhall", (cheat, typed) => cheat.KillMonsters(), false),
             new CheatInfo("idclev??", (cheat, typed) => cheat.ChangeLevel(typed), true),
             new CheatInfo("idmus??", (cheat, typed) => cheat.ChangeMusic(typed), false)
-        };
+        ];
 
         private static readonly int maxCodeLength = list.Max(info => info.Code.Length);
 
-        private World world;
+        private readonly World world;
 
-        private char[] buffer;
+        private readonly char[] buffer;
         private int p;
 
         public Cheat(World world)
@@ -352,8 +352,7 @@ namespace ManagedDoom
         {
             if (world.Options.GameMode == GameMode.Commercial)
             {
-                int map;
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 2), out map))
+                if (!int.TryParse(typed.Substring(typed.Length - 2, 2), out var map))
                 {
                     return;
                 }
@@ -362,13 +361,12 @@ namespace ManagedDoom
             }
             else
             {
-                int episode;
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 1), out episode))
+                if (!int.TryParse(typed.Substring(typed.Length - 2, 1), out var episode))
                 {
                     return;
                 }
-                int map;
-                if (!int.TryParse(typed.Substring(typed.Length - 1, 1), out map))
+
+                if (!int.TryParse(typed.Substring(typed.Length - 1, 1), out var map))
                 {
                     return;
                 }
@@ -383,8 +381,7 @@ namespace ManagedDoom
             options.GameMode = world.Options.GameMode;
             if (world.Options.GameMode == GameMode.Commercial)
             {
-                int map;
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 2), out map))
+                if (!int.TryParse(typed.Substring(typed.Length - 2, 2), out var map))
                 {
                     return;
                 }
@@ -392,13 +389,12 @@ namespace ManagedDoom
             }
             else
             {
-                int episode;
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 1), out episode))
+                if (!int.TryParse(typed.Substring(typed.Length - 2, 1), out var episode))
                 {
                     return;
                 }
-                int map;
-                if (!int.TryParse(typed.Substring(typed.Length - 1, 1), out map))
+
+                if (!int.TryParse(typed.Substring(typed.Length - 1, 1), out var map))
                 {
                     return;
                 }

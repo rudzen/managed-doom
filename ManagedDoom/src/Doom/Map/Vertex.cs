@@ -23,13 +23,10 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 4;
 
-        private Fixed x;
-        private Fixed y;
-
         public Vertex(Fixed x, Fixed y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         public static Vertex FromData(byte[] data, int offset)
@@ -61,7 +58,8 @@ namespace ManagedDoom
             return vertices;
         }
 
-        public Fixed X => x;
-        public Fixed Y => y;
+        public Fixed X { get; }
+
+        public Fixed Y { get; }
     }
 }

@@ -21,9 +21,7 @@ namespace ManagedDoom
 {
     public sealed class HelpScreen : MenuDef
     {
-        private int pageCount;
-
-        private int page;
+        private readonly int pageCount;
 
         public HelpScreen(DoomMenu menu) : base(menu)
         {
@@ -39,7 +37,7 @@ namespace ManagedDoom
 
         public override void Open()
         {
-            page = pageCount - 1;
+            Page = pageCount - 1;
         }
 
         public override bool DoEvent(DoomEvent e)
@@ -49,13 +47,10 @@ namespace ManagedDoom
                 return true;
             }
 
-            if (e.Key == DoomKey.Enter ||
-                e.Key == DoomKey.Space ||
-                e.Key == DoomKey.LControl ||
-                e.Key == DoomKey.RControl)
+            if (e.Key is DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl)
             {
-                page--;
-                if (page == -1)
+                Page--;
+                if (Page == -1)
                 {
                     Menu.Close();
                 }
@@ -71,6 +66,6 @@ namespace ManagedDoom
             return true;
         }
 
-        public int Page => page;
+        public int Page { get; private set; }
     }
 }

@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class LightingChange
     {
-        private World world;
+        private readonly World world;
 
         public LightingChange(World world)
         {

@@ -23,17 +23,13 @@ namespace ManagedDoom
 {
 	public sealed class Animation
 	{
-		private Intermission im;
-		private int number;
+		private readonly Intermission im;
+		private readonly int number;
 
-		private AnimationType type;
-		private int period;
-		private int frameCount;
-		private int locationX;
-		private int locationY;
-		private int data;
-		private string[] patches;
-		private int patchNumber;
+		private readonly AnimationType type;
+		private readonly int period;
+		private readonly int frameCount;
+		private readonly string[] patches;
 		private int nextTic;
 
 		public Animation(Intermission intermission, AnimationInfo info, int number)
@@ -44,9 +40,9 @@ namespace ManagedDoom
 			type = info.Type;
 			period = info.Period;
 			frameCount = info.Count;
-			locationX = info.X;
-			locationY = info.Y;
-			data = info.Data;
+			LocationX = info.X;
+			LocationY = info.Y;
+			Data = info.Data;
 
 			patches = new string[frameCount];
 			for (var i = 0; i < frameCount; i++)
@@ -66,7 +62,7 @@ namespace ManagedDoom
 
 		public void Reset(int bgCount)
 		{
-			patchNumber = -1;
+			PatchNumber = -1;
 
 			// Specify the next time to draw it.
 			if (type == AnimationType.Always)
@@ -75,7 +71,7 @@ namespace ManagedDoom
 			}
 			else if (type == AnimationType.Random)
 			{
-				nextTic = bgCount + 1 + (im.Random.Next() % data);
+				nextTic = bgCount + 1 + (im.Random.Next() % Data);
 			}
 			else if (type == AnimationType.Level)
 			{
@@ -90,19 +86,19 @@ namespace ManagedDoom
 				switch (type)
 				{
 					case AnimationType.Always:
-						if (++patchNumber >= frameCount)
+						if (++PatchNumber >= frameCount)
 						{
-							patchNumber = 0;
+							PatchNumber = 0;
 						}
 						nextTic = bgCount + period;
 						break;
 
 					case AnimationType.Random:
-						patchNumber++;
-						if (patchNumber == frameCount)
+						PatchNumber++;
+						if (PatchNumber == frameCount)
 						{
-							patchNumber = -1;
-							nextTic = bgCount + (im.Random.Next() % data);
+							PatchNumber = -1;
+							nextTic = bgCount + (im.Random.Next() % Data);
 						}
 						else
 						{
@@ -114,10 +110,10 @@ namespace ManagedDoom
 						// Gawd-awful hack for level anims.
 						if (!(im.State == IntermissionState.StatCount && number == 7) && im.Info.NextLevel == Data)
 						{
-							patchNumber++;
-							if (patchNumber == frameCount)
+							PatchNumber++;
+							if (PatchNumber == frameCount)
 							{
-								patchNumber--;
+								PatchNumber--;
 							}
 							nextTic = bgCount + period;
 						}
@@ -126,10 +122,13 @@ namespace ManagedDoom
 			}
 		}
 
-		public int LocationX => locationX;
-		public int LocationY => locationY;
-		public int Data => data;
+		public int LocationX { get; }
+
+		public int LocationY { get; }
+
+		public int Data { get; }
+
 		public IReadOnlyList<string> Patches => patches;
-		public int PatchNumber => patchNumber;
+		public int PatchNumber { get; private set; }
 	}
 }

@@ -23,32 +23,6 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 14;
 
-        private Vertex vertex1;
-        private Vertex vertex2;
-
-        private Fixed dx;
-        private Fixed dy;
-
-        private LineFlags flags;
-        private LineSpecial special;
-        private short tag;
-
-        private SideDef frontSide;
-        private SideDef backSide;
-
-        private Fixed[] boundingBox;
-
-        private SlopeType slopeType;
-
-        private Sector frontSector;
-        private Sector backSector;
-
-        private int validCount;
-
-        private Thinker specialData;
-
-        private Mobj soundOrigin;
-
         public LineDef(
             Vertex vertex1,
             Vertex vertex2,
@@ -58,45 +32,45 @@ namespace ManagedDoom
             SideDef frontSide,
             SideDef backSide)
         {
-            this.vertex1 = vertex1;
-            this.vertex2 = vertex2;
-            this.flags = flags;
-            this.special = special;
-            this.tag = tag;
-            this.frontSide = frontSide;
-            this.backSide = backSide;
+            this.Vertex1 = vertex1;
+            this.Vertex2 = vertex2;
+            this.Flags = flags;
+            this.Special = special;
+            this.Tag = tag;
+            this.FrontSide = frontSide;
+            this.BackSide = backSide;
 
-            dx = vertex2.X - vertex1.X;
-            dy = vertex2.Y - vertex1.Y;
+            Dx = vertex2.X - vertex1.X;
+            Dy = vertex2.Y - vertex1.Y;
 
-            if (dx == Fixed.Zero)
+            if (Dx == Fixed.Zero)
             {
-                slopeType = SlopeType.Vertical;
+                SlopeType = SlopeType.Vertical;
             }
-            else if (dy == Fixed.Zero)
+            else if (Dy == Fixed.Zero)
             {
-                slopeType = SlopeType.Horizontal;
+                SlopeType = SlopeType.Horizontal;
             }
             else
             {
-                if (dy / dx > Fixed.Zero)
+                if (Dy / Dx > Fixed.Zero)
                 {
-                    slopeType = SlopeType.Positive;
+                    SlopeType = SlopeType.Positive;
                 }
                 else
                 {
-                    slopeType = SlopeType.Negative;
+                    SlopeType = SlopeType.Negative;
                 }
             }
 
-            boundingBox = new Fixed[4];
-            boundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
-            boundingBox[Box.Bottom] = Fixed.Min(vertex1.Y, vertex2.Y);
-            boundingBox[Box.Left] = Fixed.Min(vertex1.X, vertex2.X);
-            boundingBox[Box.Right] = Fixed.Max(vertex1.X, vertex2.X);
+            BoundingBox = new Fixed[4];
+            BoundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
+            BoundingBox[Box.Bottom] = Fixed.Min(vertex1.Y, vertex2.Y);
+            BoundingBox[Box.Left] = Fixed.Min(vertex1.X, vertex2.X);
+            BoundingBox[Box.Right] = Fixed.Max(vertex1.X, vertex2.X);
 
-            frontSector = frontSide?.Sector;
-            backSector = backSide?.Sector;
+            FrontSector = frontSide?.Sector;
+            BackSector = backSide?.Sector;
         }
 
         public static LineDef FromData(byte[] data, int offset, Vertex[] vertices, SideDef[] sides)
@@ -140,56 +114,36 @@ namespace ManagedDoom
             return lines;
         }
 
-        public Vertex Vertex1 => vertex1;
-        public Vertex Vertex2 => vertex2;
+        public Vertex Vertex1 { get; }
 
-        public Fixed Dx => dx;
-        public Fixed Dy => dy;
+        public Vertex Vertex2 { get; }
 
-        public LineFlags Flags
-        {
-            get => flags;
-            set => flags = value;
-        }
+        public Fixed Dx { get; }
 
-        public LineSpecial Special
-        {
-            get => special;
-            set => special = value;
-        }
+        public Fixed Dy { get; }
 
-        public short Tag
-        {
-            get => tag;
-            set => tag = value;
-        }
+        public LineFlags Flags { get; set; }
 
-        public SideDef FrontSide => frontSide;
-        public SideDef BackSide => backSide;
+        public LineSpecial Special { get; set; }
 
-        public Fixed[] BoundingBox => boundingBox;
+        public short Tag { get; set; }
 
-        public SlopeType SlopeType => slopeType;
+        public SideDef FrontSide { get; }
 
-        public Sector FrontSector => frontSector;
-        public Sector BackSector => backSector;
+        public SideDef BackSide { get; }
 
-        public int ValidCount
-        {
-            get => validCount;
-            set => validCount = value;
-        }
+        public Fixed[] BoundingBox { get; }
 
-        public Thinker SpecialData
-        {
-            get => specialData;
-            set => specialData = value;
-        }
+        public SlopeType SlopeType { get; }
 
-        public Mobj SoundOrigin
-        {
-            get => soundOrigin;
-            set => soundOrigin = value;
-        }
+        public Sector FrontSector { get; }
+
+        public Sector BackSector { get; }
+
+        public int ValidCount { get; set; }
+
+        public Thinker SpecialData { get; set; }
+
+        public Mobj SoundOrigin { get; set; }
     }
 }

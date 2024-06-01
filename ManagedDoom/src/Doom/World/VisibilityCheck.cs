@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
 	public sealed class VisibilityCheck
 	{
-		private World world;
+		private readonly World world;
 
 		// Eye z of looker.
 		private Fixed sightZStart;
@@ -29,11 +29,11 @@ namespace ManagedDoom
 		private Fixed topSlope;
 
 		// From looker to target.
-		private DivLine trace;
+		private readonly DivLine trace;
 		private Fixed targetX;
 		private Fixed targetY;
 
-		private DivLine occluder;
+		private readonly DivLine occluder;
 
 		public VisibilityCheck(World world)
 		{
@@ -204,10 +204,8 @@ namespace ManagedDoom
 				{
 					return CrossSubsector(0, validCount);
 				}
-				else
-				{
-					return CrossSubsector(Node.GetSubsector(nodeNumber), validCount);
-				}
+
+				return CrossSubsector(Node.GetSubsector(nodeNumber), validCount);
 			}
 
 			var node = world.Map.Nodes[nodeNumber];

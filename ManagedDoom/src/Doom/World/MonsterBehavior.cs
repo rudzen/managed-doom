@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class MonsterBehavior
     {
-        private World world;
+        private readonly World world;
 
         public MonsterBehavior(World world)
         {
@@ -153,7 +153,7 @@ namespace ManagedDoom
                         break;
                 }
 
-                if (actor.Type == MobjType.Spider || actor.Type == MobjType.Cyborg)
+                if (actor.Type is MobjType.Spider or MobjType.Cyborg)
                 {
                     // Full volume for boss monsters.
                     world.StartSound(actor, (Sfx)sound, SfxType.Diffuse);
@@ -174,7 +174,7 @@ namespace ManagedDoom
         ////////////////////////////////////////////////////////////
 
         private static readonly Fixed[] xSpeed =
-        {
+        [
             new Fixed(Fixed.FracUnit),
             new Fixed(47000),
             new Fixed(0),
@@ -183,10 +183,10 @@ namespace ManagedDoom
             new Fixed(-47000),
             new Fixed(0),
             new Fixed(47000)
-        };
+        ];
 
         private static readonly Fixed[] ySpeed =
-        {
+        [
             new Fixed(0),
             new Fixed(47000),
             new Fixed(Fixed.FracUnit),
@@ -195,7 +195,7 @@ namespace ManagedDoom
             new Fixed(-47000),
             new Fixed(-Fixed.FracUnit),
             new Fixed(-47000)
-        };
+        ];
 
         private bool Move(Mobj actor)
         {
@@ -255,10 +255,8 @@ namespace ManagedDoom
                 }
                 return good;
             }
-            else
-            {
-                actor.Flags &= ~MobjFlags.InFloat;
-            }
+
+            actor.Flags &= ~MobjFlags.InFloat;
 
             if ((actor.Flags & MobjFlags.Float) == 0)
             {
@@ -283,7 +281,7 @@ namespace ManagedDoom
 
 
         private static readonly Direction[] opposite =
-        {
+        [
             Direction.west,
             Direction.Southwest,
             Direction.South,
@@ -293,15 +291,15 @@ namespace ManagedDoom
             Direction.North,
             Direction.Northwest,
             Direction.None
-        };
+        ];
 
         private static readonly Direction[] diags =
-        {
+        [
             Direction.Northwest,
             Direction.Northeast,
             Direction.Southwest,
             Direction.Southeast
-        };
+        ];
 
         private readonly Direction[] choices = new Direction[3];
 
@@ -535,9 +533,7 @@ namespace ManagedDoom
             }
 
 
-            if (actor.Type == MobjType.Cyborg ||
-                actor.Type == MobjType.Spider ||
-                actor.Type == MobjType.Skull)
+            if (actor.Type is MobjType.Cyborg or MobjType.Spider or MobjType.Skull)
             {
                 attackDist >>= 1;
             }
@@ -726,7 +722,7 @@ namespace ManagedDoom
             }
 
             // Check for bosses.
-            if (actor.Type == MobjType.Spider || actor.Type == MobjType.Cyborg)
+            if (actor.Type is MobjType.Spider or MobjType.Cyborg)
             {
                 // Full volume.
                 world.StartSound(actor, (Sfx)sound, SfxType.Diffuse);
@@ -1383,7 +1379,7 @@ namespace ManagedDoom
         }
 
 
-        private static Angle traceAngle = new Angle(0xc000000);
+        private static readonly Angle traceAngle = new Angle(0xc000000);
 
         public void Tracer(Mobj actor)
         {

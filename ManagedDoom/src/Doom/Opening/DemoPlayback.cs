@@ -23,11 +23,10 @@ namespace ManagedDoom
 {
     public sealed class DemoPlayback
     {
-        private Demo demo;
-        private TicCmd[] cmds;
-        private DoomGame game;
+        private readonly Demo demo;
+        private readonly TicCmd[] cmds;
 
-        private Stopwatch stopwatch;
+        private readonly Stopwatch stopwatch;
         private int frameCount;
 
         public DemoPlayback(CommandLineArgs args, GameContent content, GameOptions options, string demoName)
@@ -68,8 +67,8 @@ namespace ManagedDoom
                 cmds[i] = new TicCmd();
             }
 
-            game = new DoomGame(content, demo.Options);
-            game.DeferedInitNew();
+            Game = new DoomGame(content, demo.Options);
+            Game.DeferedInitNew();
 
             stopwatch = new Stopwatch();
         }
@@ -86,19 +85,18 @@ namespace ManagedDoom
                 stopwatch.Stop();
                 return UpdateResult.Completed;
             }
-            else
-            {
-                frameCount++;
-                return game.Update(cmds);
-            }
+
+            frameCount++;
+            return Game.Update(cmds);
         }
 
         public void DoEvent(DoomEvent e)
         {
-            game.DoEvent(e);
+            Game.DoEvent(e);
         }
 
-        public DoomGame Game => game;
+        public DoomGame Game { get; }
+
         public double Fps => frameCount / stopwatch.Elapsed.TotalSeconds;
     }
 }

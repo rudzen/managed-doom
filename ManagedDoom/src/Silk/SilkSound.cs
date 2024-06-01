@@ -34,15 +34,15 @@ namespace ManagedDoom.Silk
         private static readonly float closeDist = 160;
         private static readonly float attenuator = clipDist - closeDist;
 
-        private Config config;
+        private readonly Config config;
 
         private AudioClip[] buffers;
-        private float[] amplitudes;
+        private readonly float[] amplitudes;
 
-        private DoomRandom random;
+        private readonly DoomRandom random;
 
         private AudioChannel[] channels;
-        private ChannelInfo[] infos;
+        private readonly ChannelInfo[] infos;
 
         private AudioChannel uiChannel;
         private Sfx uiReserved;
@@ -80,9 +80,7 @@ namespace ManagedDoom.Silk
                         continue;
                     }
 
-                    int sampleRate;
-                    int sampleCount;
-                    var samples = GetSamples(content.Wad, name, out sampleRate, out sampleCount);
+                    var samples = GetSamples(content.Wad, name, out var sampleRate, out var sampleCount);
                     if (!samples.IsEmpty)
                     {
                         buffers[i] = new AudioClip(device, sampleRate, 1, samples);
@@ -140,10 +138,8 @@ namespace ManagedDoom.Silk
             {
                 return data.AsSpan(offset, sampleCount);
             }
-            else
-            {
-                return Span<byte>.Empty;
-            }
+
+            return Span<byte>.Empty;
         }
 
         // Check if the data contains pad bytes.
@@ -157,24 +153,22 @@ namespace ManagedDoom.Silk
             {
                 return false;
             }
-            else
-            {
-                var first = data[8];
-                for (var i = 1; i < 16; i++)
-                {
-                    if (data[8 + i] != first)
-                    {
-                        return false;
-                    }
-                }
 
-                var last = data[8 + sampleCount - 1];
-                for (var i = 1; i < 16; i++)
+            var first = data[8];
+            for (var i = 1; i < 16; i++)
+            {
+                if (data[8 + i] != first)
                 {
-                    if (data[8 + sampleCount - i - 1] != last)
-                    {
-                        return false;
-                    }
+                    return false;
+                }
+            }
+
+            var last = data[8 + sampleCount - 1];
+            for (var i = 1; i < 16; i++)
+            {
+                if (data[8 + sampleCount - i - 1] != last)
+                {
+                    return false;
                 }
             }
 
@@ -379,10 +373,7 @@ namespace ManagedDoom.Silk
 
         public void Reset()
         {
-            if (random != null)
-            {
-                random.Clear();
-            }
+            random?.Clear();
 
             for (var i = 0; i < infos.Length; i++)
             {
@@ -466,33 +457,27 @@ namespace ManagedDoom.Silk
             {
                 return 1F;
             }
-            else
-            {
-                return Math.Max((clipDist - dist) / attenuator, 0F);
-            }
+
+            return Math.Max((clipDist - dist) / attenuator, 0F);
         }
 
         private float GetPitch(SfxType type, Sfx sfx)
         {
             if (random != null)
             {
-                if (sfx == Sfx.ITEMUP || sfx == Sfx.TINK || sfx == Sfx.RADIO)
+                if (sfx is Sfx.ITEMUP or Sfx.TINK or Sfx.RADIO)
                 {
                     return 1.0F;
                 }
-                else if (type == SfxType.Voice)
+
+                if (type == SfxType.Voice)
                 {
                     return 1.0F + 0.075F * (random.Next() - 128) / 128;
                 }
-                else
-                {
-                    return 1.0F + 0.025F * (random.Next() - 128) / 128;
-                }
+                return 1.0F + 0.025F * (random.Next() - 128) / 128;
             }
-            else
-            {
-                return 1.0F;
-            }
+
+            return 1.0F;
         }
 
         public void Dispose()

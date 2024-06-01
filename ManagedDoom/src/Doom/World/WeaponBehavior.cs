@@ -30,7 +30,7 @@ namespace ManagedDoom
         private static readonly Fixed RaiseSpeed = Fixed.FromInt(6);
         private static readonly Fixed LowerSpeed = Fixed.FromInt(6);
 
-        private World world;
+        private readonly World world;
 
         private Fixed currentBulletSlope;
 

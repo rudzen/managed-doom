@@ -54,8 +54,6 @@ namespace ManagedDoom
         public string audio_soundfont;
         public bool audio_musiceffect;
 
-        private bool isRestoredFromFile;
-
         // Default settings.
         public Config()
         {
@@ -143,7 +141,7 @@ namespace ManagedDoom
             audio_soundfont = "TimGM6mb.sf2";
             audio_musiceffect = true;
 
-            isRestoredFromFile = false;
+            IsRestoredFromFile = false;
         }
 
         public Config(string path) : this()
@@ -193,7 +191,7 @@ namespace ManagedDoom
                 audio_soundfont = GetString(dic, nameof(audio_soundfont), audio_soundfont);
                 audio_musiceffect = GetBool(dic, nameof(audio_musiceffect), audio_musiceffect);
 
-                isRestoredFromFile = true;
+                IsRestoredFromFile = true;
 
                 Console.WriteLine("OK");
             }
@@ -248,11 +246,9 @@ namespace ManagedDoom
 
         private static int GetInt(Dictionary<string, string> dic, string name, int defaultValue)
         {
-            string stringValue;
-            if (dic.TryGetValue(name, out stringValue))
+            if (dic.TryGetValue(name, out var stringValue))
             {
-                int value;
-                if (int.TryParse(stringValue, out value))
+                if (int.TryParse(stringValue, out var value))
                 {
                     return value;
                 }
@@ -263,8 +259,7 @@ namespace ManagedDoom
 
         private static string GetString(Dictionary<string, string> dic, string name, string defaultValue)
         {
-            string stringValue;
-            if (dic.TryGetValue(name, out stringValue))
+            if (dic.TryGetValue(name, out var stringValue))
             {
                 return stringValue;
             }
@@ -274,14 +269,14 @@ namespace ManagedDoom
 
         private static bool GetBool(Dictionary<string, string> dic, string name, bool defaultValue)
         {
-            string stringValue;
-            if (dic.TryGetValue(name, out stringValue))
+            if (dic.TryGetValue(name, out var stringValue))
             {
                 if (stringValue == "true")
                 {
                     return true;
                 }
-                else if (stringValue == "false")
+
+                if (stringValue == "false")
                 {
                     return false;
                 }
@@ -292,8 +287,7 @@ namespace ManagedDoom
 
         private static KeyBinding GetKeyBinding(Dictionary<string, string> dic, string name, KeyBinding defaultValue)
         {
-            string stringValue;
-            if (dic.TryGetValue(name, out stringValue))
+            if (dic.TryGetValue(name, out var stringValue))
             {
                 return KeyBinding.Parse(stringValue);
             }
@@ -306,6 +300,6 @@ namespace ManagedDoom
             return value ? "true" : "false";
         }
 
-        public bool IsRestoredFromFile => isRestoredFromFile;
+        public bool IsRestoredFromFile { get; }
     }
 }

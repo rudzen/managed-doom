@@ -21,23 +21,21 @@ namespace ManagedDoom
 {
     public abstract class MenuItem
     {
-        private int skullX;
-        private int skullY;
-        private MenuDef next;
-
         private MenuItem()
         {
         }
 
         public MenuItem(int skullX, int skullY, MenuDef next)
         {
-            this.skullX = skullX;
-            this.skullY = skullY;
-            this.next = next;
+            this.SkullX = skullX;
+            this.SkullY = skullY;
+            this.Next = next;
         }
 
-        public int SkullX => skullX;
-        public int SkullY => skullY;
-        public MenuDef Next => next;
+        public int SkullX { get; }
+
+        public int SkullY { get; }
+
+        public MenuDef Next { get; }
     }
 }

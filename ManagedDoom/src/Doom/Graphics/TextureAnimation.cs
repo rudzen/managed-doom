@@ -23,8 +23,6 @@ namespace ManagedDoom
 {
     public sealed class TextureAnimation
     {
-        private TextureAnimationInfo[] animations;
-
         public TextureAnimation(ITextureLookup textures, IFlatLookup flats)
         {
             try
@@ -73,7 +71,7 @@ namespace ManagedDoom
                     list.Add(anim);
                 }
 
-                animations = list.ToArray();
+                Animations = list.ToArray();
 
                 Console.WriteLine("OK");
             }
@@ -84,6 +82,6 @@ namespace ManagedDoom
             }
         }
 
-        public TextureAnimationInfo[] Animations => animations;
+        public TextureAnimationInfo[] Animations { get; }
     }
 }

@@ -21,22 +21,14 @@ namespace ManagedDoom
 {
 	public class VerticalDoor : Thinker
 	{
-		private World world;
-
-		private VerticalDoorType type;
-		private Sector sector;
-		private Fixed topHeight;
-		private Fixed speed;
+		private readonly World world;
 
 		// 1 = up, 0 = waiting at top, -1 = down.
-		private int direction;
 
 		// Tics to wait at the top.
-		private int topWait;
 
 		// When it reaches 0, start going down
 		// (keep in case a door going down is reset).
-		private int topCountDown;
 
 		public VerticalDoor(World world)
 		{
@@ -49,29 +41,29 @@ namespace ManagedDoom
 
 			SectorActionResult result;
 
-			switch (direction)
+			switch (Direction)
 			{
 				case 0:
 					// Waiting.
-					if (--topCountDown == 0)
+					if (--TopCountDown == 0)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case VerticalDoorType.BlazeRaise:
 								// Time to go back down.
-								direction = -1;
-								world.StartSound(sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
+								Direction = -1;
+								world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
 								break;
 
 							case VerticalDoorType.Normal:
 								// Time to go back down.
-								direction = -1;
-								world.StartSound(sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
+								Direction = -1;
+								world.StartSound(Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
 								break;
 
 							case VerticalDoorType.Close30ThenOpen:
-								direction = 1;
-								world.StartSound(sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+								Direction = 1;
+								world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
 								break;
 
 							default:
@@ -82,14 +74,14 @@ namespace ManagedDoom
 
 				case 2:
 					// Initial wait.
-					if (--topCountDown == 0)
+					if (--TopCountDown == 0)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case VerticalDoorType.RaiseIn5Mins:
-								direction = 1;
-								type = VerticalDoorType.Normal;
-								world.StartSound(sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+								Direction = 1;
+								Type = VerticalDoorType.Normal;
+								world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
 								break;
 
 							default:
@@ -101,34 +93,34 @@ namespace ManagedDoom
 				case -1:
 					// Down.
 					result = sa.MovePlane(
-						sector,
-						speed,
-						sector.FloorHeight,
-						false, 1, direction);
+						Sector,
+						Speed,
+						Sector.FloorHeight,
+						false, 1, Direction);
 					if (result == SectorActionResult.PastDestination)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case VerticalDoorType.BlazeRaise:
 							case VerticalDoorType.BlazeClose:
-								sector.SpecialData = null;
+								Sector.SpecialData = null;
 								// Unlink and free.
 								world.Thinkers.Remove(this);
-								sector.DisableFrameInterpolationForOneFrame();
-								world.StartSound(sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
+								Sector.DisableFrameInterpolationForOneFrame();
+								world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
 								break;
 
 							case VerticalDoorType.Normal:
 							case VerticalDoorType.Close:
-								sector.SpecialData = null;
+								Sector.SpecialData = null;
 								// Unlink and free.
 								world.Thinkers.Remove(this);
-								sector.DisableFrameInterpolationForOneFrame();
+								Sector.DisableFrameInterpolationForOneFrame();
 								break;
 
 							case VerticalDoorType.Close30ThenOpen:
-								direction = 0;
-								topCountDown = 35 * 30;
+								Direction = 0;
+								TopCountDown = 35 * 30;
 								break;
 
 							default:
@@ -137,15 +129,15 @@ namespace ManagedDoom
 					}
 					else if (result == SectorActionResult.Crushed)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case VerticalDoorType.BlazeClose:
 							case VerticalDoorType.Close: // Do not go back up!
 								break;
 
 							default:
-								direction = 1;
-								world.StartSound(sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+								Direction = 1;
+								world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
 								break;
 						}
 					}
@@ -154,29 +146,29 @@ namespace ManagedDoom
 				case 1:
 					// Up.
 					result = sa.MovePlane(
-						sector,
-						speed,
-						topHeight,
-						false, 1, direction);
+						Sector,
+						Speed,
+						TopHeight,
+						false, 1, Direction);
 
 					if (result == SectorActionResult.PastDestination)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case VerticalDoorType.BlazeRaise:
 							case VerticalDoorType.Normal:
 								// Wait at top.
-								direction = 0;
-								topCountDown = topWait;
+								Direction = 0;
+								TopCountDown = TopWait;
 								break;
 
 							case VerticalDoorType.Close30ThenOpen:
 							case VerticalDoorType.BlazeOpen:
 							case VerticalDoorType.Open:
-								sector.SpecialData = null;
+								Sector.SpecialData = null;
 								// Unlink and free.
 								world.Thinkers.Remove(this);
-								sector.DisableFrameInterpolationForOneFrame();
+								Sector.DisableFrameInterpolationForOneFrame();
 								break;
 
 							default:
@@ -187,46 +179,18 @@ namespace ManagedDoom
 			}
 		}
 
-		public VerticalDoorType Type
-		{
-			get => type;
-			set => type = value;
-		}
+		public VerticalDoorType Type { get; set; }
 
-		public Sector Sector
-		{
-			get => sector;
-			set => sector = value;
-		}
+		public Sector Sector { get; set; }
 
-		public Fixed TopHeight
-		{
-			get => topHeight;
-			set => topHeight = value;
-		}
+		public Fixed TopHeight { get; set; }
 
-		public Fixed Speed
-		{
-			get => speed;
-			set => speed = value;
-		}
+		public Fixed Speed { get; set; }
 
-		public int Direction
-		{
-			get => direction;
-			set => direction = value;
-		}
+		public int Direction { get; set; }
 
-		public int TopWait
-		{
-			get => topWait;
-			set => topWait = value;
-		}
+		public int TopWait { get; set; }
 
-		public int TopCountDown
-		{
-			get => topCountDown;
-			set => topCountDown = value;
-		}
+		public int TopCountDown { get; set; }
 	}
 }

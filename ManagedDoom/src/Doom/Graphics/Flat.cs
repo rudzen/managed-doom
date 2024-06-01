@@ -21,13 +21,10 @@ namespace ManagedDoom
 {
     public sealed class Flat
     {
-        private string name;
-        private byte[] data;
-
         public Flat(string name, byte[] data)
         {
-            this.name = name;
-            this.data = data;
+            this.Name = name;
+            this.Data = data;
         }
 
         public static Flat FromData(string name, byte[] data)
@@ -37,10 +34,11 @@ namespace ManagedDoom
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
 
-        public string Name => name;
-        public byte[] Data => data;
+        public string Name { get; }
+
+        public byte[] Data { get; }
     }
 }

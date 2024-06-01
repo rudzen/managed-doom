@@ -74,11 +74,9 @@ namespace ManagedDoom.Silk
             {
                 return new SilkMusic(config, content, device, sfPath);
             }
-            else
-            {
-                Console.WriteLine("SoundFont '" + config.audio_soundfont + "' was not found!");
-                return null;
-            }
+
+            Console.WriteLine("SoundFont '" + config.audio_soundfont + "' was not found!");
+            return null;
         }
     }
 }

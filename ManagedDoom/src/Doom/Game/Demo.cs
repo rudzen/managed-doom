@@ -23,11 +23,9 @@ namespace ManagedDoom
     public sealed class Demo
     {
         private int p;
-        private byte[] data;
+        private readonly byte[] data;
 
-        private GameOptions options;
-
-        private int playerCount;
+        private readonly int playerCount;
 
         public Demo(byte[] data)
         {
@@ -40,34 +38,34 @@ namespace ManagedDoom
 
             this.data = data;
 
-            options = new GameOptions();
-            options.Skill = (GameSkill)data[p++];
-            options.Episode = data[p++];
-            options.Map = data[p++];
-            options.Deathmatch = data[p++];
-            options.RespawnMonsters = data[p++] != 0;
-            options.FastMonsters = data[p++] != 0;
-            options.NoMonsters = data[p++] != 0;
-            options.ConsolePlayer = data[p++];
+            Options = new GameOptions();
+            Options.Skill = (GameSkill)data[p++];
+            Options.Episode = data[p++];
+            Options.Map = data[p++];
+            Options.Deathmatch = data[p++];
+            Options.RespawnMonsters = data[p++] != 0;
+            Options.FastMonsters = data[p++] != 0;
+            Options.NoMonsters = data[p++] != 0;
+            Options.ConsolePlayer = data[p++];
 
-            options.Players[0].InGame = data[p++] != 0;
-            options.Players[1].InGame = data[p++] != 0;
-            options.Players[2].InGame = data[p++] != 0;
-            options.Players[3].InGame = data[p++] != 0;
+            Options.Players[0].InGame = data[p++] != 0;
+            Options.Players[1].InGame = data[p++] != 0;
+            Options.Players[2].InGame = data[p++] != 0;
+            Options.Players[3].InGame = data[p++] != 0;
 
-            options.DemoPlayback = true;
+            Options.DemoPlayback = true;
 
             playerCount = 0;
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (options.Players[i].InGame)
+                if (Options.Players[i].InGame)
                 {
                     playerCount++;
                 }
             }
             if (playerCount >= 2)
             {
-                options.NetGame = true;
+                Options.NetGame = true;
             }
         }
 
@@ -92,7 +90,7 @@ namespace ManagedDoom
                 return false;
             }
 
-            var players = options.Players;
+            var players = Options.Players;
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
                 if (players[i].InGame)
@@ -108,6 +106,6 @@ namespace ManagedDoom
             return true;
         }
 
-        public GameOptions Options => options;
+        public GameOptions Options { get; }
     }
 }

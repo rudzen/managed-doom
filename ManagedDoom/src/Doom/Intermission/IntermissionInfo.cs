@@ -22,14 +22,10 @@ namespace ManagedDoom
     public class IntermissionInfo
     {
         // Episode number (0-2).
-        private int episode;
 
         // If true, splash the secret level.
-        private bool didSecret;
 
         // Previous and next levels, origin 0.
-        private int lastLevel;
-        private int nextLevel;
 
         private int maxKillCount;
         private int maxItemCount;
@@ -37,42 +33,23 @@ namespace ManagedDoom
         private int totalFrags;
 
         // The par time.
-        private int parTime;
-
-        private PlayerScores[] players;
 
         public IntermissionInfo()
         {
-            players = new PlayerScores[Player.MaxPlayerCount];
+            Players = new PlayerScores[Player.MaxPlayerCount];
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                players[i] = new PlayerScores();
+                Players[i] = new PlayerScores();
             }
         }
 
-        public int Episode
-        {
-            get => episode;
-            set => episode = value;
-        }
+        public int Episode { get; set; }
 
-        public bool DidSecret
-        {
-            get => didSecret;
-            set => didSecret = value;
-        }
+        public bool DidSecret { get; set; }
 
-        public int LastLevel
-        {
-            get => lastLevel;
-            set => lastLevel = value;
-        }
+        public int LastLevel { get; set; }
 
-        public int NextLevel
-        {
-            get => nextLevel;
-            set => nextLevel = value;
-        }
+        public int NextLevel { get; set; }
 
         public int MaxKillCount
         {
@@ -98,15 +75,8 @@ namespace ManagedDoom
             set => totalFrags = value;
         }
 
-        public int ParTime
-        {
-            get => parTime;
-            set => parTime = value;
-        }
+        public int ParTime { get; set; }
 
-        public PlayerScores[] Players
-        {
-            get => players;
-        }
+        public PlayerScores[] Players { get; }
     }
 }

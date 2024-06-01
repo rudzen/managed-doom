@@ -22,21 +22,7 @@ namespace ManagedDoom
 {
     public sealed class AutoMap
     {
-        private World world;
-
-        private Fixed minX;
-        private Fixed maxX;
-        private Fixed minY;
-        private Fixed maxY;
-
-        private Fixed viewX;
-        private Fixed viewY;
-
-        private bool visible;
-        private AutoMapState state;
-
-        private Fixed zoom;
-        private bool follow;
+        private readonly World world;
 
         private bool zoomIn;
         private bool zoomOut;
@@ -46,48 +32,48 @@ namespace ManagedDoom
         private bool up;
         private bool down;
 
-        private List<Vertex> marks;
+        private readonly List<Vertex> marks;
         private int nextMarkNumber;
 
         public AutoMap(World world)
         {
             this.world = world;
 
-            minX = Fixed.MaxValue;
-            maxX = Fixed.MinValue;
-            minY = Fixed.MaxValue;
-            maxY = Fixed.MinValue;
+            MinX = Fixed.MaxValue;
+            MaxX = Fixed.MinValue;
+            MinY = Fixed.MaxValue;
+            MaxY = Fixed.MinValue;
             foreach (var vertex in world.Map.Vertices)
             {
-                if (vertex.X < minX)
+                if (vertex.X < MinX)
                 {
-                    minX = vertex.X;
+                    MinX = vertex.X;
                 }
 
-                if (vertex.X > maxX)
+                if (vertex.X > MaxX)
                 {
-                    maxX = vertex.X;
+                    MaxX = vertex.X;
                 }
 
-                if (vertex.Y < minY)
+                if (vertex.Y < MinY)
                 {
-                    minY = vertex.Y;
+                    MinY = vertex.Y;
                 }
 
-                if (vertex.Y > maxY)
+                if (vertex.Y > MaxY)
                 {
-                    maxY = vertex.Y;
+                    MaxY = vertex.Y;
                 }
             }
 
-            viewX = minX + (maxX - minX) / 2;
-            viewY = minY + (maxY - minY) / 2;
+            ViewX = MinX + (MaxX - MinX) / 2;
+            ViewY = MinY + (MaxY - MinY) / 2;
 
-            visible = false;
-            state = AutoMapState.None;
+            Visible = false;
+            State = AutoMapState.None;
 
-            zoom = Fixed.One;
-            follow = true;
+            Zoom = Fixed.One;
+            Follow = true;
 
             zoomIn = false;
             zoomOut = false;
@@ -104,72 +90,72 @@ namespace ManagedDoom
         {
             if (zoomIn)
             {
-                zoom += zoom / 16;
+                Zoom += Zoom / 16;
             }
 
             if (zoomOut)
             {
-                zoom -= zoom / 16;
+                Zoom -= Zoom / 16;
             }
 
-            if (zoom < Fixed.One / 2)
+            if (Zoom < Fixed.One / 2)
             {
-                zoom = Fixed.One / 2;
+                Zoom = Fixed.One / 2;
             }
-            else if (zoom > Fixed.One * 32)
+            else if (Zoom > Fixed.One * 32)
             {
-                zoom = Fixed.One * 32;
+                Zoom = Fixed.One * 32;
             }
 
             if (left)
             {
-                viewX -= 64 / zoom;
+                ViewX -= 64 / Zoom;
             }
 
             if (right)
             {
-                viewX += 64 / zoom;
+                ViewX += 64 / Zoom;
             }
 
             if (up)
             {
-                viewY += 64 / zoom;
+                ViewY += 64 / Zoom;
             }
 
             if (down)
             {
-                viewY -= 64 / zoom;
+                ViewY -= 64 / Zoom;
             }
 
-            if (viewX < minX)
+            if (ViewX < MinX)
             {
-                viewX = minX;
+                ViewX = MinX;
             }
-            else if (viewX > maxX)
+            else if (ViewX > MaxX)
             {
-                viewX = maxX;
-            }
-
-            if (viewY < minY)
-            {
-                viewY = minY;
-            }
-            else if (viewY > maxY)
-            {
-                viewY = maxY;
+                ViewX = MaxX;
             }
 
-            if (follow)
+            if (ViewY < MinY)
+            {
+                ViewY = MinY;
+            }
+            else if (ViewY > MaxY)
+            {
+                ViewY = MaxY;
+            }
+
+            if (Follow)
             {
                 var player = world.ConsolePlayer.Mobj;
-                viewX = player.X;
-                viewY = player.Y;
+                ViewX = player.X;
+                ViewY = player.Y;
             }
         }
 
         public bool DoEvent(DoomEvent e)
         {
-            if (e.Key == DoomKey.Add || e.Key == DoomKey.Quote || e.Key == DoomKey.Equal)
+            if (e.Key is DoomKey.Add or DoomKey.Quote or DoomKey.Equal)
             {
                 if (e.Type == EventType.KeyDown)
                 {
@@ -182,7 +168,8 @@ namespace ManagedDoom
 
                 return true;
             }
-            else if (e.Key == DoomKey.Subtract || e.Key == DoomKey.Hyphen || e.Key == DoomKey.Semicolon)
+
+            if (e.Key is DoomKey.Subtract or DoomKey.Hyphen or DoomKey.Semicolon)
             {
                 if (e.Type == EventType.KeyDown)
                 {
@@ -195,7 +182,7 @@ namespace ManagedDoom
 
                 return true;
             }
-            else if (e.Key == DoomKey.Left)
+            if (e.Key == DoomKey.Left)
             {
                 if (e.Type == EventType.KeyDown)
                 {
@@ -208,7 +195,7 @@ namespace ManagedDoom
 
                 return true;
             }
-            else if (e.Key == DoomKey.Right)
+            if (e.Key == DoomKey.Right)
             {
                 if (e.Type == EventType.KeyDown)
                 {
@@ -221,7 +208,7 @@ namespace ManagedDoom
 
                 return true;
             }
-            else if (e.Key == DoomKey.Up)
+            if (e.Key == DoomKey.Up)
             {
                 if (e.Type == EventType.KeyDown)
                 {
@@ -234,7 +221,7 @@ namespace ManagedDoom
 
                 return true;
             }
-            else if (e.Key == DoomKey.Down)
+            if (e.Key == DoomKey.Down)
             {
                 if (e.Type == EventType.KeyDown)
                 {
@@ -247,12 +234,12 @@ namespace ManagedDoom
 
                 return true;
             }
-            else if (e.Key == DoomKey.F)
+            if (e.Key == DoomKey.F)
             {
                 if (e.Type == EventType.KeyDown)
                 {
-                    follow = !follow;
-                    if (follow)
+                    Follow = !Follow;
+                    if (Follow)
                     {
                         world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_FOLLOWON);
                     }
@@ -269,11 +256,11 @@ namespace ManagedDoom
                 {
                     if (marks.Count < 10)
                     {
-                        marks.Add(new Vertex(viewX, viewY));
+                        marks.Add(new Vertex(ViewX, ViewY));
                     }
                     else
                     {
-                        marks[nextMarkNumber] = new Vertex(viewX, viewY);
+                        marks[nextMarkNumber] = new Vertex(ViewX, ViewY);
                     }
                     nextMarkNumber++;
                     if (nextMarkNumber == 10)
@@ -300,12 +287,12 @@ namespace ManagedDoom
 
         public void Open()
         {
-            visible = true;
+            Visible = true;
         }
 
         public void Close()
         {
-            visible = false;
+            Visible = false;
             zoomIn = false;
             zoomOut = false;
             left = false;
@@ -316,23 +303,33 @@ namespace ManagedDoom
 
         public void ToggleCheat()
         {
-            state++;
-            if ((int)state == 3)
+            State++;
+            if ((int)State == 3)
             {
-                state = AutoMapState.None;
+                State = AutoMapState.None;
             }
         }
 
-        public Fixed MinX => minX;
-        public Fixed MaxX => maxX;
-        public Fixed MinY => minY;
-        public Fixed MaxY => maxY;
-        public Fixed ViewX => viewX;
-        public Fixed ViewY => viewY;
-        public Fixed Zoom => zoom;
-        public bool Follow => follow;
-        public bool Visible => visible;
-        public AutoMapState State => state;
+        public Fixed MinX { get; }
+
+        public Fixed MaxX { get; }
+
+        public Fixed MinY { get; }
+
+        public Fixed MaxY { get; }
+
+        public Fixed ViewX { get; private set; }
+
+        public Fixed ViewY { get; private set; }
+
+        public Fixed Zoom { get; private set; }
+
+        public bool Follow { get; private set; }
+
+        public bool Visible { get; private set; }
+
+        public AutoMapState State { get; private set; }
+
         public IReadOnlyList<Vertex> Marks => marks;
     }
 }

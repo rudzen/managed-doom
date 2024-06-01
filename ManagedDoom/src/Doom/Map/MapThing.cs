@@ -30,12 +30,6 @@ namespace ManagedDoom
             0,
             0);
 
-        private Fixed x;
-        private Fixed y;
-        private Angle angle;
-        private int type;
-        private ThingFlags flags;
-
         public MapThing(
             Fixed x,
             Fixed y,
@@ -43,11 +37,11 @@ namespace ManagedDoom
             int type,
             ThingFlags flags)
         {
-            this.x = x;
-            this.y = y;
-            this.angle = angle;
-            this.type = type;
-            this.flags = flags;
+            this.X = x;
+            this.Y = y;
+            this.Angle = angle;
+            this.Type = type;
+            this.Flags = flags;
         }
 
         public static MapThing FromData(byte[] data, int offset)
@@ -61,7 +55,7 @@ namespace ManagedDoom
             return new MapThing(
                 Fixed.FromInt(x),
                 Fixed.FromInt(y),
-                new Angle(ManagedDoom.Angle.Ang45.Data * (uint)(angle / 45)),
+                new Angle(Angle.Ang45.Data * (uint)(angle / 45)),
                 type,
                 (ThingFlags)flags);
         }
@@ -87,16 +81,14 @@ namespace ManagedDoom
             return things;
         }
 
-        public Fixed X => x;
-        public Fixed Y => y;
-        public Angle Angle => angle;
+        public Fixed X { get; }
 
-        public int Type
-        {
-            get => type;
-            set => type = value;
-        }
+        public Fixed Y { get; }
 
-        public ThingFlags Flags => flags;
+        public Angle Angle { get; }
+
+        public int Type { get; set; }
+
+        public ThingFlags Flags { get; }
     }
 }

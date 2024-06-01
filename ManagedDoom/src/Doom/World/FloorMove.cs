@@ -21,16 +21,7 @@ namespace ManagedDoom
 {
 	public sealed class FloorMove : Thinker
 	{
-		private World world;
-
-		private FloorMoveType type;
-		private bool crush;
-		private Sector sector;
-		private int direction;
-		private SectorSpecial newSpecial;
-		private int texture;
-		private Fixed floorDestHeight;
-		private Fixed speed;
+		private readonly World world;
 
 		public FloorMove(World world)
 		{
@@ -44,96 +35,64 @@ namespace ManagedDoom
 			var sa = world.SectorAction;
 
 			result = sa.MovePlane(
-				sector,
-				speed,
-				floorDestHeight,
-				crush,
+				Sector,
+				Speed,
+				FloorDestHeight,
+				Crush,
 				0,
-				direction);
+				Direction);
 
-			if (((world.LevelTime + sector.Number) & 7) == 0)
+			if (((world.LevelTime + Sector.Number) & 7) == 0)
 			{
-				world.StartSound(sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+				world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
 			}
 
 			if (result == SectorActionResult.PastDestination)
 			{
-				sector.SpecialData = null;
+				Sector.SpecialData = null;
 
-				if (direction == 1)
+				if (Direction == 1)
 				{
-					switch (type)
+					switch (Type)
 					{
 						case FloorMoveType.DonutRaise:
-							sector.Special = newSpecial;
-							sector.FloorFlat = texture;
+							Sector.Special = NewSpecial;
+							Sector.FloorFlat = Texture;
 							break;
 					}
 				}
-				else if (direction == -1)
+				else if (Direction == -1)
 				{
-					switch (type)
+					switch (Type)
 					{
 						case FloorMoveType.LowerAndChange:
-							sector.Special = newSpecial;
-							sector.FloorFlat = texture;
+							Sector.Special = NewSpecial;
+							Sector.FloorFlat = Texture;
 							break;
 					}
 				}
 
 				world.Thinkers.Remove(this);
-				sector.DisableFrameInterpolationForOneFrame();
+				Sector.DisableFrameInterpolationForOneFrame();
 
-				world.StartSound(sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+				world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
 			}
 		}
 
-		public FloorMoveType Type
-		{
-			get => type;
-			set => type = value;
-		}
+		public FloorMoveType Type { get; set; }
 
-		public bool Crush
-		{
-			get => crush;
-			set => crush = value;
-		}
+		public bool Crush { get; set; }
 
-		public Sector Sector
-		{
-			get => sector;
-			set => sector = value;
-		}
+		public Sector Sector { get; set; }
 
-		public int Direction
-		{
-			get => direction;
-			set => direction = value;
-		}
+		public int Direction { get; set; }
 
-		public SectorSpecial NewSpecial
-		{
-			get => newSpecial;
-			set => newSpecial = value;
-		}
+		public SectorSpecial NewSpecial { get; set; }
 
-		public int Texture
-		{
-			get => texture;
-			set => texture = value;
-		}
+		public int Texture { get; set; }
 
-		public Fixed FloorDestHeight
-		{
-			get => floorDestHeight;
-			set => floorDestHeight = value;
-		}
+		public Fixed FloorDestHeight { get; set; }
 
-		public Fixed Speed
-		{
-			get => speed;
-			set => speed = value;
-		}
+		public Fixed Speed { get; set; }
 	}
 }

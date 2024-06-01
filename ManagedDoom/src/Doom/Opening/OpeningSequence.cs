@@ -21,10 +21,8 @@ namespace ManagedDoom
 {
     public sealed class OpeningSequence
     {
-        private GameContent content;
-        private GameOptions options;
-
-        private OpeningSequenceState state;
+        private readonly GameContent content;
+        private readonly GameOptions options;
 
         private int currentStage;
         private int nextStage;
@@ -32,9 +30,8 @@ namespace ManagedDoom
         private int count;
         private int timer;
 
-        private TicCmd[] cmds;
+        private readonly TicCmd[] cmds;
         private Demo demo;
-        private DoomGame game;
 
         private bool reset;
 
@@ -63,7 +60,7 @@ namespace ManagedDoom
             nextStage = 0;
 
             demo = null;
-            game = null;
+            DemoGame = null;
 
             reset = true;
 
@@ -125,7 +122,7 @@ namespace ManagedDoom
                     }
                     else
                     {
-                        game.Update(cmds);
+                        DemoGame.Update(cmds);
                     }
                     break;
 
@@ -144,7 +141,7 @@ namespace ManagedDoom
                     }
                     else
                     {
-                        game.Update(cmds);
+                        DemoGame.Update(cmds);
                     }
                     break;
 
@@ -170,7 +167,7 @@ namespace ManagedDoom
                     }
                     else
                     {
-                        game.Update(cmds);
+                        DemoGame.Update(cmds);
                     }
                     break;
 
@@ -189,12 +186,12 @@ namespace ManagedDoom
                     }
                     else
                     {
-                        game.Update(cmds);
+                        DemoGame.Update(cmds);
                     }
                     break;
             }
 
-            if (state == OpeningSequenceState.Title && count == 1)
+            if (State == OpeningSequenceState.Title && count == 1)
             {
                 if (options.GameMode == GameMode.Commercial)
                 {
@@ -211,15 +208,13 @@ namespace ManagedDoom
                 reset = false;
                 return UpdateResult.NeedWipe;
             }
-            else
-            {
-                return updateResult;
-            }
+
+            return updateResult;
         }
 
         private void StartTitleScreen()
         {
-            state = OpeningSequenceState.Title;
+            State = OpeningSequenceState.Title;
 
             count = 0;
             if (options.GameMode == GameMode.Commercial)
@@ -234,7 +229,7 @@ namespace ManagedDoom
 
         private void StartCreditScreen()
         {
-            state = OpeningSequenceState.Credit;
+            State = OpeningSequenceState.Credit;
 
             count = 0;
             timer = 200;
@@ -242,7 +237,7 @@ namespace ManagedDoom
 
         private void StartDemo(string lump)
         {
-            state = OpeningSequenceState.Demo;
+            State = OpeningSequenceState.Demo;
 
             demo = new Demo(content.Wad.ReadLump(lump));
             demo.Options.GameVersion = options.GameVersion;
@@ -252,11 +247,12 @@ namespace ManagedDoom
             demo.Options.Sound = options.Sound;
             demo.Options.Music = options.Music;
 
-            game = new DoomGame(content, demo.Options);
-            game.DeferedInitNew();
+            DemoGame = new DoomGame(content, demo.Options);
+            DemoGame.DeferedInitNew();
         }
 
-        public OpeningSequenceState State => state;
-        public DoomGame DemoGame => game;
+        public OpeningSequenceState State { get; private set; }
+
+        public DoomGame DemoGame { get; private set; }
     }
 }

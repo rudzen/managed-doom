@@ -30,9 +30,9 @@ namespace ManagedDoom
 
         public static readonly int IronFeet = 13;
 
-        private byte[] data;
+        private readonly byte[] data;
 
-        private uint[][] palettes;
+        private readonly uint[][] palettes;
 
         public Palette(Wad wad)
         {

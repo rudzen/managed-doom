@@ -9,16 +9,16 @@ namespace ManagedDoom.Silk
 {
     public class SilkUserInput : IUserInput, IDisposable
     {
-        private Config config;
-        private IWindow window;
+        private readonly Config config;
+        private readonly IWindow window;
 
         private IInputContext input;
-        private IKeyboard keyboard;
+        private readonly IKeyboard keyboard;
 
-        private bool[] weaponKeys;
+        private readonly bool[] weaponKeys;
         private int turnHeld;
 
-        private IMouse mouse;
+        private readonly IMouse mouse;
         private bool mouseGrabbed;
         private float mouseX;
         private float mouseY;

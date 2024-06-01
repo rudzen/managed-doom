@@ -21,8 +21,8 @@ namespace ManagedDoom
 {
     public sealed class Reject
     {
-        private byte[] data;
-        private int sectorCount;
+        private readonly byte[] data;
+        private readonly int sectorCount;
 
         private Reject(byte[] data, int sectorCount)
         {

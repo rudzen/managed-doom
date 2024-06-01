@@ -23,15 +23,6 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 12;
 
-        private Vertex vertex1;
-        private Vertex vertex2;
-        private Fixed offset;
-        private Angle angle;
-        private SideDef sideDef;
-        private LineDef lineDef;
-        private Sector frontSector;
-        private Sector backSector;
-
         public Seg(
             Vertex vertex1,
             Vertex vertex2,
@@ -42,14 +33,14 @@ namespace ManagedDoom
             Sector frontSector,
             Sector backSector)
         {
-            this.vertex1 = vertex1;
-            this.vertex2 = vertex2;
-            this.offset = offset;
-            this.angle = angle;
-            this.sideDef = sideDef;
-            this.lineDef = lineDef;
-            this.frontSector = frontSector;
-            this.backSector = backSector;
+            this.Vertex1 = vertex1;
+            this.Vertex2 = vertex2;
+            this.Offset = offset;
+            this.Angle = angle;
+            this.SideDef = sideDef;
+            this.LineDef = lineDef;
+            this.FrontSector = frontSector;
+            this.BackSector = backSector;
         }
 
         public static Seg FromData(byte[] data, int offset, Vertex[] vertices, LineDef[] lines)
@@ -79,31 +70,38 @@ namespace ManagedDoom
         public static Seg[] FromWad(Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
         {
             var length = wad.GetLumpSize(lump);
-            if (length % Seg.dataSize != 0)
+            if (length % dataSize != 0)
             {
                 throw new Exception();
             }
 
             var data = wad.ReadLump(lump);
-            var count = length / Seg.dataSize;
+            var count = length / dataSize;
             var segs = new Seg[count]; ;
 
             for (var i = 0; i < count; i++)
             {
-                var offset = Seg.dataSize * i;
-                segs[i] = Seg.FromData(data, offset, vertices, lines);
+                var offset = dataSize * i;
+                segs[i] = FromData(data, offset, vertices, lines);
             }
 
             return segs;
         }
 
-        public Vertex Vertex1 => vertex1;
-        public Vertex Vertex2 => vertex2;
-        public Fixed Offset => offset;
-        public Angle Angle => angle;
-        public SideDef SideDef => sideDef;
-        public LineDef LineDef => lineDef;
-        public Sector FrontSector => frontSector;
-        public Sector BackSector => backSector;
+        public Vertex Vertex1 { get; }
+
+        public Vertex Vertex2 { get; }
+
+        public Fixed Offset { get; }
+
+        public Angle Angle { get; }
+
+        public SideDef SideDef { get; }
+
+        public LineDef LineDef { get; }
+
+        public Sector FrontSector { get; }
+
+        public Sector BackSector { get; }
     }
 }

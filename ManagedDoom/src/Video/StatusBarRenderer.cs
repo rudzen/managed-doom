@@ -94,24 +94,24 @@ namespace ManagedDoom.Video
         private static readonly int faceBackgroundX = 143;
         private static readonly int faceBackgroundY = 169;
 
-        private DrawScreen screen;
+        private readonly DrawScreen screen;
 
-        private Patches patches;
+        private readonly Patches patches;
 
-        private int scale;
+        private readonly int scale;
 
-        private NumberWidget ready;
-        private PercentWidget health;
-        private PercentWidget armor;
+        private readonly NumberWidget ready;
+        private readonly PercentWidget health;
+        private readonly PercentWidget armor;
 
-        private NumberWidget[] ammo;
-        private NumberWidget[] maxAmmo;
+        private readonly NumberWidget[] ammo;
+        private readonly NumberWidget[] maxAmmo;
 
-        private MultIconWidget[] weapons;
+        private readonly MultIconWidget[] weapons;
 
-        private NumberWidget frags;
+        private readonly NumberWidget frags;
 
-        private MultIconWidget[] keys;
+        private readonly MultIconWidget[] keys;
 
         public StatusBarRenderer(Wad wad, DrawScreen screen)
         {
@@ -398,7 +398,7 @@ namespace ManagedDoom.Video
 
         private class PercentWidget
         {
-            public NumberWidget NumberWidget = new NumberWidget();
+            public readonly NumberWidget NumberWidget = new NumberWidget();
             public Patch Patch;
         }
 
@@ -411,16 +411,16 @@ namespace ManagedDoom.Video
 
         private class Patches
         {
-            public Patch Background;
-            public Patch[] TallNumbers;
-            public Patch[] ShortNumbers;
-            public Patch TallMinus;
-            public Patch TallPercent;
-            public Patch[] Keys;
-            public Patch ArmsBackground;
-            public Patch[][] Arms;
-            public Patch[] FaceBackground;
-            public Patch[] Faces;
+            public readonly Patch Background;
+            public readonly Patch[] TallNumbers;
+            public readonly Patch[] ShortNumbers;
+            public readonly Patch TallMinus;
+            public readonly Patch TallPercent;
+            public readonly Patch[] Keys;
+            public readonly Patch ArmsBackground;
+            public readonly Patch[][] Arms;
+            public readonly Patch[] FaceBackground;
+            public readonly Patch[] Faces;
 
             public Patches(Wad wad)
             {

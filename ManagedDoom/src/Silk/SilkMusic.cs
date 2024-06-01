@@ -26,8 +26,8 @@ namespace ManagedDoom.Silk
 {
     public sealed class SilkMusic : IMusic, IDisposable
     {
-        private Config config;
-        private Wad wad;
+        private readonly Config config;
+        private readonly Wad wad;
 
         private MusStream stream;
         private Bgm current;
@@ -141,15 +141,15 @@ namespace ManagedDoom.Silk
             private static readonly int latency = 200;
             private static readonly int blockLength = 2048;
 
-            private SilkMusic parent;
-            private Config config;
+            private readonly SilkMusic parent;
+            private readonly Config config;
 
-            private Synthesizer synthesizer;
+            private readonly Synthesizer synthesizer;
 
             private AudioStream audioStream;
 
-            private float[] left;
-            private float[] right;
+            private readonly float[] left;
+            private readonly float[] right;
 
             private volatile IDecoder current;
             private volatile IDecoder reserved;
@@ -248,28 +248,28 @@ namespace ManagedDoom.Silk
             public static readonly int SampleRate = 44100;
             public static readonly int BlockLength = SampleRate / 140;
 
-            public static readonly byte[] MusHeader = new byte[]
-            {
+            public static readonly byte[] MusHeader =
+            [
                 (byte)'M',
                 (byte)'U',
                 (byte)'S',
                 0x1A
-            };
+            ];
 
-            private byte[] data;
-            private bool loop;
+            private readonly byte[] data;
+            private readonly bool loop;
 
             private int scoreLength;
-            private int scoreStart;
+            private readonly int scoreStart;
             private int channelCount;
             private int channelCount2;
-            private int instrumentCount;
-            private int[] instruments;
+            private readonly int instrumentCount;
+            private readonly int[] instruments;
 
-            private MusEvent[] events;
+            private readonly MusEvent[] events;
             private int eventCount;
 
-            private int[] lastVolume;
+            private readonly int[] lastVolume;
             private int p;
             private int delay;
 
@@ -386,7 +386,8 @@ namespace ManagedDoom.Silk
                     {
                         break;
                     }
-                    else if (result == ReadResult.EndOfFile)
+
+                    if (result == ReadResult.EndOfFile)
                     {
                         return -1;
                     }
@@ -508,10 +509,8 @@ namespace ManagedDoom.Silk
                 {
                     return ReadResult.EndOfGroup;
                 }
-                else
-                {
-                    return ReadResult.Ongoing;
-                }
+
+                return ReadResult.Ongoing;
             }
 
             private void SendEvents(Synthesizer synthesizer)
@@ -610,18 +609,18 @@ namespace ManagedDoom.Silk
 
         private class MidiDecoder : IDecoder
         {
-            public static readonly byte[] MidiHeader = new byte[]
-            {
+            public static readonly byte[] MidiHeader =
+            [
                 (byte)'M',
                 (byte)'T',
                 (byte)'h',
                 (byte)'d'
-            };
+            ];
 
-            private MidiFile midi;
+            private readonly MidiFile midi;
             private MidiFileSequencer sequencer;
 
-            private bool loop;
+            private readonly bool loop;
 
             public MidiDecoder(byte[] data, bool loop)
             {

@@ -23,17 +23,15 @@ namespace ManagedDoom
 {
     public sealed class SaveMenu : MenuDef
     {
-        private string[] name;
-        private int[] titleX;
-        private int[] titleY;
-        private TextBoxMenuItem[] items;
+        private readonly string[] name;
+        private readonly int[] titleX;
+        private readonly int[] titleY;
+        private readonly TextBoxMenuItem[] items;
 
         private int index;
         private TextBoxMenuItem choice;
 
         private TextInput textInput;
-
-        private int lastSaveSlot;
 
         public SaveMenu(
             DoomMenu menu,
@@ -41,15 +39,15 @@ namespace ManagedDoom
             int firstChoice,
             params TextBoxMenuItem[] items) : base(menu)
         {
-            this.name = new[] { name };
-            this.titleX = new[] { titleX };
-            this.titleY = new[] { titleY };
+            this.name = [name];
+            this.titleX = [titleX];
+            this.titleY = [titleY];
             this.items = items;
 
             index = firstChoice;
             choice = items[index];
 
-            lastSaveSlot = -1;
+            LastSaveSlot = -1;
         }
 
         public override void Open()
@@ -148,7 +146,7 @@ namespace ManagedDoom
             if (Menu.Doom.SaveGame(slotNumber, Menu.SaveSlots[slotNumber]))
             {
                 Menu.Close();
-                lastSaveSlot = slotNumber;
+                LastSaveSlot = slotNumber;
             }
             else
             {
@@ -162,6 +160,6 @@ namespace ManagedDoom
         public IReadOnlyList<int> TitleY => titleY;
         public IReadOnlyList<MenuItem> Items => items;
         public MenuItem Choice => choice;
-        public int LastSaveSlot => lastSaveSlot;
+        public int LastSaveSlot { get; private set; }
     }
 }

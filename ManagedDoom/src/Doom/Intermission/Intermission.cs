@@ -22,38 +22,25 @@ namespace ManagedDoom
 {
     public sealed class Intermission
     {
-        private GameOptions options;
-
         // Contains information passed into intermission.
-        private IntermissionInfo info;
-        private PlayerScores[] scores;
+        private readonly PlayerScores[] scores;
 
         // Used to accelerate or skip a stage.
         private bool accelerateStage;
 
         // Specifies current state.
-        private IntermissionState state;
 
-        private int[] killCount;
-        private int[] itemCount;
-        private int[] secretCount;
-        private int[] fragCount;
-        private int timeCount;
-        private int parCount;
+        private readonly int[] killCount;
+        private readonly int[] itemCount;
+        private readonly int[] secretCount;
+        private readonly int[] fragCount;
         private int pauseCount;
 
         private int spState;
 
         private int ngState;
-        private bool doFrags;
 
         private int dmState;
-        private int[][] dmFragCount;
-        private int[] dmTotalCount;
-
-        private DoomRandom random;
-        private Animation[] animations;
-        private bool showYouAreHere;
 
         // Used for general timing.
         private int count;
@@ -65,8 +52,8 @@ namespace ManagedDoom
 
         public Intermission(GameOptions options, IntermissionInfo info)
         {
-            this.options = options;
-            this.info = info;
+            this.Options = options;
+            this.Info = info;
 
             scores = info.Players;
 
@@ -75,12 +62,12 @@ namespace ManagedDoom
             secretCount = new int[Player.MaxPlayerCount];
             fragCount = new int[Player.MaxPlayerCount];
 
-            dmFragCount = new int[Player.MaxPlayerCount][];
+            DeathmatchFrags = new int[Player.MaxPlayerCount][];
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                dmFragCount[i] = new int[Player.MaxPlayerCount];
+                DeathmatchFrags[i] = new int[Player.MaxPlayerCount];
             }
-            dmTotalCount = new int[Player.MaxPlayerCount];
+            DeathmatchTotals = new int[Player.MaxPlayerCount];
 
             if (options.Deathmatch != 0)
             {
@@ -106,11 +93,11 @@ namespace ManagedDoom
         
         private void InitSinglePLayerStats()
         {
-            state = IntermissionState.StatCount;
+            State = IntermissionState.StatCount;
             accelerateStage = false;
             spState = 1;
             killCount[0] = itemCount[0] = secretCount[0] = -1;
-            timeCount = parCount = -1;
+            TimeCount = ParCount = -1;
             pauseCount = GameConst.TicRate;
 
             InitAnimatedBack();
@@ -119,7 +106,7 @@ namespace ManagedDoom
 
         private void InitNetGameStats()
         {
-            state = IntermissionState.StatCount;
+            State = IntermissionState.StatCount;
             accelerateStage = false;
             ngState = 1;
             pauseCount = GameConst.TicRate;
@@ -127,7 +114,7 @@ namespace ManagedDoom
             var frags = 0;
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (!options.Players[i].InGame)
+                if (!Options.Players[i].InGame)
                 {
                     continue;
                 }
@@ -136,7 +123,7 @@ namespace ManagedDoom
 
                 frags += GetFragSum(i);
             }
-            doFrags = frags > 0;
+            DoFrags = frags > 0;
 
             InitAnimatedBack();
         }
@@ -144,23 +131,23 @@ namespace ManagedDoom
 
         private void InitDeathmatchStats()
         {
-            state = IntermissionState.StatCount;
+            State = IntermissionState.StatCount;
             accelerateStage = false;
             dmState = 1;
             pauseCount = GameConst.TicRate;
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (options.Players[i].InGame)
+                if (Options.Players[i].InGame)
                 {
                     for (var j = 0; j < Player.MaxPlayerCount; j++)
                     {
-                        if (options.Players[j].InGame)
+                        if (Options.Players[j].InGame)
                         {
-                            dmFragCount[i][j] = 0;
+                            DeathmatchFrags[i][j] = 0;
                         }
                     }
-                    dmTotalCount[i] = 0;
+                    DeathmatchTotals[i] = 0;
                 }
             }
 
@@ -170,7 +157,7 @@ namespace ManagedDoom
 
         private void InitNoState()
         {
-            state = IntermissionState.NoState;
+            State = IntermissionState.NoState;
             accelerateStage = false;
             count = 10;
         }
@@ -180,7 +167,7 @@ namespace ManagedDoom
 
         private void InitShowNextLoc()
         {
-            state = IntermissionState.ShowNextLoc;
+            State = IntermissionState.ShowNextLoc;
             accelerateStage = false;
             count = showNextLocDelay * GameConst.TicRate;
 
@@ -190,28 +177,28 @@ namespace ManagedDoom
 
         private void InitAnimatedBack()
         {
-            if (options.GameMode == GameMode.Commercial)
+            if (Options.GameMode == GameMode.Commercial)
             {
                 return;
             }
 
-            if (info.Episode > 2)
+            if (Info.Episode > 2)
             {
                 return;
             }
 
-            if (animations == null)
+            if (Animations == null)
             {
-                animations = new Animation[AnimationInfo.Episodes[info.Episode].Count];
-                for (var i = 0; i < animations.Length; i++)
+                Animations = new Animation[AnimationInfo.Episodes[Info.Episode].Count];
+                for (var i = 0; i < Animations.Length; i++)
                 {
-                    animations[i] = new Animation(this, AnimationInfo.Episodes[info.Episode][i], i);
+                    Animations[i] = new Animation(this, AnimationInfo.Episodes[Info.Episode][i], i);
                 }
 
-                random = new DoomRandom();
+                Random = new DoomRandom();
             }
 
-            foreach (var animation in animations)
+            foreach (var animation in Animations)
             {
                 animation.Reset(bgCount);
             }
@@ -233,24 +220,24 @@ namespace ManagedDoom
             if (bgCount == 1)
             {
                 // intermission music
-                if (options.GameMode == GameMode.Commercial)
+                if (Options.GameMode == GameMode.Commercial)
                 {
-                    options.Music.StartMusic(Bgm.DM2INT, true);
+                    Options.Music.StartMusic(Bgm.DM2INT, true);
                 }
                 else
                 {
-                    options.Music.StartMusic(Bgm.INTER, true);
+                    Options.Music.StartMusic(Bgm.INTER, true);
                 }
             }
 
-            switch (state)
+            switch (State)
             {
                 case IntermissionState.StatCount:
-                    if (options.Deathmatch != 0)
+                    if (Options.Deathmatch != 0)
                     {
                         UpdateDeathmatchStats();
                     }
-                    else if (options.NetGame)
+                    else if (Options.NetGame)
                     {
                         UpdateNetGameStats();
                     }
@@ -273,17 +260,13 @@ namespace ManagedDoom
             {
                 return UpdateResult.Completed;
             }
-            else
+
+            if (bgCount == 1)
             {
-                if (bgCount == 1)
-                {
-                    return UpdateResult.NeedWipe;
-                }
-                else
-                {
-                    return UpdateResult.None;
-                }
+                return UpdateResult.NeedWipe;
             }
+
+            return UpdateResult.None;
         }
 
 
@@ -294,11 +277,11 @@ namespace ManagedDoom
             if (accelerateStage && spState != 10)
             {
                 accelerateStage = false;
-                killCount[0] = (scores[0].KillCount * 100) / info.MaxKillCount;
-                itemCount[0] = (scores[0].ItemCount * 100) / info.MaxItemCount;
-                secretCount[0] = (scores[0].SecretCount * 100) / info.MaxSecretCount;
-                timeCount = scores[0].Time / GameConst.TicRate;
-                parCount = info.ParTime / GameConst.TicRate;
+                killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
+                itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
+                secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
+                TimeCount = scores[0].Time / GameConst.TicRate;
+                ParCount = Info.ParTime / GameConst.TicRate;
                 StartSound(Sfx.BAREXP);
                 spState = 10;
             }
@@ -312,9 +295,9 @@ namespace ManagedDoom
                     StartSound(Sfx.PISTOL);
                 }
 
-                if (killCount[0] >= (scores[0].KillCount * 100) / info.MaxKillCount)
+                if (killCount[0] >= (scores[0].KillCount * 100) / Info.MaxKillCount)
                 {
-                    killCount[0] = (scores[0].KillCount * 100) / info.MaxKillCount;
+                    killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
                     StartSound(Sfx.BAREXP);
                     spState++;
                 }
@@ -328,9 +311,9 @@ namespace ManagedDoom
                     StartSound(Sfx.PISTOL);
                 }
 
-                if (itemCount[0] >= (scores[0].ItemCount * 100) / info.MaxItemCount)
+                if (itemCount[0] >= (scores[0].ItemCount * 100) / Info.MaxItemCount)
                 {
-                    itemCount[0] = (scores[0].ItemCount * 100) / info.MaxItemCount;
+                    itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
                     StartSound(Sfx.BAREXP);
                     spState++;
                 }
@@ -344,9 +327,9 @@ namespace ManagedDoom
                     StartSound(Sfx.PISTOL);
                 }
 
-                if (secretCount[0] >= (scores[0].SecretCount * 100) / info.MaxSecretCount)
+                if (secretCount[0] >= (scores[0].SecretCount * 100) / Info.MaxSecretCount)
                 {
-                    secretCount[0] = (scores[0].SecretCount * 100) / info.MaxSecretCount;
+                    secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
                     StartSound(Sfx.BAREXP);
                     spState++;
                 }
@@ -359,20 +342,20 @@ namespace ManagedDoom
                     StartSound(Sfx.PISTOL);
                 }
 
-                timeCount += 3;
+                TimeCount += 3;
 
-                if (timeCount >= scores[0].Time / GameConst.TicRate)
+                if (TimeCount >= scores[0].Time / GameConst.TicRate)
                 {
-                    timeCount = scores[0].Time / GameConst.TicRate;
+                    TimeCount = scores[0].Time / GameConst.TicRate;
                 }
 
-                parCount += 3;
+                ParCount += 3;
 
-                if (parCount >= info.ParTime / GameConst.TicRate)
+                if (ParCount >= Info.ParTime / GameConst.TicRate)
                 {
-                    parCount = info.ParTime / GameConst.TicRate;
+                    ParCount = Info.ParTime / GameConst.TicRate;
 
-                    if (timeCount >= scores[0].Time / GameConst.TicRate)
+                    if (TimeCount >= scores[0].Time / GameConst.TicRate)
                     {
                         StartSound(Sfx.BAREXP);
                         spState++;
@@ -385,7 +368,7 @@ namespace ManagedDoom
                 {
                     StartSound(Sfx.SGCOCK);
 
-                    if (options.GameMode == GameMode.Commercial)
+                    if (Options.GameMode == GameMode.Commercial)
                     {
                         InitNoState();
                     }
@@ -418,14 +401,14 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (!options.Players[i].InGame)
+                    if (!Options.Players[i].InGame)
                     {
                         continue;
                     }
 
-                    killCount[i] = (scores[i].KillCount * 100) / info.MaxKillCount;
-                    itemCount[i] = (scores[i].ItemCount * 100) / info.MaxItemCount;
-                    secretCount[i] = (scores[i].SecretCount * 100) / info.MaxSecretCount;
+                    killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
+                    itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
+                    secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
                 }
 
                 StartSound(Sfx.BAREXP);
@@ -444,15 +427,15 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (!options.Players[i].InGame)
+                    if (!Options.Players[i].InGame)
                     {
                         continue;
                     }
 
                     killCount[i] += 2;
-                    if (killCount[i] >= (scores[i].KillCount * 100) / info.MaxKillCount)
+                    if (killCount[i] >= (scores[i].KillCount * 100) / Info.MaxKillCount)
                     {
-                        killCount[i] = (scores[i].KillCount * 100) / info.MaxKillCount;
+                        killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
                     }
                     else
                     {
@@ -477,15 +460,15 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (!options.Players[i].InGame)
+                    if (!Options.Players[i].InGame)
                     {
                         continue;
                     }
 
                     itemCount[i] += 2;
-                    if (itemCount[i] >= (scores[i].ItemCount * 100) / info.MaxItemCount)
+                    if (itemCount[i] >= (scores[i].ItemCount * 100) / Info.MaxItemCount)
                     {
-                        itemCount[i] = (scores[i].ItemCount * 100) / info.MaxItemCount;
+                        itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
                     }
                     else
                     {
@@ -510,15 +493,15 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (!options.Players[i].InGame)
+                    if (!Options.Players[i].InGame)
                     {
                         continue;
                     }
 
                     secretCount[i] += 2;
-                    if (secretCount[i] >= (scores[i].SecretCount * 100) / info.MaxSecretCount)
+                    if (secretCount[i] >= (scores[i].SecretCount * 100) / Info.MaxSecretCount)
                     {
-                        secretCount[i] = (scores[i].SecretCount * 100) / info.MaxSecretCount;
+                        secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
                     }
                     else
                     {
@@ -529,7 +512,7 @@ namespace ManagedDoom
                 if (!stillTicking)
                 {
                     StartSound(Sfx.BAREXP);
-                    if (doFrags)
+                    if (DoFrags)
                     {
                         ngState++;
                     }
@@ -550,7 +533,7 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (!options.Players[i].InGame)
+                    if (!Options.Players[i].InGame)
                     {
                         continue;
                     }
@@ -579,7 +562,7 @@ namespace ManagedDoom
                 {
                     StartSound(Sfx.SGCOCK);
 
-                    if (options.GameMode == GameMode.Commercial)
+                    if (Options.GameMode == GameMode.Commercial)
                     {
                         InitNoState();
                     }
@@ -612,17 +595,17 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (options.Players[i].InGame)
+                    if (Options.Players[i].InGame)
                     {
                         for (var j = 0; j < Player.MaxPlayerCount; j++)
                         {
-                            if (options.Players[j].InGame)
+                            if (Options.Players[j].InGame)
                             {
-                                dmFragCount[i][j] = scores[i].Frags[j];
+                                DeathmatchFrags[i][j] = scores[i].Frags[j];
                             }
                         }
 
-                        dmTotalCount[i] = GetFragSum(i);
+                        DeathmatchTotals[i] = GetFragSum(i);
                     }
                 }
 
@@ -642,45 +625,45 @@ namespace ManagedDoom
 
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
-                    if (options.Players[i].InGame)
+                    if (Options.Players[i].InGame)
                     {
                         for (var j = 0; j < Player.MaxPlayerCount; j++)
                         {
-                            if (options.Players[j].InGame && dmFragCount[i][j] != scores[i].Frags[j])
+                            if (Options.Players[j].InGame && DeathmatchFrags[i][j] != scores[i].Frags[j])
                             {
                                 if (scores[i].Frags[j] < 0)
                                 {
-                                    dmFragCount[i][j]--;
+                                    DeathmatchFrags[i][j]--;
                                 }
                                 else
                                 {
-                                    dmFragCount[i][j]++;
+                                    DeathmatchFrags[i][j]++;
                                 }
 
-                                if (dmFragCount[i][j] > 99)
+                                if (DeathmatchFrags[i][j] > 99)
                                 {
-                                    dmFragCount[i][j] = 99;
+                                    DeathmatchFrags[i][j] = 99;
                                 }
 
-                                if (dmFragCount[i][j] < -99)
+                                if (DeathmatchFrags[i][j] < -99)
                                 {
-                                    dmFragCount[i][j] = -99;
+                                    DeathmatchFrags[i][j] = -99;
                                 }
 
                                 stillticking = true;
                             }
                         }
 
-                        dmTotalCount[i] = GetFragSum(i);
+                        DeathmatchTotals[i] = GetFragSum(i);
 
-                        if (dmTotalCount[i] > 99)
+                        if (DeathmatchTotals[i] > 99)
                         {
-                            dmTotalCount[i] = 99;
+                            DeathmatchTotals[i] = 99;
                         }
 
-                        if (dmTotalCount[i] < -99)
+                        if (DeathmatchTotals[i] < -99)
                         {
-                            dmTotalCount[i] = -99;
+                            DeathmatchTotals[i] = -99;
                         }
                     }
 
@@ -699,7 +682,7 @@ namespace ManagedDoom
                 {
                     StartSound(Sfx.SLOP);
 
-                    if (options.GameMode == GameMode.Commercial)
+                    if (Options.GameMode == GameMode.Commercial)
                     {
                         InitNoState();
                     }
@@ -730,7 +713,7 @@ namespace ManagedDoom
             }
             else
             {
-                showYouAreHere = (count & 31) < 20;
+                ShowYouAreHere = (count & 31) < 20;
             }
         }
 
@@ -749,17 +732,17 @@ namespace ManagedDoom
 
         private void UpdateAnimatedBack()
         {
-            if (options.GameMode == GameMode.Commercial)
+            if (Options.GameMode == GameMode.Commercial)
             {
                 return;
             }
 
-            if (info.Episode > 2)
+            if (Info.Episode > 2)
             {
                 return;
             }
 
-            foreach (var a in animations)
+            foreach (var a in Animations)
             {
                 a.Update(bgCount);
             }
@@ -776,7 +759,7 @@ namespace ManagedDoom
             // Check for button presses to skip delays.
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                var player = options.Players[i];
+                var player = Options.Players[i];
                 if (player.InGame)
                 {
                     if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
@@ -820,7 +803,7 @@ namespace ManagedDoom
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (options.Players[i].InGame && i != playerNumber)
+                if (Options.Players[i].InGame && i != playerNumber)
                 {
                     frags += scores[playerNumber].Frags[i];
                 }
@@ -834,25 +817,35 @@ namespace ManagedDoom
 
         private void StartSound(Sfx sfx)
         {
-            options.Sound.StartSound(sfx);
+            Options.Sound.StartSound(sfx);
         }
 
 
         
-        public GameOptions Options => options;
-        public IntermissionInfo Info => info;
-        public IntermissionState State => state;
+        public GameOptions Options { get; }
+
+        public IntermissionInfo Info { get; }
+
+        public IntermissionState State { get; private set; }
+
         public IReadOnlyList<int> KillCount => killCount;
         public IReadOnlyList<int> ItemCount => itemCount;
         public IReadOnlyList<int> SecretCount => secretCount;
         public IReadOnlyList<int> FragCount => fragCount;
-        public int TimeCount => timeCount;
-        public int ParCount => parCount;
-        public int[][] DeathmatchFrags => dmFragCount;
-        public int[] DeathmatchTotals => dmTotalCount;
-        public bool DoFrags => doFrags;
-        public DoomRandom Random => random;
-        public Animation[] Animations => animations;
-        public bool ShowYouAreHere => showYouAreHere;
+        public int TimeCount { get; private set; }
+
+        public int ParCount { get; private set; }
+
+        public int[][] DeathmatchFrags { get; }
+
+        public int[] DeathmatchTotals { get; }
+
+        public bool DoFrags { get; private set; }
+
+        public DoomRandom Random { get; private set; }
+
+        public Animation[] Animations { get; private set; }
+
+        public bool ShowYouAreHere { get; private set; }
     }
 }

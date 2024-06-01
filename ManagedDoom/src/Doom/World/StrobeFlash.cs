@@ -27,13 +27,6 @@ namespace ManagedDoom
 
         private World world;
 
-        private Sector sector;
-        private int count;
-        private int minLight;
-        private int maxLight;
-        private int darkTime;
-        private int brightTime;
-
         public StrobeFlash(World world)
         {
             this.world = world;
@@ -41,57 +34,33 @@ namespace ManagedDoom
 
         public override void Run()
         {
-            if (--count > 0)
+            if (--Count > 0)
             {
                 return;
             }
 
-            if (sector.LightLevel == minLight)
+            if (Sector.LightLevel == MinLight)
             {
-                sector.LightLevel = maxLight;
-                count = brightTime;
+                Sector.LightLevel = MaxLight;
+                Count = BrightTime;
             }
             else
             {
-                sector.LightLevel = minLight;
-                count = darkTime;
+                Sector.LightLevel = MinLight;
+                Count = DarkTime;
             }
         }
 
-        public Sector Sector
-        {
-            get => sector;
-            set => sector = value;
-        }
+        public Sector Sector { get; set; }
 
-        public int Count
-        {
-            get => count;
-            set => count = value;
-        }
+        public int Count { get; set; }
 
-        public int MinLight
-        {
-            get => minLight;
-            set => minLight = value;
-        }
+        public int MinLight { get; set; }
 
-        public int MaxLight
-        {
-            get => maxLight;
-            set => maxLight = value;
-        }
+        public int MaxLight { get; set; }
 
-        public int DarkTime
-        {
-            get => darkTime;
-            set => darkTime = value;
-        }
+        public int DarkTime { get; set; }
 
-        public int BrightTime
-        {
-            get => brightTime;
-            set => brightTime = value;
-        }
+        public int BrightTime { get; set; }
     }
 }

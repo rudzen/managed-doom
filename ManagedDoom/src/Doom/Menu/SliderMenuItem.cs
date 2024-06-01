@@ -21,15 +21,8 @@ namespace ManagedDoom
 {
     public class SliderMenuItem : MenuItem
     {
-        private string name;
-        private int itemX;
-        private int itemY;
-
-        private int sliderLength;
-        private int sliderPosition;
-
-        private Func<int> reset;
-        private Action<int> action;
+        private readonly Func<int> reset;
+        private readonly Action<int> action;
 
         public SliderMenuItem(
             string name,
@@ -40,12 +33,12 @@ namespace ManagedDoom
             Action<int> action)
             : base(skullX, skullY, null)
         {
-            this.name = name;
-            this.itemX = itemX;
-            this.itemY = itemY;
+            this.Name = name;
+            this.ItemX = itemX;
+            this.ItemY = itemY;
 
-            this.sliderLength = sliderLength;
-            sliderPosition = 0;
+            this.SliderLength = sliderLength;
+            SliderPosition = 0;
 
             this.action = action;
             this.reset = reset;
@@ -55,43 +48,40 @@ namespace ManagedDoom
         {
             if (reset != null)
             {
-                sliderPosition = reset();
+                SliderPosition = reset();
             }
         }
 
         public void Up()
         {
-            if (sliderPosition < SliderLength - 1)
+            if (SliderPosition < SliderLength - 1)
             {
-                sliderPosition++;
+                SliderPosition++;
             }
 
-            if (action != null)
-            {
-                action(sliderPosition);
-            }
+            action?.Invoke(SliderPosition);
         }
 
         public void Down()
         {
-            if (sliderPosition > 0)
+            if (SliderPosition > 0)
             {
-                sliderPosition--;
+                SliderPosition--;
             }
 
-            if (action != null)
-            {
-                action(sliderPosition);
-            }
+            action?.Invoke(SliderPosition);
         }
 
-        public string Name => name;
-        public int ItemX => itemX;
-        public int ItemY => itemY;
+        public string Name { get; }
 
-        public int SliderX => itemX;
-        public int SliderY => itemY + 16;
-        public int SliderLength => sliderLength;
-        public int SliderPosition => sliderPosition;
+        public int ItemX { get; }
+
+        public int ItemY { get; }
+
+        public int SliderX => ItemX;
+        public int SliderY => ItemY + 16;
+        public int SliderLength { get; }
+
+        public int SliderPosition { get; private set; }
     }
 }

@@ -21,11 +21,11 @@ namespace ManagedDoom
 {
     public static partial class DoomInfo
     {
-        private static PlayerActions pa = new PlayerActions();
-        private static MobjActions ma = new MobjActions();
+        private static readonly PlayerActions pa = new PlayerActions();
+        private static readonly MobjActions ma = new MobjActions();
 
-        public static readonly MobjStateDef[] States = new MobjStateDef[]
-        {
+        public static readonly MobjStateDef[] States =
+        [
             new MobjStateDef(0, Sprite.TROO, 0, -1, null, null, MobjState.Null, 0, 0), // State.Null
             new MobjStateDef(1, Sprite.SHTG, 4, 0, pa.Light0, null, MobjState.Null, 0, 0), // State.Lightdone
             new MobjStateDef(2, Sprite.PUNG, 0, 1, pa.WeaponReady, null, MobjState.Punch, 0, 0), // State.Punch
@@ -993,6 +993,6 @@ namespace ManagedDoom
             new MobjStateDef(964, Sprite.TLP2, 32769, 4, null, null, MobjState.Tech2Lamp3, 0, 0), // State.Tech2Lamp2
             new MobjStateDef(965, Sprite.TLP2, 32770, 4, null, null, MobjState.Tech2Lamp4, 0, 0), // State.Tech2Lamp3
             new MobjStateDef(966, Sprite.TLP2, 32771, 4, null, null, MobjState.Tech2Lamp, 0, 0) // State.Tech2Lamp4
-        };
+        ];
     }
 }

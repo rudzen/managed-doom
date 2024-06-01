@@ -23,7 +23,7 @@ namespace ManagedDoom
 	{
 		private static readonly Fixed useRange = Fixed.FromInt(64);
 
-		private World world;
+		private readonly World world;
 
 		public MapInteraction(World world)
 		{

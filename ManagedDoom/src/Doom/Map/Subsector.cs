@@ -23,15 +23,11 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 4;
 
-        private Sector sector;
-        private int segCount;
-        private int firstSeg;
-
         public Subsector(Sector sector, int segCount, int firstSeg)
         {
-            this.sector = sector;
-            this.segCount = segCount;
-            this.firstSeg = firstSeg;
+            this.Sector = sector;
+            this.SegCount = segCount;
+            this.FirstSeg = firstSeg;
         }
 
         public static Subsector FromData(byte[] data, int offset, Seg[] segs)
@@ -48,26 +44,28 @@ namespace ManagedDoom
         public static Subsector[] FromWad(Wad wad, int lump, Seg[] segs)
         {
             var length = wad.GetLumpSize(lump);
-            if (length % Subsector.dataSize != 0)
+            if (length % dataSize != 0)
             {
                 throw new Exception();
             }
 
             var data = wad.ReadLump(lump);
-            var count = length / Subsector.dataSize;
+            var count = length / dataSize;
             var subsectors = new Subsector[count];
 
             for (var i = 0; i < count; i++)
             {
-                var offset = Subsector.dataSize * i;
-                subsectors[i] = Subsector.FromData(data, offset, segs);
+                var offset = dataSize * i;
+                subsectors[i] = FromData(data, offset, segs);
             }
 
             return subsectors;
         }
 
-        public Sector Sector => sector;
-        public int SegCount => segCount;
-        public int FirstSeg => firstSeg;
+        public Sector Sector { get; }
+
+        public int SegCount { get; }
+
+        public int FirstSeg { get; }
     }
 }

@@ -22,17 +22,14 @@ namespace ManagedDoom
 {
     public class TextBoxMenuItem : MenuItem
     {
-        private int itemX;
-        private int itemY;
-
         private IReadOnlyList<char> text;
         private TextInput edit;
 
         public TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY)
             : base(skullX, skullY, null)
         {
-            this.itemX = itemX;
-            this.itemY = itemY;
+            this.ItemX = itemX;
+            this.ItemY = itemY;
         }
 
         public TextInput Edit(Action finished)
@@ -62,15 +59,15 @@ namespace ManagedDoom
                 {
                     return text;
                 }
-                else
-                {
-                    return edit.Text;
-                }
+
+                return edit.Text;
             }
         }
 
-        public int ItemX => itemX;
-        public int ItemY => itemY;
+        public int ItemX { get; }
+
+        public int ItemY { get; }
+
         public bool Editing => edit != null;
     }
 }

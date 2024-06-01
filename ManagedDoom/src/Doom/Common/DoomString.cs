@@ -22,8 +22,8 @@ namespace ManagedDoom
 {
     public sealed class DoomString
     {
-        private static Dictionary<string, DoomString> valueTable = new Dictionary<string, DoomString>();
-        private static Dictionary<string, DoomString> nameTable = new Dictionary<string, DoomString>();
+        private static readonly Dictionary<string, DoomString> valueTable = new Dictionary<string, DoomString>();
+        private static readonly Dictionary<string, DoomString> nameTable = new Dictionary<string, DoomString>();
 
         private string original;
         private string replaced;
@@ -64,8 +64,7 @@ namespace ManagedDoom
 
         public static void ReplaceByValue(string original, string replaced)
         {
-            DoomString ds;
-            if (valueTable.TryGetValue(original, out ds))
+            if (valueTable.TryGetValue(original, out var ds))
             {
                 ds.replaced = replaced;
             }
@@ -73,8 +72,7 @@ namespace ManagedDoom
 
         public static void ReplaceByName(string name, string value)
         {
-            DoomString ds;
-            if (nameTable.TryGetValue(name, out ds))
+            if (nameTable.TryGetValue(name, out var ds))
             {
                 ds.replaced = value;
             }

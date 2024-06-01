@@ -35,7 +35,7 @@ namespace ManagedDoom
 		// to undo the changes.
 		//
 
-		private World world;
+		private readonly World world;
 
 		public SectorAction(World world)
 		{
@@ -300,11 +300,9 @@ namespace ManagedDoom
 
 								return SectorActionResult.PastDestination;
 							}
-							else
-							{
-								sector.CeilingHeight += speed;
-								ChangeSector(sector, crush);
-							}
+
+							sector.CeilingHeight += speed;
+							ChangeSector(sector, crush);
 
 							break;
 					}
@@ -760,7 +758,7 @@ namespace ManagedDoom
 
 		// In plutonia MAP23, number of adjoining sectors can be 44.
 		private static readonly int maxAdjoiningSectorCount = 64;
-		private Fixed[] heightList = new Fixed[maxAdjoiningSectorCount];
+		private readonly Fixed[] heightList = new Fixed[maxAdjoiningSectorCount];
 
 		private Fixed FindNextHighestFloor(Sector sector, Fixed currentHeight)
 		{
@@ -924,7 +922,7 @@ namespace ManagedDoom
 
 
 		private static readonly int maxPlatformCount = 60;
-		private Platform[] activePlatforms = new Platform[maxPlatformCount];
+		private readonly Platform[] activePlatforms = new Platform[maxPlatformCount];
 
 		public void ActivateInStasis(int tag)
 		{
@@ -1332,8 +1330,7 @@ namespace ManagedDoom
 					case CeilingMoveType.CrushAndRaise:
 					case CeilingMoveType.LowerAndCrush:
 					case CeilingMoveType.LowerToFloor:
-						if (type == CeilingMoveType.SilentCrushAndRaise
-							|| type == CeilingMoveType.CrushAndRaise)
+						if (type is CeilingMoveType.SilentCrushAndRaise or CeilingMoveType.CrushAndRaise)
 						{
 							ceiling.Crush = true;
 							ceiling.TopHeight = sector.CeilingHeight;
@@ -1368,7 +1365,7 @@ namespace ManagedDoom
 
 		private static readonly int maxCeilingCount = 30;
 
-		private CeilingMove[] activeCeilings = new CeilingMove[maxCeilingCount];
+		private readonly CeilingMove[] activeCeilings = new CeilingMove[maxCeilingCount];
 
 		public void AddActiveCeiling(CeilingMove ceiling)
 		{
@@ -1549,10 +1546,7 @@ namespace ManagedDoom
 						thing.MomX = thing.MomY = thing.MomZ = Fixed.Zero;
 
 						thing.DisableFrameInterpolationForOneFrame();
-						if (thing.Player != null)
-						{
-							thing.Player.DisableFrameInterpolationForOneFrame();
-						}
+						thing.Player?.DisableFrameInterpolationForOneFrame();
 
 						return true;
 					}

@@ -11,14 +11,14 @@ namespace ManagedDoom.Silk
 {
     public sealed class SilkVideo : IVideo, IDisposable
     {
-        private Renderer renderer;
+        private readonly Renderer renderer;
 
         private GraphicsDevice device;
 
-        private int textureWidth;
-        private int textureHeight;
+        private readonly int textureWidth;
+        private readonly int textureHeight;
 
-        private byte[] textureData;
+        private readonly byte[] textureData;
         private Texture2D texture;
 
         private TextureBatcher batcher;

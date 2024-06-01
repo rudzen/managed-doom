@@ -23,15 +23,6 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 28;
 
-        private Fixed x;
-        private Fixed y;
-        private Fixed dx;
-        private Fixed dy;
-
-        private Fixed[][] boundingBox;
-
-        private int[] children;
-
         public Node(
             Fixed x,
             Fixed y,
@@ -48,10 +39,10 @@ namespace ManagedDoom
             int frontChild,
             int backChild)
         {
-            this.x = x;
-            this.y = y;
-            this.dx = dx;
-            this.dy = dy;
+            this.X = x;
+            this.Y = y;
+            this.Dx = dx;
+            this.Dy = dy;
 
             var frontBoundingBox = new Fixed[4]
             {
@@ -69,17 +60,17 @@ namespace ManagedDoom
                 backBoundingBoxRight
             };
 
-            boundingBox = new Fixed[][]
+            BoundingBox = new Fixed[][]
             {
                 frontBoundingBox,
                 backBoundingBox
             };
 
-            children = new int[]
-            {
+            Children =
+            [
                 frontChild,
                 backChild
-            };
+            ];
         }
 
         public static Node FromData(byte[] data, int offset)
@@ -119,19 +110,19 @@ namespace ManagedDoom
         public static Node[] FromWad(Wad wad, int lump, Subsector[] subsectors)
         {
             var length = wad.GetLumpSize(lump);
-            if (length % Node.dataSize != 0)
+            if (length % dataSize != 0)
             {
                 throw new Exception();
             }
 
             var data = wad.ReadLump(lump);
-            var count = length / Node.dataSize;
+            var count = length / dataSize;
             var nodes = new Node[count];
 
             for (var i = 0; i < count; i++)
             {
-                var offset = Node.dataSize * i;
-                nodes[i] = Node.FromData(data, offset);
+                var offset = dataSize * i;
+                nodes[i] = FromData(data, offset);
             }
 
             return nodes;
@@ -147,11 +138,16 @@ namespace ManagedDoom
             return node ^ unchecked((int)0xFFFF8000);
         }
 
-        public Fixed X => x;
-        public Fixed Y => y;
-        public Fixed Dx => dx;
-        public Fixed Dy => dy;
-        public Fixed[][] BoundingBox => boundingBox;
-        public int[] Children => children;
+        public Fixed X { get; }
+
+        public Fixed Y { get; }
+
+        public Fixed Dx { get; }
+
+        public Fixed Dy { get; }
+
+        public Fixed[][] BoundingBox { get; }
+
+        public int[] Children { get; }
     }
 }

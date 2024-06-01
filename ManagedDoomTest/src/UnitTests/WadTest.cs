@@ -45,7 +45,7 @@ namespace ManagedDoomTest.UnitTests
                 for (var lump = start; lump < end; lump++)
                 {
                     var size = wad.GetLumpSize(lump);
-                    Assert.IsTrue(size == 0 || size == 4096);
+                    Assert.IsTrue(size is 0 or 4096);
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace ManagedDoomTest.UnitTests
                 for (var lump = start; lump < end; lump++)
                 {
                     var size = wad.GetLumpSize(lump);
-                    Assert.IsTrue(size == 0 || size == 4096);
+                    Assert.IsTrue(size is 0 or 4096);
                 }
             }
         }

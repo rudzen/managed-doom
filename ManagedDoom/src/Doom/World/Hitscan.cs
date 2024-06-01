@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class Hitscan
     {
-        private World world;
+        private readonly World world;
 
         public Hitscan(World world)
         {
@@ -31,11 +31,10 @@ namespace ManagedDoom
             shootTraverseFunc = ShootTraverse;
         }
 
-        private Func<Intercept, bool> aimTraverseFunc;
-        private Func<Intercept, bool> shootTraverseFunc;
+        private readonly Func<Intercept, bool> aimTraverseFunc;
+        private readonly Func<Intercept, bool> shootTraverseFunc;
 
         // Who got hit (or null).
-        private Mobj lineTarget;
 
         private Mobj currentShooter;
         private Fixed currentShooterZ;
@@ -45,8 +44,6 @@ namespace ManagedDoom
         private int currentDamage;
 
         // Slopes to top and bottom of target.
-        private Fixed topSlope;
-        private Fixed bottomSlope;
 
         /// <summary>
         /// Find a thing or wall which is on the aiming line.
@@ -86,9 +83,9 @@ namespace ManagedDoom
                     line.FrontSector.FloorHeight != line.BackSector.FloorHeight)
                 {
                     var slope = (mc.OpenBottom - currentShooterZ) / dist;
-                    if (slope > bottomSlope)
+                    if (slope > BottomSlope)
                     {
-                        bottomSlope = slope;
+                        BottomSlope = slope;
                     }
                 }
 
@@ -96,13 +93,13 @@ namespace ManagedDoom
                     line.FrontSector.CeilingHeight != line.BackSector.CeilingHeight)
                 {
                     var slope = (mc.OpenTop - currentShooterZ) / dist;
-                    if (slope < topSlope)
+                    if (slope < TopSlope)
                     {
-                        topSlope = slope;
+                        TopSlope = slope;
                     }
                 }
 
-                if (topSlope <= bottomSlope)
+                if (TopSlope <= BottomSlope)
                 {
                     // Stop.
                     return false;
@@ -131,7 +128,7 @@ namespace ManagedDoom
                 var dist = currentRange * intercept.Frac;
                 var thingTopSlope = (thing.Z + thing.Height - currentShooterZ) / dist;
 
-                if (thingTopSlope < bottomSlope)
+                if (thingTopSlope < BottomSlope)
                 {
                     // Shot over the thing.
                     return true;
@@ -139,25 +136,25 @@ namespace ManagedDoom
 
                 var thingBottomSlope = (thing.Z - currentShooterZ) / dist;
 
-                if (thingBottomSlope > topSlope)
+                if (thingBottomSlope > TopSlope)
                 {
                     // Shot under the thing.
                     return true;
                 }
 
                 // This thing can be hit!
-                if (thingTopSlope > topSlope)
+                if (thingTopSlope > TopSlope)
                 {
-                    thingTopSlope = topSlope;
+                    thingTopSlope = TopSlope;
                 }
 
-                if (thingBottomSlope < bottomSlope)
+                if (thingBottomSlope < BottomSlope)
                 {
-                    thingBottomSlope = bottomSlope;
+                    thingBottomSlope = BottomSlope;
                 }
 
                 currentAimSlope = (thingTopSlope + thingBottomSlope) / 2;
-                lineTarget = thing;
+                LineTarget = thing;
 
                 // Don't go any farther.
                 return false;
@@ -344,10 +341,10 @@ namespace ManagedDoom
             var targetY = shooter.Y + range.ToIntFloor() * Trig.Sin(angle);
 
             // Can't shoot outside view angles.
-            topSlope = Fixed.FromInt(100) / 160;
-            bottomSlope = Fixed.FromInt(-100) / 160;
+            TopSlope = Fixed.FromInt(100) / 160;
+            BottomSlope = Fixed.FromInt(-100) / 160;
 
-            lineTarget = null;
+            LineTarget = null;
 
             world.PathTraversal.PathTraverse(
                 shooter.X, shooter.Y,
@@ -355,7 +352,7 @@ namespace ManagedDoom
                 PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
                 aimTraverseFunc);
 
-            if (lineTarget != null)
+            if (LineTarget != null)
             {
                 return currentAimSlope;
             }
@@ -438,8 +435,10 @@ namespace ManagedDoom
             }
         }
 
-        public Mobj LineTarget => lineTarget;
-        public Fixed BottomSlope => bottomSlope;
-        public Fixed TopSlope => topSlope;
+        public Mobj LineTarget { get; private set; }
+
+        public Fixed BottomSlope { get; private set; }
+
+        public Fixed TopSlope { get; private set; }
     }
 }

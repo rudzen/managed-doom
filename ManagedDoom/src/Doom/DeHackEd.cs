@@ -416,8 +416,7 @@ namespace ManagedDoom
                     var parsed = new List<int>();
                     foreach (var value in split.Skip(1))
                     {
-                        int result;
-                        if (int.TryParse(value, out result))
+                        if (int.TryParse(value, out var result))
                         {
                             parsed.Add(result);
                         }
@@ -449,54 +448,52 @@ namespace ManagedDoom
             {
                 return Block.Thing;
             }
-            else if (IsFrameBlockStart(split))
+
+            if (IsFrameBlockStart(split))
             {
                 return Block.Frame;
             }
-            else if (IsPointerBlockStart(split))
+            if (IsPointerBlockStart(split))
             {
                 return Block.Pointer;
             }
-            else if (IsSoundBlockStart(split))
+            if (IsSoundBlockStart(split))
             {
                 return Block.Sound;
             }
-            else if (IsAmmoBlockStart(split))
+            if (IsAmmoBlockStart(split))
             {
                 return Block.Ammo;
             }
-            else if (IsWeaponBlockStart(split))
+            if (IsWeaponBlockStart(split))
             {
                 return Block.Weapon;
             }
-            else if (IsCheatBlockStart(split))
+            if (IsCheatBlockStart(split))
             {
                 return Block.Cheat;
             }
-            else if (IsMiscBlockStart(split))
+            if (IsMiscBlockStart(split))
             {
                 return Block.Misc;
             }
-            else if (IsTextBlockStart(split))
+            if (IsTextBlockStart(split))
             {
                 return Block.Text;
             }
-            else if (IsSpriteBlockStart(split))
+            if (IsSpriteBlockStart(split))
             {
                 return Block.Sprite;
             }
-            else if (IsBexStringsBlockStart(split))
+            if (IsBexStringsBlockStart(split))
             {
                 return Block.BexStrings;
             }
-            else if (IsBexParsBlockStart(split))
+            if (IsBexParsBlockStart(split))
             {
                 return Block.BexPars;
             }
-            else
-            {
-                return Block.None;
-            }
+            return Block.None;
         }
 
         private static bool IsThingBlockStart(string[] split)
@@ -705,10 +702,8 @@ namespace ManagedDoom
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private static bool IsBexParsBlockStart(string[] split)
@@ -717,10 +712,8 @@ namespace ManagedDoom
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private static bool IsNumber(string value)
@@ -752,11 +745,9 @@ namespace ManagedDoom
 
         private static int GetInt(Dictionary<string, string> dic, string key, int defaultValue)
         {
-            string value;
-            if (dic.TryGetValue(key, out value))
+            if (dic.TryGetValue(key, out var value))
             {
-                int intValue;
-                if (int.TryParse(value, out intValue))
+                if (int.TryParse(value, out var intValue))
                 {
                     return intValue;
                 }

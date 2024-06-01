@@ -85,10 +85,8 @@ namespace ManagedDoom
                 {
                     return node.Dy > Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return node.Dy < Fixed.Zero ? 1 : 0;
-                }
+
+                return node.Dy < Fixed.Zero ? 1 : 0;
             }
 
             if (node.Dy == Fixed.Zero)
@@ -97,10 +95,8 @@ namespace ManagedDoom
                 {
                     return node.Dx < Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return node.Dx > Fixed.Zero ? 1 : 0;
-                }
+
+                return node.Dx > Fixed.Zero ? 1 : 0;
             }
 
             var dx = (x - node.X);
@@ -126,11 +122,9 @@ namespace ManagedDoom
                 // Front side.
                 return 0;
             }
-            else
-            {
-                // Back side.
-                return 1;
-            }
+
+            // Back side.
+            return 1;
         }
 
         /// <summary>
@@ -157,65 +151,51 @@ namespace ManagedDoom
                         // octant 0
                         return Trig.TanToAngle(SlopeDiv(y, x));
                     }
-                    else
-                    {
-                        // octant 1
-                        return new Angle(Angle.Ang90.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
-                    }
-                }
-                else
-                {
-                    // y < 0
-                    y = -y;
 
-                    if (x > y)
-                    {
-                        // octant 8
-                        return -Trig.TanToAngle(SlopeDiv(y, x));
-                    }
-                    else
-                    {
-                        // octant 7
-                        return Angle.Ang270 + Trig.TanToAngle(SlopeDiv(x, y));
-                    }
+                    // octant 1
+                    return new Angle(Angle.Ang90.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
                 }
+
+                // y < 0
+                y = -y;
+
+                if (x > y)
+                {
+                    // octant 8
+                    return -Trig.TanToAngle(SlopeDiv(y, x));
+                }
+
+                // octant 7
+                return Angle.Ang270 + Trig.TanToAngle(SlopeDiv(x, y));
             }
-            else
+
+            // x < 0
+            x = -x;
+
+            if (y >= Fixed.Zero)
             {
-                // x < 0
-                x = -x;
-
-                if (y >= Fixed.Zero)
+                // y >= 0
+                if (x > y)
                 {
-                    // y >= 0
-                    if (x > y)
-                    {
-                        // octant 3
-                        return new Angle(Angle.Ang180.Data - 1) - Trig.TanToAngle(SlopeDiv(y, x));
-                    }
-                    else
-                    {
-                        // octant 2
-                        return Angle.Ang90 + Trig.TanToAngle(SlopeDiv(x, y));
-                    }
+                    // octant 3
+                    return new Angle(Angle.Ang180.Data - 1) - Trig.TanToAngle(SlopeDiv(y, x));
                 }
-                else
-                {
-                    // y < 0
-                    y = -y;
 
-                    if (x > y)
-                    {
-                        // octant 4
-                        return Angle.Ang180 + Trig.TanToAngle(SlopeDiv(y, x));
-                    }
-                    else
-                    {
-                        // octant 5
-                        return new Angle(Angle.Ang270.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
-                    }
-                }
+                // octant 2
+                return Angle.Ang90 + Trig.TanToAngle(SlopeDiv(x, y));
             }
+
+            // y < 0
+            y = -y;
+
+            if (x > y)
+            {
+                // octant 4
+                return Angle.Ang180 + Trig.TanToAngle(SlopeDiv(y, x));
+            }
+
+            // octant 5
+            return new Angle(Angle.Ang270.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
         }
 
         /// <summary>
@@ -261,10 +241,8 @@ namespace ManagedDoom
                 {
                     return ldy > Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return ldy < Fixed.Zero ? 1 : 0;
-                }
+
+                return ldy < Fixed.Zero ? 1 : 0;
             }
 
             if (ldy == Fixed.Zero)
@@ -273,10 +251,8 @@ namespace ManagedDoom
                 {
                     return ldx < Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return ldx > Fixed.Zero ? 1 : 0;
-                }
+
+                return ldx > Fixed.Zero ? 1 : 0;
             }
 
             var dx = (x - lx);
@@ -290,10 +266,8 @@ namespace ManagedDoom
                     // Left is negative.
                     return 1;
                 }
-                else
-                {
-                    return 0;
-                }
+
+                return 0;
             }
 
             var left = new Fixed(ldy.Data >> Fixed.FracBits) * dx;
@@ -304,11 +278,9 @@ namespace ManagedDoom
                 // Front side.
                 return 0;
             }
-            else
-            {
-                // Back side.
-                return 1;
-            }
+
+            // Back side.
+            return 1;
         }
 
         /// <summary>
@@ -325,10 +297,8 @@ namespace ManagedDoom
                 {
                     return line.Dy > Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return line.Dy < Fixed.Zero ? 1 : 0;
-                }
+
+                return line.Dy < Fixed.Zero ? 1 : 0;
             }
 
             if (line.Dy == Fixed.Zero)
@@ -337,10 +307,8 @@ namespace ManagedDoom
                 {
                     return line.Dx < Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return line.Dx > Fixed.Zero ? 1 : 0;
-                }
+
+                return line.Dx > Fixed.Zero ? 1 : 0;
             }
 
             var dx = (x - line.Vertex1.X);
@@ -354,11 +322,9 @@ namespace ManagedDoom
                 // Front side.
                 return 0;
             }
-            else
-            {
-                // Back side.
-                return 1;
-            }
+
+            // Back side.
+            return 1;
         }
 
         /// <summary>
@@ -412,10 +378,8 @@ namespace ManagedDoom
             {
                 return p1;
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         /// <summary>
@@ -432,10 +396,8 @@ namespace ManagedDoom
                 {
                     return line.Dy > Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return line.Dy < Fixed.Zero ? 1 : 0;
-                }
+
+                return line.Dy < Fixed.Zero ? 1 : 0;
             }
 
             if (line.Dy == Fixed.Zero)
@@ -444,10 +406,8 @@ namespace ManagedDoom
                 {
                     return line.Dx < Fixed.Zero ? 1 : 0;
                 }
-                else
-                {
-                    return line.Dx > Fixed.Zero ? 1 : 0;
-                }
+
+                return line.Dx > Fixed.Zero ? 1 : 0;
             }
 
             var dx = (x - line.X);
@@ -461,10 +421,8 @@ namespace ManagedDoom
                     // Left is negative.
                     return 1;
                 }
-                else
-                {
-                    return 0;
-                }
+
+                return 0;
             }
 
             var left = new Fixed(line.Dy.Data >> 8) * new Fixed(dx.Data >> 8);
@@ -475,11 +433,9 @@ namespace ManagedDoom
                 // Front side.
                 return 0;
             }
-            else
-            {
-                // Back side.
-                return 1;
-            }
+
+            // Back side.
+            return 1;
         }
 
         /// <summary>
@@ -494,10 +450,8 @@ namespace ManagedDoom
             {
                 return dx + dy - (dx >> 1);
             }
-            else
-            {
-                return dx + dy - (dy >> 1);
-            }
+
+            return dx + dy - (dy >> 1);
         }
 
         /// <summary>
@@ -554,11 +508,9 @@ namespace ManagedDoom
             {
                 return 2;
             }
-            else
-            {
-                // Back side.
-                return 1;
-            }
+
+            // Back side.
+            return 1;
         }
 
         /// <summary>
@@ -615,11 +567,9 @@ namespace ManagedDoom
             {
                 return 2;
             }
-            else
-            {
-                // Back side.
-                return 1;
-            }
+
+            // Back side.
+            return 1;
         }
     }
 }

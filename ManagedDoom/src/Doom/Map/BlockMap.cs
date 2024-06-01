@@ -27,17 +27,9 @@ namespace ManagedDoom
         public static readonly int FracToBlockShift = Fixed.FracBits + 7;
         public static readonly int BlockToFracShift = FracToBlockShift - Fixed.FracBits;
 
-        private Fixed originX;
-        private Fixed originY;
+        private readonly short[] table;
 
-        private int width;
-        private int height;
-
-        private short[] table;
-
-        private LineDef[] lines;
-
-        private Mobj[] thingLists;
+        private readonly LineDef[] lines;
 
         private BlockMap(
             Fixed originX,
@@ -47,14 +39,14 @@ namespace ManagedDoom
             short[] table,
             LineDef[] lines)
         {
-            this.originX = originX;
-            this.originY = originY;
-            this.width = width;
-            this.height = height;
+            this.OriginX = originX;
+            this.OriginY = originY;
+            this.Width = width;
+            this.Height = height;
             this.table = table;
             this.lines = lines;
 
-            thingLists = new Mobj[width * height];
+            ThingLists = new Mobj[width * height];
         }
 
         public static BlockMap FromWad(Wad wad, int lump, LineDef[] lines)
@@ -84,24 +76,22 @@ namespace ManagedDoom
 
         public int GetBlockX(Fixed x)
         {
-            return (x - originX).Data >> FracToBlockShift;
+            return (x - OriginX).Data >> FracToBlockShift;
         }
 
         public int GetBlockY(Fixed y)
         {
-            return (y - originY).Data >> FracToBlockShift;
+            return (y - OriginY).Data >> FracToBlockShift;
         }
 
         public int GetIndex(int blockX, int blockY)
         {
-            if (0 <= blockX && blockX < width && 0 <= blockY && blockY < height)
+            if (0 <= blockX && blockX < Width && 0 <= blockY && blockY < Height)
             {
-                return width * blockY + blockX;
+                return Width * blockY + blockX;
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         public int GetIndex(Fixed x, Fixed y)
@@ -149,7 +139,7 @@ namespace ManagedDoom
                 return true;
             }
 
-            for (var mobj = thingLists[index]; mobj != null; mobj = mobj.BlockNext)
+            for (var mobj = ThingLists[index]; mobj != null; mobj = mobj.BlockNext)
             {
                 if (!func(mobj))
                 {
@@ -160,10 +150,14 @@ namespace ManagedDoom
             return true;
         }
 
-        public Fixed OriginX => originX;
-        public Fixed OriginY => originY;
-        public int Width => width;
-        public int Height => height;
-        public Mobj[] ThingLists => thingLists;
+        public Fixed OriginX { get; }
+
+        public Fixed OriginY { get; }
+
+        public int Width { get; }
+
+        public int Height { get; }
+
+        public Mobj[] ThingLists { get; }
     }
 }

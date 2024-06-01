@@ -22,12 +22,7 @@ namespace ManagedDoom
 {
     public sealed class Texture
     {
-        private string name;
-        private bool masked;
-        private int width;
-        private int height;
-        private TexturePatch[] patches;
-        private Patch composite;
+        private readonly TexturePatch[] patches;
 
         public Texture(
             string name,
@@ -36,12 +31,12 @@ namespace ManagedDoom
             int height,
             TexturePatch[] patches)
         {
-            this.name = name;
-            this.masked = masked;
-            this.width = width;
-            this.height = height;
+            this.Name = name;
+            this.Masked = masked;
+            this.Width = width;
+            this.Height = height;
             this.patches = patches;
-            composite = GenerateComposite(name, width, height, patches);
+            Composite = GenerateComposite(name, width, height, patches);
         }
 
         public static Texture FromData(byte[] data, int offset, Patch[] patchLookup)
@@ -108,7 +103,7 @@ namespace ManagedDoom
             {
                 if (patchCount[x] == 0)
                 {
-                    columns[x] = Array.Empty<Column>();
+                    columns[x] = [];
                 }
 
                 if (patchCount[x] >= 2)
@@ -131,7 +126,7 @@ namespace ManagedDoom
                             height);
                     }
 
-                    columns[x] = new[] { column };
+                    columns[x] = [column];
 
                     i++;
                 }
@@ -181,14 +176,18 @@ namespace ManagedDoom
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
 
-        public string Name => name;
-        public bool Masked => masked;
-        public int Width => width;
-        public int Height => height;
+        public string Name { get; }
+
+        public bool Masked { get; }
+
+        public int Width { get; }
+
+        public int Height { get; }
+
         public IReadOnlyList<TexturePatch> Patches => patches;
-        public Patch Composite => composite;
+        public Patch Composite { get; }
     }
 }

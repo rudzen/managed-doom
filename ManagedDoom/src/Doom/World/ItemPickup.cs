@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class ItemPickup
     {
-        private World world;
+        private readonly World world;
 
         public ItemPickup(World world)
         {
@@ -65,8 +65,7 @@ namespace ManagedDoom
                 amount = DoomInfo.AmmoInfos.Clip[(int)ammo] / 2;
             }
 
-            if (world.Options.Skill == GameSkill.Baby ||
-                world.Options.Skill == GameSkill.Nightmare)
+            if (world.Options.Skill is GameSkill.Baby or GameSkill.Nightmare)
             {
                 // Give double ammo in trainer mode, you'll need in nightmare.
                 amount <<= 1;
@@ -105,8 +104,7 @@ namespace ManagedDoom
                     break;
 
                 case AmmoType.Shell:
-                    if (player.ReadyWeapon == WeaponType.Fist
-                        || player.ReadyWeapon == WeaponType.Pistol)
+                    if (player.ReadyWeapon is WeaponType.Fist or WeaponType.Pistol)
                     {
                         if (player.WeaponOwned[(int)WeaponType.Shotgun])
                         {
@@ -116,8 +114,7 @@ namespace ManagedDoom
                     break;
 
                 case AmmoType.Cell:
-                    if (player.ReadyWeapon == WeaponType.Fist
-                        || player.ReadyWeapon == WeaponType.Pistol)
+                    if (player.ReadyWeapon is WeaponType.Fist or WeaponType.Pistol)
                     {
                         if (player.WeaponOwned[(int)WeaponType.Plasma])
                         {

@@ -22,18 +22,14 @@ namespace ManagedDoom.Video
 {
     public sealed class DrawScreen
     {
-        private int width;
-        private int height;
-        private byte[] data;
-
-        private Patch[] chars;
+        private readonly Patch[] chars;
 
         public DrawScreen(Wad wad, int width, int height)
         {
-            this.width = width;
-            this.height = height;
-            data = new byte[width * height];
-
+            this.Width = width;
+            this.Height = height;
+            Data = new byte[width * height];
+            
             chars = new Patch[128];
             for (var i = 0; i < chars.Length; i++)
             {
@@ -63,9 +59,9 @@ namespace ManagedDoom.Video
                 i += exceed;
             }
 
-            if (drawX + drawWidth > width)
+            if (drawX + drawWidth > Width)
             {
-                var exceed = drawX + drawWidth - width;
+                var exceed = drawX + drawWidth - Width;
                 drawWidth -= exceed;
             }
 
@@ -93,9 +89,9 @@ namespace ManagedDoom.Video
                 i += exceed;
             }
 
-            if (drawX + drawWidth > width)
+            if (drawX + drawWidth > Width)
             {
-                var exceed = drawX + drawWidth - width;
+                var exceed = drawX + drawWidth - Width;
                 drawWidth -= exceed;
             }
 
@@ -121,7 +117,7 @@ namespace ManagedDoom.Video
                 var drawLength = exLength;
 
                 var i = 0;
-                var p = height * x + drawY;
+                var p = Height * x + drawY;
                 var frac = Fixed.One / scale - Fixed.Epsilon;
 
                 if (drawY < 0)
@@ -132,15 +128,15 @@ namespace ManagedDoom.Video
                     i += exceed;
                 }
 
-                if (drawY + drawLength > height)
+                if (drawY + drawLength > Height)
                 {
-                    var exceed = drawY + drawLength - height;
+                    var exceed = drawY + drawLength - Height;
                     drawLength -= exceed;
                 }
 
                 for (; i < drawLength; i++)
                 {
-                    data[p] = column.Data[sourceIndex + frac.ToIntFloor()];
+                    Data[p] = column.Data[sourceIndex + frac.ToIntFloor()];
                     p++;
                     frac += step;
                 }
@@ -350,10 +346,10 @@ namespace ManagedDoom.Video
             var x2 = x + w;
             for (var drawX = x1; drawX < x2; drawX++)
             {
-                var pos = height * drawX + y;
+                var pos = Height * drawX + y;
                 for (var i = 0; i < h; i++)
                 {
-                    data[pos] = (byte)color;
+                    Data[pos] = (byte)color;
                     pos++;
                 }
             }
@@ -379,7 +375,7 @@ namespace ManagedDoom.Video
             {
                 code |= OutCode.Left;
             }
-            else if (x > width)
+            else if (x > Width)
             {
                 code |= OutCode.Right;
             }
@@ -388,7 +384,7 @@ namespace ManagedDoom.Video
             {
                 code |= OutCode.Bottom;
             }
-            else if (y > height)
+            else if (y > Height)
             {
                 code |= OutCode.Top;
             }
@@ -410,59 +406,57 @@ namespace ManagedDoom.Video
                     accept = true;
                     break;
                 }
-                else if ((outCode1 & outCode2) != 0)
+
+                if ((outCode1 & outCode2) != 0)
                 {
                     break;
                 }
+                var x = 0.0F;
+                var y = 0.0F;
+
+                var outcodeOut = outCode2 > outCode1 ? outCode2 : outCode1;
+
+                if ((outcodeOut & OutCode.Top) != 0)
+                {
+                    x = x1 + (x2 - x1) * (Height - y1) / (y2 - y1);
+                    y = Height;
+                }
+                else if ((outcodeOut & OutCode.Bottom) != 0)
+                {
+                    x = x1 + (x2 - x1) * (0 - y1) / (y2 - y1);
+                    y = 0;
+                }
+                else if ((outcodeOut & OutCode.Right) != 0)
+                {
+                    y = y1 + (y2 - y1) * (Width - x1) / (x2 - x1);
+                    x = Width;
+                }
+                else if ((outcodeOut & OutCode.Left) != 0)
+                {
+                    y = y1 + (y2 - y1) * (0 - x1) / (x2 - x1);
+                    x = 0;
+                }
+
+                if (outcodeOut == outCode1)
+                {
+                    x1 = x;
+                    y1 = y;
+                    outCode1 = ComputeOutCode(x1, y1);
+                }
                 else
                 {
-                    var x = 0.0F;
-                    var y = 0.0F;
-
-                    var outcodeOut = outCode2 > outCode1 ? outCode2 : outCode1;
-
-                    if ((outcodeOut & OutCode.Top) != 0)
-                    {
-                        x = x1 + (x2 - x1) * (height - y1) / (y2 - y1);
-                        y = height;
-                    }
-                    else if ((outcodeOut & OutCode.Bottom) != 0)
-                    {
-                        x = x1 + (x2 - x1) * (0 - y1) / (y2 - y1);
-                        y = 0;
-                    }
-                    else if ((outcodeOut & OutCode.Right) != 0)
-                    {
-                        y = y1 + (y2 - y1) * (width - x1) / (x2 - x1);
-                        x = width;
-                    }
-                    else if ((outcodeOut & OutCode.Left) != 0)
-                    {
-                        y = y1 + (y2 - y1) * (0 - x1) / (x2 - x1);
-                        x = 0;
-                    }
-
-                    if (outcodeOut == outCode1)
-                    {
-                        x1 = x;
-                        y1 = y;
-                        outCode1 = ComputeOutCode(x1, y1);
-                    }
-                    else
-                    {
-                        x2 = x;
-                        y2 = y;
-                        outCode2 = ComputeOutCode(x2, y2);
-                    }
+                    x2 = x;
+                    y2 = y;
+                    outCode2 = ComputeOutCode(x2, y2);
                 }
             }
 
             if (accept)
             {
-                var bx1 = Math.Clamp((int)x1, 0, width - 1);
-                var by1 = Math.Clamp((int)y1, 0, height - 1);
-                var bx2 = Math.Clamp((int)x2, 0, width - 1);
-                var by2 = Math.Clamp((int)y2, 0, height - 1);
+                var bx1 = Math.Clamp((int)x1, 0, Width - 1);
+                var by1 = Math.Clamp((int)y1, 0, Height - 1);
+                var bx2 = Math.Clamp((int)x2, 0, Width - 1);
+                var by2 = Math.Clamp((int)y2, 0, Height - 1);
                 Bresenham(bx1, by1, bx2, by2, color);
             }
         }
@@ -486,7 +480,7 @@ namespace ManagedDoom.Video
 
                 while (true)
                 {
-                    data[height * x + y] = (byte)color;
+                    Data[Height * x + y] = (byte)color;
 
                     if (x == x2)
                     {
@@ -508,7 +502,7 @@ namespace ManagedDoom.Video
                 var d = ax - ay / 2;
                 while (true)
                 {
-                    data[height * x + y] = (byte)color;
+                    Data[Height * x + y] = (byte)color;
 
                     if (y == y2)
                     {
@@ -527,8 +521,10 @@ namespace ManagedDoom.Video
             }
         }
 
-        public int Width => width;
-        public int Height => height;
-        public byte[] Data => data;
+        public int Width { get; }
+
+        public int Height { get; }
+
+        public byte[] Data { get; }
     }
 }

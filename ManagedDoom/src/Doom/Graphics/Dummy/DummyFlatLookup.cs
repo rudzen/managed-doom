@@ -23,13 +23,10 @@ namespace ManagedDoom
 {
     public sealed class DummyFlatLookup : IFlatLookup
     {
-        private Flat[] flats;
+        private readonly Flat[] flats;
 
-        private Dictionary<string, Flat> nameToFlat;
-        private Dictionary<string, int> nameToNumber;
-
-        private int skyFlatNumber;
-        private Flat skyFlat;
+        private readonly Dictionary<string, Flat> nameToFlat;
+        private readonly Dictionary<string, int> nameToNumber;
 
         public DummyFlatLookup(Wad wad)
         {
@@ -58,8 +55,8 @@ namespace ManagedDoom
                 nameToNumber[name] = number;
             }
 
-            skyFlatNumber = nameToNumber["F_SKY1"];
-            skyFlat = nameToFlat["F_SKY1"];
+            SkyFlatNumber = nameToNumber["F_SKY1"];
+            SkyFlat = nameToFlat["F_SKY1"];
         }
 
         public int GetNumber(string name)
@@ -68,10 +65,8 @@ namespace ManagedDoom
             {
                 return nameToNumber[name];
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         public IEnumerator<Flat> GetEnumerator()
@@ -87,7 +82,8 @@ namespace ManagedDoom
         public int Count => flats.Length;
         public Flat this[int num] => flats[num];
         public Flat this[string name] => nameToFlat[name];
-        public int SkyFlatNumber => skyFlatNumber;
-        public Flat SkyFlat => skyFlat;
+        public int SkyFlatNumber { get; }
+
+        public Flat SkyFlat { get; }
     }
 }

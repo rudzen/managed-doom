@@ -23,17 +23,15 @@ namespace ManagedDoom
     {
         public const int DataSize = 10;
 
-        private int originX;
-        private int originY;
-        private Patch patch;
+        private readonly Patch patch;
 
         public TexturePatch(
             int originX,
             int originY,
             Patch patch)
         {
-            this.originX = originX;
-            this.originY = originY;
+            this.OriginX = originX;
+            this.OriginY = originY;
             this.patch = patch;
         }
 
@@ -50,8 +48,10 @@ namespace ManagedDoom
         }
 
         public string Name => patch.Name;
-        public int OriginX => originX;
-        public int OriginY => originY;
+        public int OriginX { get; }
+
+        public int OriginY { get; }
+
         public int Width => patch.Width;
         public int Height => patch.Height;
         public Column[][] Columns => patch.Columns;

@@ -25,9 +25,8 @@ namespace ManagedDoom
         public static readonly IReadOnlyList<IReadOnlyList<Point>> Locations = new Point[][]
         {
             // Episode 0 world map.
-            new Point[]
-            {
-                new Point(185, 164), // location of level 0 (CJ)
+            [
+	            new Point(185, 164), // location of level 0 (CJ)
 	            new Point(148, 143), // location of level 1 (CJ)
 	            new Point(69, 122),  // location of level 2 (CJ)
 	            new Point(209, 102), // location of level 3 (CJ)
@@ -36,12 +35,11 @@ namespace ManagedDoom
 	            new Point(71, 56),   // location of level 6 (CJ)
 	            new Point(135, 29),  // location of level 7 (CJ)
 	            new Point(71, 24)    // location of level 8 (CJ)
-            },
+            ],
 
             // Episode 1 world map should go here.
-            new Point[]
-            {
-                new Point(254, 25),  // location of level 0 (CJ)
+            [
+	            new Point(254, 25),  // location of level 0 (CJ)
 	            new Point(97, 50),   // location of level 1 (CJ)
 	            new Point(188, 64),  // location of level 2 (CJ)
 	            new Point(128, 78),  // location of level 3 (CJ)
@@ -50,12 +48,11 @@ namespace ManagedDoom
 	            new Point(208, 136), // location of level 6 (CJ)
 	            new Point(148, 140), // location of level 7 (CJ)
 	            new Point(235, 158)  // location of level 8 (CJ)
-            },
+            ],
 
             // Episode 2 world map should go here.
-            new Point[]
-            {
-                new Point(156, 168), // location of level 0 (CJ)
+            [
+	            new Point(156, 168), // location of level 0 (CJ)
                 new Point(48, 154),  // location of level 1 (CJ)
                 new Point(174, 95),  // location of level 2 (CJ)
                 new Point(265, 75),  // location of level 3 (CJ)
@@ -64,24 +61,22 @@ namespace ManagedDoom
                 new Point(198, 48),  // location of level 6 (CJ)
                 new Point(140, 25),  // location of level 7 (CJ)
                 new Point(281, 136)  // location of level 8 (CJ)
-            }
+            ]
         };
 
 
 
         public class Point
         {
-            private int x;
-            private int y;
-
-            public Point(int x, int y)
+	        public Point(int x, int y)
             {
-                this.x = x;
-                this.y = y;
+                this.X = x;
+                this.Y = y;
             }
 
-            public int X => x;
-            public int Y => y;
+            public int X { get; }
+
+            public int Y { get; }
         }
     }
 }

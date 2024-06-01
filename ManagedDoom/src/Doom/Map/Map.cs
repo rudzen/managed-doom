@@ -23,26 +23,7 @@ namespace ManagedDoom
 {
     public sealed class Map
     {
-        private ITextureLookup textures;
-        private IFlatLookup flats;
-        private TextureAnimation animation;
-
-        private World world;
-
-        private Vertex[] vertices;
-        private Sector[] sectors;
-        private SideDef[] sides;
-        private LineDef[] lines;
-        private Seg[] segs;
-        private Subsector[] subsectors;
-        private Node[] nodes;
-        private MapThing[] things;
-        private BlockMap blockMap;
-        private Reject reject;
-
-        private Texture skyTexture;
-
-        private string title;
+        private readonly World world;
 
         public Map(GameContent resorces, World world)
             : this(resorces.Wad, resorces.Textures, resorces.Flats, resorces.Animation, world)
@@ -53,9 +34,9 @@ namespace ManagedDoom
         {
             try
             {
-                this.textures = textures;
-                this.flats = flats;
-                this.animation = animation;
+                this.Textures = textures;
+                this.Flats = flats;
+                this.Animation = animation;
                 this.world = world;
 
                 var options = world.Options;
@@ -79,39 +60,39 @@ namespace ManagedDoom
                     throw new Exception("Map '" + name + "' was not found!");
                 }
 
-                vertices = Vertex.FromWad(wad, map + 4);
-                sectors = Sector.FromWad(wad, map + 8, flats);
-                sides = SideDef.FromWad(wad, map + 3, textures, sectors);
-                lines = LineDef.FromWad(wad, map + 2, vertices, sides);
-                segs = Seg.FromWad(wad, map + 5, vertices, lines);
-                subsectors = Subsector.FromWad(wad, map + 6, segs);
-                nodes = Node.FromWad(wad, map + 7, subsectors);
-                things = MapThing.FromWad(wad, map + 1);
-                blockMap = BlockMap.FromWad(wad, map + 10, lines);
-                reject = Reject.FromWad(wad, map + 9, sectors);
+                Vertices = Vertex.FromWad(wad, map + 4);
+                Sectors = Sector.FromWad(wad, map + 8, flats);
+                Sides = SideDef.FromWad(wad, map + 3, textures, Sectors);
+                Lines = LineDef.FromWad(wad, map + 2, Vertices, Sides);
+                Segs = Seg.FromWad(wad, map + 5, Vertices, Lines);
+                Subsectors = Subsector.FromWad(wad, map + 6, Segs);
+                Nodes = Node.FromWad(wad, map + 7, Subsectors);
+                Things = MapThing.FromWad(wad, map + 1);
+                BlockMap = BlockMap.FromWad(wad, map + 10, Lines);
+                Reject = Reject.FromWad(wad, map + 9, Sectors);
 
                 GroupLines();
 
-                skyTexture = GetSkyTextureByMapName(name);
+                SkyTexture = GetSkyTextureByMapName(name);
 
                 if (options.GameMode == GameMode.Commercial)
                 {
                     switch (options.MissionPack)
                     {
                         case MissionPack.Plutonia:
-                            title = DoomInfo.MapTitles.Plutonia[options.Map - 1];
+                            Title = DoomInfo.MapTitles.Plutonia[options.Map - 1];
                             break;
                         case MissionPack.Tnt:
-                            title = DoomInfo.MapTitles.Tnt[options.Map - 1];
+                            Title = DoomInfo.MapTitles.Tnt[options.Map - 1];
                             break;
                         default:
-                            title = DoomInfo.MapTitles.Doom2[options.Map - 1];
+                            Title = DoomInfo.MapTitles.Doom2[options.Map - 1];
                             break;
                     }
                 }
                 else
                 {
-                    title = DoomInfo.MapTitles.Doom[options.Episode - 1][options.Map - 1];
+                    Title = DoomInfo.MapTitles.Doom[options.Episode - 1][options.Map - 1];
                 }
 
                 Console.WriteLine("OK");
@@ -128,7 +109,7 @@ namespace ManagedDoom
             var sectorLines = new List<LineDef>();
             var boundingBox = new Fixed[4];
 
-            foreach (var line in lines)
+            foreach (var line in Lines)
             {
                 if (line.Special != 0)
                 {
@@ -139,12 +120,12 @@ namespace ManagedDoom
                 }
             }
 
-            foreach (var sector in sectors)
+            foreach (var sector in Sectors)
             {
                 sectorLines.Clear();
                 Box.Clear(boundingBox);
 
-                foreach (var line in lines)
+                foreach (var line in Lines)
                 {
                     if (line.FrontSector == sector || line.BackSector == sector)
                     {
@@ -165,19 +146,19 @@ namespace ManagedDoom
                 int block;
 
                 // Adjust bounding box to map blocks.
-                block = (boundingBox[Box.Top] - blockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
-                block = block >= blockMap.Height ? blockMap.Height - 1 : block;
+                block = (boundingBox[Box.Top] - BlockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+                block = block >= BlockMap.Height ? BlockMap.Height - 1 : block;
                 sector.BlockBox[Box.Top] = block;
 
-                block = (boundingBox[Box.Bottom] - blockMap.OriginY - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+                block = (boundingBox[Box.Bottom] - BlockMap.OriginY - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
                 block = block < 0 ? 0 : block;
                 sector.BlockBox[Box.Bottom] = block;
 
-                block = (boundingBox[Box.Right] - blockMap.OriginX + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
-                block = block >= blockMap.Width ? blockMap.Width - 1 : block;
+                block = (boundingBox[Box.Right] - BlockMap.OriginX + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+                block = block >= BlockMap.Width ? BlockMap.Width - 1 : block;
                 sector.BlockBox[Box.Right] = block;
 
-                block = (boundingBox[Box.Left] - blockMap.OriginX - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+                block = (boundingBox[Box.Left] - BlockMap.OriginX - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
                 block = block < 0 ? 0 : block;
                 sector.BlockBox[Box.Left] = block;
             }
@@ -190,55 +171,63 @@ namespace ManagedDoom
                 switch (name[1])
                 {
                     case '1':
-                        return textures["SKY1"];
+                        return Textures["SKY1"];
                     case '2':
-                        return textures["SKY2"];
+                        return Textures["SKY2"];
                     case '3':
-                        return textures["SKY3"];
+                        return Textures["SKY3"];
                     default:
-                        return textures["SKY4"];
+                        return Textures["SKY4"];
                 }
             }
-            else
+
+            var number = int.Parse(name.Substring(3));
+            if (number <= 11)
             {
-                var number = int.Parse(name.Substring(3));
-                if (number <= 11)
-                {
-                    return textures["SKY1"];
-                }
-                else if (number <= 21)
-                {
-                    return textures["SKY2"];
-                }
-                else
-                {
-                    return textures["SKY3"];
-                }
+                return Textures["SKY1"];
             }
+
+            if (number <= 21)
+            {
+                return Textures["SKY2"];
+            }
+            return Textures["SKY3"];
         }
 
-        public ITextureLookup Textures => textures;
-        public IFlatLookup Flats => flats;
-        public TextureAnimation Animation => animation;
+        public ITextureLookup Textures { get; }
 
-        public Vertex[] Vertices => vertices;
-        public Sector[] Sectors => sectors;
-        public SideDef[] Sides => sides;
-        public LineDef[] Lines => lines;
-        public Seg[] Segs => segs;
-        public Subsector[] Subsectors => subsectors;
-        public Node[] Nodes => nodes;
-        public MapThing[] Things => things;
-        public BlockMap BlockMap => blockMap;
-        public Reject Reject => reject;
-        public Texture SkyTexture => skyTexture;
-        public int SkyFlatNumber => flats.SkyFlatNumber;
-        public string Title => title;
+        public IFlatLookup Flats { get; }
+
+        public TextureAnimation Animation { get; }
+
+        public Vertex[] Vertices { get; }
+
+        public Sector[] Sectors { get; }
+
+        public SideDef[] Sides { get; }
+
+        public LineDef[] Lines { get; }
+
+        public Seg[] Segs { get; }
+
+        public Subsector[] Subsectors { get; }
+
+        public Node[] Nodes { get; }
+
+        public MapThing[] Things { get; }
+
+        public BlockMap BlockMap { get; }
+
+        public Reject Reject { get; }
+
+        public Texture SkyTexture { get; }
+
+        public int SkyFlatNumber => Flats.SkyFlatNumber;
+        public string Title { get; }
 
 
-
-        private static readonly Bgm[] e4BgmList = new Bgm[]
-        {
+        private static readonly Bgm[] e4BgmList =
+        [
             Bgm.E3M4, // American   e4m1
             Bgm.E3M2, // Romero     e4m2
             Bgm.E3M3, // Shawn      e4m3
@@ -248,7 +237,7 @@ namespace ManagedDoom
             Bgm.E2M6, // J.Anderson e4m7 CHIRON.WAD
             Bgm.E2M5, // Shawn      e4m8
             Bgm.E1M9  // Tim        e4m9
-        };
+        ];
 
         public static Bgm GetMapBgm(GameOptions options)
         {

@@ -27,8 +27,6 @@ namespace ManagedDoom
         private Dictionary<string, Texture> nameToTexture;
         private Dictionary<string, int> nameToNumber;
 
-        private int[] switchList;
-
         public TextureLookup(Wad wad) : this(wad, false)
         {
         }
@@ -81,7 +79,7 @@ namespace ManagedDoom
                     list.Add(texNum2);
                 }
             }
-            switchList = list.ToArray();
+            SwitchList = list.ToArray();
         }
 
         public int GetNumber(string name)
@@ -91,15 +89,12 @@ namespace ManagedDoom
                 return 0;
             }
 
-            int number;
-            if (nameToNumber.TryGetValue(name, out number))
+            if (nameToNumber.TryGetValue(name, out var number))
             {
                 return number;
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         private static Patch[] LoadPatches(Wad wad)
@@ -147,6 +142,6 @@ namespace ManagedDoom
         public int Count => textures.Count;
         public Texture this[int num] => textures[num];
         public Texture this[string name] => nameToTexture[name];
-        public int[] SwitchList => switchList;
+        public int[] SwitchList { get; private set; }
     }
 }

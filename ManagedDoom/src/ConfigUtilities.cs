@@ -25,8 +25,8 @@ namespace ManagedDoom
 {
     public static class ConfigUtilities
     {
-        private static readonly string[] iwadNames = new string[]
-        {
+        private static readonly string[] iwadNames =
+        [
             "DOOM2.WAD",
             "PLUTONIA.WAD",
             "TNT.WAD",
@@ -34,7 +34,7 @@ namespace ManagedDoom
             "DOOM1.WAD",
             "FREEDOOM2.WAD",
             "FREEDOOM1.WAD"
-        };
+        ];
 
         public static string GetExeDirectory()
         {
@@ -87,15 +87,12 @@ namespace ManagedDoom
             }
             else
             {
-                wadPaths.Add(ConfigUtilities.GetDefaultIwadPath());
+                wadPaths.Add(GetDefaultIwadPath());
             }
 
             if (args.file.Present)
             {
-                foreach (var path in args.file.Value)
-                {
-                    wadPaths.Add(path);
-                }
+                wadPaths.AddRange(args.file.Value);
             }
 
             return wadPaths.ToArray();

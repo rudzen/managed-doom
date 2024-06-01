@@ -21,22 +21,11 @@ namespace ManagedDoom
 {
 	public sealed class CeilingMove : Thinker
 	{
-		private World world;
-
-		private CeilingMoveType type;
-		private Sector sector;
-		private Fixed bottomHeight;
-		private Fixed topHeight;
-		private Fixed speed;
-		private bool crush;
+		private readonly World world;
 
 		// 1 = up, 0 = waiting, -1 = down.
-		private int direction;
 
 		// Corresponding sector tag.
-		private int tag;
-
-		private int oldDirection;
 
 		public CeilingMove(World world)
 		{
@@ -49,7 +38,7 @@ namespace ManagedDoom
 
 			var sa = world.SectorAction;
 
-			switch (direction)
+			switch (Direction)
 			{
 				case 0:
 					// In statis.
@@ -58,43 +47,43 @@ namespace ManagedDoom
 				case 1:
 					// Up.
 					result = sa.MovePlane(
-						sector,
-						speed,
-						topHeight,
+						Sector,
+						Speed,
+						TopHeight,
 						false,
 						1,
-						direction);
+						Direction);
 
-					if (((world.LevelTime + sector.Number) & 7) == 0)
+					if (((world.LevelTime + Sector.Number) & 7) == 0)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case CeilingMoveType.SilentCrushAndRaise:
 								break;
 
 							default:
-								world.StartSound(sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+								world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
 								break;
 						}
 					}
 
 					if (result == SectorActionResult.PastDestination)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case CeilingMoveType.RaiseToHighest:
 								sa.RemoveActiveCeiling(this);
-								sector.DisableFrameInterpolationForOneFrame();
+								Sector.DisableFrameInterpolationForOneFrame();
 								break;
 
 							case CeilingMoveType.SilentCrushAndRaise:
 							case CeilingMoveType.FastCrushAndRaise:
 							case CeilingMoveType.CrushAndRaise:
-								if (type == CeilingMoveType.SilentCrushAndRaise)
+								if (Type == CeilingMoveType.SilentCrushAndRaise)
 								{
-									world.StartSound(sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+									world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
 								}
-								direction = -1;
+								Direction = -1;
 								break;
 
 							default:
@@ -107,49 +96,49 @@ namespace ManagedDoom
 				case -1:
 					// Down.
 					result = sa.MovePlane(
-						sector,
-						speed,
-						bottomHeight,
-						crush,
+						Sector,
+						Speed,
+						BottomHeight,
+						Crush,
 						1,
-						direction);
+						Direction);
 
-					if (((world.LevelTime + sector.Number) & 7) == 0)
+					if (((world.LevelTime + Sector.Number) & 7) == 0)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case CeilingMoveType.SilentCrushAndRaise:
 								break;
 
 							default:
-								world.StartSound(sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+								world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
 								break;
 						}
 					}
 
 					if (result == SectorActionResult.PastDestination)
 					{
-						switch (type)
+						switch (Type)
 						{
 							case CeilingMoveType.SilentCrushAndRaise:
 							case CeilingMoveType.CrushAndRaise:
 							case CeilingMoveType.FastCrushAndRaise:
-								if (type == CeilingMoveType.SilentCrushAndRaise)
+								if (Type == CeilingMoveType.SilentCrushAndRaise)
 								{
-									world.StartSound(sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-									speed = SectorAction.CeilingSpeed;
+									world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+									Speed = SectorAction.CeilingSpeed;
 								}
-								if (type == CeilingMoveType.CrushAndRaise)
+								if (Type == CeilingMoveType.CrushAndRaise)
 								{
-									speed = SectorAction.CeilingSpeed;
+									Speed = SectorAction.CeilingSpeed;
 								}
-								direction = 1;
+								Direction = 1;
 								break;
 
 							case CeilingMoveType.LowerAndCrush:
 							case CeilingMoveType.LowerToFloor:
 								sa.RemoveActiveCeiling(this);
-								sector.DisableFrameInterpolationForOneFrame();
+								Sector.DisableFrameInterpolationForOneFrame();
 								break;
 
 							default:
@@ -160,12 +149,12 @@ namespace ManagedDoom
 					{
 						if (result == SectorActionResult.Crushed)
 						{
-							switch (type)
+							switch (Type)
 							{
 								case CeilingMoveType.SilentCrushAndRaise:
 								case CeilingMoveType.CrushAndRaise:
 								case CeilingMoveType.LowerAndCrush:
-									speed = SectorAction.CeilingSpeed / 8;
+									Speed = SectorAction.CeilingSpeed / 8;
 									break;
 
 								default:
@@ -177,58 +166,22 @@ namespace ManagedDoom
 			}
 		}
 
-		public CeilingMoveType Type
-		{
-			get => type;
-			set => type = value;
-		}
+		public CeilingMoveType Type { get; set; }
 
-		public Sector Sector
-		{
-			get => sector;
-			set => sector = value;
-		}
+		public Sector Sector { get; set; }
 
-		public Fixed BottomHeight
-		{
-			get => bottomHeight;
-			set => bottomHeight = value;
-		}
+		public Fixed BottomHeight { get; set; }
 
-		public Fixed TopHeight
-		{
-			get => topHeight;
-			set => topHeight = value;
-		}
+		public Fixed TopHeight { get; set; }
 
-		public Fixed Speed
-		{
-			get => speed;
-			set => speed = value;
-		}
+		public Fixed Speed { get; set; }
 
-		public bool Crush
-		{
-			get => crush;
-			set => crush = value;
-		}
+		public bool Crush { get; set; }
 
-		public int Direction
-		{
-			get => direction;
-			set => direction = value;
-		}
+		public int Direction { get; set; }
 
-		public int Tag
-		{
-			get => tag;
-			set => tag = value;
-		}
+		public int Tag { get; set; }
 
-		public int OldDirection
-		{
-			get => oldDirection;
-			set => oldDirection = value;
-		}
+		public int OldDirection { get; set; }
 	}
 }

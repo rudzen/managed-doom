@@ -71,7 +71,7 @@ namespace ManagedDoom
         
         private class SaveGame
         {
-            private byte[] data;
+            private readonly byte[] data;
             private int ptr;
 
             public SaveGame(string description)
@@ -561,7 +561,7 @@ namespace ManagedDoom
 
         private class LoadGame
         {
-            private byte[] data;
+            private readonly byte[] data;
             private int ptr;
 
             public LoadGame(byte[] data)

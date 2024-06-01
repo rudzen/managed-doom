@@ -22,13 +22,6 @@ namespace ManagedDoom
 {
     public sealed class Patch
     {
-        private string name;
-        private int width;
-        private int height;
-        private int leftOffset;
-        private int topOffset;
-        private Column[][] columns;
-
         public Patch(
             string name,
             int width,
@@ -37,12 +30,12 @@ namespace ManagedDoom
             int topOffset,
             Column[][] columns)
         {
-            this.name = name;
-            this.width = width;
-            this.height = height;
-            this.leftOffset = leftOffset;
-            this.topOffset = topOffset;
-            this.columns = columns;
+            this.Name = name;
+            this.Width = width;
+            this.Height = height;
+            this.LeftOffset = leftOffset;
+            this.TopOffset = topOffset;
+            this.Columns = columns;
         }
 
         public static Patch FromData(string name, byte[] data)
@@ -116,14 +109,19 @@ namespace ManagedDoom
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
 
-        public string Name => name;
-        public int Width => width;
-        public int Height => height;
-        public int LeftOffset => leftOffset;
-        public int TopOffset => topOffset;
-        public Column[][] Columns => columns;
+        public string Name { get; }
+
+        public int Width { get; }
+
+        public int Height { get; }
+
+        public int LeftOffset { get; }
+
+        public int TopOffset { get; }
+
+        public Column[][] Columns { get; }
     }
 }

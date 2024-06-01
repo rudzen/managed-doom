@@ -22,8 +22,8 @@ namespace ManagedDoom
 {
     public sealed class PressAnyKey : MenuDef
     {
-        private string[] text;
-        private Action action;
+        private readonly string[] text;
+        private readonly Action action;
 
         public PressAnyKey(DoomMenu menu, string text, Action action) : base(menu)
         {
@@ -35,10 +35,7 @@ namespace ManagedDoom
         {
             if (e.Type == EventType.KeyDown)
             {
-                if (action != null)
-                {
-                    action();
-                }
+                action?.Invoke();
 
                 Menu.Close();
                 Menu.StartSound(Sfx.SWTCHX);

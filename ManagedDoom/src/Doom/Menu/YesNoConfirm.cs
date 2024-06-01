@@ -22,8 +22,8 @@ namespace ManagedDoom
 {
     public sealed class YesNoConfirm : MenuDef
     {
-        private string[] text;
-        private Action action;
+        private readonly string[] text;
+        private readonly Action action;
 
         public YesNoConfirm(DoomMenu menu, string text, Action action) : base(menu)
         {
@@ -38,17 +38,14 @@ namespace ManagedDoom
                 return true;
             }
 
-            if (e.Key == DoomKey.Y ||
-                e.Key == DoomKey.Enter ||
-                e.Key == DoomKey.Space)
+            if (e.Key is DoomKey.Y or DoomKey.Enter or DoomKey.Space)
             {
                 action();
                 Menu.Close();
                 Menu.StartSound(Sfx.PISTOL);
             }
 
-            if (e.Key == DoomKey.N ||
-                e.Key == DoomKey.Escape)
+            if (e.Key is DoomKey.N or DoomKey.Escape)
             {
                 Menu.Close();
                 Menu.StartSound(Sfx.SWTCHX);

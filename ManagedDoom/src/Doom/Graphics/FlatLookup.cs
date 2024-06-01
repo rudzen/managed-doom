@@ -29,9 +29,6 @@ namespace ManagedDoom
         private Dictionary<string, Flat> nameToFlat;
         private Dictionary<string, int> nameToNumber;
 
-        private int skyFlatNumber;
-        private Flat skyFlat;
-
         public FlatLookup(Wad wad)
         {
             var fStartCount = CountLump(wad, "F_START");
@@ -102,8 +99,8 @@ namespace ManagedDoom
                     nameToNumber[name] = number;
                 }
 
-                skyFlatNumber = nameToNumber["F_SKY1"];
-                skyFlat = nameToFlat["F_SKY1"];
+                SkyFlatNumber = nameToNumber["F_SKY1"];
+                SkyFlat = nameToFlat["F_SKY1"];
 
                 Console.WriteLine("OK (" + nameToFlat.Count + " flats)");
             }
@@ -127,7 +124,7 @@ namespace ManagedDoom
                     var name = wad.LumpInfos[lump].Name;
                     if (flatZone)
                     {
-                        if (name == "F_END" || name == "FF_END")
+                        if (name is "F_END" or "FF_END")
                         {
                             flatZone = false;
                         }
@@ -138,7 +135,7 @@ namespace ManagedDoom
                     }
                     else
                     {
-                        if (name == "F_START" || name == "FF_START")
+                        if (name is "F_START" or "FF_START")
                         {
                             flatZone = true;
                         }
@@ -180,8 +177,8 @@ namespace ManagedDoom
                     nameToNumber[name] = number;
                 }
 
-                skyFlatNumber = nameToNumber["F_SKY1"];
-                skyFlat = nameToFlat["F_SKY1"];
+                SkyFlatNumber = nameToNumber["F_SKY1"];
+                SkyFlat = nameToFlat["F_SKY1"];
 
                 Console.WriteLine("OK (" + nameToFlat.Count + " flats)");
             }
@@ -198,10 +195,8 @@ namespace ManagedDoom
             {
                 return nameToNumber[name];
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         public IEnumerator<Flat> GetEnumerator()
@@ -230,7 +225,8 @@ namespace ManagedDoom
         public int Count => flats.Length;
         public Flat this[int num] => flats[num];
         public Flat this[string name] => nameToFlat[name];
-        public int SkyFlatNumber => skyFlatNumber;
-        public Flat SkyFlat => skyFlat;
+        public int SkyFlatNumber { get; private set; }
+
+        public Flat SkyFlat { get; private set; }
     }
 }

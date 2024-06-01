@@ -25,12 +25,9 @@ namespace ManagedDoom
 {
     public sealed class Wad : IDisposable
     {
-        private List<string> names;
-        private List<Stream> streams;
-        private List<LumpInfo> lumpInfos;
-        private GameVersion gameVersion;
-        private GameMode gameMode;
-        private MissionPack missionPack;
+        private readonly List<string> names;
+        private readonly List<Stream> streams;
+        private readonly List<LumpInfo> lumpInfos;
 
         public Wad(params string[] fileNames)
         {
@@ -38,8 +35,8 @@ namespace ManagedDoom
             {
                 Console.Write("Open WAD files: ");
 
-                names = new List<string>();
-                streams = new List<Stream>();
+                names = new List<string>(fileNames.Length);
+                streams = new List<Stream>(fileNames.Length);
                 lumpInfos = new List<LumpInfo>();
 
                 foreach (var fileName in fileNames)
@@ -47,9 +44,9 @@ namespace ManagedDoom
                     AddFile(fileName);
                 }
 
-                gameMode = GetGameMode(names);
-                missionPack = GetMissionPack(names);
-                gameVersion = GetGameVersion(names);
+                GameMode = GetGameMode(names);
+                MissionPack = GetMissionPack(names);
+                GameVersion = GetGameVersion(names);
 
                 Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(x => Path.GetFileName(x))) + ")");
             }
@@ -68,7 +65,6 @@ namespace ManagedDoom
             var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
             streams.Add(stream);
 
-            string identification;
             int lumpCount;
             int lumpInfoTableOffset;
             {
@@ -78,7 +74,7 @@ namespace ManagedDoom
                     throw new Exception("Failed to read the WAD file.");
                 }
 
-                identification = DoomInterop.ToString(data, 0, 4);
+                var identification = DoomInterop.ToString(data, 0, 4);
                 lumpCount = BitConverter.ToInt32(data, 4);
                 lumpInfoTableOffset = BitConverter.ToInt32(data, 8);
                 if (identification != "IWAD" && identification != "PWAD")
@@ -228,8 +224,10 @@ namespace ManagedDoom
 
         public IReadOnlyList<string> Names => names;
         public IReadOnlyList<LumpInfo> LumpInfos => lumpInfos;
-        public GameVersion GameVersion => gameVersion;
-        public GameMode GameMode => gameMode;
-        public MissionPack MissionPack => missionPack;
+        public GameVersion GameVersion { get; }
+
+        public GameMode GameMode { get; }
+
+        public MissionPack MissionPack { get; }
     }
 }

@@ -22,8 +22,8 @@ namespace ManagedDoom
 {
     public sealed class QuitConfirm : MenuDef
     {
-        private static readonly Sfx[] doomQuitSoundList = new Sfx[]
-        {
+        private static readonly Sfx[] doomQuitSoundList =
+        [
             Sfx.PLDETH,
             Sfx.DMPAIN,
             Sfx.POPAIN,
@@ -32,10 +32,10 @@ namespace ManagedDoom
             Sfx.POSIT1,
             Sfx.POSIT3,
             Sfx.SGTATK
-        };
+        ];
 
-        private static readonly Sfx[] doom2QuitSoundList = new Sfx[]
-        {
+        private static readonly Sfx[] doom2QuitSoundList =
+        [
             Sfx.VILACT,
             Sfx.GETPOW,
             Sfx.BOSCUB,
@@ -44,10 +44,10 @@ namespace ManagedDoom
             Sfx.KNTDTH,
             Sfx.BSPACT,
             Sfx.SGTATK
-        };
+        ];
 
-        private Doom app;
-        private DoomRandom random;
+        private readonly Doom app;
+        private readonly DoomRandom random;
         private string[] text;
 
         private int endCount;
@@ -64,14 +64,7 @@ namespace ManagedDoom
             IReadOnlyList<DoomString> list;
             if (app.Options.GameMode == GameMode.Commercial)
             {
-                if (app.Options.MissionPack == MissionPack.Doom2)
-                {
-                    list = DoomInfo.QuitMessages.Doom2;
-                }
-                else
-                {
-                    list = DoomInfo.QuitMessages.FinalDoom;
-                }
+                list = app.Options.MissionPack == MissionPack.Doom2 ? DoomInfo.QuitMessages.Doom2 : DoomInfo.QuitMessages.FinalDoom;
             }
             else
             {
@@ -93,29 +86,23 @@ namespace ManagedDoom
                 return true;
             }
 
-            if (e.Key == DoomKey.Y ||
-                e.Key == DoomKey.Enter ||
-                e.Key == DoomKey.Space)
+            switch (e.Key)
             {
-                endCount = 0;
-
-                Sfx sfx;
-                if (Menu.Options.GameMode == GameMode.Commercial)
+                case DoomKey.Y or DoomKey.Enter or DoomKey.Space:
                 {
-                    sfx = doom2QuitSoundList[random.Next() % doom2QuitSoundList.Length];
-                }
-                else
-                {
-                    sfx = doomQuitSoundList[random.Next() % doomQuitSoundList.Length];
-                }
-                Menu.StartSound(sfx);
-            }
+                    endCount = 0;
 
-            if (e.Key == DoomKey.N ||
-                e.Key == DoomKey.Escape)
-            {
-                Menu.Close();
-                Menu.StartSound(Sfx.SWTCHX);
+                    Sfx sfx;
+                    sfx = Menu.Options.GameMode == GameMode.Commercial
+                        ? doom2QuitSoundList[random.Next() % doom2QuitSoundList.Length]
+                        : doomQuitSoundList[random.Next() % doomQuitSoundList.Length];
+                    Menu.StartSound(sfx);
+                    break;
+                }
+                case DoomKey.N or DoomKey.Escape:
+                    Menu.Close();
+                    Menu.StartSound(Sfx.SWTCHX);
+                    break;
             }
 
             return true;

@@ -22,12 +22,12 @@ namespace ManagedDoom.Video
 {
     public sealed class MenuRenderer
     {
-        private static readonly char[] cursor = { '_' };
+        private static readonly char[] cursor = ['_'];
 
         private Wad wad;
-        private DrawScreen screen;
+        private readonly DrawScreen screen;
 
-        private PatchCache cache;
+        private readonly PatchCache cache;
 
         public MenuRenderer(Wad wad, DrawScreen screen)
         {
@@ -210,7 +210,7 @@ namespace ManagedDoom.Video
             DrawMenuPatch("M_THERMO", pos, item.SliderY);
         }
 
-        private char[] emptyText = "EMPTY SLOT".ToCharArray();
+        private readonly char[] emptyText = "EMPTY SLOT".ToCharArray();
 
         private void DrawTextBoxMenuItem(TextBoxMenuItem item, int tics)
         {

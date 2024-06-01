@@ -22,7 +22,7 @@ namespace ManagedDoom
 {
     public sealed class ThingAllocation
     {
-        private World world;
+        private readonly World world;
 
         public ThingAllocation(World world)
         {
@@ -87,7 +87,7 @@ namespace ManagedDoom
                 return;
             }
 
-            if (mt.Type == 11 || mt.Type <= 4)
+            if (mt.Type is 11 or <= 4)
             {
                 return;
             }
@@ -148,8 +148,8 @@ namespace ManagedDoom
             }
 
             // Spawn it.
-            Fixed x = mt.X;
-            Fixed y = mt.Y;
+            var x = mt.X;
+            var y = mt.Y;
             Fixed z;
             if ((DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0)
             {
@@ -372,10 +372,8 @@ namespace ManagedDoom
                         return DoomInfo.MobjInfos[(int)type].Speed;
                 }
             }
-            else
-            {
-                return DoomInfo.MobjInfos[(int)type].Speed;
-            }
+
+            return DoomInfo.MobjInfos[(int)type].Speed;
         }
 
         /// <summary>

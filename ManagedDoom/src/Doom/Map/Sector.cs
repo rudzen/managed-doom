@@ -25,37 +25,19 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 26;
 
-        private int number;
-        private Fixed floorHeight;
-        private Fixed ceilingHeight;
-        private int floorFlat;
-        private int ceilingFlat;
-        private int lightLevel;
-        private SectorSpecial special;
-        private int tag;
-
         // 0 = untraversed, 1, 2 = sndlines - 1.
-        private int soundTraversed;
 
         // Thing that made a sound (or null).
-        private Mobj soundTarget;
 
         // Mapblock bounding box for height changes.
-        private int[] blockBox;
 
         // Origin for any sounds played by the sector.
-        private Mobj soundOrigin;
 
         // If == validcount, already checked.
-        private int validCount;
 
         // List of mobjs in sector.
-        private Mobj thingList;
 
         // Thinker for reversable actions.
-        private Thinker specialData;
-
-        private LineDef[] lines;
 
         // For frame interpolation.
         private Fixed oldFloorHeight;
@@ -71,14 +53,14 @@ namespace ManagedDoom
             SectorSpecial special,
             int tag)
         {
-            this.number = number;
-            this.floorHeight = floorHeight;
-            this.ceilingHeight = ceilingHeight;
-            this.floorFlat = floorFlat;
-            this.ceilingFlat = ceilingFlat;
-            this.lightLevel = lightLevel;
-            this.special = special;
-            this.tag = tag;
+            this.Number = number;
+            this.FloorHeight = floorHeight;
+            this.CeilingHeight = ceilingHeight;
+            this.FloorFlat = floorFlat;
+            this.CeilingFlat = ceilingFlat;
+            this.LightLevel = lightLevel;
+            this.Special = special;
+            this.Tag = tag;
 
             oldFloorHeight = floorHeight;
             oldCeilingHeight = ceilingHeight;
@@ -128,24 +110,24 @@ namespace ManagedDoom
 
         public void UpdateFrameInterpolationInfo()
         {
-            oldFloorHeight = floorHeight;
-            oldCeilingHeight = ceilingHeight;
+            oldFloorHeight = FloorHeight;
+            oldCeilingHeight = CeilingHeight;
         }
 
         public Fixed GetInterpolatedFloorHeight(Fixed frameFrac)
         {
-            return oldFloorHeight + frameFrac * (floorHeight - oldFloorHeight);
+            return oldFloorHeight + frameFrac * (FloorHeight - oldFloorHeight);
         }
 
         public Fixed GetInterpolatedCeilingHeight(Fixed frameFrac)
         {
-            return oldCeilingHeight + frameFrac * (ceilingHeight - oldCeilingHeight);
+            return oldCeilingHeight + frameFrac * (CeilingHeight - oldCeilingHeight);
         }
 
         public void DisableFrameInterpolationForOneFrame()
         {
-            oldFloorHeight = floorHeight;
-            oldCeilingHeight = ceilingHeight;
+            oldFloorHeight = FloorHeight;
+            oldCeilingHeight = CeilingHeight;
         }
 
         public ThingEnumerator GetEnumerator()
@@ -157,137 +139,74 @@ namespace ManagedDoom
 
         public struct ThingEnumerator : IEnumerator<Mobj>
         {
-            private Sector sector;
+            private readonly Sector sector;
             private Mobj thing;
-            private Mobj current;
 
             public ThingEnumerator(Sector sector)
             {
                 this.sector = sector;
-                thing = sector.thingList;
-                current = null;
+                thing = sector.ThingList;
+                Current = null;
             }
 
             public bool MoveNext()
             {
                 if (thing != null)
                 {
-                    current = thing;
+                    Current = thing;
                     thing = thing.SectorNext;
                     return true;
                 }
-                else
-                {
-                    current = null;
-                    return false;
-                }
+
+                Current = null;
+                return false;
             }
 
             public void Reset()
             {
-                thing = sector.thingList;
-                current = null;
+                thing = sector.ThingList;
+                Current = null;
             }
 
             public void Dispose()
             {
             }
 
-            public Mobj Current => current;
+            public Mobj Current { get; private set; }
 
             object IEnumerator.Current => throw new NotImplementedException();
         }
 
-        public int Number => number;
+        public int Number { get; }
 
-        public Fixed FloorHeight
-        {
-            get => floorHeight;
-            set => floorHeight = value;
-        }
+        public Fixed FloorHeight { get; set; }
 
-        public Fixed CeilingHeight
-        {
-            get => ceilingHeight;
-            set => ceilingHeight = value;
-        }
+        public Fixed CeilingHeight { get; set; }
 
-        public int FloorFlat
-        {
-            get => floorFlat;
-            set => floorFlat = value;
-        }
+        public int FloorFlat { get; set; }
 
-        public int CeilingFlat
-        {
-            get => ceilingFlat;
-            set => ceilingFlat = value;
-        }
+        public int CeilingFlat { get; set; }
 
-        public int LightLevel
-        {
-            get => lightLevel;
-            set => lightLevel = value;
-        }
+        public int LightLevel { get; set; }
 
-        public SectorSpecial Special
-        {
-            get => special;
-            set => special = value;
-        }
+        public SectorSpecial Special { get; set; }
 
-        public int Tag
-        {
-            get => tag;
-            set => tag = value;
-        }
+        public int Tag { get; set; }
 
-        public int SoundTraversed
-        {
-            get => soundTraversed;
-            set => soundTraversed = value;
-        }
+        public int SoundTraversed { get; set; }
 
-        public Mobj SoundTarget
-        {
-            get => soundTarget;
-            set => soundTarget = value;
-        }
+        public Mobj SoundTarget { get; set; }
 
-        public int[] BlockBox
-        {
-            get => blockBox;
-            set => blockBox = value;
-        }
+        public int[] BlockBox { get; set; }
 
-        public Mobj SoundOrigin
-        {
-            get => soundOrigin;
-            set => soundOrigin = value;
-        }
+        public Mobj SoundOrigin { get; set; }
 
-        public int ValidCount
-        {
-            get => validCount;
-            set => validCount = value;
-        }
+        public int ValidCount { get; set; }
 
-        public Mobj ThingList
-        {
-            get => thingList;
-            set => thingList = value;
-        }
+        public Mobj ThingList { get; set; }
 
-        public Thinker SpecialData
-        {
-            get => specialData;
-            set => specialData = value;
-        }
+        public Thinker SpecialData { get; set; }
 
-        public LineDef[] Lines
-        {
-            get => lines;
-            set => lines = value;
-        }
+        public LineDef[] Lines { get; set; }
     }
 }

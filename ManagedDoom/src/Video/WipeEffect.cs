@@ -21,31 +21,30 @@ namespace ManagedDoom.Video
 {
     public sealed class WipeEffect
     {
-        private short[] y;
-        private int height;
-        private DoomRandom random;
+        private readonly int height;
+        private readonly DoomRandom random;
 
         public WipeEffect(int width, int height)
         {
-            y = new short[width];
+            Y = new short[width];
             this.height = height;
             random = new DoomRandom(DateTime.Now.Millisecond);
         }
 
         public void Start()
         {
-            y[0] = (short)(-(random.Next() % 16));
-            for (var i = 1; i < y.Length; i++)
+            Y[0] = (short)(-(random.Next() % 16));
+            for (var i = 1; i < Y.Length; i++)
             {
                 var r = (random.Next() % 3) - 1;
-                y[i] = (short)(y[i - 1] + r);
-                if (y[i] > 0)
+                Y[i] = (short)(Y[i - 1] + r);
+                if (Y[i] > 0)
                 {
-                    y[i] = 0;
+                    Y[i] = 0;
                 }
-                else if (y[i] == -16)
+                else if (Y[i] == -16)
                 {
-                    y[i] = -15;
+                    Y[i] = -15;
                 }
             }
         }
@@ -54,21 +53,21 @@ namespace ManagedDoom.Video
         {
             var done = true;
 
-            for (var i = 0; i < y.Length; i++)
+            for (var i = 0; i < Y.Length; i++)
             {
-                if (y[i] < 0)
+                if (Y[i] < 0)
                 {
-                    y[i]++;
+                    Y[i]++;
                     done = false;
                 }
-                else if (y[i] < height)
+                else if (Y[i] < height)
                 {
-                    var dy = (y[i] < 16) ? y[i] + 1 : 8;
-                    if (y[i] + dy >= height)
+                    var dy = (Y[i] < 16) ? Y[i] + 1 : 8;
+                    if (Y[i] + dy >= height)
                     {
-                        dy = height - y[i];
+                        dy = height - Y[i];
                     }
-                    y[i] += (short)dy;
+                    Y[i] += (short)dy;
                     done = false;
                 }
             }
@@ -77,12 +76,10 @@ namespace ManagedDoom.Video
             {
                 return UpdateResult.Completed;
             }
-            else
-            {
-                return UpdateResult.None;
-            }
+
+            return UpdateResult.None;
         }
 
-        public short[] Y => y;
+        public short[] Y { get; }
     }
 }

@@ -22,10 +22,10 @@ namespace ManagedDoom
 {
     public sealed class LoadMenu : MenuDef
     {
-        private string[] name;
-        private int[] titleX;
-        private int[] titleY;
-        private TextBoxMenuItem[] items;
+        private readonly string[] name;
+        private readonly int[] titleX;
+        private readonly int[] titleY;
+        private readonly TextBoxMenuItem[] items;
 
         private int index;
         private TextBoxMenuItem choice;
@@ -36,9 +36,9 @@ namespace ManagedDoom
             int firstChoice,
             params TextBoxMenuItem[] items) : base(menu)
         {
-            this.name = new[] { name };
-            this.titleX = new[] { titleX };
-            this.titleY = new[] { titleY };
+            this.name = [name];
+            this.titleX = [titleX];
+            this.titleY = [titleY];
             this.items = items;
 
             index = firstChoice;
@@ -119,10 +119,8 @@ namespace ManagedDoom
                 Menu.Doom.LoadGame(slotNumber);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public IReadOnlyList<string> Name => name;

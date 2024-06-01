@@ -23,13 +23,6 @@ namespace ManagedDoom
     {
         private static readonly int dataSize = 30;
 
-        private Fixed textureOffset;
-        private Fixed rowOffset;
-        private int topTexture;
-        private int bottomTexture;
-        private int middleTexture;
-        private Sector sector;
-
         public SideDef(
             Fixed textureOffset,
             Fixed rowOffset,
@@ -38,12 +31,12 @@ namespace ManagedDoom
             int middleTexture,
             Sector sector)
         {
-            this.textureOffset = textureOffset;
-            this.rowOffset = rowOffset;
-            this.topTexture = topTexture;
-            this.bottomTexture = bottomTexture;
-            this.middleTexture = middleTexture;
-            this.sector = sector;
+            this.TextureOffset = textureOffset;
+            this.RowOffset = rowOffset;
+            this.TopTexture = topTexture;
+            this.BottomTexture = bottomTexture;
+            this.MiddleTexture = middleTexture;
+            this.Sector = sector;
         }
 
         public static SideDef FromData(byte[] data, int offset, ITextureLookup textures, Sector[] sectors)
@@ -85,36 +78,16 @@ namespace ManagedDoom
             return sides;
         }
 
-        public Fixed TextureOffset
-        {
-            get => textureOffset;
-            set => textureOffset = value;
-        }
+        public Fixed TextureOffset { get; set; }
 
-        public Fixed RowOffset
-        {
-            get => rowOffset;
-            set => rowOffset = value;
-        }
+        public Fixed RowOffset { get; set; }
 
-        public int TopTexture
-        {
-            get => topTexture;
-            set => topTexture = value;
-        }
+        public int TopTexture { get; set; }
 
-        public int BottomTexture
-        {
-            get => bottomTexture;
-            set => bottomTexture = value;
-        }
+        public int BottomTexture { get; set; }
 
-        public int MiddleTexture
-        {
-            get => middleTexture;
-            set => middleTexture = value;
-        }
+        public int MiddleTexture { get; set; }
 
-        public Sector Sector => sector;
+        public Sector Sector { get; }
     }
 }
