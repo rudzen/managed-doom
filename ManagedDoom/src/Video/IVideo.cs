@@ -14,9 +14,6 @@
 //
 
 
-
-using System;
-
 namespace ManagedDoom.Video
 {
     public interface IVideo

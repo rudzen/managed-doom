@@ -14,9 +14,6 @@
 //
 
 
-
-using System;
-
 namespace ManagedDoom.Audio
 {
     public interface ISound

@@ -14,9 +14,6 @@
 //
 
 
-
-using System;
-
 namespace ManagedDoom
 {
     public abstract class MenuItem

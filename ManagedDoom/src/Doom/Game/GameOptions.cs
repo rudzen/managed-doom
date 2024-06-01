@@ -14,8 +14,6 @@
 //
 
 
-
-using System;
 using ManagedDoom.Video;
 using ManagedDoom.Audio;
 using ManagedDoom.UserInput;

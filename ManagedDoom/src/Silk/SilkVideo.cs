@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
 using Silk.NET.OpenGL;

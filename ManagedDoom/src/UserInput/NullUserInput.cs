@@ -14,9 +14,6 @@
 //
 
 
-
-using System;
-
 namespace ManagedDoom.UserInput
 {
     public sealed class NullUserInput : IUserInput

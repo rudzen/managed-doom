@@ -14,9 +14,6 @@
 //
 
 
-
-using System;
-
 namespace ManagedDoom.Audio
 {
     public sealed class NullSound : ISound

@@ -14,10 +14,6 @@
 //
 
 
-
-using System;
-using System.Collections.Generic;
-
 namespace ManagedDoom
 {
     public interface ISpriteLookup

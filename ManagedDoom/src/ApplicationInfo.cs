@@ -14,9 +14,6 @@
 //
 
 
-
-using System;
-
 namespace ManagedDoom
 {
     public static class ApplicationInfo
