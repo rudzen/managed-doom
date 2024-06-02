@@ -17,7 +17,7 @@ public sealed class NodeTest
         var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
         var segments = Seg.FromWad(wad, map + 5, vertices, lines);
         var subSectors = Subsector.FromWad(wad, map + 6, segments);
-        var nodes = Node.FromWad(wad, map + 7, subSectors);
+        var nodes = Node.FromWad(wad, map + 7);
 
         Assert.Equal(238, nodes.Length);
 
@@ -80,7 +80,7 @@ public sealed class NodeTest
         var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
         var segments = Seg.FromWad(wad, map + 5, vertices, lines);
         var subSectors = Subsector.FromWad(wad, map + 6, segments);
-        var nodes = Node.FromWad(wad, map + 7, subSectors);
+        var nodes = Node.FromWad(wad, map + 7);
 
         Assert.Equal(193, nodes.Length);
 

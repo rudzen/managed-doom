@@ -60,7 +60,7 @@ namespace ManagedDoom
                 Lines = LineDef.FromWad(wad, map + 2, Vertices, Sides);
                 Segs = Seg.FromWad(wad, map + 5, Vertices, Lines);
                 Subsectors = Subsector.FromWad(wad, map + 6, Segs);
-                Nodes = Node.FromWad(wad, map + 7, Subsectors);
+                Nodes = Node.FromWad(wad, map + 7);
                 Things = MapThing.FromWad(wad, map + 1);
                 BlockMap = BlockMap.FromWad(wad, map + 10, Lines);
                 Reject = Reject.FromWad(wad, map + 9, Sectors);

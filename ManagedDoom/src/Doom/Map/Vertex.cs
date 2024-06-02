@@ -23,7 +23,7 @@ namespace ManagedDoom
     {
         private const int dataSize = 4;
 
-        private Vertex(Fixed x, Fixed y)
+        public Vertex(Fixed x, Fixed y)
         {
             this.X = x;
             this.Y = y;

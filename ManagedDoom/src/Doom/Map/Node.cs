@@ -14,14 +14,14 @@
 //
 
 
-
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
     public sealed class Node
     {
-        private static readonly int dataSize = 28;
+        private const int dataSize = 28;
 
         public Node(
             Fixed x,
@@ -44,7 +44,7 @@ namespace ManagedDoom
             this.Dx = dx;
             this.Dy = dy;
 
-            var frontBoundingBox = new Fixed[4]
+            var frontBoundingBox = new[]
             {
                 frontBoundingBoxTop,
                 frontBoundingBoxBottom,
@@ -52,7 +52,7 @@ namespace ManagedDoom
                 frontBoundingBoxRight
             };
 
-            var backBoundingBox = new Fixed[4]
+            var backBoundingBox = new[]
             {
                 backBoundingBoxTop,
                 backBoundingBoxBottom,
@@ -60,11 +60,11 @@ namespace ManagedDoom
                 backBoundingBoxRight
             };
 
-            BoundingBox = new Fixed[][]
-            {
+            BoundingBox =
+            [
                 frontBoundingBox,
                 backBoundingBox
-            };
+            ];
 
             Children =
             [
@@ -73,57 +73,68 @@ namespace ManagedDoom
             ];
         }
 
-        public static Node FromData(byte[] data, int offset)
+        private static Node FromData(ReadOnlySpan<byte> data)
         {
-            var x = BitConverter.ToInt16(data, offset);
-            var y = BitConverter.ToInt16(data, offset + 2);
-            var dx = BitConverter.ToInt16(data, offset + 4);
-            var dy = BitConverter.ToInt16(data, offset + 6);
-            var frontBoundingBoxTop = BitConverter.ToInt16(data, offset + 8);
-            var frontBoundingBoxBottom = BitConverter.ToInt16(data, offset + 10);
-            var frontBoundingBoxLeft = BitConverter.ToInt16(data, offset + 12);
-            var frontBoundingBoxRight = BitConverter.ToInt16(data, offset + 14);
-            var backBoundingBoxTop = BitConverter.ToInt16(data, offset + 16);
-            var backBoundingBoxBottom = BitConverter.ToInt16(data, offset + 18);
-            var backBoundingBoxLeft = BitConverter.ToInt16(data, offset + 20);
-            var backBoundingBoxRight = BitConverter.ToInt16(data, offset + 22);
-            var frontChild = BitConverter.ToInt16(data, offset + 24);
-            var backChild = BitConverter.ToInt16(data, offset + 26);
+            var x = BitConverter.ToInt16(data[..2]);
+            var y = BitConverter.ToInt16(data.Slice(2, 2));
+            var dx = BitConverter.ToInt16(data.Slice(4, 2));
+            var dy = BitConverter.ToInt16(data.Slice(6, 2));
+            var frontBoundingBoxTop = BitConverter.ToInt16(data.Slice(8, 2));
+            var frontBoundingBoxBottom = BitConverter.ToInt16(data.Slice(10, 2));
+            var frontBoundingBoxLeft = BitConverter.ToInt16(data.Slice(12, 2));
+            var frontBoundingBoxRight = BitConverter.ToInt16(data.Slice(14, 2));
+            var backBoundingBoxTop = BitConverter.ToInt16(data.Slice(16, 2));
+            var backBoundingBoxBottom = BitConverter.ToInt16(data.Slice(18, 2));
+            var backBoundingBoxLeft = BitConverter.ToInt16(data.Slice(20, 2));
+            var backBoundingBoxRight = BitConverter.ToInt16(data.Slice(22, 2));
+            var frontChild = BitConverter.ToInt16(data.Slice(24, 2));
+            var backChild = BitConverter.ToInt16(data.Slice(26, 2));
 
             return new Node(
-                Fixed.FromInt(x),
-                Fixed.FromInt(y),
-                Fixed.FromInt(dx),
-                Fixed.FromInt(dy),
-                Fixed.FromInt(frontBoundingBoxTop),
-                Fixed.FromInt(frontBoundingBoxBottom),
-                Fixed.FromInt(frontBoundingBoxLeft),
-                Fixed.FromInt(frontBoundingBoxRight),
-                Fixed.FromInt(backBoundingBoxTop),
-                Fixed.FromInt(backBoundingBoxBottom),
-                Fixed.FromInt(backBoundingBoxLeft),
-                Fixed.FromInt(backBoundingBoxRight),
-                frontChild,
-                backChild);
+                x: Fixed.FromInt(x),
+                y: Fixed.FromInt(y),
+                dx: Fixed.FromInt(dx),
+                dy: Fixed.FromInt(dy),
+                frontBoundingBoxTop: Fixed.FromInt(frontBoundingBoxTop),
+                frontBoundingBoxBottom: Fixed.FromInt(frontBoundingBoxBottom),
+                frontBoundingBoxLeft: Fixed.FromInt(frontBoundingBoxLeft),
+                frontBoundingBoxRight: Fixed.FromInt(frontBoundingBoxRight),
+                backBoundingBoxTop: Fixed.FromInt(backBoundingBoxTop),
+                backBoundingBoxBottom: Fixed.FromInt(backBoundingBoxBottom),
+                backBoundingBoxLeft: Fixed.FromInt(backBoundingBoxLeft),
+                backBoundingBoxRight: Fixed.FromInt(backBoundingBoxRight),
+                frontChild: frontChild,
+                backChild: backChild);
         }
 
-        public static Node[] FromWad(Wad wad, int lump, Subsector[] subsectors)
+        public static Node[] FromWad(Wad wad, int lump)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var nodes = new Node[count];
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
-            for (var i = 0; i < count; i++)
+            try
             {
-                var offset = dataSize * i;
-                nodes[i] = FromData(data, offset);
-            }
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lump, lumpBuffer);
 
-            return nodes;
+                var count = lumpSize / dataSize;
+                var nodes = new Node[count];
+
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = dataSize * i;
+                    nodes[i] = FromData(lumpBuffer.Slice(offset, dataSize));
+                }
+
+                return nodes;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
+            }
         }
 
         public static bool IsSubsector(int node)

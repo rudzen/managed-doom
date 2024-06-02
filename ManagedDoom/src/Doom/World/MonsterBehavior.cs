@@ -1583,7 +1583,6 @@ namespace ManagedDoom
             junk = new LineDef(v, v, 0, 0, 0, null, null);
         }
 
-
         public void BossDeath(Mobj actor)
         {
             var options = world.Options;
