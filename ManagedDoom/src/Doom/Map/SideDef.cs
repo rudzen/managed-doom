@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Buffers;
 
@@ -22,9 +21,9 @@ namespace ManagedDoom
 {
     public sealed class SideDef
     {
-        private static readonly int dataSize = 30;
+        private const int dataSize = 30;
 
-        public SideDef(
+        private SideDef(
             Fixed textureOffset,
             Fixed rowOffset,
             int topTexture,
@@ -70,14 +69,14 @@ namespace ManagedDoom
             {
                 var lumpBuffer = lumpData.AsSpan(0, lumpSize);
                 wad.ReadLump(lump, lumpBuffer);
-                
+
                 var count = lumpSize / dataSize;
                 var sides = new SideDef[count];
 
                 for (var i = 0; i < count; i++)
                 {
                     var offset = dataSize * i;
-                    sides[i] = FromData(lumpBuffer[offset..], textures, sectors);
+                    sides[i] = FromData(lumpBuffer.Slice(offset, dataSize), textures, sectors);
                 }
 
                 return sides;

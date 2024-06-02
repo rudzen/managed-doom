@@ -21,26 +21,18 @@ namespace ManagedDoom
 {
     public sealed class Vertex
     {
-        private static readonly int dataSize = 4;
+        private const int dataSize = 4;
 
-        public Vertex(Fixed x, Fixed y)
+        private Vertex(Fixed x, Fixed y)
         {
             this.X = x;
             this.Y = y;
         }
 
-        public static Vertex FromData(ReadOnlySpan<byte> data)
+        private static Vertex FromData(ReadOnlySpan<byte> data)
         {
             var x = BitConverter.ToInt16(data);
             var y = BitConverter.ToInt16(data.Slice(2, 2));
-
-            return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
-        }
-
-        public static Vertex FromData(byte[] data, int offset)
-        {
-            var x = BitConverter.ToInt16(data, offset);
-            var y = BitConverter.ToInt16(data, offset + 2);
 
             return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
         }
@@ -57,13 +49,14 @@ namespace ManagedDoom
             {
                 var lumpBuffer = lumpData.AsSpan(0, lumpSize);
                 wad.ReadLump(lump, lumpBuffer);
+
                 var count = lumpSize / dataSize;
                 var vertices = new Vertex[count];
 
                 for (var i = 0; i < count; i++)
                 {
                     var offset = dataSize * i;
-                    vertices[i] = FromData(lumpBuffer[offset..]);
+                    vertices[i] = FromData(lumpBuffer.Slice(offset, dataSize));
                 }
 
                 return vertices;
