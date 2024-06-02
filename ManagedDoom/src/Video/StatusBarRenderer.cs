@@ -254,8 +254,10 @@ namespace ManagedDoom.Video
 
             for (var i = 0; i < 3; i++)
             {
-                var value = player.Cards[i + 3] ? i + 3 : i;
-                DrawMultIcon(keys[i], value);
+                if (player.Cards[i + 3])
+                    DrawMultIcon(keys[i], i + 3);
+                else if (player.Cards[i])
+                    DrawMultIcon(keys[i], i);
             }
         }
 
