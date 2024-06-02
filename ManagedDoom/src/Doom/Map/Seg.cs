@@ -14,14 +14,14 @@
 //
 
 
-
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
     public sealed class Seg
     {
-        private static readonly int dataSize = 12;
+        private const int dataSize = 12;
 
         public Seg(
             Vertex vertex1,
@@ -43,14 +43,14 @@ namespace ManagedDoom
             this.BackSector = backSector;
         }
 
-        public static Seg FromData(byte[] data, int offset, Vertex[] vertices, LineDef[] lines)
+        private static Seg FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<LineDef> lines)
         {
-            var vertex1Number = BitConverter.ToInt16(data, offset);
-            var vertex2Number = BitConverter.ToInt16(data, offset + 2);
-            var angle = BitConverter.ToInt16(data, offset + 4);
-            var lineNumber = BitConverter.ToInt16(data, offset + 6);
-            var side = BitConverter.ToInt16(data, offset + 8);
-            var segOffset = BitConverter.ToInt16(data, offset + 10);
+            var vertex1Number = BitConverter.ToInt16(data[..2]);
+            var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
+            var angle = BitConverter.ToInt16(data.Slice(4, 2));
+            var lineNumber = BitConverter.ToInt16(data.Slice(6, 2));
+            var side = BitConverter.ToInt16(data.Slice(8, 2));
+            var segOffset = BitConverter.ToInt16(data.Slice(10, 2));
 
             var lineDef = lines[lineNumber];
             var frontSide = side == 0 ? lineDef.FrontSide : lineDef.BackSide;
@@ -69,23 +69,34 @@ namespace ManagedDoom
 
         public static Seg[] FromWad(Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
-            {
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
-            }
+            
+            Console.WriteLine(lumpSize);
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var segs = new Seg[count]; ;
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
-            for (var i = 0; i < count; i++)
+            try
             {
-                var offset = dataSize * i;
-                segs[i] = FromData(data, offset, vertices, lines);
-            }
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lump, lumpBuffer);
 
-            return segs;
+                var count = lumpSize / dataSize;
+                var segments = new Seg[count];
+
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = dataSize * i;
+                    segments[i] = FromData(lumpBuffer.Slice(offset, 12), vertices, lines);
+                }
+
+                return segments;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
+            }
         }
 
         public Vertex Vertex1 { get; }

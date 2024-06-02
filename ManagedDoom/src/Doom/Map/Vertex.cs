@@ -47,17 +47,17 @@ namespace ManagedDoom
 
         public static Vertex[] FromWad(Wad wad, int lump)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
 
-            var data = ArrayPool<byte>.Shared.Rent(length);
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
             try
             {
-                var lumpBuffer = data.AsSpan(0, length);
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
                 wad.ReadLump(lump, lumpBuffer);
-                var count = length / dataSize;
+                var count = lumpSize / dataSize;
                 var vertices = new Vertex[count];
 
                 for (var i = 0; i < count; i++)
@@ -70,7 +70,7 @@ namespace ManagedDoom
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(data);
+                ArrayPool<byte>.Shared.Return(lumpData);
             }
         }
 

@@ -402,9 +402,7 @@ namespace ManagedDoom.Video
 
                 FaceBackground = new Patch[Player.MaxPlayerCount];
                 for (var i = 0; i < FaceBackground.Length; i++)
-                {
                     FaceBackground[i] = Patch.FromWad(wad, $"STFB{i}");
-                }
 
                 Faces = new Patch[StatusBar.Face.FaceCount];
                 var faceCount = 0;
