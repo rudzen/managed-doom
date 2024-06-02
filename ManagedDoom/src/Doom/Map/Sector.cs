@@ -43,7 +43,7 @@ namespace ManagedDoom
         private Fixed oldFloorHeight;
         private Fixed oldCeilingHeight;
 
-        private Sector(
+        public Sector(
             int number,
             Fixed floorHeight,
             Fixed ceilingHeight,
@@ -98,6 +98,7 @@ namespace ManagedDoom
             try
             {
                 var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+
                 wad.ReadLump(lump, lumpBuffer);
 
                 var count = lumpSize / dataSize;
@@ -106,7 +107,7 @@ namespace ManagedDoom
                 for (var i = 0; i < count; i++)
                 {
                     var offset = dataSize * i;
-                    sectors[i] = FromData(lumpBuffer.Slice(offset, dataSize), i, flats);
+                    sectors[i] = FromData(lumpBuffer[offset..], i, flats);
                 }
 
                 return sectors;

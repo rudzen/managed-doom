@@ -14,6 +14,7 @@
 //
 
 
+
 using System;
 using System.Buffers;
 
@@ -44,11 +45,24 @@ namespace ManagedDoom
             Dy = vertex2.Y - vertex1.Y;
 
             if (Dx == Fixed.Zero)
+            {
                 SlopeType = SlopeType.Vertical;
+            }
             else if (Dy == Fixed.Zero)
+            {
                 SlopeType = SlopeType.Horizontal;
+            }
             else
-                SlopeType = Dy / Dx > Fixed.Zero ? SlopeType.Positive : SlopeType.Negative;
+            {
+                if (Dy / Dx > Fixed.Zero)
+                {
+                    SlopeType = SlopeType.Positive;
+                }
+                else
+                {
+                    SlopeType = SlopeType.Negative;
+                }
+            }
 
             BoundingBox = new Fixed[4];
             BoundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
@@ -94,15 +108,16 @@ namespace ManagedDoom
                 wad.ReadLump(lump, lumpBuffer);
 
                 var count = lumpSize / dataSize;
-                var lines = new LineDef[count];
+                var lines = new LineDef[count]; ;
 
                 for (var i = 0; i < count; i++)
                 {
                     var offset = 14 * i;
-                    lines[i] = FromData(lumpBuffer.Slice(offset, dataSize), vertices, sides);
+                    lines[i] = FromData(lumpBuffer[offset..], vertices, sides);
                 }
 
                 return lines;
+
             }
             finally
             {

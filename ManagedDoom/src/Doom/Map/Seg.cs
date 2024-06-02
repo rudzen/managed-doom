@@ -67,11 +67,13 @@ namespace ManagedDoom
                 (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
         }
 
-        public static Seg[] FromWad(Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<LineDef> lines)
+        public static Seg[] FromWad(Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)
                 throw new Exception();
+            
+            Console.WriteLine(lumpSize);
 
             var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
@@ -86,7 +88,7 @@ namespace ManagedDoom
                 for (var i = 0; i < count; i++)
                 {
                     var offset = dataSize * i;
-                    segments[i] = FromData(lumpBuffer.Slice(offset, dataSize), vertices, lines);
+                    segments[i] = FromData(lumpBuffer.Slice(offset, 12), vertices, lines);
                 }
 
                 return segments;
