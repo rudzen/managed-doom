@@ -46,22 +46,14 @@ namespace ManagedDoom
             var dy = Fixed.Abs(toY - fromY);
 
             if (dy > dx)
-            {
-                var temp = dx;
-                dx = dy;
-                dy = temp;
-            }
+                (dx, dy) = (dy, dx);
 
             // The code below to avoid division by zero is based on Chocolate Doom's implementation.
             Fixed frac;
             if (dx != Fixed.Zero)
-            {
                 frac = dy / dx;
-            }
             else
-            {
                 frac = Fixed.Zero;
-            }
 
             var angle = (Trig.TanToAngle((uint)frac.Data >> fracToSlopeShift) + Angle.Ang90);
 
@@ -82,9 +74,7 @@ namespace ManagedDoom
             if (node.Dx == Fixed.Zero)
             {
                 if (x <= node.X)
-                {
                     return node.Dy > Fixed.Zero ? 1 : 0;
-                }
 
                 return node.Dy < Fixed.Zero ? 1 : 0;
             }
@@ -92,9 +82,7 @@ namespace ManagedDoom
             if (node.Dy == Fixed.Zero)
             {
                 if (y <= node.Y)
-                {
                     return node.Dx < Fixed.Zero ? 1 : 0;
-                }
 
                 return node.Dx > Fixed.Zero ? 1 : 0;
             }
@@ -105,11 +93,9 @@ namespace ManagedDoom
             // Try to quickly decide by looking at sign bits.
             if (((node.Dy.Data ^ node.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
             {
+                // Left is negative.
                 if (((node.Dy.Data ^ dx.Data) & 0x80000000) != 0)
-                {
-                    // Left is negative.
                     return 1;
-                }
 
                 return 0;
             }
@@ -117,11 +103,9 @@ namespace ManagedDoom
             var left = new Fixed(node.Dy.Data >> Fixed.FracBits) * dx;
             var right = dy * new Fixed(node.Dx.Data >> Fixed.FracBits);
 
+            // Front side.
             if (right < left)
-            {
-                // Front side.
                 return 0;
-            }
 
             // Back side.
             return 1;
@@ -136,9 +120,7 @@ namespace ManagedDoom
             var y = toY - fromY;
 
             if (x == Fixed.Zero && y == Fixed.Zero)
-            {
                 return Angle.Ang0;
-            }
 
             if (x >= Fixed.Zero)
             {
@@ -551,8 +533,8 @@ namespace ManagedDoom
                 return node.Dx > Fixed.Zero ? 1 : 0;
             }
 
-            var dx = (x - node.X);
-            var dy = (y - node.Y);
+            var dx = x - node.X;
+            var dy = y - node.Y;
 
             var left = new Fixed((node.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
             var right = new Fixed((dy.Data >> Fixed.FracBits) * (node.Dx.Data >> Fixed.FracBits));

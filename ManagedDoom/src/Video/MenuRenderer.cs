@@ -38,39 +38,29 @@ namespace ManagedDoom.Video
 
         public void Render(DoomMenu menu)
         {
-            if (menu.Current is SelectableMenu selectable)
+            switch (menu.Current)
             {
-                DrawSelectableMenu(selectable);
-            }
-
-            if (menu.Current is SaveMenu save)
-            {
-                DrawSaveMenu(save);
-            }
-
-            if (menu.Current is LoadMenu load)
-            {
-                DrawLoadMenu(load);
-            }
-
-            if (menu.Current is YesNoConfirm yesNo)
-            {
-                DrawText(yesNo.Text);
-            }
-
-            if (menu.Current is PressAnyKey pressAnyKey)
-            {
-                DrawText(pressAnyKey.Text);
-            }
-
-            if (menu.Current is QuitConfirm quit)
-            {
-                DrawText(quit.Text);
-            }
-
-            if (menu.Current is HelpScreen help)
-            {
-                DrawHelp(help);
+                case SelectableMenu selectable:
+                    DrawSelectableMenu(selectable);
+                    break;
+                case SaveMenu save:
+                    DrawSaveMenu(save);
+                    break;
+                case LoadMenu load:
+                    DrawLoadMenu(load);
+                    break;
+                case YesNoConfirm yesNo:
+                    DrawText(yesNo.Text);
+                    break;
+                case PressAnyKey pressAnyKey:
+                    DrawText(pressAnyKey.Text);
+                    break;
+                case QuitConfirm quit:
+                    DrawText(quit.Text);
+                    break;
+                case HelpScreen help:
+                    DrawHelp(help);
+                    break;
             }
         }
 
@@ -85,9 +75,7 @@ namespace ManagedDoom.Video
             }
 
             foreach (var item in selectable.Items)
-            {
                 DrawMenuItem(selectable.Menu, item);
-            }
 
             var choice = selectable.Choice;
             var skull = selectable.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
@@ -105,9 +93,7 @@ namespace ManagedDoom.Video
             }
 
             foreach (var item in save.Items)
-            {
                 DrawMenuItem(save.Menu, item);
-            }
 
             var choice = save.Choice;
             var skull = save.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
@@ -125,9 +111,7 @@ namespace ManagedDoom.Video
             }
 
             foreach (var item in load.Items)
-            {
                 DrawMenuItem(load.Menu, item);
-            }
 
             var choice = load.Choice;
             var skull = load.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
@@ -136,24 +120,20 @@ namespace ManagedDoom.Video
 
         private void DrawMenuItem(DoomMenu menu, MenuItem item)
         {
-            if (item is SimpleMenuItem simple)
+            switch (item)
             {
-                DrawSimpleMenuItem(simple);
-            }
-
-            if (item is ToggleMenuItem toggle)
-            {
-                DrawToggleMenuItem(toggle);
-            }
-
-            if (item is SliderMenuItem slider)
-            {
-                DrawSliderMenuItem(slider);
-            }
-
-            if (item is TextBoxMenuItem textBox)
-            {
-                DrawTextBoxMenuItem(textBox, menu.Tics);
+                case SimpleMenuItem simple:
+                    DrawSimpleMenuItem(simple);
+                    break;
+                case ToggleMenuItem toggle:
+                    DrawToggleMenuItem(toggle);
+                    break;
+                case SliderMenuItem slider:
+                    DrawSliderMenuItem(slider);
+                    break;
+                case TextBoxMenuItem textBox:
+                    DrawTextBoxMenuItem(textBox, menu.Tics);
+                    break;
             }
         }
 

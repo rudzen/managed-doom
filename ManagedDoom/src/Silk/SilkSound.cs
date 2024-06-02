@@ -14,10 +14,10 @@
 //
 
 
-
 using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using DrippyAL;
 using ManagedDoom.Audio;
@@ -69,9 +69,7 @@ namespace ManagedDoom.Silk
                 amplitudes = new float[DoomInfo.SfxNames.Length];
 
                 if (config.audio_randompitch)
-                {
                     random = new DoomRandom();
-                }
 
                 for (var i = 0; i < DoomInfo.SfxNames.Length; i++)
                 {
@@ -80,7 +78,7 @@ namespace ManagedDoom.Silk
                     if (lump == -1)
                         continue;
 
-                    var samples = GetSamples(content.Wad, name, out var sampleRate, out var sampleCount);
+                    var samples = GetSamples(content.Wad, lump, name, out var sampleRate, out var sampleCount);
                     if (!samples.IsEmpty)
                     {
                         buffers[i] = new AudioClip(device, sampleRate, 1, samples);
@@ -113,9 +111,9 @@ namespace ManagedDoom.Silk
             }
         }
 
-        private static Span<byte> GetSamples(Wad wad, string name, out int sampleRate, out int sampleCount)
+        private static Span<byte> GetSamples(Wad wad, int lumpNumber, string lumpName, out int sampleRate, out int sampleCount)
         {
-            var data = wad.ReadLump(name);
+            var data = wad.ReadLump(lumpName);
 
             if (data.Length < 8)
             {
@@ -135,9 +133,7 @@ namespace ManagedDoom.Silk
             }
 
             if (sampleCount > 0)
-            {
                 return data.AsSpan(offset, sampleCount);
-            }
 
             return Span<byte>.Empty;
         }
@@ -146,30 +142,24 @@ namespace ManagedDoom.Silk
         // If the first and last 16 samples are the same,
         // the data should contain pad bytes.
         // https://doomwiki.org/wiki/Sound
-        private static bool ContainsDmxPadding(byte[] data)
+        private static bool ContainsDmxPadding(ReadOnlySpan<byte> data)
         {
-            var sampleCount = BitConverter.ToInt32(data, 4);
+            var sampleCount = BitConverter.ToInt32(data.Slice(4, 4));
             if (sampleCount < 32)
-            {
                 return false;
-            }
 
             var first = data[8];
             for (var i = 1; i < 16; i++)
             {
                 if (data[8 + i] != first)
-                {
                     return false;
-                }
             }
 
             var last = data[8 + sampleCount - 1];
             for (var i = 1; i < 16; i++)
             {
                 if (data[8 + sampleCount - i - 1] != last)
-                {
                     return false;
-                }
             }
 
             return true;
@@ -188,12 +178,14 @@ namespace ManagedDoom.Silk
                     {
                         a = -a;
                     }
+
                     if (a > max)
                     {
                         max = a;
                     }
                 }
             }
+
             return (float)max / 128;
         }
 
@@ -228,6 +220,7 @@ namespace ManagedDoom.Silk
                         {
                             info.Priority *= fastDecay;
                         }
+
                         SetParam(channel, info);
                     }
                     else
@@ -262,6 +255,7 @@ namespace ManagedDoom.Silk
                 {
                     uiChannel.Stop();
                 }
+
                 uiChannel.Position = new Vector3(0, 0, -1);
                 uiChannel.Volume = masterVolumeDecay;
                 uiChannel.AudioClip = buffers[(int)uiReserved];
@@ -345,6 +339,7 @@ namespace ManagedDoom.Silk
                     minChannel = i;
                 }
             }
+
             if (priority >= minPriority)
             {
                 var info = infos[minChannel];
@@ -390,7 +385,7 @@ namespace ManagedDoom.Silk
             {
                 var channel = channels[i];
 
-                if (channel.State == PlaybackState.Playing &&
+                if (channel.State == PlaybackState.Playing && channel.AudioClip is not null &&
                     channel.AudioClip.Duration - channel.PlayingOffset > TimeSpan.FromMilliseconds(200))
                 {
                     channels[i].Pause();
@@ -420,18 +415,7 @@ namespace ManagedDoom.Silk
             }
             else
             {
-                Fixed sourceX;
-                Fixed sourceY;
-                if (info.Source == null)
-                {
-                    sourceX = info.LastX;
-                    sourceY = info.LastY;
-                }
-                else
-                {
-                    sourceX = info.Source.X;
-                    sourceY = info.Source.Y;
-                }
+                var (sourceX, sourceY) = GetSourceXy(info);
 
                 var x = (sourceX - listener.X).ToFloat();
                 var y = (sourceY - listener.Y).ToFloat();
@@ -451,33 +435,33 @@ namespace ManagedDoom.Silk
             }
         }
 
-        private float GetDistanceDecay(float dist)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static (Fixed, Fixed) GetSourceXy(ChannelInfo info)
         {
-            if (dist < closeDist)
-            {
-                return 1F;
-            }
+            return info.Source is null
+                ? (info.LastX, info.LastY)
+                : (info.Source.X, info.Source.Y);
+        }
 
-            return Math.Max((clipDist - dist) / attenuator, 0F);
+        private static float GetDistanceDecay(float dist)
+        {
+            return dist < closeDist
+                ? 1F
+                : Math.Max((clipDist - dist) / attenuator, 0F);
         }
 
         private float GetPitch(SfxType type, Sfx sfx)
         {
-            if (random != null)
-            {
-                if (sfx is Sfx.ITEMUP or Sfx.TINK or Sfx.RADIO)
-                {
-                    return 1.0F;
-                }
+            if (random is null)
+                return 1.0F;
 
-                if (type == SfxType.Voice)
-                {
-                    return 1.0F + 0.075F * (random.Next() - 128) / 128;
-                }
-                return 1.0F + 0.025F * (random.Next() - 128) / 128;
-            }
+            if (sfx is Sfx.ITEMUP or Sfx.TINK or Sfx.RADIO)
+                return 1.0F;
 
-            return 1.0F;
+            if (type == SfxType.Voice)
+                return 1.0F + 0.075F * (random.Next() - 128) / 128;
+
+            return 1.0F + 0.025F * (random.Next() - 128) / 128;
         }
 
         public void Dispose()
@@ -495,6 +479,7 @@ namespace ManagedDoom.Silk
                         channels[i] = null;
                     }
                 }
+
                 channels = null;
             }
 
@@ -508,6 +493,7 @@ namespace ManagedDoom.Silk
                         buffers[i] = null;
                     }
                 }
+
                 buffers = null;
             }
 
@@ -530,7 +516,6 @@ namespace ManagedDoom.Silk
                 masterVolumeDecay = (float)config.audio_soundvolume / MaxVolume;
             }
         }
-
 
 
         private class ChannelInfo

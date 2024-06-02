@@ -21,8 +21,15 @@ namespace ManagedDoom
 {
     public sealed class GameContent : IDisposable
     {
-        private GameContent()
+        private GameContent(string[] wadPaths)
         {
+            Wad = new Wad(wadPaths);
+            Palette = new Palette(Wad);
+            ColorMap = new ColorMap(Wad);
+            Textures = new DummyTextureLookup(Wad);
+            Flats = new DummyFlatLookup(Wad);
+            Sprites = new DummySpriteLookup(Wad);
+            Animation = new TextureAnimation(Textures, Flats);
         }
 
         public GameContent(CommandLineArgs args)
@@ -41,22 +48,14 @@ namespace ManagedDoom
 
         public static GameContent CreateDummy(params string[] wadPaths)
         {
-            var gc = new GameContent();
-
-            gc.Wad = new Wad(wadPaths);
-            gc.Palette = new Palette(gc.Wad);
-            gc.ColorMap = new ColorMap(gc.Wad);
-            gc.Textures = new DummyTextureLookup(gc.Wad);
-            gc.Flats = new DummyFlatLookup(gc.Wad);
-            gc.Sprites = new DummySpriteLookup(gc.Wad);
-            gc.Animation = new TextureAnimation(gc.Textures, gc.Flats);
+            var gc = new GameContent(wadPaths);
 
             return gc;
         }
 
         public void Dispose()
         {
-            if (Wad == null) return;
+            if (Wad is null) return;
             Wad.Dispose();
             Wad = null;
         }

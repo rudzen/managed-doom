@@ -382,6 +382,9 @@ namespace ManagedDoom
                         break;
 
                     case DoomState.DemoPlayback:
+                        if (DemoPlayback is null)
+                            throw new Exception("Demo playback is not initialized!");
+                        
                         var result = DemoPlayback.Update();
                         if (result == UpdateResult.NeedWipe)
                         {
@@ -389,7 +392,7 @@ namespace ManagedDoom
                         }
                         else if (result == UpdateResult.Completed)
                         {
-                            Quit("FPS: " + DemoPlayback.Fps.ToString("0.0"));
+                            Quit($"FPS: {DemoPlayback.Fps:0.0}");
                         }
                         break;
 

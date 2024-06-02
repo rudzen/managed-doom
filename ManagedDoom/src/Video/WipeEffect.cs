@@ -14,15 +14,17 @@
 //
 
 
-
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Video
 {
     public sealed class WipeEffect
     {
+        private static readonly UpdateResult[] updateResults = [UpdateResult.None, UpdateResult.Completed];
+
         private readonly int height;
         private readonly DoomRandom random;
 
@@ -38,16 +40,14 @@ namespace ManagedDoom.Video
             Y[0] = (short)(-(random.Next() % 16));
             for (var i = 1; i < Y.Length; i++)
             {
-                var r = (random.Next() % 3) - 1;
-                Y[i] = (short)(Y[i - 1] + r);
-                if (Y[i] > 0)
+                var r = random.Next() % 3 - 1;
+                var v = (short)(Y[i - 1] + r);
+                Y[i] = v switch
                 {
-                    Y[i] = 0;
-                }
-                else if (Y[i] == -16)
-                {
-                    Y[i] = -15;
-                }
+                    > 0 => 0,
+                    -16 => -15,
+                    _   => v
+                };
             }
         }
 
@@ -66,15 +66,13 @@ namespace ManagedDoom.Video
                 {
                     var dy = (Y[i] < 16) ? Y[i] + 1 : 8;
                     if (Y[i] + dy >= height)
-                    {
                         dy = height - Y[i];
-                    }
                     Y[i] += (short)dy;
                     done = false;
                 }
             }
 
-            return done ? UpdateResult.Completed : UpdateResult.None;
+            return updateResults[done.AsByte()];
         }
 
         public short[] Y { get; }

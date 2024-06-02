@@ -32,20 +32,14 @@ namespace ManagedDoom
         public DemoPlayback(CommandLineArgs args, GameContent content, GameOptions options, string demoName)
         {
             if (File.Exists(demoName))
-            {
                 demo = new Demo(demoName);
-            }
-            else if (File.Exists(demoName + ".lmp"))
-            {
-                demo = new Demo(demoName + ".lmp");
-            }
+            else if (File.Exists($"{demoName}.lmp"))
+                demo = new Demo($"{demoName}.lmp");
             else
             {
                 var lumpName = demoName.ToUpper();
                 if (content.Wad.GetLumpNumber(lumpName) == -1)
-                {
-                    throw new Exception("Demo '" + demoName + "' was not found!");
-                }
+                    throw new Exception($"Demo '{demoName}' was not found!");
                 demo = new Demo(content.Wad.ReadLump(lumpName));
             }
 
@@ -57,15 +51,11 @@ namespace ManagedDoom
             demo.Options.Music = options.Music;
 
             if (args.solonet.Present)
-            {
                 demo.Options.NetGame = true;
-            }
 
             ticCommands = new TicCmd[Player.MaxPlayerCount];
             for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
                 ticCommands[i] = new TicCmd();
-            }
 
             Game = new DoomGame(content, demo.Options);
             Game.DeferedInitNew();
@@ -76,9 +66,7 @@ namespace ManagedDoom
         public UpdateResult Update()
         {
             if (!stopwatch.IsRunning)
-            {
                 stopwatch.Start();
-            }
 
             if (!demo.ReadCmd(ticCommands))
             {

@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 
@@ -23,8 +22,8 @@ namespace ManagedDoom.Video
     public sealed class IntermissionRenderer
     {
         // GLOBAL LOCATIONS
-        private static readonly int titleY = 2;
-        private static readonly int spacingY = 33;
+        private const int titleY = 2;
+        private const int spacingY = 33;
 
         // SINGPLE-PLAYER STUFF
         private static readonly int spStatsX = 50;
@@ -77,21 +76,17 @@ namespace ManagedDoom.Video
             {
                 doomLevels[e] = new string[9];
                 for (var m = 0; m < 9; m++)
-                {
-                    doomLevels[e][m] = "WILV" + e + m;
-                }
+                    doomLevels[e][m] = $"WILV{e}{m}";
             }
 
             doom2Levels = new string[32];
             for (var m = 0; m < 32; m++)
-            {
-                doom2Levels[m] = "CWILV" + m.ToString("00");
-            }
+                doom2Levels[m] = $"CWILV{m:00}";
         }
 
 
         private Wad wad;
-        private readonly DrawScreen screen;      
+        private readonly DrawScreen screen;
 
         private readonly PatchCache cache;
 
@@ -112,9 +107,8 @@ namespace ManagedDoom.Video
             minus = Patch.FromWad(wad, "WIMINUS");
             numbers = new Patch[10];
             for (var i = 0; i < 10; i++)
-            {
-                numbers[i] = Patch.FromWad(wad, "WINUM" + i);
-            }
+                numbers[i] = Patch.FromWad(wad, $"WINUM{i}");
+
             percent = Patch.FromWad(wad, "WIPCNT");
             colon = Patch.FromWad(wad, "WICOLON");
 
@@ -129,8 +123,8 @@ namespace ManagedDoom.Video
 
         private void DrawPatch(string name, int x, int y)
         {
-            var scale = screen.Width / 320;
-            screen.DrawPatch(cache[name], scale * x, scale * y, scale);
+            var patchScale = screen.Width / 320;
+            screen.DrawPatch(cache[name], patchScale * x, patchScale * y, patchScale);
         }
 
         private int GetWidth(string name)
@@ -150,17 +144,12 @@ namespace ManagedDoom.Video
             {
                 case IntermissionState.StatCount:
                     if (im.Options.Deathmatch != 0)
-                    {
                         DrawDeathmatchStats(im);
-                    }
                     else if (im.Options.NetGame)
-                    {
                         DrawNetGameStats(im);
-                    }
                     else
-                    {
                         DrawSinglePlayerStats(im);
-                    }
+
                     break;
 
                 case IntermissionState.ShowNextLoc:
@@ -177,20 +166,12 @@ namespace ManagedDoom.Video
         private void DrawBackground(Intermission im)
         {
             if (im.Options.GameMode == GameMode.Commercial)
-            {
                 DrawPatch("INTERPIC", 0, 0);
-            }
             else
             {
                 var e = im.Options.Episode - 1;
-                if (e < mapPictures.Length)
-                {
-                    DrawPatch(mapPictures[e], 0, 0);
-                }
-                else
-                {
-                    DrawPatch("INTERPIC", 0, 0);
-                }
+                var patchName = e < mapPictures.Length ? mapPictures[e] : "INTERPIC";
+                DrawPatch(patchName, 0, 0);
             }
         }
 
@@ -249,7 +230,6 @@ namespace ManagedDoom.Video
 
             if (im.Info.Episode < 3)
             {
-
                 DrawPatch(
                     "WIPAR", // PAR
                     320 / 2 + spTimeX,
@@ -308,9 +288,7 @@ namespace ManagedDoom.Video
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
                 if (!im.Options.Players[i].InGame)
-                {
                     continue;
-                }
 
                 var x = ngStatsX;
 
@@ -339,9 +317,7 @@ namespace ManagedDoom.Video
                 x += ngSpacingX;
 
                 if (im.DoFrags)
-                {
                     DrawNumber(x, y + 10, im.FragCount[i], -1);
-                }
 
                 y += spacingY;
             }
@@ -426,9 +402,7 @@ namespace ManagedDoom.Video
                     for (var j = 0; j < Player.MaxPlayerCount; j++)
                     {
                         if (im.Options.Players[j].InGame)
-                        {
                             DrawNumber(x + w, y, im.DeathmatchFrags[i][j], 2);
-                        }
 
                         x += dmSpacingX;
                     }
@@ -507,9 +481,7 @@ namespace ManagedDoom.Video
                 levelName = doomLevels[e][wbs.LastLevel];
             }
             else
-            {
                 levelName = doom2Levels[wbs.LastLevel];
-            }
 
             // Draw level name. 
             DrawPatch(
@@ -538,9 +510,7 @@ namespace ManagedDoom.Video
                 levelName = doomLevels[e][wbs.NextLevel];
             }
             else
-            {
                 levelName = doom2Levels[wbs.NextLevel];
-            }
 
             // Draw "Entering".
             DrawPatch(
@@ -582,15 +552,11 @@ namespace ManagedDoom.Video
 
             var neg = n < 0;
             if (neg)
-            {
                 n = -n;
-            }
 
             // If non-number, do not draw it.
             if (n == 1994)
-            {
                 return 0;
-            }
 
             var fontWidth = numbers[0].Width;
 
@@ -604,9 +570,7 @@ namespace ManagedDoom.Video
 
             // Draw a minus sign if necessary.
             if (neg)
-            {
                 DrawPatch(minus, x -= 8, y);
-            }
 
             return x;
         }
@@ -614,9 +578,7 @@ namespace ManagedDoom.Video
         private void DrawPercent(int x, int y, int p)
         {
             if (p < 0)
-            {
                 return;
-            }
 
             DrawPatch(percent, x, y);
             DrawNumber(x, y, p, -1);
@@ -624,57 +586,48 @@ namespace ManagedDoom.Video
 
         private void DrawTime(int x, int y, int t)
         {
-            if (t < 0)
+            switch (t)
             {
-                return;
-            }
-
-            if (t <= 61 * 59)
-            {
-                var div = 1;
-
-                do
+                case < 0:
+                    return;
+                case <= 61 * 59:
                 {
-                    var n = (t / div) % 60;
-                    x = DrawNumber(x, y, n, 2) - colon.Width;
-                    div *= 60;
+                    var div = 1;
 
-                    // Draw.
-                    if (div == 60 || t / div != 0)
+                    do
                     {
-                        DrawPatch(colon, x, y);
-                    }
+                        var n = (t / div) % 60;
+                        x = DrawNumber(x, y, n, 2) - colon.Width;
+                        div *= 60;
+
+                        // Draw.
+                        if (div == 60 || t / div != 0)
+                            DrawPatch(colon, x, y);
+                    } while (t / div != 0);
+
+                    break;
                 }
-                while (t / div != 0);
-            }
-            else
-            {
-                DrawPatch(
-                    "WISUCKS", // SUCKS
-                    x - GetWidth("WISUCKS"),
-                    y);
+                default:
+                    DrawPatch(
+                        "WISUCKS", // SUCKS
+                        x - GetWidth("WISUCKS"),
+                        y);
+                    break;
             }
         }
 
         private void DrawBackgroundAnimation(Intermission im)
         {
             if (im.Options.GameMode == GameMode.Commercial)
-            {
                 return;
-            }
 
             if (im.Info.Episode > 2)
-            {
                 return;
-            }
 
-            for (var i = 0; i < im.Animations.Length; i++)
+            foreach (var a in im.Animations)
             {
-                var a = im.Animations[i];
                 if (a.PatchNumber >= 0)
-                {
                     DrawPatch(a.Patches[a.PatchNumber], a.LocationX, a.LocationY);
-                }
             }
         }
 
@@ -693,24 +646,16 @@ namespace ManagedDoom.Video
                 var bottom = top + patch.Height;
 
                 if (left >= 0 && right < 320 && top >= 0 && bottom < 320)
-                {
                     fits = true;
-                }
                 else
-                {
                     i++;
-                }
-            }
-            while (!fits && i != 2);
+                
+            } while (!fits && i != 2);
 
             if (fits && i < 2)
-            {
                 DrawPatch(candidates[i], x, y);
-            }
             else
-            {
                 throw new Exception("Could not place patch!");
-            }
         }
     }
 }

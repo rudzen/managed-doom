@@ -32,7 +32,7 @@ namespace ManagedDoom.Silk
             if (!config.IsRestoredFromFile)
             {
                 var vm = GetDefaultVideoMode();
-                config.video_screenwidth = vm.Resolution.Value.X;
+                config.video_screenwidth = vm.Resolution!.Value.X;
                 config.video_screenheight = vm.Resolution.Value.Y;
             }
 
@@ -54,7 +54,7 @@ namespace ManagedDoom.Silk
                 var nextWidth = currentWidth + baseWidth;
                 var nextHeight = currentHeight + baseHeight;
 
-                if (nextWidth >= 0.9 * monitor.VideoMode.Resolution.Value.X ||
+                if (nextWidth >= 0.9 * monitor.VideoMode.Resolution!.Value.X ||
                     nextHeight >= 0.9 * monitor.VideoMode.Resolution.Value.Y)
                 {
                     break;

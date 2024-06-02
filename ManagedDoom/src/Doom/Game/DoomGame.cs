@@ -165,7 +165,7 @@ namespace ManagedDoom
 					{
 						if ((players[i].Cmd.Buttons & TicCmdButtons.SpecialMask) == TicCmdButtons.Pause)
 						{
-							Paused = !Paused;
+							Paused ^= true;
 							if (Paused)
 							{
 								Options.Sound.Pause();

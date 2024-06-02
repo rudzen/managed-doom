@@ -15,6 +15,8 @@
     <EventSourceSupport>false</EventSourceSupport>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <LangVersion>latest</LangVersion>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +25,17 @@
     <PackageReference Include="Silk.NET.Input.Glfw" Version="2.21.0" />
     <PackageReference Include="Silk.NET.Windowing.Glfw" Version="2.21.0" />
     <PackageReference Include="TrippyGL" Version="1.2.1" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="src\managed-doom.cfg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="managed-doom.cfg" />
+    <Content Include="managed-doom.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

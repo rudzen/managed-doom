@@ -22,14 +22,7 @@ namespace ManagedDoom
 
         public HelpScreen(DoomMenu menu) : base(menu)
         {
-            if (menu.Options.GameMode == GameMode.Shareware)
-            {
-                pageCount = 2;
-            }
-            else
-            {
-                pageCount = 1;
-            }
+            pageCount = menu.Options.GameMode == GameMode.Shareware ? 2 : 1;
         }
 
         public override void Open()

@@ -33,12 +33,10 @@ namespace ManagedDoom.Video
             chars = new Patch[128];
             for (var i = 0; i < chars.Length; i++)
             {
-                var name = "STCFN" + i.ToString("000");
+                var name = $"STCFN{i:000}";
                 var lump = wad.GetLumpNumber(name);
                 if (lump != -1)
-                {
                     chars[i] = Patch.FromData(name, wad.ReadLump(lump));
-                }
             }
         }
 
@@ -107,12 +105,11 @@ namespace ManagedDoom.Video
         {
             var step = Fixed.One / scale;
 
-            foreach (var column in source)
+            foreach (var (topDelta, bytes, sourceIndex, length) in source)
             {
-                var exTopDelta = scale * column.TopDelta;
-                var exLength = scale * column.Length;
+                var exTopDelta = scale * topDelta;
+                var exLength = scale * length;
 
-                var sourceIndex = column.Offset;
                 var drawY = y + exTopDelta;
                 var drawLength = exLength;
 
@@ -136,7 +133,7 @@ namespace ManagedDoom.Video
 
                 for (; i < drawLength; i++)
                 {
-                    Data[p] = column.Data[sourceIndex + frac.ToIntFloor()];
+                    Data[p] = bytes[sourceIndex + frac.ToIntFloor()];
                     p++;
                     frac += step;
                 }
@@ -150,9 +147,7 @@ namespace ManagedDoom.Video
             foreach (var ch in text)
             {
                 if (ch >= chars.Length)
-                {
                     continue;
-                }
 
                 if (ch == 32)
                 {
@@ -162,15 +157,11 @@ namespace ManagedDoom.Video
 
                 var index = (int)ch;
                 if (index is >= 'a' and <= 'z')
-                {
                     index = index - 'a' + 'A';
-                }
 
                 var patch = chars[index];
                 if (patch == null)
-                {
                     continue;
-                }
 
                 DrawPatch(patch, drawX, drawY, scale);
 
@@ -184,26 +175,18 @@ namespace ManagedDoom.Video
             var drawY = y - 7 * scale;
 
             if (ch >= chars.Length)
-            {
                 return;
-            }
 
             if (ch == 32)
-            {
                 return;
-            }
 
             var index = (int)ch;
             if (index is >= 'a' and <= 'z')
-            {
                 index = index - 'a' + 'A';
-            }
 
             var patch = chars[index];
             if (patch == null)
-            {
                 return;
-            }
 
             DrawPatch(patch, drawX, drawY, scale);
         }
@@ -215,9 +198,7 @@ namespace ManagedDoom.Video
             foreach (var ch in text)
             {
                 if (ch >= chars.Length)
-                {
                     continue;
-                }
 
                 if (ch == 32)
                 {
@@ -227,15 +208,11 @@ namespace ManagedDoom.Video
 
                 var index = (int)ch;
                 if (index is >= 'a' and <= 'z')
-                {
                     index = index - 'a' + 'A';
-                }
 
                 var patch = chars[index];
                 if (patch == null)
-                {
                     continue;
-                }
 
                 DrawPatch(patch, drawX, drawY, scale);
 
@@ -246,26 +223,18 @@ namespace ManagedDoom.Video
         public int MeasureChar(char ch, int scale)
         {
             if (ch >= chars.Length)
-            {
                 return 0;
-            }
 
             if (ch == 32)
-            {
                 return 4 * scale;
-            }
 
             var index = (int)ch;
             if (index is >= 'a' and <= 'z')
-            {
                 index = index - 'a' + 'A';
-            }
 
             var patch = chars[index];
             if (patch == null)
-            {
                 return 0;
-            }
 
             return scale * patch.Width;
         }
@@ -277,9 +246,7 @@ namespace ManagedDoom.Video
             foreach (var ch in text)
             {
                 if (ch >= chars.Length)
-                {
                     continue;
-                }
 
                 if (ch == 32)
                 {
@@ -289,15 +256,11 @@ namespace ManagedDoom.Video
 
                 var index = (int)ch;
                 if (index is >= 'a' and <= 'z')
-                {
                     index = index - 'a' + 'A';
-                }
 
                 var patch = chars[index];
                 if (patch == null)
-                {
                     continue;
-                }
 
                 width += scale * patch.Width;
             }
@@ -312,9 +275,7 @@ namespace ManagedDoom.Video
             foreach (var ch in text)
             {
                 if (ch >= chars.Length)
-                {
                     continue;
-                }
 
                 if (ch == 32)
                 {
@@ -324,15 +285,11 @@ namespace ManagedDoom.Video
 
                 var index = (int)ch;
                 if (index is >= 'a' and <= 'z')
-                {
                     index = index - 'a' + 'A';
-                }
 
                 var patch = chars[index];
                 if (patch == null)
-                {
                     continue;
-                }
 
                 width += scale * patch.Width;
             }
@@ -342,9 +299,8 @@ namespace ManagedDoom.Video
 
         public void FillRect(int x, int y, int w, int h, int color)
         {
-            var x1 = x;
             var x2 = x + w;
-            for (var drawX = x1; drawX < x2; drawX++)
+            for (var drawX = x; drawX < x2; drawX++)
             {
                 var pos = Height * drawX + y;
                 for (var i = 0; i < h; i++)
@@ -372,22 +328,14 @@ namespace ManagedDoom.Video
             var code = OutCode.Inside;
 
             if (x < 0)
-            {
                 code |= OutCode.Left;
-            }
             else if (x > Width)
-            {
                 code |= OutCode.Right;
-            }
 
             if (y < 0)
-            {
                 code |= OutCode.Bottom;
-            }
             else if (y > Height)
-            {
                 code |= OutCode.Top;
-            }
 
             return code;
         }
@@ -408,36 +356,34 @@ namespace ManagedDoom.Video
                 }
 
                 if ((outCode1 & outCode2) != 0)
-                {
                     break;
-                }
                 var x = 0.0F;
                 var y = 0.0F;
 
-                var outcodeOut = outCode2 > outCode1 ? outCode2 : outCode1;
+                var outCodeOut = outCode2 > outCode1 ? outCode2 : outCode1;
 
-                if ((outcodeOut & OutCode.Top) != 0)
+                if ((outCodeOut & OutCode.Top) != 0)
                 {
                     x = x1 + (x2 - x1) * (Height - y1) / (y2 - y1);
                     y = Height;
                 }
-                else if ((outcodeOut & OutCode.Bottom) != 0)
+                else if ((outCodeOut & OutCode.Bottom) != 0)
                 {
                     x = x1 + (x2 - x1) * (0 - y1) / (y2 - y1);
                     y = 0;
                 }
-                else if ((outcodeOut & OutCode.Right) != 0)
+                else if ((outCodeOut & OutCode.Right) != 0)
                 {
                     y = y1 + (y2 - y1) * (Width - x1) / (x2 - x1);
                     x = Width;
                 }
-                else if ((outcodeOut & OutCode.Left) != 0)
+                else if ((outCodeOut & OutCode.Left) != 0)
                 {
                     y = y1 + (y2 - y1) * (0 - x1) / (x2 - x1);
                     x = 0;
                 }
 
-                if (outcodeOut == outCode1)
+                if (outCodeOut == outCode1)
                 {
                     x1 = x;
                     y1 = y;
@@ -483,9 +429,7 @@ namespace ManagedDoom.Video
                     Data[Height * x + y] = (byte)color;
 
                     if (x == x2)
-                    {
                         return;
-                    }
 
                     if (d >= 0)
                     {
@@ -505,9 +449,7 @@ namespace ManagedDoom.Video
                     Data[Height * x + y] = (byte)color;
 
                     if (y == y2)
-                    {
                         return;
-                    }
 
                     if (d >= 0)
                     {

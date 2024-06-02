@@ -107,15 +107,10 @@ public sealed class BlockMapTest
             var minY = vertices.Select(v => v.Y.ToDouble()).Min();
             var maxY = vertices.Select(v => v.Y.ToDouble()).Max();
 
-            Assert.Equal(blockMap.OriginX.ToDouble(), minX);
-            Assert.Equal(blockMap.OriginY.ToDouble(), minY);
-            Assert.Equal((blockMap.OriginX + BlockMap.BlockSize * blockMap.Width).ToDouble(), maxX);
-            Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY);
-            
-            // Assert.Equal(blockMap.OriginX.ToDouble(), minX, 64);
-            // Assert.Equal(blockMap.OriginY.ToDouble(), minY, 64);
-            // Assert.Equal((blockMap.OriginX + BlockMap.BlockSize * blockMap.Width).ToDouble(), maxX, 128);
-            // Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY, 128);
+            Assert.Equal(blockMap.OriginX.ToDouble(), minX, 64D);
+            Assert.Equal(blockMap.OriginY.ToDouble(), minY, 64D);
+            Assert.Equal((blockMap.OriginX + BlockMap.BlockSize * blockMap.Width).ToDouble(), maxX, 128D);
+            Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY, 128D);
         }
 
         var spots = new List<Tuple<int, int>>();

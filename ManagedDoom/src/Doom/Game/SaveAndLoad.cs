@@ -243,7 +243,9 @@ namespace ManagedDoom
                 {
                     if (thinker.ThinkerState == ThinkerState.InStasis)
                     {
-                        var ceiling = thinker as CeilingMove;
+                        if (thinker is not CeilingMove ceiling)
+                            continue;
+                        
                         if (sa.CheckActiveCeiling(ceiling))
                         {
                             data[ptr++] = (byte)SpecialClass.Ceiling;

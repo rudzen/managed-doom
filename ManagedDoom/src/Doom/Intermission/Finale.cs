@@ -14,12 +14,14 @@
 //
 
 
+using System;
+
 namespace ManagedDoom
 {
 	public sealed class Finale
 	{
-		public static readonly int TextSpeed = 3;
-		public static readonly int TextWait = 250;
+		public const int TextSpeed = 3;
+		public const int TextWait = 250;
 
 		// Stage of animation:
 		// 0 = text, 1 = art screen, 2 = character cast.
@@ -258,7 +260,7 @@ namespace ManagedDoom
 
 
 
-		private static readonly CastInfo[] castorder =
+		private static readonly CastInfo[] castOrder =
 		[
 			new CastInfo(DoomInfo.Strings.CC_ZOMBIE, MobjType.Possessed),
 			new CastInfo(DoomInfo.Strings.CC_SHOTGUN, MobjType.Shotguy),
@@ -291,7 +293,7 @@ namespace ManagedDoom
 			Stage = 2;
 
 			castNumber = 0;
-			CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeState];
+			CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].SeeState];
 			castTics = CastState.Tics;
 			castFrames = 0;
 			castDeath = false;
@@ -311,20 +313,22 @@ namespace ManagedDoom
 				return;
 			}
 
+			var mobjInfoSpan = DoomInfo.MobjInfos.AsSpan();
+			
 			if (CastState.Tics == -1 || CastState.Next == MobjState.Null)
 			{
 				// Switch from deathstate to next monster.
 				castNumber++;
 				castDeath = false;
-				if (castNumber == castorder.Length)
+				if (castNumber == castOrder.Length)
 				{
 					castNumber = 0;
 				}
-				if (DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeSound != 0)
+				if (mobjInfoSpan[(int)castOrder[castNumber].Type].SeeSound != 0)
 				{
-					StartSound(DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeSound);
+					StartSound(mobjInfoSpan[(int)castOrder[castNumber].Type].SeeSound);
 				}
-				CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeState];
+				CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].SeeState];
 				castFrames = 0;
 			}
 			else
@@ -334,7 +338,7 @@ namespace ManagedDoom
 				{
 					// Oh, gross hack!
 					castAttacking = false;
-					CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeState];
+					CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].SeeState];
 					castFrames = 0;
 					goto stopAttack;
 				}
@@ -440,11 +444,11 @@ namespace ManagedDoom
 				castAttacking = true;
 				if (castOnMelee)
 				{
-					CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].MeleeState];
+					CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MeleeState];
 				}
 				else
 				{
-					CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].MissileState];
+					CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MissileState];
 				}
 
 				castOnMelee = !castOnMelee;
@@ -452,11 +456,11 @@ namespace ManagedDoom
 				{
 					if (castOnMelee)
 					{
-						CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].MeleeState];
+						CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MeleeState];
 					}
 					else
 					{
-						CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].MissileState];
+						CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MissileState];
 					}
 				}
 			}
@@ -464,15 +468,15 @@ namespace ManagedDoom
 			if (castAttacking)
 			{
 				if (castFrames == 24 ||
-					CastState == DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeState])
+					CastState == DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].SeeState])
 				{
 					castAttacking = false;
-					CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].SeeState];
+					CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].SeeState];
 					castFrames = 0;
 				}
 			}
 
-			stopAttack:
+		stopAttack:
 
 			castTics = CastState.Tics;
 			if (castTics == -1)
@@ -498,13 +502,13 @@ namespace ManagedDoom
 
 				// Go into death frame.
 				castDeath = true;
-				CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castorder[castNumber].Type].DeathState];
+				CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].DeathState];
 				castTics = CastState.Tics;
 				castFrames = 0;
 				castAttacking = false;
-				if (DoomInfo.MobjInfos[(int)castorder[castNumber].Type].DeathSound != 0)
+				if (DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].DeathSound != 0)
 				{
-					StartSound(DoomInfo.MobjInfos[(int)castorder[castNumber].Type].DeathSound);
+					StartSound(DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].DeathSound);
 				}
 
 				return true;
@@ -531,7 +535,7 @@ namespace ManagedDoom
 		public int Stage { get; private set; }
 
 		// For cast.
-		public string CastName => castorder[castNumber].Name;
+		public string CastName => castOrder[castNumber].Name;
 		public MobjStateDef CastState { get; private set; }
 
 		// For bunny scroll.
@@ -542,16 +546,6 @@ namespace ManagedDoom
 		public bool ShowTheEnd { get; private set; }
 
 
-		private class CastInfo
-		{
-			public readonly string Name;
-			public readonly MobjType Type;
-
-			public CastInfo(string name, MobjType type)
-			{
-				Name = name;
-				Type = type;
-			}
-		}
+		private sealed record CastInfo(string Name, MobjType Type);
 	}
 }

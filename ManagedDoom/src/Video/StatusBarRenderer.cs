@@ -15,6 +15,7 @@
 
 
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Video
 {
@@ -120,116 +121,71 @@ namespace ManagedDoom.Video
 
             scale = screen.Width / 320;
 
-            ready = new NumberWidget
-            {
-                Patches = patches.TallNumbers,
-                Width = ammoWidth,
-                X = ammoX,
-                Y = ammoY
-            };
+            ready = new NumberWidget(ammoX, ammoY, ammo0Width, patches.TallNumbers);
 
-            health = new PercentWidget
-            {
-                NumberWidget =
-                {
-                    Patches = patches.TallNumbers,
-                    Width = 3,
-                    X = healthX,
-                    Y = healthY
-                },
-                Patch = patches.TallPercent
-            };
+            health = new PercentWidget(
+                NumberWidget: new NumberWidget(healthX, healthY, 3, patches.TallNumbers),
+                Patch: patches.TallPercent
+            );
 
-            armor = new PercentWidget();
-            armor.NumberWidget.Patches = patches.TallNumbers;
-            armor.NumberWidget.Width = 3;
-            armor.NumberWidget.X = armorX;
-            armor.NumberWidget.Y = armorY;
-            armor.Patch = patches.TallPercent;
+            armor = new PercentWidget(
+                NumberWidget: new NumberWidget(armorX, armorY, 3, patches.TallNumbers),
+                Patch: patches.TallPercent
+            );
 
             // AmmoType.Count
             ammo =
             [
                 new NumberWidget
-                {
-                    Patches = patches.ShortNumbers,
-                    Width = ammo0Width,
-                    X = ammo0X,
-                    Y = ammo0Y
-                },
+                (
+                    X: ammo0X,
+                    Y: ammo0Y,
+                    Width: ammo0Width,
+                    Patches: patches.ShortNumbers
+                ),
                 new NumberWidget
-                {
-                    Patches = patches.ShortNumbers,
-                    Width = ammo1Width,
-                    X = ammo1X,
-                    Y = ammo1Y
-                },
+                (
+                    X: ammo1X,
+                    Y: ammo1Y,
+                    Width: ammo1Width,
+                    Patches: patches.ShortNumbers
+                ),
                 new NumberWidget
-                {
-                    Patches = patches.ShortNumbers,
-                    Width = ammo2Width,
-                    X = ammo2X,
-                    Y = ammo2Y
-                },
+                (
+                    X: ammo2X,
+                    Y: ammo2Y,
+                    Width: ammo2Width,
+                    Patches: patches.ShortNumbers
+                ),
                 new NumberWidget
-                {
-                    Patches = patches.ShortNumbers,
-                    Width = ammo3Wdth,
-                    X = ammo3X,
-                    Y = ammo3Y
-                }
+                (
+                    X: ammo3X,
+                    Y: ammo3Y,
+                    Width: ammo3Wdth,
+                    Patches: patches.ShortNumbers
+                )
             ];
 
-            maxAmmo = new NumberWidget[(int)AmmoType.Count];
-            maxAmmo[0] = new NumberWidget();
-            maxAmmo[0].Patches = patches.ShortNumbers;
-            maxAmmo[0].Width = maxAmmo0Width;
-            maxAmmo[0].X = maxAmmo0X;
-            maxAmmo[0].Y = maxAmmo0Y;
-            maxAmmo[1] = new NumberWidget();
-            maxAmmo[1].Patches = patches.ShortNumbers;
-            maxAmmo[1].Width = maxAmmo1Width;
-            maxAmmo[1].X = maxAmmo1X;
-            maxAmmo[1].Y = maxAmmo1Y;
-            maxAmmo[2] = new NumberWidget();
-            maxAmmo[2].Patches = patches.ShortNumbers;
-            maxAmmo[2].Width = maxAmmo2Width;
-            maxAmmo[2].X = maxAmmo2X;
-            maxAmmo[2].Y = maxAmmo2Y;
-            maxAmmo[3] = new NumberWidget();
-            maxAmmo[3].Patches = patches.ShortNumbers;
-            maxAmmo[3].Width = maxAmmo3Width;
-            maxAmmo[3].X = maxAmmo3X;
-            maxAmmo[3].Y = maxAmmo3Y;
+            maxAmmo =
+            [
+                new NumberWidget(maxAmmo0X, maxAmmo0Y, maxAmmo0Width, patches.ShortNumbers),
+                new NumberWidget(maxAmmo1X, maxAmmo1Y, maxAmmo1Width, patches.ShortNumbers),
+                new NumberWidget(maxAmmo2X, maxAmmo2Y, maxAmmo2Width, patches.ShortNumbers),
+                new NumberWidget(maxAmmo3X, maxAmmo3Y, maxAmmo3Width, patches.ShortNumbers),
+            ];
 
             weapons = new MultIconWidget[6];
             for (var i = 0; i < weapons.Length; i++)
-            {
-                weapons[i] = new MultIconWidget();
-                weapons[i].X = armsX + (i % 3) * armsSpaceX;
-                weapons[i].Y = armsY + (i / 3) * armsSpaceY;
-                weapons[i].Patches = patches.Arms[i];
-            }
+                weapons[i] = new MultIconWidget(armsX + (i % 3) * armsSpaceX, armsY + (i / 3) * armsSpaceY, patches.Arms[i]);
 
-            frags = new NumberWidget();
-            frags.Patches = patches.TallNumbers;
-            frags.Width = fragsWidth;
-            frags.X = fragsX;
-            frags.Y = fragsY;
+            frags = new NumberWidget(fragsX, fragsY, fragsWidth, patches.TallNumbers);
 
-            keys = new MultIconWidget[3];
-            keys[0] = new MultIconWidget();
-            keys[0].X = key0X;
-            keys[0].Y = key0Y;
-            keys[0].Patches = patches.Keys;
-            keys[1] = new MultIconWidget();
-            keys[1].X = key1X;
-            keys[1].Y = key1Y;
-            keys[1].Patches = patches.Keys;
-            keys[2] = new MultIconWidget();
-            keys[2].X = key2X;
-            keys[2].Y = key2Y;
-            keys[2].Patches = patches.Keys;
+            keys =
+            [
+                new MultIconWidget(key0X, key0Y, patches.Keys),
+                new MultIconWidget(key1X, key1Y, patches.Keys),
+                new MultIconWidget(key2X, key2Y, patches.Keys)
+            ];
         }
 
         public void Render(Player player, bool drawBackground)
@@ -365,10 +321,11 @@ namespace ManagedDoom.Video
                     scale * widget.Y,
                     scale);
             }
-            
+
             //screen.DrawText("MHFJDSHFJKDHSJKFHDSJKFDS", 100, 100, 1);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private void DrawPercent(PercentWidget per, int value)
         {
             screen.DrawPatch(
@@ -380,6 +337,7 @@ namespace ManagedDoom.Video
             DrawNumber(per.NumberWidget, value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private void DrawMultIcon(MultIconWidget mi, int value)
         {
             screen.DrawPatch(
@@ -390,39 +348,24 @@ namespace ManagedDoom.Video
         }
 
 
-        private class NumberWidget
-        {
-            public int X;
-            public int Y;
-            public int Width;
-            public Patch[] Patches;
-        }
+        private sealed record NumberWidget(int X, int Y, int Width, Patch[] Patches);
 
-        private sealed class PercentWidget
-        {
-            public readonly NumberWidget NumberWidget = new NumberWidget();
-            public Patch Patch;
-        }
+        private sealed record PercentWidget(NumberWidget NumberWidget, Patch Patch);
 
-        private class MultIconWidget
-        {
-            public int X;
-            public int Y;
-            public Patch[] Patches;
-        }
+        private sealed record MultIconWidget(int X, int Y, Patch[] Patches);
 
-        private class Patches
+        private sealed class Patches
         {
-            public readonly Patch Background;
-            public readonly Patch[] TallNumbers;
-            public readonly Patch[] ShortNumbers;
-            public readonly Patch TallMinus;
-            public readonly Patch TallPercent;
-            public readonly Patch[] Keys;
-            public readonly Patch ArmsBackground;
-            public readonly Patch[][] Arms;
-            public readonly Patch[] FaceBackground;
-            public readonly Patch[] Faces;
+            public Patch Background { get; }
+            public Patch[] TallNumbers { get; }
+            public Patch[] ShortNumbers { get; }
+            public Patch TallMinus { get; }
+            public Patch TallPercent { get; }
+            public Patch[] Keys { get; }
+            public Patch ArmsBackground { get; }
+            public Patch[][] Arms { get; }
+            public Patch[] FaceBackground { get; }
+            public Patch[] Faces { get; }
 
             public Patches(Wad wad)
             {
@@ -432,8 +375,8 @@ namespace ManagedDoom.Video
                 ShortNumbers = new Patch[10];
                 for (var i = 0; i < 10; i++)
                 {
-                    TallNumbers[i] = Patch.FromWad(wad, "STTNUM" + i);
-                    ShortNumbers[i] = Patch.FromWad(wad, "STYSNUM" + i);
+                    TallNumbers[i] = Patch.FromWad(wad, $"STTNUM{i}");
+                    ShortNumbers[i] = Patch.FromWad(wad, $"STYSNUM{i}");
                 }
 
                 TallMinus = Patch.FromWad(wad, "STTMINUS");
@@ -442,7 +385,7 @@ namespace ManagedDoom.Video
                 Keys = new Patch[(int)CardType.Count];
                 for (var i = 0; i < Keys.Length; i++)
                 {
-                    Keys[i] = Patch.FromWad(wad, "STKEYS" + i);
+                    Keys[i] = Patch.FromWad(wad, $"STKEYS{i}");
                 }
 
                 ArmsBackground = Patch.FromWad(wad, "STARMS");
@@ -451,14 +394,14 @@ namespace ManagedDoom.Video
                 {
                     var num = i + 2;
                     Arms[i] = new Patch[2];
-                    Arms[i][0] = Patch.FromWad(wad, "STGNUM" + num);
+                    Arms[i][0] = Patch.FromWad(wad, $"STGNUM{num}");
                     Arms[i][1] = ShortNumbers[num];
                 }
 
                 FaceBackground = new Patch[Player.MaxPlayerCount];
                 for (var i = 0; i < FaceBackground.Length; i++)
                 {
-                    FaceBackground[i] = Patch.FromWad(wad, "STFB" + i);
+                    FaceBackground[i] = Patch.FromWad(wad, $"STFB{i}");
                 }
 
                 Faces = new Patch[StatusBar.Face.FaceCount];
@@ -466,15 +409,13 @@ namespace ManagedDoom.Video
                 for (var i = 0; i < StatusBar.Face.PainFaceCount; i++)
                 {
                     for (var j = 0; j < StatusBar.Face.StraightFaceCount; j++)
-                    {
-                        Faces[faceCount++] = Patch.FromWad(wad, "STFST" + i + j);
-                    }
+                        Faces[faceCount++] = Patch.FromWad(wad, $"STFST{i}{j}");
 
-                    Faces[faceCount++] = Patch.FromWad(wad, "STFTR" + i + "0");
-                    Faces[faceCount++] = Patch.FromWad(wad, "STFTL" + i + "0");
-                    Faces[faceCount++] = Patch.FromWad(wad, "STFOUCH" + i);
-                    Faces[faceCount++] = Patch.FromWad(wad, "STFEVL" + i);
-                    Faces[faceCount++] = Patch.FromWad(wad, "STFKILL" + i);
+                    Faces[faceCount++] = Patch.FromWad(wad, $"STFTR{i}0");
+                    Faces[faceCount++] = Patch.FromWad(wad, $"STFTL{i}0");
+                    Faces[faceCount++] = Patch.FromWad(wad, $"STFOUCH{i}");
+                    Faces[faceCount++] = Patch.FromWad(wad, $"STFEVL{i}");
+                    Faces[faceCount++] = Patch.FromWad(wad, $"STFKILL{i}");
                 }
 
                 Faces[faceCount++] = Patch.FromWad(wad, "STFGOD0");

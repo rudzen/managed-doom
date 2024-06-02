@@ -18,11 +18,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom
 {
     public sealed class Config
     {
+        private static readonly string[] BoolStrings = ["false", "true"];
+        
+        public static Config Default { get; set; }
+        
         public KeyBinding key_forward { get; init; }
         public KeyBinding key_backward { get; init; }
         public KeyBinding key_strafeleft { get; init; }
@@ -53,9 +59,11 @@ namespace ManagedDoom
         public bool audio_randompitch { get; init; }
         public string audio_soundfont { get; init; }
         public bool audio_musiceffect { get; init; }
+        
+        public string wad_directory { get; init; }
 
         // Default settings.
-        public Config()
+        private Config()
         {
             key_forward = new KeyBinding([DoomKey.Up, DoomKey.W]);
             key_backward = new KeyBinding([DoomKey.Down, DoomKey.S]);
@@ -88,6 +96,8 @@ namespace ManagedDoom
             audio_soundfont = "TimGM6mb.sf2";
             audio_musiceffect = true;
 
+            wad_directory = string.Empty;
+
             IsRestoredFromFile = false;
         }
 
@@ -103,9 +113,7 @@ namespace ManagedDoom
                 {
                     var split = line.Split('=', StringSplitOptions.RemoveEmptyEntries);
                     if (split.Length == 2)
-                    {
                         dic[split[0].Trim()] = split[1].Trim();
-                    }
                 }
 
                 key_forward = GetKeyBinding(dic, nameof(key_forward), key_forward);
@@ -138,6 +146,8 @@ namespace ManagedDoom
                 audio_randompitch = GetBool(dic, nameof(audio_randompitch), audio_randompitch);
                 audio_soundfont = GetString(dic, nameof(audio_soundfont), audio_soundfont);
                 audio_musiceffect = GetBool(dic, nameof(audio_musiceffect), audio_musiceffect);
+
+                wad_directory = GetString(dic, nameof(wad_directory), wad_directory);
 
                 IsRestoredFromFile = true;
 
@@ -184,6 +194,7 @@ namespace ManagedDoom
                 writer.WriteLine(nameof(audio_randompitch) + " = " + BoolToString(audio_randompitch));
                 writer.WriteLine(nameof(audio_soundfont) + " = " + audio_soundfont);
                 writer.WriteLine(nameof(audio_musiceffect) + " = " + BoolToString(audio_musiceffect));
+                writer.WriteLine(nameof(wad_directory) + " = " + wad_directory);
             }
             catch
             {
@@ -195,9 +206,7 @@ namespace ManagedDoom
             if (dic.TryGetValue(name, out var stringValue))
             {
                 if (int.TryParse(stringValue, out var value))
-                {
                     return value;
-                }
             }
 
             return defaultValue;
@@ -206,9 +215,7 @@ namespace ManagedDoom
         private static string GetString(Dictionary<string, string> dic, string name, string defaultValue)
         {
             if (dic.TryGetValue(name, out var stringValue))
-            {
                 return stringValue;
-            }
 
             return defaultValue;
         }
@@ -235,9 +242,10 @@ namespace ManagedDoom
             return defaultValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string BoolToString(bool value)
         {
-            return value ? "true" : "false";
+            return BoolStrings[value.AsByte()];
         }
 
         public bool IsRestoredFromFile { get; }

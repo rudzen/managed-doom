@@ -22,12 +22,7 @@ namespace ManagedDoom.Video
 
         public static NullVideo GetInstance()
         {
-            if (instance == null)
-            {
-                instance = new NullVideo();
-            }
-
-            return instance;
+            return instance ??= new NullVideo();
         }
 
         public void Render(Doom doom, Fixed frameFrac)
@@ -48,19 +43,13 @@ namespace ManagedDoom.Video
         public int WindowSize
         {
             get => 7;
-
-            set
-            {
-            }
+            set { }
         }
 
         public bool DisplayMessage
         {
             get => true;
-
-            set
-            {
-            }
+            set { }
         }
 
         public int MaxGammaCorrectionLevel => 10;
@@ -68,10 +57,7 @@ namespace ManagedDoom.Video
         public int GammaCorrectionLevel
         {
             get => 2;
-
-            set
-            {
-            }
+            set { }
         }
 
         public int WipeBandCount => 321;

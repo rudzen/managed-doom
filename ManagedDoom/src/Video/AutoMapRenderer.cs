@@ -46,32 +46,32 @@ namespace ManagedDoom.Video
         ];
 
         // For use if I do walls with outsides / insides.
-        private static readonly int reds = (256 - 5 * 16);
-        private static readonly int redRange = 16;
-        private static readonly int greens = (7 * 16);
-        private static readonly int greenRange = 16;
-        private static readonly int grays = (6 * 16);
-        private static readonly int grayRange = 16;
-        private static readonly int browns = (4 * 16);
-        private static readonly int brownRange = 16;
-        private static readonly int yellows = (256 - 32 + 7);
-        private static readonly int yellowRange = 1;
-        private static readonly int black = 0;
-        private static readonly int white = (256 - 47);
+        private const int reds = (256 - 5 * 16);
+        private const int redRange = 16;
+        private const int greens = (7 * 16);
+        private const int greenRange = 16;
+        private const int grays = (6 * 16);
+        private const int grayRange = 16;
+        private const int browns = (4 * 16);
+        private const int brownRange = 16;
+        private const int yellows = (256 - 32 + 7);
+        private const int yellowRange = 1;
+        private const int black = 0;
+        private const int white = (256 - 47);
 
         // Automap colors.
-        private static readonly int background = black;
-        private static readonly int wallColors = reds;
-        private static readonly int wallRange = redRange;
-        private static readonly int tsWallColors = grays;
-        private static readonly int tsWallRange = grayRange;
-        private static readonly int fdWallColors = browns;
+        private const int background = black;
+        private const int wallColors = reds;
+        private const int wallRange = redRange;
+        private const int tsWallColors = grays;
+        private const int tsWallRange = grayRange;
+        private const int fdWallColors = browns;
         private static readonly int fdWallRange = brownRange;
-        private static readonly int cdWallColors = yellows;
+        private const int cdWallColors = yellows;
         private static readonly int cdWallRange = yellowRange;
         private static readonly int thingColors = greens;
         private static readonly int thingRange = greenRange;
-        private static readonly int secretWallColors = wallColors;
+        private const int secretWallColors = wallColors;
         private static readonly int secretWallRange = wallRange;
 
         private static readonly int[] playerColors =
@@ -116,9 +116,7 @@ namespace ManagedDoom.Video
 
             markNumbers = new Patch[10];
             for (var i = 0; i < markNumbers.Length; i++)
-            {
-                markNumbers[i] = Patch.FromWad(wad, "AMMNUM" + i);
-            }
+                markNumbers[i] = Patch.FromWad(wad, $"AMMNUM{i}");
         }
 
         public void Render(Player player)

@@ -17,346 +17,352 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="xunit.runner.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ManagedDoom\ManagedDoom.csproj" />
+        <ProjectReference Include="..\ManagedDoom\ManagedDoom.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="demos\e1m2_donut_test.lmp" />
-      <Content Include="demos\e1m2_donut_test.lmp">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <None Remove="demos\e1m8_boss_test.lmp" />
-      <Content Include="demos\e1m8_boss_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="demos\map06_crusher_test.lmp" />
-      <Content Include="demos\map06_crusher_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="demos\map07_boss_test.lmp" />
-      <Content Include="demos\map07_boss_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="demos\map30_brain_test.lmp" />
-      <Content Include="demos\map30_brain_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="demos\map32_keen_test.lmp" />
-      <Content Include="demos\map32_keen_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\altdeath_test.lmp" />
-      <Content Include="data\altdeath_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\arachnotron_test.lmp" />
-      <Content Include="data\arachnotron_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\arachnotron_test.wad" />
-      <Content Include="data\arachnotron_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\archvile_test.lmp" />
-      <Content Include="data\archvile_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\archvile_test.wad" />
-      <Content Include="data\archvile_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\autoaim_test.lmp" />
-      <Content Include="data\autoaim_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\autoaim_test.wad" />
-      <Content Include="data\autoaim_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\baron_test.lmp" />
-      <Content Include="data\baron_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\baron_test.wad" />
-      <Content Include="data\baron_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\barrel_test.lmp" />
-      <Content Include="data\barrel_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\barrel_test.wad" />
-      <Content Include="data\barrel_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\bfg_test.lmp" />
-      <Content Include="data\bfg_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\bfg_test.wad" />
-      <Content Include="data\bfg_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\cacodemon_test.lmp" />
-      <Content Include="data\cacodemon_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\cacodemon_test.wad" />
-      <Content Include="data\cacodemon_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\chaingun_test.lmp" />
-      <Content Include="data\chaingun_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\chaingun_test.wad" />
-      <Content Include="data\chaingun_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\chaingunguy_test.lmp" />
-      <Content Include="data\chaingunguy_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\chaingunguy_test.wad" />
-      <Content Include="data\chaingunguy_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\chainsaw_test.lmp" />
-      <Content Include="data\chainsaw_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\chainsaw_test.wad" />
-      <Content Include="data\chainsaw_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\demon_test.lmp" />
-      <Content Include="data\demon_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\demon_test.wad" />
-      <Content Include="data\demon_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\fast_baron_test.lmp" />
-      <Content Include="data\fast_baron_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\fast_cacodemon_test.lmp" />
-      <Content Include="data\fast_cacodemon_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\fast_demon_test.lmp" />
-      <Content Include="data\fast_demon_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\fast_imp_test.lmp" />
-      <Content Include="data\fast_imp_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\fatso_test.lmp" />
-      <Content Include="data\fatso_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\fatso_test.wad" />
-      <Content Include="data\fatso_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\finale_test.wad" />
-      <Content Include="data\finale_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\finale_test1.lmp" />
-      <Content Include="data\finale_test1.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\finale_test2.lmp" />
-      <Content Include="data\finale_test2.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\imp_test.lmp" />
-      <Content Include="data\imp_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\imp_test.wad" />
-      <Content Include="data\imp_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\localdoor_test.lmp" />
-      <Content Include="data\localdoor_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\localdoor_test.wad" />
-      <Content Include="data\localdoor_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\lostsoul_test.wad" />
-      <Content Include="data\lostsoul_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\lostsoul_test_final2.lmp" />
-      <Content Include="data\lostsoul_test_final2.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\multilevel_test_doom1.lmp" />
-      <Content Include="data\multilevel_test_doom1.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\multilevel_test_doom1.wad" />
-      <Content Include="data\multilevel_test_doom1.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\multilevel_test_doom2.lmp" />
-      <Content Include="data\multilevel_test_doom2.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\multilevel_test_doom2.wad" />
-      <Content Include="data\multilevel_test_doom2.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\nightmare_test.lmp" />
-      <Content Include="data\nightmare_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\painelemental_test.wad" />
-      <Content Include="data\painelemental_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\painelemental_test_final2.lmp" />
-      <Content Include="data\painelemental_test_final2.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\plasma_test.lmp" />
-      <Content Include="data\plasma_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\plasma_test.wad" />
-      <Content Include="data\plasma_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\platform_test.lmp" />
-      <Content Include="data\platform_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\platform_test.wad" />
-      <Content Include="data\platform_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\player_movement_test.lmp" />
-      <Content Include="data\player_movement_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\player_movement_test.wad" />
-      <Content Include="data\player_movement_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\punch_test.lmp" />
-      <Content Include="data\punch_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\punch_test.wad" />
-      <Content Include="data\punch_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\revenant_test.lmp" />
-      <Content Include="data\revenant_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\revenant_test.wad" />
-      <Content Include="data\revenant_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\rocket_test.lmp" />
-      <Content Include="data\rocket_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\rocket_test.wad" />
-      <Content Include="data\rocket_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\shotgun_test.lmp" />
-      <Content Include="data\shotgun_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\shotgun_test.wad" />
-      <Content Include="data\shotgun_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\shotgunguy_test.lmp" />
-      <Content Include="data\shotgunguy_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\shotgunguy_test.wad" />
-      <Content Include="data\shotgunguy_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\silent_crusher_test.lmp" />
-      <Content Include="data\silent_crusher_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\silent_crusher_test.wad" />
-      <Content Include="data\silent_crusher_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\sky_shoot_test.lmp" />
-      <Content Include="data\sky_shoot_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\sky_shoot_test.wad" />
-      <Content Include="data\sky_shoot_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\supershotgun_test.lmp" />
-      <Content Include="data\supershotgun_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\supershotgun_test.wad" />
-      <Content Include="data\supershotgun_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\telefrag_test.lmp" />
-      <Content Include="data\telefrag_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\telefrag_test.wad" />
-      <Content Include="data\telefrag_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\teleporter_test.lmp" />
-      <Content Include="data\teleporter_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\teleporter_test.wad" />
-      <Content Include="data\teleporter_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\thing_collision_test.lmp" />
-      <Content Include="data\thing_collision_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\thing_collision_test.wad" />
-      <Content Include="data\thing_collision_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\zombieman_test.lmp" />
-      <Content Include="data\zombieman_test.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\zombieman_test.wad" />
-      <Content Include="data\zombieman_test.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\zombieman_test2.lmp" />
-      <Content Include="data\zombieman_test2.lmp">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="data\zombieman_test2.wad" />
-      <Content Include="data\zombieman_test2.wad">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <None Remove="demos\e1m2_donut_test.lmp"/>
+        <Content Include="demos\e1m2_donut_test.lmp">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="demos\e1m8_boss_test.lmp"/>
+        <Content Include="demos\e1m8_boss_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="demos\map06_crusher_test.lmp"/>
+        <Content Include="demos\map06_crusher_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="demos\map07_boss_test.lmp"/>
+        <Content Include="demos\map07_boss_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="demos\map30_brain_test.lmp"/>
+        <Content Include="demos\map30_brain_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="demos\map32_keen_test.lmp"/>
+        <Content Include="demos\map32_keen_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\altdeath_test.lmp"/>
+        <Content Include="data\altdeath_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\arachnotron_test.lmp"/>
+        <Content Include="data\arachnotron_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\arachnotron_test.wad"/>
+        <Content Include="data\arachnotron_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\archvile_test.lmp"/>
+        <Content Include="data\archvile_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\archvile_test.wad"/>
+        <Content Include="data\archvile_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\autoaim_test.lmp"/>
+        <Content Include="data\autoaim_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\autoaim_test.wad"/>
+        <Content Include="data\autoaim_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\baron_test.lmp"/>
+        <Content Include="data\baron_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\baron_test.wad"/>
+        <Content Include="data\baron_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\barrel_test.lmp"/>
+        <Content Include="data\barrel_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\barrel_test.wad"/>
+        <Content Include="data\barrel_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\bfg_test.lmp"/>
+        <Content Include="data\bfg_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\bfg_test.wad"/>
+        <Content Include="data\bfg_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\cacodemon_test.lmp"/>
+        <Content Include="data\cacodemon_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\cacodemon_test.wad"/>
+        <Content Include="data\cacodemon_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\chaingun_test.lmp"/>
+        <Content Include="data\chaingun_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\chaingun_test.wad"/>
+        <Content Include="data\chaingun_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\chaingunguy_test.lmp"/>
+        <Content Include="data\chaingunguy_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\chaingunguy_test.wad"/>
+        <Content Include="data\chaingunguy_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\chainsaw_test.lmp"/>
+        <Content Include="data\chainsaw_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\chainsaw_test.wad"/>
+        <Content Include="data\chainsaw_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\demon_test.lmp"/>
+        <Content Include="data\demon_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\demon_test.wad"/>
+        <Content Include="data\demon_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\fast_baron_test.lmp"/>
+        <Content Include="data\fast_baron_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\fast_cacodemon_test.lmp"/>
+        <Content Include="data\fast_cacodemon_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\fast_demon_test.lmp"/>
+        <Content Include="data\fast_demon_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\fast_imp_test.lmp"/>
+        <Content Include="data\fast_imp_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\fatso_test.lmp"/>
+        <Content Include="data\fatso_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\fatso_test.wad"/>
+        <Content Include="data\fatso_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\finale_test.wad"/>
+        <Content Include="data\finale_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\finale_test1.lmp"/>
+        <Content Include="data\finale_test1.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\finale_test2.lmp"/>
+        <Content Include="data\finale_test2.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\imp_test.lmp"/>
+        <Content Include="data\imp_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\imp_test.wad"/>
+        <Content Include="data\imp_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\localdoor_test.lmp"/>
+        <Content Include="data\localdoor_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\localdoor_test.wad"/>
+        <Content Include="data\localdoor_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\lostsoul_test.wad"/>
+        <Content Include="data\lostsoul_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\lostsoul_test_final2.lmp"/>
+        <Content Include="data\lostsoul_test_final2.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\multilevel_test_doom1.lmp"/>
+        <Content Include="data\multilevel_test_doom1.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\multilevel_test_doom1.wad"/>
+        <Content Include="data\multilevel_test_doom1.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\multilevel_test_doom2.lmp"/>
+        <Content Include="data\multilevel_test_doom2.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\multilevel_test_doom2.wad"/>
+        <Content Include="data\multilevel_test_doom2.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\nightmare_test.lmp"/>
+        <Content Include="data\nightmare_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\painelemental_test.wad"/>
+        <Content Include="data\painelemental_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\painelemental_test_final2.lmp"/>
+        <Content Include="data\painelemental_test_final2.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\plasma_test.lmp"/>
+        <Content Include="data\plasma_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\plasma_test.wad"/>
+        <Content Include="data\plasma_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\platform_test.lmp"/>
+        <Content Include="data\platform_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\platform_test.wad"/>
+        <Content Include="data\platform_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\player_movement_test.lmp"/>
+        <Content Include="data\player_movement_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\player_movement_test.wad"/>
+        <Content Include="data\player_movement_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\punch_test.lmp"/>
+        <Content Include="data\punch_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\punch_test.wad"/>
+        <Content Include="data\punch_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\revenant_test.lmp"/>
+        <Content Include="data\revenant_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\revenant_test.wad"/>
+        <Content Include="data\revenant_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\rocket_test.lmp"/>
+        <Content Include="data\rocket_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\rocket_test.wad"/>
+        <Content Include="data\rocket_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\shotgun_test.lmp"/>
+        <Content Include="data\shotgun_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\shotgun_test.wad"/>
+        <Content Include="data\shotgun_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\shotgunguy_test.lmp"/>
+        <Content Include="data\shotgunguy_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\shotgunguy_test.wad"/>
+        <Content Include="data\shotgunguy_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\silent_crusher_test.lmp"/>
+        <Content Include="data\silent_crusher_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\silent_crusher_test.wad"/>
+        <Content Include="data\silent_crusher_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\sky_shoot_test.lmp"/>
+        <Content Include="data\sky_shoot_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\sky_shoot_test.wad"/>
+        <Content Include="data\sky_shoot_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\supershotgun_test.lmp"/>
+        <Content Include="data\supershotgun_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\supershotgun_test.wad"/>
+        <Content Include="data\supershotgun_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\telefrag_test.lmp"/>
+        <Content Include="data\telefrag_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\telefrag_test.wad"/>
+        <Content Include="data\telefrag_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\teleporter_test.lmp"/>
+        <Content Include="data\teleporter_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\teleporter_test.wad"/>
+        <Content Include="data\teleporter_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\thing_collision_test.lmp"/>
+        <Content Include="data\thing_collision_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\thing_collision_test.wad"/>
+        <Content Include="data\thing_collision_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\zombieman_test.lmp"/>
+        <Content Include="data\zombieman_test.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\zombieman_test.wad"/>
+        <Content Include="data\zombieman_test.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\zombieman_test2.lmp"/>
+        <Content Include="data\zombieman_test2.lmp">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="data\zombieman_test2.wad"/>
+        <Content Include="data\zombieman_test2.wad">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

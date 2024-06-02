@@ -16,26 +16,9 @@
 
 using System.IO;
 
-namespace ManagedDoom
+namespace ManagedDoom;
+
+public sealed record LumpInfo(string Name, Stream Stream, int Position, int Size)
 {
-    public sealed class LumpInfo
-    {
-        public const int DataSize = 16;
-
-        public LumpInfo(string name, Stream stream, int position, int size)
-        {
-            this.Name = name;
-            this.Stream = stream;
-            this.Position = position;
-            this.Size = size;
-        }
-
-        public string Name { get; }
-
-        public Stream Stream { get; }
-
-        public int Position { get; }
-
-        public int Size { get; }
-    }
+    public const int DataSize = 16;
 }

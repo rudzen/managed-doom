@@ -13,11 +13,11 @@
 // GNU General Public License for more details.
 //
 
+using System;
 
-namespace ManagedDoom
+namespace ManagedDoom;
+
+public static class ApplicationInfo
 {
-    public static class ApplicationInfo
-    {
-        public const string Title = "Managed Doom v2.1a";
-    }
+    public static readonly string Title = "Managed Doom v2.1a : " + Environment.Version;
 }

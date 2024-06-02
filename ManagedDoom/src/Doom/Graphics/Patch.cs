@@ -38,9 +38,10 @@ namespace ManagedDoom
             PadData(ref data, width);
 
             var columns = new Column[width][];
+            var cs = new List<Column>(width);
             for (var x = 0; x < width; x++)
             {
-                var cs = new List<Column>();
+                cs.Clear();
                 var p = BitConverter.ToInt32(data, 8 + 4 * x);
                 while (true)
                 {

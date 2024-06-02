@@ -15,6 +15,7 @@
 
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Video
@@ -87,7 +88,7 @@ namespace ManagedDoom.Video
             palette.ResetColors(in gammaCorrectionParameters[config.video_gammacorrection]);
         }
 
-        public void RenderDoom(Doom doom, Fixed frameFrac)
+        private void RenderDoom(Doom doom, Fixed frameFrac)
         {
             switch (doom.State)
             {
@@ -246,14 +247,13 @@ namespace ManagedDoom.Video
             Array.Copy(screen.Data, wipeBuffer, screen.Data.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private void WriteData(uint[] colors, byte[] destination)
         {
             var screenData = screen.Data;
             var p = MemoryMarshal.Cast<byte, uint>(destination);
             for (var i = 0; i < p.Length; i++)
-            {
                 p[i] = colors[screenData[i]];
-            }
         }
 
         private static int GetPaletteNumber(Player player)

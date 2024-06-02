@@ -14,8 +14,8 @@
 //
 
 
-
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,7 +23,7 @@ namespace ManagedDoom
 {
     public sealed class Sector
     {
-        private static readonly int dataSize = 26;
+        private const int dataSize = 26;
 
         // 0 = untraversed, 1, 2 = sndlines - 1.
 
@@ -66,15 +66,15 @@ namespace ManagedDoom
             oldCeilingHeight = ceilingHeight;
         }
 
-        public static Sector FromData(byte[] data, int offset, int number, IFlatLookup flats)
+        private static Sector FromData(ReadOnlySpan<byte> data, int number, IFlatLookup flats)
         {
-            var floorHeight = BitConverter.ToInt16(data, offset);
-            var ceilingHeight = BitConverter.ToInt16(data, offset + 2);
-            var floorFlatName = DoomInterop.ToString(data, offset + 4, 8);
-            var ceilingFlatName = DoomInterop.ToString(data, offset + 12, 8);
-            var lightLevel = BitConverter.ToInt16(data, offset + 20);
-            var special = BitConverter.ToInt16(data, offset + 22);
-            var tag = BitConverter.ToInt16(data, offset + 24);
+            var floorHeight = BitConverter.ToInt16(data[..2]);
+            var ceilingHeight = BitConverter.ToInt16(data.Slice(2, 2));
+            var floorFlatName = DoomInterop.ToString(data.Slice(4, 8));
+            var ceilingFlatName = DoomInterop.ToString(data.Slice(12, 8));
+            var lightLevel = BitConverter.ToInt16(data.Slice(20, 2));
+            var special = BitConverter.ToInt16(data.Slice(22, 2));
+            var tag = BitConverter.ToInt16(data.Slice(24, 2));
 
             return new Sector(
                 number,
@@ -89,23 +89,33 @@ namespace ManagedDoom
 
         public static Sector[] FromWad(Wad wad, int lump, IFlatLookup flats)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
-            {
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
-            }
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var sectors = new Sector[count]; ;
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
-            for (var i = 0; i < count; i++)
+            try
             {
-                var offset = dataSize * i;
-                sectors[i] = FromData(data, offset, i, flats);
-            }
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
 
-            return sectors;
+                wad.ReadLump(lump, lumpBuffer);
+
+                var count = lumpSize / dataSize;
+                var sectors = new Sector[count];
+
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = dataSize * i;
+                    sectors[i] = FromData(lumpBuffer[offset..], i, flats);
+                }
+
+                return sectors;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
+            }
         }
 
         public void UpdateFrameInterpolationInfo()
@@ -134,7 +144,6 @@ namespace ManagedDoom
         {
             return new ThingEnumerator(this);
         }
-
 
 
         public struct ThingEnumerator : IEnumerator<Mobj>

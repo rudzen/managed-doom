@@ -16,16 +16,17 @@
 
 
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
     public sealed class BlockMap
     {
-        public static readonly int IntBlockSize = 128;
+        private const int IntBlockSize = 128;
         public static readonly Fixed BlockSize = Fixed.FromInt(IntBlockSize);
         public static readonly int BlockMask = BlockSize.Data - 1;
-        public static readonly int FracToBlockShift = Fixed.FracBits + 7;
-        public static readonly int BlockToFracShift = FracToBlockShift - Fixed.FracBits;
+        public const int FracToBlockShift = Fixed.FracBits + 7;
+        public const int BlockToFracShift = FracToBlockShift - Fixed.FracBits;
 
         private readonly short[] table;
 
@@ -51,27 +52,37 @@ namespace ManagedDoom
 
         public static BlockMap FromWad(Wad wad, int lump, LineDef[] lines)
         {
-            var data = wad.ReadLump(lump);
-
-            var table = new short[data.Length / 2];
-            for (var i = 0; i < table.Length; i++)
+            var lumpSize = wad.GetLumpSize(lump);
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+            try
             {
-                var offset = 2 * i;
-                table[i] = BitConverter.ToInt16(data, offset);
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lump, lumpBuffer);
+                
+                var table = new short[lumpSize / 2];
+                for (var i = 0; i < table.Length; i++)
+                {
+                    var offset = 2 * i;
+                    table[i] = BitConverter.ToInt16(lumpBuffer.Slice(offset, 2));
+                }
+
+                var originX = Fixed.FromInt(table[0]);
+                var originY = Fixed.FromInt(table[1]);
+                var width = table[2];
+                var height = table[3];
+
+                return new BlockMap(
+                    originX,
+                    originY,
+                    width,
+                    height,
+                    table,
+                    lines);
             }
-
-            var originX = Fixed.FromInt(table[0]);
-            var originY = Fixed.FromInt(table[1]);
-            var width = table[2];
-            var height = table[3];
-
-            return new BlockMap(
-                originX,
-                originY,
-                width,
-                height,
-                table,
-                lines);
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
+            }
         }
 
         public int GetBlockX(Fixed x)

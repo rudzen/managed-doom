@@ -17,6 +17,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -26,7 +27,9 @@ namespace ManagedDoom
 {
     public static class DeHackEd
     {
-        private static Tuple<Action<World, Player, PlayerSpriteDef>, Action<World, Mobj>>[] sourcePointerTable;
+        private sealed record SourcePointTable(Action<World, Player, PlayerSpriteDef> PlayerAction, Action<World, Mobj> MobjAction);
+        
+        private static SourcePointTable[] sourcePointerTable;
 
         public static void Initialize(CommandLineArgs args, Wad wad)
         {
@@ -46,6 +49,7 @@ namespace ManagedDoom
             string lastFileName = null;
             try
             {
+                var start = Stopwatch.GetTimestamp();
                 // Ensure the static members are initialized.
                 DoomInfo.Strings.PRESSKEY.GetHashCode();
 
@@ -57,7 +61,7 @@ namespace ManagedDoom
                     ProcessLines(File.ReadLines(fileName));
                 }
 
-                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(x => Path.GetFileName(x))) + ")");
+                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(Path.GetFileName)) + ") [" + Stopwatch.GetElapsedTime(start) + ']');
             }
             catch (Exception e)
             {
@@ -68,6 +72,7 @@ namespace ManagedDoom
 
         private static void ReadDeHackEdLump(Wad wad)
         {
+            var start = Stopwatch.GetTimestamp();
             var lump = wad.GetLumpNumber("DEHACKED");
 
             if (lump != -1)
@@ -81,7 +86,7 @@ namespace ManagedDoom
 
                     ProcessLines(ReadLines(wad.ReadLump(lump)));
 
-                    Console.WriteLine("OK");
+                    Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
                 }
                 catch (Exception e)
                 {
@@ -105,12 +110,12 @@ namespace ManagedDoom
         {
             if (sourcePointerTable == null)
             {
-                sourcePointerTable = new Tuple<Action<World, Player, PlayerSpriteDef>, Action<World, Mobj>>[DoomInfo.States.Length];
+                sourcePointerTable = new SourcePointTable[DoomInfo.States.Length];
                 for (var i = 0; i < sourcePointerTable.Length; i++)
                 {
                     var playerAction = DoomInfo.States[i].PlayerAction;
                     var mobjAction = DoomInfo.States[i].MobjAction;
-                    sourcePointerTable[i] = Tuple.Create(playerAction, mobjAction);
+                    sourcePointerTable[i] = new(playerAction, mobjAction);
                 }
             }
 
@@ -254,8 +259,8 @@ namespace ManagedDoom
             }
             var info = DoomInfo.States[targetFrameNumber];
 
-            info.PlayerAction = sourcePointerTable[sourceFrameNumber].Item1;
-            info.MobjAction = sourcePointerTable[sourceFrameNumber].Item2;
+            info.PlayerAction = sourcePointerTable[sourceFrameNumber].PlayerAction;
+            info.MobjAction = sourcePointerTable[sourceFrameNumber].MobjAction;
         }
 
         private static void ProcessSoundBlock(List<string> data)
@@ -372,8 +377,8 @@ namespace ManagedDoom
                     var eqPos = line.IndexOf('=');
                     if (eqPos != -1)
                     {
-                        var left = line.Substring(0, eqPos).Trim();
-                        var right = line.Substring(eqPos + 1).Trim().Replace("\\n", "\n");
+                        var left = line[..eqPos].Trim();
+                        var right = line[(eqPos + 1)..].Trim().Replace("\\n", "\n");
                         if (right.Last() != '\\')
                         {
                             DoomString.ReplaceByName(left, right);
@@ -391,14 +396,14 @@ namespace ManagedDoom
                     var value = line.Trim().Replace("\\n", "\n"); ;
                     if (value.Last() != '\\')
                     {
-                        sb.Append(value);
+                        sb!.Append(value);
                         DoomString.ReplaceByName(name, sb.ToString());
                         name = null;
                         sb = null;
                     }
                     else
                     {
-                        sb.Append(value, 0, value.Length - 1);
+                        sb!.Append(value, 0, value.Length - 1);
                     }
                 }
             }

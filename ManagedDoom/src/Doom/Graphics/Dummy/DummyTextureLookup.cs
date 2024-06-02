@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 namespace ManagedDoom
 {
-    public class DummyTextureLookup : ITextureLookup
+    public sealed class DummyTextureLookup : ITextureLookup
     {
         private List<Texture> textures;
         private Dictionary<string, Texture> nameToTexture;
         private Dictionary<string, int> nameToNumber;
+
+        private int[] switchList;
 
         public DummyTextureLookup(Wad wad)
         {
@@ -56,20 +58,16 @@ namespace ManagedDoom
                     list.Add(texNum2);
                 }
             }
-            SwitchList = list.ToArray();
+            switchList = list.ToArray();
         }
 
         public int GetNumber(string name)
         {
             if (name[0] == '-')
-            {
                 return 0;
-            }
 
             if (nameToNumber.TryGetValue(name, out var number))
-            {
                 return number;
-            }
 
             return -1;
         }
@@ -87,6 +85,6 @@ namespace ManagedDoom
         public int Count => textures.Count;
         public Texture this[int num] => textures[num];
         public Texture this[string name] => nameToTexture[name];
-        public int[] SwitchList { get; private set; }
+        public int[] SwitchList => switchList;
     }
 }

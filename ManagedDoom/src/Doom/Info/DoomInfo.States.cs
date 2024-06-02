@@ -18,8 +18,8 @@ namespace ManagedDoom
 {
     public static partial class DoomInfo
     {
-        private static readonly PlayerActions pa = new PlayerActions();
-        private static readonly MobjActions ma = new MobjActions();
+        private static readonly PlayerActions pa = new();
+        private static readonly MobjActions ma = new();
 
         public static readonly MobjStateDef[] States =
         [

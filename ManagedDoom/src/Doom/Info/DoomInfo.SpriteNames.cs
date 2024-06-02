@@ -18,7 +18,7 @@ namespace ManagedDoom
 {
     public static partial class DoomInfo
     {
-        public static readonly DoomString[] SpriteNames =
+        public static DoomString[] SpriteNames =>
         [
             new DoomString("TROO"),
             new DoomString("SHTG"),

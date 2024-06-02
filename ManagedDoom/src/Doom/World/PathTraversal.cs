@@ -39,9 +39,7 @@ namespace ManagedDoom
 
             intercepts = new Intercept[256];
             for (var i = 0; i < intercepts.Length; i++)
-            {
                 intercepts[i] = new Intercept();
-            }
 
             target = new DivLine();
             Trace = new DivLine();
@@ -219,7 +217,7 @@ namespace ManagedDoom
                     return false;
                 }
 
-                intercept.Frac = Fixed.MaxValue;
+                intercept!.Frac = Fixed.MaxValue;
             }
 
             // Everything was traversed.

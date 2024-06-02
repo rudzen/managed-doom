@@ -25,7 +25,7 @@ namespace ManagedDoom.Audio
             return instance ??= new NullSound();
         }
 
-        public void SetListener(Mobj listerner)
+        public void SetListener(Mobj listener)
         {
         }
 

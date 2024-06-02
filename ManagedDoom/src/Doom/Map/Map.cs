@@ -52,7 +52,7 @@ namespace ManagedDoom
                 var map = wad.GetLumpNumber(name);
 
                 if (map == -1)
-                    throw new Exception("Map '" + name + "' was not found!");
+                    throw new Exception($"Map '{name}' was not found!");
 
                 Vertices = Vertex.FromWad(wad, map + 4);
                 Sectors = Sector.FromWad(wad, map + 8, flats);
@@ -73,7 +73,7 @@ namespace ManagedDoom
                     ? DoomInfo.MapTitles.GetMapTitle(options.MissionPack, options.Map - 1)
                     : DoomInfo.MapTitles.Doom[options.Episode - 1][options.Map - 1];
 
-                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {

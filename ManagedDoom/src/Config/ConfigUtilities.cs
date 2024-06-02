@@ -36,7 +36,7 @@ namespace ManagedDoom
             "FREEDOOM1.WAD"
         ];
 
-        public static string GetExeDirectory => Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+        public static string GetExeDirectory => Path.GetDirectoryName(Environment.ProcessPath)!;
 
         public static string GetConfigPath()
         {
@@ -63,8 +63,8 @@ namespace ManagedDoom
 
         public static bool IsIwad(string path)
         {
-            var name = Path.GetFileName(path).ToUpper();
-            return iwadNames.Contains(name);
+            var name = Path.GetFileName(path);
+            return iwadNames.Any(wadFile => string.Equals(name, wadFile, StringComparison.OrdinalIgnoreCase));
         }
 
         public static IEnumerable<string> GetWadPaths(CommandLineArgs args)

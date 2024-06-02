@@ -16,12 +16,13 @@
 
 
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
     public sealed class LineDef
     {
-        private static readonly int dataSize = 14;
+        private const int dataSize = 14;
 
         public LineDef(
             Vertex vertex1,
@@ -73,15 +74,15 @@ namespace ManagedDoom
             BackSector = backSide?.Sector;
         }
 
-        public static LineDef FromData(byte[] data, int offset, Vertex[] vertices, SideDef[] sides)
+        private static LineDef FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
         {
-            var vertex1Number = BitConverter.ToInt16(data, offset);
-            var vertex2Number = BitConverter.ToInt16(data, offset + 2);
-            var flags = BitConverter.ToInt16(data, offset + 4);
-            var special = BitConverter.ToInt16(data, offset + 6);
-            var tag = BitConverter.ToInt16(data, offset + 8);
-            var side0Number = BitConverter.ToInt16(data, offset + 10);
-            var side1Number = BitConverter.ToInt16(data, offset + 12);
+            var vertex1Number = BitConverter.ToInt16(data[..2]);
+            var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
+            var flags = BitConverter.ToInt16(data.Slice(4, 2));
+            var special = BitConverter.ToInt16(data.Slice(6, 2));
+            var tag = BitConverter.ToInt16(data.Slice(8, 2));
+            var side0Number = BitConverter.ToInt16(data.Slice(10, 2));
+            var side1Number = BitConverter.ToInt16(data.Slice(12, 2));
 
             return new LineDef(
                 vertices[vertex1Number],
@@ -93,25 +94,35 @@ namespace ManagedDoom
                 side1Number != -1 ? sides[side1Number] : null);
         }
 
-        public static LineDef[] FromWad(Wad wad, int lump, Vertex[] vertices, SideDef[] sides)
+        public static LineDef[] FromWad(Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
-            {
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
-            }
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var lines = new LineDef[count]; ;
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
-            for (var i = 0; i < count; i++)
+            try
             {
-                var offset = 14 * i;
-                lines[i] = FromData(data, offset, vertices, sides);
-            }
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lump, lumpBuffer);
 
-            return lines;
+                var count = lumpSize / dataSize;
+                var lines = new LineDef[count]; ;
+
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = 14 * i;
+                    lines[i] = FromData(lumpBuffer[offset..], vertices, sides);
+                }
+
+                return lines;
+
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
+            }
         }
 
         public Vertex Vertex1 { get; }

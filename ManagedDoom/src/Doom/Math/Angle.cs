@@ -22,11 +22,11 @@ namespace ManagedDoom
 {
     public readonly struct Angle
     {
-        public static readonly Angle Ang0 = new Angle(0x00000000);
-        public static readonly Angle Ang45 = new Angle(0x20000000);
-        public static readonly Angle Ang90 = new Angle(0x40000000);
-        public static readonly Angle Ang180 = new Angle(0x80000000);
-        public static readonly Angle Ang270 = new Angle(0xC0000000);
+        public static readonly Angle Ang0 = new(0x00000000);
+        public static readonly Angle Ang45 = new(0x20000000);
+        public static readonly Angle Ang90 = new(0x40000000);
+        public static readonly Angle Ang180 = new(0x80000000);
+        public static readonly Angle Ang270 = new(0xC0000000);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Angle(uint data)

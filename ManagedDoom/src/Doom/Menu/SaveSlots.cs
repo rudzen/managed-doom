@@ -25,15 +25,12 @@ namespace ManagedDoom
         private const int slotCount = 6;
         private const int descriptionSize = 24;
 
-        private string[] slots;
+        private string[] slots = [];
 
         [SkipLocalsInit]
         private void ReadSlots()
         {
-            if (slots == null)
-                slots = new string[slotCount];
-            else
-                Array.Clear(slots);
+            Array.Resize(ref slots, slotCount);
 
             var directory = ConfigUtilities.GetExeDirectory;
             Span<byte> buffer = stackalloc byte[descriptionSize];
@@ -53,7 +50,7 @@ namespace ManagedDoom
         {
             get
             {
-                if (slots == null)
+                if (slots.Length == 0)
                     ReadSlots();
 
                 return slots[number];

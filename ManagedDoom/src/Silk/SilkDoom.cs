@@ -44,7 +44,7 @@ namespace ManagedDoom.Silk
                 GlfwWindowing.RegisterPlatform();
                 GlfwInput.RegisterPlatform();
 
-                config = SilkConfigUtilities.GetConfig();
+                config = Config.Default = SilkConfigUtilities.GetConfig();
                 content = new GameContent(args);
 
                 config.video_screenwidth = Math.Clamp(config.video_screenwidth, 320, 3200);
