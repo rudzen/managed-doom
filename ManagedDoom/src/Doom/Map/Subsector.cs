@@ -16,50 +16,61 @@
 
 
 using System;
+using System.Buffers;
 
 namespace ManagedDoom
 {
     public sealed class Subsector
     {
-        private static readonly int dataSize = 4;
+        private const int dataSize = 4;
 
-        public Subsector(Sector sector, int segCount, int firstSeg)
+        private Subsector(Sector sector, int segCount, int firstSeg)
         {
             this.Sector = sector;
             this.SegCount = segCount;
             this.FirstSeg = firstSeg;
         }
 
-        public static Subsector FromData(byte[] data, int offset, Seg[] segs)
+        private static Subsector FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Seg> segments)
         {
-            var segCount = BitConverter.ToInt16(data, offset);
-            var firstSegNumber = BitConverter.ToInt16(data, offset + 2);
+            var segCount = BitConverter.ToInt16(data[..2]);
+            var firstSegNumber = BitConverter.ToInt16(data.Slice(2, 2));
 
             return new Subsector(
-                segs[firstSegNumber].SideDef.Sector,
+                segments[firstSegNumber].SideDef.Sector,
                 segCount,
                 firstSegNumber);
         }
 
         public static Subsector[] FromWad(Wad wad, int lump, Seg[] segs)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
-            {
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
-            }
 
-            var data = wad.ReadLump(lump);
-            var count = length / dataSize;
-            var subsectors = new Subsector[count];
-
-            for (var i = 0; i < count; i++)
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+            
+            try
             {
-                var offset = dataSize * i;
-                subsectors[i] = FromData(data, offset, segs);
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lump, lumpBuffer);
+                
+                var count = lumpSize / dataSize;
+                var subsectors = new Subsector[count];
+
+                for (var i = 0; i < count; i++)
+                {
+                    var offset = dataSize * i;
+                    subsectors[i] = FromData(lumpBuffer.Slice(offset, dataSize), segs);
+                }
+
+                return subsectors;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(lumpData);
             }
 
-            return subsectors;
         }
 
         public Sector Sector { get; }
