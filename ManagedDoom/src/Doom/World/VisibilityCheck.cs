@@ -131,26 +131,14 @@ namespace ManagedDoom
 				}
 
 				// Possible occluder because of ceiling height differences.
-				Fixed openTop;
-				if (front.CeilingHeight < back.CeilingHeight)
-				{
-					openTop = front.CeilingHeight;
-				}
-				else
-				{
-					openTop = back.CeilingHeight;
-				}
+				var openTop = front.CeilingHeight < back.CeilingHeight
+					? front.CeilingHeight
+					: back.CeilingHeight;
 
 				// Because of ceiling height differences.
-				Fixed openBottom;
-				if (front.FloorHeight > back.FloorHeight)
-				{
-					openBottom = front.FloorHeight;
-				}
-				else
-				{
-					openBottom = back.FloorHeight;
-				}
+				var openBottom = front.FloorHeight > back.FloorHeight
+					? front.FloorHeight
+					: back.FloorHeight;
 
 				// Quick test for totally closed doors.
 				if (openBottom >= openTop)

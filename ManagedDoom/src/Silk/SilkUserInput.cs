@@ -449,7 +449,7 @@ namespace ManagedDoom.Silk
             }
         }
 
-        public static Key DoomToSilk(DoomKey key)
+        private static Key DoomToSilk(DoomKey key)
         {
             switch (key)
             {

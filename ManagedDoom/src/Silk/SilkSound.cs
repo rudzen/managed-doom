@@ -302,9 +302,8 @@ namespace ManagedDoom.Silk
                 priority = amplitudes[(int)sfx] * GetDistanceDecay(dist) * volume;
             }
 
-            for (var i = 0; i < infos.Length; i++)
+            foreach (var info in infos.AsSpan())
             {
-                var info = infos[i];
                 if (info.Source == mobj && info.Type == type)
                 {
                     info.Reserved = sfx;
@@ -314,9 +313,8 @@ namespace ManagedDoom.Silk
                 }
             }
 
-            for (var i = 0; i < infos.Length; i++)
+            foreach (var info in infos.AsSpan())
             {
-                var info = infos[i];
                 if (info.Reserved == Sfx.NONE && info.Playing == Sfx.NONE)
                 {
                     info.Reserved = sfx;

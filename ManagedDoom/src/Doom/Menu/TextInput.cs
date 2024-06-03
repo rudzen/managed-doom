@@ -79,7 +79,7 @@ namespace ManagedDoom
             return true;
         }
 
-        public IReadOnlyList<char> Text => text;
+        public List<char> Text => text;
         public TextInputState State { get; private set; }
     }
 }

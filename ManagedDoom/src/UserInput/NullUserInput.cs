@@ -22,12 +22,7 @@ namespace ManagedDoom.UserInput
 
         public static NullUserInput GetInstance()
         {
-            if (instance == null)
-            {
-                instance = new NullUserInput();
-            }
-
-            return instance;
+            return instance ??= new NullUserInput();
         }
 
         public void BuildTicCmd(TicCmd cmd)

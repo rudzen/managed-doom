@@ -21,7 +21,7 @@ namespace ManagedDoom
 {
     public sealed class MapThing
     {
-        private static readonly int dataSize = 10;
+        private const int dataSize = 10;
 
         public static readonly MapThing Empty = new MapThing(
             Fixed.Zero,
@@ -60,41 +60,26 @@ namespace ManagedDoom
                 (ThingFlags)flags);
         }
 
-        public static MapThing FromData(byte[] data, int offset)
-        {
-            var x = BitConverter.ToInt16(data, offset);
-            var y = BitConverter.ToInt16(data, offset + 2);
-            var angle = BitConverter.ToInt16(data, offset + 4);
-            var type = BitConverter.ToInt16(data, offset + 6);
-            var flags = BitConverter.ToInt16(data, offset + 8);
-
-            return new MapThing(
-                Fixed.FromInt(x),
-                Fixed.FromInt(y),
-                new Angle(Angle.Ang45.Data * (uint)(angle / 45)),
-                type,
-                (ThingFlags)flags);
-        }
-
         public static MapThing[] FromWad(Wad wad, int lump)
         {
-            var length = wad.GetLumpSize(lump);
-            if (length % dataSize != 0)
+            var lumpSize = wad.GetLumpSize(lump);
+            if (lumpSize % dataSize != 0)
                 throw new Exception();
 
-            var buffer = ArrayPool<byte>.Shared.Rent(length);
-            var bufferSpan = buffer.AsSpan(0, length);
+            var buffer = ArrayPool<byte>.Shared.Rent(lumpSize);
 
             try
             {
+                var bufferSpan = buffer.AsSpan(0, lumpSize);
                 wad.ReadLump(lump, bufferSpan);
-                var count = length / dataSize;
+
+                var count = lumpSize / dataSize;
                 var things = new MapThing[count];
 
                 for (var i = 0; i < count; i++)
                 {
                     var offset = dataSize * i;
-                    things[i] = FromData(bufferSpan.Slice(offset, 10));
+                    things[i] = FromData(bufferSpan.Slice(offset, dataSize));
                 }
 
                 return things;

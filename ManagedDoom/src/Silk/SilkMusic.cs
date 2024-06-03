@@ -144,9 +144,12 @@ namespace ManagedDoom.Silk
 
                 config.audio_musicvolume = Math.Clamp(config.audio_musicvolume, 0, parent.MaxVolume);
 
-                var settings = new SynthesizerSettings(MusDecoder.SampleRate);
-                settings.BlockSize = MusDecoder.BlockLength;
-                settings.EnableReverbAndChorus = config.audio_musiceffect;
+                var settings = new SynthesizerSettings(MusDecoder.SampleRate)
+                {
+                    BlockSize = MusDecoder.BlockLength,
+                    EnableReverbAndChorus = config.audio_musiceffect
+                };
+
                 synthesizer = new Synthesizer(sfPath, settings);
 
                 left = new float[blockLength];

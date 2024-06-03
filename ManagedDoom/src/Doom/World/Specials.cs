@@ -265,9 +265,8 @@ namespace ManagedDoom
 
             // Animate flats and textures globally.
             var animations = world.Map.Animation.Animations;
-            for (var k = 0; k < animations.Length; k++)
+            foreach (var anim in animations.AsSpan())
             {
-                var anim = animations[k];
                 for (var i = anim.BasePic; i < anim.BasePic + anim.NumPics; i++)
                 {
                     var pic = anim.BasePic + ((world.LevelTime / anim.Speed + i) % anim.NumPics);

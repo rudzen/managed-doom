@@ -14,9 +14,9 @@
 //
 
 
-
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
@@ -53,12 +53,14 @@ namespace ManagedDoom
         public static BlockMap FromWad(Wad wad, int lump, LineDef[] lines)
         {
             var lumpSize = wad.GetLumpSize(lump);
+
             var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
             try
             {
                 var lumpBuffer = lumpData.AsSpan(0, lumpSize);
                 wad.ReadLump(lump, lumpBuffer);
-                
+
                 var table = new short[lumpSize / 2];
                 for (var i = 0; i < table.Length; i++)
                 {
@@ -85,26 +87,28 @@ namespace ManagedDoom
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetBlockX(Fixed x)
         {
             return (x - OriginX).Data >> FracToBlockShift;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetBlockY(Fixed y)
         {
             return (y - OriginY).Data >> FracToBlockShift;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetIndex(int blockX, int blockY)
         {
             if (0 <= blockX && blockX < Width && 0 <= blockY && blockY < Height)
-            {
                 return Width * blockY + blockX;
-            }
 
             return -1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetIndex(Fixed x, Fixed y)
         {
             var blockX = GetBlockX(x);
@@ -117,25 +121,19 @@ namespace ManagedDoom
             var index = GetIndex(blockX, blockY);
 
             if (index == -1)
-            {
                 return true;
-            }
 
             for (var offset = table[4 + index]; table[offset] != -1; offset++)
             {
                 var line = lines[table[offset]];
 
                 if (line.ValidCount == validCount)
-                {
                     continue;
-                }
 
                 line.ValidCount = validCount;
 
                 if (!func(line))
-                {
                     return false;
-                }
             }
 
             return true;
@@ -146,17 +144,11 @@ namespace ManagedDoom
             var index = GetIndex(blockX, blockY);
 
             if (index == -1)
-            {
                 return true;
-            }
 
             for (var mobj = ThingLists[index]; mobj != null; mobj = mobj.BlockNext)
-            {
                 if (!func(mobj))
-                {
                     return false;
-                }
-            }
 
             return true;
         }

@@ -72,8 +72,6 @@ namespace ManagedDoom
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)
                 throw new Exception();
-            
-            Console.WriteLine(lumpSize);
 
             var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
@@ -88,7 +86,7 @@ namespace ManagedDoom
                 for (var i = 0; i < count; i++)
                 {
                     var offset = dataSize * i;
-                    segments[i] = FromData(lumpBuffer.Slice(offset, 12), vertices, lines);
+                    segments[i] = FromData(lumpBuffer.Slice(offset, dataSize), vertices, lines);
                 }
 
                 return segments;

@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
@@ -30,9 +31,7 @@ namespace ManagedDoom
             // https://doomwiki.org/wiki/Reject#Reject_Overflow
             var expectedLength = (sectorCount * sectorCount + 7) / 8;
             if (data.Length < expectedLength)
-            {
                 Array.Resize(ref data, expectedLength);
-            }
 
             this.data = data;
             this.sectorCount = sectorCount;
@@ -43,6 +42,7 @@ namespace ManagedDoom
             return new Reject(wad.ReadLump(lump), sectors.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Check(Sector sector1, Sector sector2)
         {
             var s1 = sector1.Number;

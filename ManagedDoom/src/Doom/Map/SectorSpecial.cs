@@ -14,10 +14,9 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom;
+
+public enum SectorSpecial
 {
-    public enum SectorSpecial
-    {
-        Normal = 0
-    }
+    Normal = 0
 }

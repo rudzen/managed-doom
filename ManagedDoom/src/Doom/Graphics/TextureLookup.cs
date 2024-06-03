@@ -39,7 +39,7 @@ namespace ManagedDoom
 
         private void InitLookup(Wad wad)
         {
-            textures = new List<Texture>();
+            textures = [];
             nameToTexture = new Dictionary<string, Texture>();
             nameToNumber = new Dictionary<string, int>();
 
@@ -47,19 +47,31 @@ namespace ManagedDoom
 
             for (var n = 1; n <= 2; n++)
             {
-                var lumpNumber = wad.GetLumpNumber("TEXTURE" + n);
+                var lumpNumber = wad.GetLumpNumber($"TEXTURE{n}");
                 if (lumpNumber == -1)
                     break;
 
-                var data = wad.ReadLump(lumpNumber);
-                var count = BitConverter.ToInt32(data, 0);
-                for (var i = 0; i < count; i++)
+                var lumpSize = wad.GetLumpSize(lumpNumber);
+                var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+                try
                 {
-                    var offset = BitConverter.ToInt32(data, 4 + 4 * i);
-                    var texture = Texture.FromData(data, offset, patches);
-                    nameToNumber.TryAdd(texture.Name, textures.Count);
-                    textures.Add(texture);
-                    nameToTexture.TryAdd(texture.Name, texture);
+                    var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                    wad.ReadLump(lumpNumber, lumpBuffer);
+
+                    var count = BitConverter.ToInt32(lumpBuffer);
+                    for (var i = 0; i < count; i++)
+                    {
+                        var offset = BitConverter.ToInt32(lumpBuffer[(4 + 4 * i)..]);
+                        var texture = Texture.FromData(lumpBuffer, offset, patches);
+                        nameToNumber.TryAdd(texture.Name, textures.Count);
+                        textures.Add(texture);
+                        nameToTexture.TryAdd(texture.Name, texture);
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(lumpData);
                 }
             }
         }
@@ -105,7 +117,7 @@ namespace ManagedDoom
                 var name = patchNames[i];
 
                 var lumpNumber = wad.GetLumpNumber(name);
-                
+
                 // This check is necessary to avoid crash in DOOM1.WAD.
                 if (lumpNumber == -1)
                     continue;

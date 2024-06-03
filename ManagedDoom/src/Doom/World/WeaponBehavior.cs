@@ -14,6 +14,8 @@
 //
 
 
+using System;
+
 namespace ManagedDoom
 {
     public sealed class WeaponBehavior
@@ -204,9 +206,8 @@ namespace ManagedDoom
 
             var mc = world.MapCollision;
 
-            for (var i = 0; i < sec.Lines.Length; i++)
+            foreach (var check in sec.Lines.AsSpan())
             {
-                var check = sec.Lines[i];
                 if ((check.Flags & LineFlags.TwoSided) == 0)
                 {
                     continue;
@@ -220,15 +221,7 @@ namespace ManagedDoom
                     continue;
                 }
 
-                Sector other;
-                if (check.FrontSide.Sector == sec)
-                {
-                    other = check.BackSide.Sector;
-                }
-                else
-                {
-                    other = check.FrontSide.Sector;
-                }
+                var other = check.FrontSide.Sector == sec ? check.BackSide.Sector : check.FrontSide.Sector;
 
                 if ((check.Flags & LineFlags.SoundBlock) != 0)
                 {

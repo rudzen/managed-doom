@@ -282,7 +282,7 @@ namespace ManagedDoom
 
         private static readonly Direction[] opposite =
         [
-            Direction.west,
+            Direction.West,
             Direction.Southwest,
             Direction.South,
             Direction.Southeast,
@@ -322,7 +322,7 @@ namespace ManagedDoom
             }
             else if (deltaX < Fixed.FromInt(-10))
             {
-                choices[1] = Direction.west;
+                choices[1] = Direction.West;
             }
             else
             {
@@ -358,9 +358,7 @@ namespace ManagedDoom
             // Try other directions.
             if (world.Random.Next() > 200 || Fixed.Abs(deltaY) > Fixed.Abs(deltaX))
             {
-                var temp = choices[1];
-                choices[1] = choices[2];
-                choices[2] = temp;
+                (choices[1], choices[2]) = (choices[2], choices[1]);
             }
 
             if (choices[1] == turnAround)

@@ -40,30 +40,24 @@ namespace ManagedDoom
                 var lumpNumber = wad.GetLumpNumber(lump);
                 var lumpSize = wad.GetLumpSize(lumpNumber);
 
-                var raw = ArrayPool<byte>.Shared.Rent(lumpSize);
-                var lumpBuffer = raw.AsSpan()[..lumpSize];
+                var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
                 try
                 {
+                    var lumpBuffer = lumpData.AsSpan(0, lumpSize);
                     wad.ReadLump(lumpNumber, lumpBuffer);
+
                     var num = lumpSize / 256;
 
                     data = new byte[num][];
                     for (var i = 0; i < num; i++)
-                    {
-                        data[i] = new byte[256];
-                        var offset = 256 * i;
-                        for (var c = 0; c < 256; c++)
-                        {
-                            data[i][c] = raw[offset + c];
-                        }
-                    }
-                    
-                    Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
+                        data[i] = lumpBuffer.Slice(256 * i, 256).ToArray();
+
+                    Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
                 }
                 finally
                 {
-                    ArrayPool<byte>.Shared.Return(raw);
+                    ArrayPool<byte>.Shared.Return(lumpData);
                 }
             }
             catch (Exception e)
@@ -71,10 +65,6 @@ namespace ManagedDoom
                 Console.WriteLine("Failed");
                 ExceptionDispatchInfo.Throw(e);
             }
-        }
-
-        private static void ReadLumpData()
-        {
         }
 
         public byte[] this[int index] => data[index];

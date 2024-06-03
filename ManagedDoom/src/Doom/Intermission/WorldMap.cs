@@ -20,7 +20,7 @@ namespace ManagedDoom
 {
     public static class WorldMap
     {
-        public static readonly IReadOnlyList<IReadOnlyList<Point>> Locations = new Point[][]
+        public static IReadOnlyList<IReadOnlyList<Point>> Locations => new Point[][]
         {
             // Episode 0 world map.
             [
@@ -64,17 +64,6 @@ namespace ManagedDoom
 
 
 
-        public class Point
-        {
-	        public Point(int x, int y)
-            {
-                this.X = x;
-                this.Y = y;
-            }
-
-            public int X { get; }
-
-            public int Y { get; }
-        }
+        public record struct Point(int X, int Y);
     }
 }

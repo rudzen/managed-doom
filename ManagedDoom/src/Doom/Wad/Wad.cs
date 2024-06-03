@@ -57,7 +57,7 @@ namespace ManagedDoom
                 MissionPack = GetMissionPack(names);
                 GameVersion = GetGameVersion(names);
 
-                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(Path.GetFileName)) + ") [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {
@@ -157,7 +157,7 @@ namespace ManagedDoom
             lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
             var read = lumpInfo.Stream.Read(data, 0, lumpInfo.Size);
             if (read != lumpInfo.Size)
-                throw new Exception("Failed to read the lump " + number + ".");
+                throw new Exception($"Failed to read the lump {number}.");
 
             return data;
         }
@@ -168,7 +168,7 @@ namespace ManagedDoom
             lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
             var read = lumpInfo.Stream.Read(buffer);
             if (read != lumpInfo.Size)
-                throw new Exception("Failed to read the lump " + number + ".");
+                throw new Exception($"Failed to read the lump {number}.");
         }
 
         public byte[] ReadLump(string name)
@@ -176,7 +176,7 @@ namespace ManagedDoom
             var lumpNumber = GetLumpNumber(name);
 
             if (lumpNumber == -1)
-                throw new Exception("The lump '" + name + "' was not found.");
+                throw new Exception($"The lump '{name}' was not found.");
 
             return ReadLump(lumpNumber);
         }

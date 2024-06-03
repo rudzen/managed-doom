@@ -22,7 +22,7 @@ namespace ManagedDoom
         Northeast,
         North,
         Northwest,
-        west,
+        West,
         Southwest,
         South,
         Southeast,

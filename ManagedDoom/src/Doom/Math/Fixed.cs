@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
@@ -109,9 +110,9 @@ namespace ManagedDoom
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fixed operator *(Fixed a, Fixed b)
         {
-            return new Fixed((int)(((long)a.Data * (long)b.Data) >> FracBits));
+            return new Fixed((int)((a.Data * (long)b.Data) >> FracBits));
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fixed operator *(int a, Fixed b)
         {
@@ -144,7 +145,7 @@ namespace ManagedDoom
 
         private static Fixed FixedDiv2(Fixed a, Fixed b)
         {
-            var c = ((double)a.Data) / ((double)b.Data) * FracUnit;
+            var c = a.Data / ((double)b.Data) * FracUnit;
 
             if (c is >= 2147483648.0 or < -2147483648.0)
             {

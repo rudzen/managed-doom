@@ -103,23 +103,22 @@ namespace ManagedDoom.Video
                     break;
             }
 
-            if (!doom.Menu.Active)
+            if (doom.Menu.Active) return;
+            
+            if (doom.State == DoomState.Game &&
+                doom.Game.State == GameState.Level &&
+                doom.Game.Paused)
             {
-                if (doom.State == DoomState.Game &&
-                    doom.Game.State == GameState.Level &&
-                    doom.Game.Paused)
-                {
-                    var scale = screen.Width / 320;
-                    screen.DrawPatch(
-                        pause,
-                        (screen.Width - scale * pause.Width) / 2,
-                        4 * scale,
-                        scale);
-                }
+                var scale = screen.Width / 320;
+                screen.DrawPatch(
+                    pause,
+                    (screen.Width - scale * pause.Width) / 2,
+                    4 * scale,
+                    scale);
             }
         }
 
-        public void RenderMenu(Doom doom)
+        private void RenderMenu(Doom doom)
         {
             if (doom.Menu.Active)
             {
@@ -144,18 +143,19 @@ namespace ManagedDoom.Video
                     if (game.World.AutoMap.Visible)
                     {
                         autoMap.Render(consolePlayer);
-                        statusBar.Render(consolePlayer, true);
+                        statusBar.Render(consolePlayer, BackgroundDrawingType.Full);
                     }
                     else
                     {
                         threeD.Render(displayPlayer, frameFrac);
-                        if (threeD.WindowSize < 8)
+                        switch (threeD.WindowSize)
                         {
-                            statusBar.Render(consolePlayer, true);
-                        }
-                        else if (threeD.WindowSize == ThreeDRenderer.MaxScreenSize)
-                        {
-                            statusBar.Render(consolePlayer, false);
+                            case < 8:
+                                statusBar.Render(consolePlayer, BackgroundDrawingType.Full);
+                                break;
+                            case ThreeDRenderer.MaxScreenSize:
+                                statusBar.Render(consolePlayer, BackgroundDrawingType.None);
+                                break;
                         }
                     }
 

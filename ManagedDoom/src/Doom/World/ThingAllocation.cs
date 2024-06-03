@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 
@@ -32,7 +31,6 @@ namespace ManagedDoom
             InitMultiPlayerRespawn();
             InitRespawnSpecials();
         }
-
 
 
         ////////////////////////////////////////////////////////////
@@ -141,8 +139,8 @@ namespace ManagedDoom
 
             // Don't spawn any monsters if -nomonsters.
             if (world.Options.NoMonsters &&
-                    (i == (int)MobjType.Skull ||
-                    (DoomInfo.MobjInfos[i].Flags & MobjFlags.CountKill) != 0))
+                (i == (int)MobjType.Skull ||
+                 (DoomInfo.MobjInfos[i].Flags & MobjFlags.CountKill) != 0))
             {
                 return;
             }
@@ -150,15 +148,9 @@ namespace ManagedDoom
             // Spawn it.
             var x = mt.X;
             var y = mt.Y;
-            Fixed z;
-            if ((DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0)
-            {
-                z = Mobj.OnCeilingZ;
-            }
-            else
-            {
-                z = Mobj.OnFloorZ;
-            }
+            var z = (DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0
+                ? Mobj.OnCeilingZ
+                : Mobj.OnFloorZ;
 
             var mobj = SpawnMobj(x, y, z, (MobjType)i);
 
@@ -256,7 +248,6 @@ namespace ManagedDoom
 
         public IReadOnlyList<MapThing> PlayerStarts => playerStarts;
         public IReadOnlyList<MapThing> DeathmatchStarts => deathmatchStarts;
-
 
 
         ////////////////////////////////////////////////////////////
@@ -503,7 +494,6 @@ namespace ManagedDoom
         }
 
 
-
         ////////////////////////////////////////////////////////////
         // Multi-player related functions
         ////////////////////////////////////////////////////////////
@@ -536,6 +526,7 @@ namespace ManagedDoom
                         return false;
                     }
                 }
+
                 return true;
             }
 
@@ -552,6 +543,7 @@ namespace ManagedDoom
             {
                 RemoveMobj(bodyQue[bodyQueSlot % bodyQueSize]);
             }
+
             bodyQue[bodyQueSlot % bodyQueSize] = players[playernum].Mobj;
             bodyQueSlot++;
 
@@ -559,7 +551,7 @@ namespace ManagedDoom
             var subsector = Geometry.PointInSubsector(x, y, world.Map);
 
             var angle = (Angle.Ang45.Data >> Trig.AngleToFineShift) *
-                ((int)Math.Round(mthing.Angle.ToDegree()) / 45);
+                        ((int)Math.Round(mthing.Angle.ToDegree()) / 45);
 
             //
             // The code below to reproduce respawn fog bug in deathmath
@@ -570,19 +562,19 @@ namespace ManagedDoom
             Fixed ya;
             switch (angle)
             {
-                case 4096: // -4096:
+                case 4096:               // -4096:
                     xa = Trig.Tan(2048); // finecosine[-4096]
                     ya = Trig.Tan(0);    // finesine[-4096]
                     break;
-                case 5120: // -3072:
+                case 5120:               // -3072:
                     xa = Trig.Tan(3072); // finecosine[-3072]
                     ya = Trig.Tan(1024); // finesine[-3072]
                     break;
-                case 6144: // -2048:
+                case 6144:               // -2048:
                     xa = Trig.Sin(0);    // finecosine[-2048]
                     ya = Trig.Tan(2048); // finesine[-2048]
                     break;
-                case 7168: // -1024:
+                case 7168:               // -1024:
                     xa = Trig.Sin(1024); // finecosine[-1024]
                     ya = Trig.Tan(3072); // finesine[-1024]
                     break;
@@ -638,7 +630,6 @@ namespace ManagedDoom
             // No good spot, so the player will probably get stuck .
             SpawnPlayer(playerStarts[playerNumber]);
         }
-
 
 
         ////////////////////////////////////////////////////////////
@@ -703,15 +694,9 @@ namespace ManagedDoom
             }
 
             // Spawn it.
-            Fixed z;
-            if ((DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0)
-            {
-                z = Mobj.OnCeilingZ;
-            }
-            else
-            {
-                z = Mobj.OnFloorZ;
-            }
+            var z = (DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0
+                ? Mobj.OnCeilingZ
+                : Mobj.OnFloorZ;
 
             mo = SpawnMobj(x, y, z, (MobjType)i);
             mo.SpawnPoint = mthing;

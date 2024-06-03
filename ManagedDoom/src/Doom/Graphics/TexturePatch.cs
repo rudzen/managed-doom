@@ -35,11 +35,11 @@ namespace ManagedDoom
             this.patch = patch;
         }
 
-        public static TexturePatch FromData(byte[] data, int offset, Patch[] patches)
+        public static TexturePatch FromData(ReadOnlySpan<byte> data, Patch[] patches)
         {
-            var originX = BitConverter.ToInt16(data, offset);
-            var originY = BitConverter.ToInt16(data, offset + 2);
-            var patchNum = BitConverter.ToInt16(data, offset + 4);
+            var originX = BitConverter.ToInt16(data);
+            var originY = BitConverter.ToInt16(data[2..]);
+            var patchNum = BitConverter.ToInt16(data[4..]);
 
             return new TexturePatch(
                 originX,

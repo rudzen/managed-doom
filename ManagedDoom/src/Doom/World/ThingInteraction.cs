@@ -34,7 +34,7 @@ namespace ManagedDoom
 		/// <summary>
 		/// Called when the target is killed.
 		/// </summary>
-		public void KillMobj(Mobj source, Mobj target)
+		private void KillMobj(Mobj source, Mobj target)
 		{
 			target.Flags &= ~(MobjFlags.Shootable | MobjFlags.Float | MobjFlags.SkullFly);
 
@@ -214,10 +214,9 @@ namespace ManagedDoom
 					return;
 				}
 
-				int saved;
-
 				if (player.ArmorType != 0)
 				{
+					int saved;
 					if (player.ArmorType == 1)
 					{
 						saved = damage / 3;

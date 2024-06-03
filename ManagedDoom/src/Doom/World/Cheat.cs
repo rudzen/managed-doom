@@ -73,7 +73,7 @@ namespace ManagedDoom
         {
             for (var i = 0; i < list.Length; i++)
             {
-                var code = list[i].Code;
+                var code = list[i].Code.AsSpan();
                 var q = p;
                 int j;
                 for (j = 0; j < code.Length; j++)

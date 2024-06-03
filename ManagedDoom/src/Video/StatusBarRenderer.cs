@@ -188,9 +188,9 @@ namespace ManagedDoom.Video
             ];
         }
 
-        public void Render(Player player, bool drawBackground)
+        public void Render(Player player, BackgroundDrawingType backgroundDrawing)
         {
-            if (drawBackground)
+            if (backgroundDrawing == BackgroundDrawingType.Full)
             {
                 screen.DrawPatch(
                     patches.Background,
@@ -216,7 +216,7 @@ namespace ManagedDoom.Video
 
             if (player.Mobj.World.Options.Deathmatch == 0)
             {
-                if (drawBackground)
+                if (backgroundDrawing == BackgroundDrawingType.Full)
                 {
                     screen.DrawPatch(
                         patches.ArmsBackground,
@@ -234,7 +234,7 @@ namespace ManagedDoom.Video
                 DrawNumber(frags, sum);
             }
 
-            if (drawBackground)
+            if (backgroundDrawing == BackgroundDrawingType.Full)
             {
                 if (player.Mobj.World.Options.NetGame)
                 {

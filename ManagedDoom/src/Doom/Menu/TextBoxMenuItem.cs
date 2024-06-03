@@ -35,7 +35,7 @@ namespace ManagedDoom
         public TextInput Edit(Action finished)
         {
             edit = new TextInput(
-                text != null ? text : new char[0],
+                text ?? Array.Empty<char>(),
                 cs => { },
                 cs => { text = cs; edit = null; finished(); },
                 () => { edit = null; });

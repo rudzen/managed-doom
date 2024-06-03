@@ -70,25 +70,28 @@ namespace ManagedDoom.Video
         private void SetWindowSize(int size)
         {
             var scale = screenWidth / 320;
-            if (size < 7)
+            switch (size)
             {
-                var width = scale * (96 + 32 * size);
-                var height = scale * (48 + 16 * size);
-                var x = (screenWidth - width) / 2;
-                var y = (screenHeight - StatusBarRenderer.Height * scale - height) / 2;
-                ResetWindow(x, y, width, height);
-            }
-            else if (size == 7)
-            {
-                var width = screenWidth;
-                var height = screenHeight - StatusBarRenderer.Height * scale;
-                ResetWindow(0, 0, width, height);
-            }
-            else
-            {
-                var width = screenWidth;
-                var height = screenHeight;
-                ResetWindow(0, 0, width, height);
+                case < 7:
+                {
+                    var width = scale * (96 + 32 * size);
+                    var height = scale * (48 + 16 * size);
+                    var x = (screenWidth - width) / 2;
+                    var y = (screenHeight - StatusBarRenderer.Height * scale - height) / 2;
+                    ResetWindow(x, y, width, height);
+                    break;
+                }
+                case 7:
+                {
+                    var height = screenHeight - StatusBarRenderer.Height * scale;
+                    ResetWindow(0, 0, screenWidth, height);
+                    break;
+                }
+                default:
+                {
+                    ResetWindow(0, 0, screenWidth, screenHeight);
+                    break;
+                }
             }
 
             ResetWallRendering();
@@ -202,7 +205,7 @@ namespace ManagedDoom.Video
             }
 
             clipAngle = xToAngle[0];
-            clipAngle2 = new Angle(2 * clipAngle.Data);
+            clipAngle2 = clipAngle * 2;
         }
 
 
@@ -350,15 +353,14 @@ namespace ManagedDoom.Video
                 for (var j = 0; j < maxZLight; j++)
                 {
                     var scale = Fixed.FromInt(320 / 2) / new Fixed((j + 1) << zLightShift);
-                    scale = new Fixed(scale.Data >> scaleLightShift);
+                    scale >>= scaleLightShift;
 
                     var level = start - scale.Data / distMap;
                     if (level < 0)
                     {
                         level = 0;
                     }
-
-                    if (level >= colorMapCount)
+                    else if (level >= colorMapCount)
                     {
                         level = colorMapCount - 1;
                     }
@@ -370,7 +372,7 @@ namespace ManagedDoom.Video
 
         private void ResetLighting()
         {
-            var distMap = 2;
+            const int distMap = 2;
 
             // Calculate the light levels to use for each level / scale combination.
             for (var i = 0; i < lightLevelCount; i++)
@@ -383,8 +385,7 @@ namespace ManagedDoom.Video
                     {
                         level = 0;
                     }
-
-                    if (level >= colorMapCount)
+                    else if (level >= colorMapCount)
                     {
                         level = colorMapCount - 1;
                     }
@@ -405,12 +406,7 @@ namespace ManagedDoom.Video
             else if (fixedLight[0][0] != colorMap[fixedColorMap])
             {
                 for (var i = 0; i < lightLevelCount; i++)
-                {
-                    for (var j = 0; j < fixedLight[i].Length; j++)
-                    {
-                        fixedLight[i][j] = colorMap[fixedColorMap];
-                    }
-                }
+                    Array.Fill(fixedLight[i], colorMap[fixedColorMap]);
 
                 scaleLight = fixedLight;
                 zLight = fixedLight;
@@ -459,32 +455,16 @@ namespace ManagedDoom.Video
 
         private void ResetRenderingHistory()
         {
-            for (var i = 0; i < windowWidth; i++)
-            {
-                clipData[i] = -1;
-            }
-
+            Array.Fill(clipData, (short)-1, 0, windowWidth);
             negOneArray = 0;
-
-            for (var i = windowWidth; i < 2 * windowWidth; i++)
-            {
-                clipData[i] = (short)windowHeight;
-            }
-
+            Array.Fill(clipData, (short)windowHeight, windowWidth, windowWidth);
             windowHeightArray = windowWidth;
         }
 
         private void ClearRenderingHistory()
         {
-            for (var x = 0; x < windowWidth; x++)
-            {
-                upperClip[x] = -1;
-            }
-
-            for (var x = 0; x < windowWidth; x++)
-            {
-                lowerClip[x] = (short)windowHeight;
-            }
+            Array.Fill(upperClip, (short)-1, 0, windowWidth);
+            Array.Fill(lowerClip, (short)windowHeight, 0, windowWidth);
 
             clipRanges[0].First = -0x7fffffff;
             clipRanges[0].Last = -1;
@@ -623,14 +603,9 @@ namespace ManagedDoom.Video
             borderLeft = Patch.FromWad(wad, "BRDR_L");
             borderRight = Patch.FromWad(wad, "BRDR_R");
 
-            if (wad.GameMode == GameMode.Commercial)
-            {
-                backFlat = flats["GRNROCK"];
-            }
-            else
-            {
-                backFlat = flats["FLOOR7_2"];
-            }
+            backFlat = wad.GameMode == GameMode.Commercial
+                ? flats["GRNROCK"]
+                : flats["FLOOR7_2"];
         }
 
         private void FillBackScreen()
@@ -742,39 +717,37 @@ namespace ManagedDoom.Video
 
         private void RenderBspNode(int node)
         {
-            if (Node.IsSubsector(node))
+            while (true)
             {
-                if (node == -1)
+                if (Node.IsSubsector(node))
                 {
-                    DrawSubsector(0);
-                }
-                else
-                {
-                    DrawSubsector(Node.GetSubsector(node));
+                    var subSectorIndex = node == -1 ? 0 : Node.GetSubsector(node);
+                    DrawSubsector(subSectorIndex);
+                    return;
                 }
 
-                return;
-            }
+                var bsp = world.Map.Nodes[node];
 
-            var bsp = world.Map.Nodes[node];
+                // Decide which side the view point is on.
+                var side = Geometry.PointOnSide(viewX, viewY, bsp);
 
-            // Decide which side the view point is on.
-            var side = Geometry.PointOnSide(viewX, viewY, bsp);
+                // Recursively divide front space.
+                RenderBspNode(bsp.Children[side]);
 
-            // Recursively divide front space.
-            RenderBspNode(bsp.Children[side]);
+                // Possibly divide back space.
+                if (IsPotentiallyVisible(bsp.BoundingBox[side ^ 1]))
+                {
+                    node = bsp.Children[side ^ 1];
+                    continue;
+                }
 
-            // Possibly divide back space.
-            if (IsPotentiallyVisible(bsp.BoundingBox[side ^ 1]))
-            {
-                RenderBspNode(bsp.Children[side ^ 1]);
+                break;
             }
         }
 
-
-        private void DrawSubsector(int subsector)
+        private void DrawSubsector(int subSector)
         {
-            var target = world.Map.Subsectors[subsector];
+            var target = world.Map.Subsectors[subSector];
 
             AddSprites(target.Sector, validCount);
 
@@ -1110,11 +1083,9 @@ namespace ManagedDoom.Video
 
         private void DrawPassWall(Seg seg, Angle rwAngle1, int x1, int x2)
         {
-            int start;
-
             // Find the first range that touches the range
             // (adjacent pixels are touching).
-            start = 0;
+            var start = 0;
             while (clipRanges[start].Last < x1 - 1)
             {
                 start++;
@@ -2908,7 +2879,6 @@ namespace ManagedDoom.Video
             }
         }
 
-
         private void DrawPlayerSprites(Player player)
         {
             // Get light level.
@@ -2934,9 +2904,8 @@ namespace ManagedDoom.Video
             }
 
             // Add all active psprites.
-            for (var i = 0; i < (int)PlayerSprite.Count; i++)
+            foreach (var psp in player.PlayerSprites.AsSpan())
             {
-                var psp = player.PlayerSprites[i];
                 if (psp.State != null)
                 {
                     DrawPlayerSprite(psp, spriteLights, fuzz);

@@ -38,18 +38,19 @@ namespace ManagedDoom
             Composite = GenerateComposite(name, width, height, patches);
         }
 
-        public static Texture FromData(byte[] data, int offset, Patch[] patchLookup)
+        public static Texture FromData(ReadOnlySpan<byte> data, int offset, Patch[] patchLookup)
         {
-            var name = DoomInterop.ToString(data, offset, 8);
-            var masked = BitConverter.ToInt32(data, offset + 8);
-            var width = BitConverter.ToInt16(data, offset + 12);
-            var height = BitConverter.ToInt16(data, offset + 14);
-            var patchCount = BitConverter.ToInt16(data, offset + 20);
+            var root = data[offset..];
+            var name = DoomInterop.ToString(root);
+            var masked = BitConverter.ToInt32(root[8..]);
+            var width = BitConverter.ToInt16(root[12..]);
+            var height = BitConverter.ToInt16(root[14..]);
+            var patchCount = BitConverter.ToInt16(root[20..]);
             var patches = new TexturePatch[patchCount];
             for (var i = 0; i < patchCount; i++)
             {
                 var patchOffset = offset + 22 + TexturePatch.DataSize * i;
-                patches[i] = TexturePatch.FromData(data, patchOffset, patchLookup);
+                patches[i] = TexturePatch.FromData(data[patchOffset..], patchLookup);
             }
 
             return new Texture(
@@ -60,14 +61,14 @@ namespace ManagedDoom
                 patches);
         }
 
-        public static string GetName(byte[] data, int offset)
+        public static string GetName(ReadOnlySpan<byte> data)
         {
-            return DoomInterop.ToString(data, offset, 8);
+            return DoomInterop.ToString(data);
         }
 
-        public static int GetHeight(byte[] data, int offset)
+        public static int GetHeight(ReadOnlySpan<byte> data, int offset)
         {
-            return BitConverter.ToInt16(data, offset + 14);
+            return BitConverter.ToInt16(data[(offset + 14)..]);
         }
 
         private static Patch GenerateComposite(string name, int width, int height, TexturePatch[] patches)

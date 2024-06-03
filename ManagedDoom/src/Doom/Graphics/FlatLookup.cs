@@ -103,7 +103,7 @@ namespace ManagedDoom
                 SkyFlatNumber = nameToNumber["F_SKY1"];
                 SkyFlat = nameToFlat["F_SKY1"];
 
-                Console.WriteLine("OK (" + nameToFlat.Count + " flats) [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK ({nameToFlat.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {

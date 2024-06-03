@@ -14,8 +14,9 @@
 //
 
 
-
 using System;
+using System.Runtime.CompilerServices;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom
 {
@@ -41,8 +42,7 @@ namespace ManagedDoom
         ];
 
         public static readonly int MaxMove = ForwardMove[1];
-        public static readonly int SlowTurnTics = 6;
-
+        public const int SlowTurnTics = 6;
 
 
         private readonly World world;
@@ -51,7 +51,6 @@ namespace ManagedDoom
         {
             this.world = world;
         }
-
 
 
         ////////////////////////////////////////////////////////////
@@ -201,56 +200,46 @@ namespace ManagedDoom
             }
 
             if (player.DamageCount > 0)
-            {
                 player.DamageCount--;
-            }
 
             if (player.BonusCount > 0)
-            {
                 player.BonusCount--;
-            }
 
-            // Handling colormaps.
-            if (player.Powers[(int)PowerType.Invulnerability] > 0)
-            {
-                if (player.Powers[(int)PowerType.Invulnerability] > 4 * 32 ||
-                    (player.Powers[(int)PowerType.Invulnerability] & 8) != 0)
-                {
-                    player.FixedColorMap = ColorMap.Inverse;
-                }
-                else
-                {
-                    player.FixedColorMap = 0;
-                }
-            }
-            else if (player.Powers[(int)PowerType.Infrared] > 0)
-            {
-                if (player.Powers[(int)PowerType.Infrared] > 4 * 32 ||
-                    (player.Powers[(int)PowerType.Infrared] & 8) != 0)
-                {
-                    // Almost full bright.
-                    player.FixedColorMap = 1;
-                }
-                else
-                {
-                    player.FixedColorMap = 0;
-                }
-            }
-            else
-            {
-                player.FixedColorMap = 0;
-            }
+            player.FixedColorMap = GetFixedColorMap(player);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int GetFixedColorMap(Player player)
+        {
+            // Invulnerability
+            if (player.Powers[(int)PowerType.Invulnerability] > 0)
+            {
+                return player.Powers[(int)PowerType.Invulnerability] > 4 * 32 ||
+                       (player.Powers[(int)PowerType.Invulnerability] & 8) != 0
+                    ? ColorMap.Inverse
+                    : 0;
+            }
 
-        private static readonly Fixed maxBob = new Fixed(0x100000);
+            // Infrared
+            if (player.Powers[(int)PowerType.Infrared] > 0)
+            {
+                // 1 == Almost full bright
+                var d = player.Powers[(int)PowerType.Infrared] > 4 * 32 ||
+                        (player.Powers[(int)PowerType.Infrared] & 8) != 0;
+                return d.AsByte();
+            }
+
+            return 0;
+        }
+
+        private static readonly Fixed maxBob = new(0x100000);
 
         private bool onGround;
 
         /// <summary>
         /// Move the player according to TicCmd.
         /// </summary>
-        public void MovePlayer(Player player)
+        private void MovePlayer(Player player)
         {
             var cmd = player.Cmd;
 
@@ -353,6 +342,7 @@ namespace ManagedDoom
         /// <summary>
         /// Moves the given origin along a given angle.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Thrust(Player player, Angle angle, Fixed move)
         {
             player.Mobj.MomX += move * Trig.Cos(angle);
@@ -387,6 +377,7 @@ namespace ManagedDoom
                             ti.DamageMobj(player.Mobj, null, null, 10);
                         }
                     }
+
                     break;
 
                 case 7:
@@ -398,10 +389,11 @@ namespace ManagedDoom
                             ti.DamageMobj(player.Mobj, null, null, 5);
                         }
                     }
+
                     break;
 
                 case 16:
-                    // Super hell slime damage.
+                // Super hell slime damage.
                 case 4:
                     // Strobe hurt.
                     if (player.Powers[(int)PowerType.IronFeet] == 0 || (world.Random.Next() < 5))
@@ -411,6 +403,7 @@ namespace ManagedDoom
                             ti.DamageMobj(player.Mobj, null, null, 20);
                         }
                     }
+
                     break;
 
                 case 9:
@@ -426,19 +419,21 @@ namespace ManagedDoom
                     {
                         ti.DamageMobj(player.Mobj, null, null, 20);
                     }
+
                     if (player.Health <= 10)
                     {
                         world.ExitLevel();
                     }
+
                     break;
 
                 default:
-                    throw new Exception("Unknown sector special: " + (int)sector.Special);
+                    throw new Exception($"Unknown sector special: {(int)sector.Special}");
             }
         }
 
 
-        private static readonly Angle ang5 = new Angle(Angle.Ang90.Data / 18);
+        private static readonly Angle ang5 = new(Angle.Ang90.Data / 18);
 
         /// <summary>
         /// Fall on your face when dying.
@@ -500,7 +495,6 @@ namespace ManagedDoom
                 player.PlayerState = PlayerState.Reborn;
             }
         }
-
 
 
         ////////////////////////////////////////////////////////////
@@ -585,7 +579,6 @@ namespace ManagedDoom
                 }
 
                 state = psp.State.Next;
-
             } while (psp.Tics == 0);
             // An initial state of 0 could cycle through.
         }
@@ -599,10 +592,8 @@ namespace ManagedDoom
             {
                 var psp = player.PlayerSprites[i];
 
-                MobjStateDef stateDef;
-
                 // A null state means not active.
-                if ((stateDef = psp.State) != null)
+                if (psp.State != null)
                 {
                     // Drop tic count and possibly change state.
 
@@ -632,7 +623,6 @@ namespace ManagedDoom
                 PlayerSprite.Weapon,
                 DoomInfo.WeaponInfos[(int)player.ReadyWeapon].DownState);
         }
-
 
 
         ////////////////////////////////////////////////////////////

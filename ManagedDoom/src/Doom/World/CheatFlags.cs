@@ -14,8 +14,11 @@
 //
 
 
+using System;
+
 namespace ManagedDoom
 {
+    [Flags]
     public enum CheatFlags
     {
         // No clipping, walk through barriers.

@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Numerics;
 
 namespace ManagedDoom.Video
 {
@@ -42,7 +43,8 @@ namespace ManagedDoom.Video
         [
             -0.5F * tr, -0.7F * tr, tr, 0F,
             tr, 0F, -0.5F * tr, 0.7F * tr,
-            -0.5F * tr, 0.7F * tr, -0.5F * tr, -0.7F * tr
+            -0.5F * tr, 0.7F * tr, -0.5F * tr,
+            -0.7F * tr
         ];
 
         // For use if I do walls with outsides / insides.
@@ -170,14 +172,8 @@ namespace ManagedDoom.Video
                         else if ((line.Flags & LineFlags.Secret) != 0)
                         {
                             // Secret door.
-                            if (cheating)
-                            {
-                                screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, secretWallColors);
-                            }
-                            else
-                            {
-                                screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, wallColors);
-                            }
+                            var color = cheating ? secretWallColors : wallColors;
+                            screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, color);
                         }
                         else if (line.BackSector.FloorHeight != line.FrontSector.FloorHeight)
                         {
@@ -308,32 +304,18 @@ namespace ManagedDoom.Video
             }
         }
 
-        private DrawPos ToScreenPos(Fixed x, Fixed y)
+        private Vector2 ToScreenPos(Fixed x, Fixed y)
         {
             var posX = zoom * ppu * (x.ToFloat() - renderViewX) + amWidth / 2;
             var posY = -zoom * ppu * (y.ToFloat() - renderViewY) + amHeight / 2;
-            return new DrawPos(posX, posY);
+            return new Vector2(posX, posY);
         }
 
-        private DrawPos ToScreenPos(Vertex v)
+        private Vector2 ToScreenPos(Vertex v)
         {
             var posX = zoom * ppu * (v.X.ToFloat() - renderViewX) + amWidth / 2;
             var posY = -zoom * ppu * (v.Y.ToFloat() - renderViewY) + amHeight / 2;
-            return new DrawPos(posX, posY);
-        }
-
-
-
-        private struct DrawPos
-        {
-            public readonly float X;
-            public readonly float Y;
-
-            public DrawPos(float x, float y)
-            {
-                X = x;
-                Y = y;
-            }
+            return new Vector2(posX, posY);
         }
     }
 }

@@ -61,20 +61,22 @@ namespace ManagedDoom
             this.music = music;
             this.userInput = userInput;
 
-            events = new List<DoomEvent>();
+            events = [];
 
-            Options = new GameOptions(args, content);
-            Options.Video = video;
-            Options.Sound = sound;
-            Options.Music = music;
-            Options.UserInput = userInput;
+            Options = new GameOptions(args, content)
+            {
+                Video = video,
+                Sound = sound,
+                Music = music,
+                UserInput = userInput
+            };
 
             Menu = new DoomMenu(this);
 
             Opening = new OpeningSequence(content, Options);
 
             cmds = new TicCmd[Player.MaxPlayerCount];
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
+            for (var i = 0; i < cmds.Length; i++)
             {
                 cmds[i] = new TicCmd();
             }
@@ -257,15 +259,7 @@ namespace ManagedDoom
                     video.DisplayMessage = !video.DisplayMessage;
                     if (State == DoomState.Game && Game.State == GameState.Level)
                     {
-                        string msg;
-                        if (video.DisplayMessage)
-                        {
-                            msg = DoomInfo.Strings.MSGON;
-                        }
-                        else
-                        {
-                            msg = DoomInfo.Strings.MSGOFF;
-                        }
+                        string msg = video.DisplayMessage ? DoomInfo.Strings.MSGON : DoomInfo.Strings.MSGOFF;
                         Game.World.ConsolePlayer.SendMessage(msg);
                     }
                     Menu.StartSound(Sfx.SWTCHN);

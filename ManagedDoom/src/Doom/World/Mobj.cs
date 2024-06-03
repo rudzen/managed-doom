@@ -287,15 +287,7 @@ namespace ManagedDoom
             World.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
 
             // Spawn the new monster.
-            Fixed z;
-            if ((Info.Flags & MobjFlags.SpawnCeiling) != 0)
-            {
-                z = OnCeilingZ;
-            }
-            else
-            {
-                z = OnFloorZ;
-            }
+            var z = (Info.Flags & MobjFlags.SpawnCeiling) != 0 ? OnCeilingZ : OnFloorZ;
 
             // Inherit attributes from deceased one.
             var mobj = ta.SpawnMobj(sp.X, sp.Y, z, Type);

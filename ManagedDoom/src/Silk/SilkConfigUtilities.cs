@@ -39,7 +39,7 @@ namespace ManagedDoom.Silk
             return config;
         }
 
-        public static VideoMode GetDefaultVideoMode()
+        private static VideoMode GetDefaultVideoMode()
         {
             var monitor = Monitor.GetMainMonitor(null);
 

@@ -16,6 +16,9 @@
 
 
 using System;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom
 {
@@ -313,29 +316,23 @@ namespace ManagedDoom
 			return SectorActionResult.OK;
 		}
 
-		private Sector GetNextSector(LineDef line, Sector sector)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static Sector GetNextSector(LineDef line, Sector sector)
 		{
 			if ((line.Flags & LineFlags.TwoSided) == 0)
-			{
 				return null;
-			}
 
-			if (line.FrontSector == sector)
-			{
-				return line.BackSector;
-			}
-
-			return line.FrontSector;
+			return line.FrontSector == sector
+				? line.BackSector
+				: line.FrontSector;
 		}
 
 		private Fixed FindLowestFloorSurrounding(Sector sector)
 		{
 			var floor = sector.FloorHeight;
 
-			for (var i = 0; i < sector.Lines.Length; i++)
+			foreach (var check in sector.Lines)
 			{
-				var check = sector.Lines[i];
-
 				var other = GetNextSector(check, sector);
 				if (other == null)
 				{
@@ -351,14 +348,13 @@ namespace ManagedDoom
 			return floor;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private Fixed FindHighestFloorSurrounding(Sector sector)
 		{
 			var floor = Fixed.FromInt(-500);
 
-			for (var i = 0; i < sector.Lines.Length; i++)
+			foreach (var check in sector.Lines)
 			{
-				var check = sector.Lines[i];
-
 				var other = GetNextSector(check, sector);
 				if (other == null)
 				{
@@ -374,26 +370,25 @@ namespace ManagedDoom
 			return floor;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private Fixed FindLowestCeilingSurrounding(Sector sector)
 		{
 			var height = Fixed.MaxValue;
 
-			for (var i = 0; i < sector.Lines.Length; i++)
-			{
-				var check = sector.Lines[i];
+			var lines = sector.Lines.AsSpan();
+			ref var linesRef = ref MemoryMarshal.GetReference(lines);
 
+			for (var i = 0; i < lines.Length; i++)
+			{
+				ref var check = ref Unsafe.Add(ref linesRef, i);
 				var other = GetNextSector(check, sector);
 				if (other == null)
-				{
 					continue;
-				}
 
 				if (other.CeilingHeight < height)
-				{
 					height = other.CeilingHeight;
-				}
 			}
-
+			
 			return height;
 		}
 
@@ -401,10 +396,8 @@ namespace ManagedDoom
 		{
 			var height = Fixed.Zero;
 
-			for (var i = 0; i < sector.Lines.Length; i++)
+			foreach (var check in sector.Lines)
 			{
-				var check = sector.Lines[i];
-
 				var other = GetNextSector(check, sector);
 				if (other == null)
 				{
@@ -442,7 +435,7 @@ namespace ManagedDoom
 		////////////////////////////////////////////////////////////
 
 		private static readonly Fixed doorSpeed = Fixed.FromInt(2);
-		private static readonly int doorWait = 150;
+		private const int doorWait = 150;
 
 		/// <summary>
 		/// Open a door manually, no tag value.
@@ -692,19 +685,13 @@ namespace ManagedDoom
 		{
 			var player = thing.Player;
 			if (player == null)
-			{
 				return false;
-			}
 
 			switch ((int)line.Special)
 			{
 				// Blue Lock.
 				case 99:
 				case 133:
-					if (player == null)
-					{
-						return false;
-					}
 					if (!player.Cards[(int)CardType.BlueCard] &&
 						!player.Cards[(int)CardType.BlueSkull])
 					{
@@ -717,10 +704,6 @@ namespace ManagedDoom
 				// Red Lock.
 				case 134:
 				case 135:
-					if (player == null)
-					{
-						return false;
-					}
 					if (!player.Cards[(int)CardType.RedCard] &&
 						!player.Cards[(int)CardType.RedSkull])
 					{
@@ -733,10 +716,6 @@ namespace ManagedDoom
 				// Yellow Lock.
 				case 136:
 				case 137:
-					if (player == null)
-					{
-						return false;
-					}
 					if (!player.Cards[(int)CardType.YellowCard] &&
 						!player.Cards[(int)CardType.YellowSkull])
 					{
@@ -762,20 +741,17 @@ namespace ManagedDoom
 
 		private Fixed FindNextHighestFloor(Sector sector, Fixed currentHeight)
 		{
-			var height = currentHeight;
 			var h = 0;
 
-			for (var i = 0; i < sector.Lines.Length; i++)
+			foreach (var check in sector.Lines)
 			{
-				var check = sector.Lines[i];
-
 				var other = GetNextSector(check, sector);
 				if (other == null)
 				{
 					continue;
 				}
 
-				if (other.FloorHeight > height)
+				if (other.FloorHeight > currentHeight)
 				{
 					heightList[h++] = other.FloorHeight;
 				}
@@ -921,34 +897,34 @@ namespace ManagedDoom
 		}
 
 
-		private static readonly int maxPlatformCount = 60;
+		private const int maxPlatformCount = 60;
 		private readonly Platform[] activePlatforms = new Platform[maxPlatformCount];
 
 		public void ActivateInStasis(int tag)
 		{
-			for (var i = 0; i < activePlatforms.Length; i++)
+			foreach (var platform in activePlatforms.AsSpan())
 			{
-				if (activePlatforms[i] != null &&
-					activePlatforms[i].Tag == tag &&
-					activePlatforms[i].Status == PlatformState.InStasis)
+				if (platform != null &&
+				    platform.Tag == tag &&
+				    platform.Status == PlatformState.InStasis)
 				{
-					activePlatforms[i].Status = activePlatforms[i].OldStatus;
-					activePlatforms[i].ThinkerState = ThinkerState.Active;
+					platform.Status = platform.OldStatus;
+					platform.ThinkerState = ThinkerState.Active;
 				}
 			}
 		}
 
 		public void StopPlatform(LineDef line)
 		{
-			for (var j = 0; j < activePlatforms.Length; j++)
+			foreach (var platform in activePlatforms)
 			{
-				if (activePlatforms[j] != null &&
-					activePlatforms[j].Status != PlatformState.InStasis &&
-					activePlatforms[j].Tag == line.Tag)
+				if (platform != null &&
+				    platform.Status != PlatformState.InStasis &&
+				    platform.Tag == line.Tag)
 				{
-					activePlatforms[j].OldStatus = activePlatforms[j].Status;
-					activePlatforms[j].Status = PlatformState.InStasis;
-					activePlatforms[j].ThinkerState = ThinkerState.InStasis;
+					platform.OldStatus = platform.Status;
+					platform.Status = PlatformState.InStasis;
+					platform.ThinkerState = ThinkerState.InStasis;
 				}
 			}
 		}
@@ -1224,14 +1200,14 @@ namespace ManagedDoom
 				{
 					ok = false;
 
-					for (var i = 0; i < sector.Lines.Length; i++)
+					foreach (var sectorLine in sector.Lines.AsSpan())
 					{
-						if (((sector.Lines[i]).Flags & LineFlags.TwoSided) == 0)
+						if (((sectorLine).Flags & LineFlags.TwoSided) == 0)
 						{
 							continue;
 						}
 
-						var target = (sector.Lines[i]).FrontSector;
+						var target = sectorLine.FrontSector;
 						var newSectorNumber = target.Number;
 
 						if (sectorNumber != newSectorNumber)
@@ -1239,7 +1215,7 @@ namespace ManagedDoom
 							continue;
 						}
 
-						target = (sector.Lines[i]).BackSector;
+						target = (sectorLine).BackSector;
 						newSectorNumber = target.Number;
 
 						if (target.FloorFlat != texture)
@@ -1414,14 +1390,14 @@ namespace ManagedDoom
 
 		public void ActivateInStasisCeiling(LineDef line)
 		{
-			for (var i = 0; i < activeCeilings.Length; i++)
+			foreach (var ceiling in activeCeilings)
 			{
-				if (activeCeilings[i] != null &&
-					activeCeilings[i].Tag == line.Tag &&
-					activeCeilings[i].Direction == 0)
+				if (ceiling != null &&
+				    ceiling.Tag == line.Tag &&
+				    ceiling.Direction == 0)
 				{
-					activeCeilings[i].Direction = activeCeilings[i].OldDirection;
-					activeCeilings[i].ThinkerState = ThinkerState.Active;
+					ceiling.Direction = ceiling.OldDirection;
+					ceiling.ThinkerState = ThinkerState.Active;
 				}
 			}
 		}
@@ -1430,15 +1406,15 @@ namespace ManagedDoom
 		{
 			var result = false;
 
-			for (var i = 0; i < activeCeilings.Length; i++)
+			foreach (var ceiling in activeCeilings)
 			{
-				if (activeCeilings[i] != null &&
-					activeCeilings[i].Tag == line.Tag &&
-					activeCeilings[i].Direction != 0)
+				if (ceiling != null &&
+				    ceiling.Tag == line.Tag &&
+				    ceiling.Direction != 0)
 				{
-					activeCeilings[i].OldDirection = activeCeilings[i].Direction;
-					activeCeilings[i].ThinkerState = ThinkerState.InStasis;
-					activeCeilings[i].Direction = 0;
+					ceiling.OldDirection = ceiling.Direction;
+					ceiling.ThinkerState = ThinkerState.InStasis;
+					ceiling.Direction = 0;
 					result = true;
 				}
 			}
@@ -1564,17 +1540,15 @@ namespace ManagedDoom
 		{
 			var sectors = world.Map.Sectors;
 
-			for (var i = 0; i < sectors.Length; i++)
+			foreach (var sector in sectors)
 			{
-				var sector = sectors[i];
-
 				if (sector.Tag == line.Tag)
 				{
 					var min = sector.LightLevel;
 
-					for (var j = 0; j < sector.Lines.Length; j++)
+					foreach (var sectorLine in sector.Lines)
 					{
-						var target = GetNextSector(sector.Lines[j], sector);
+						var target = GetNextSector(sectorLine, sector);
 						if (target == null)
 						{
 							continue;
@@ -1595,32 +1569,28 @@ namespace ManagedDoom
 		{
 			var sectors = world.Map.Sectors;
 
-			for (var i = 0; i < sectors.Length; i++)
+			foreach (var sector in sectors)
 			{
-				var sector = sectors[i];
-
-				if (sector.Tag == line.Tag)
+				if (sector.Tag != line.Tag) continue;
+				// bright = 0 means to search for highest light level surrounding sector.
+				if (bright == 0)
 				{
-					// bright = 0 means to search for highest light level surrounding sector.
-					if (bright == 0)
+					foreach (var sectorLine in sector.Lines)
 					{
-						for (var j = 0; j < sector.Lines.Length; j++)
+						var target = GetNextSector(sectorLine, sector);
+						if (target == null)
 						{
-							var target = GetNextSector(sector.Lines[j], sector);
-							if (target == null)
-							{
-								continue;
-							}
+							continue;
+						}
 
-							if (target.LightLevel > bright)
-							{
-								bright = target.LightLevel;
-							}
+						if (target.LightLevel > bright)
+						{
+							bright = target.LightLevel;
 						}
 					}
-
-					sector.LightLevel = bright;
 				}
+
+				sector.LightLevel = bright;
 			}
 		}
 
@@ -1678,9 +1648,9 @@ namespace ManagedDoom
 					break;
 				}
 
-				for (var i = 0; i < s2.Lines.Length; i++)
+				foreach (var s2Line in s2.Lines)
 				{
-					var s3 = s2.Lines[i].BackSector;
+					var s3 = s2Line.BackSector;
 
 					if (s3 == s1)
 					{

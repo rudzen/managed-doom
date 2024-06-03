@@ -127,6 +127,13 @@ namespace ManagedDoom.Video
             screen.DrawPatch(cache[name], patchScale * x, patchScale * y, patchScale);
         }
 
+        private void DrawPatch(string name, in WorldMap.Point point)
+        {
+            var patchScale = screen.Width / 320;
+            screen.DrawPatch(cache[name], patchScale * point.X, patchScale * point.Y, patchScale);
+        }
+        
+
         private int GetWidth(string name)
         {
             return cache.GetWidth(name);
@@ -414,7 +421,6 @@ namespace ManagedDoom.Video
             }
         }
 
-
         private void DrawNoState(Intermission im)
         {
             DrawShowNextLoc(im);
@@ -440,25 +446,22 @@ namespace ManagedDoom.Video
                 // Draw a splat on taken cities.
                 for (var i = 0; i <= last; i++)
                 {
-                    var x = WorldMap.Locations[im.Info.Episode][i].X;
-                    var y = WorldMap.Locations[im.Info.Episode][i].Y;
-                    DrawPatch("WISPLAT", x, y);
+                    var p = WorldMap.Locations[im.Info.Episode][i];
+                    DrawPatch("WISPLAT", in p);
                 }
 
                 // Splat the secret level?
                 if (im.Info.DidSecret)
                 {
-                    var x = WorldMap.Locations[im.Info.Episode][8].X;
-                    var y = WorldMap.Locations[im.Info.Episode][8].Y;
-                    DrawPatch("WISPLAT", x, y);
+                    var p = WorldMap.Locations[im.Info.Episode][8];
+                    DrawPatch("WISPLAT", in p);
                 }
 
                 // Draw "you are here".
                 if (im.ShowYouAreHere)
                 {
-                    var x = WorldMap.Locations[im.Info.Episode][im.Info.NextLevel].X;
-                    var y = WorldMap.Locations[im.Info.Episode][im.Info.NextLevel].Y;
-                    DrawSuitablePatch(youAreHere, x, y);
+                    var p = WorldMap.Locations[im.Info.Episode][im.Info.NextLevel];
+                    DrawSuitablePatch(youAreHere, p.X, p.Y);
                 }
             }
 

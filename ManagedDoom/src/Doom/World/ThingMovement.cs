@@ -545,8 +545,8 @@ namespace ManagedDoom
         }
 
 
-        private static readonly Fixed stopSpeed = new Fixed(0x1000);
-        private static readonly Fixed friction = new Fixed(0xe800);
+        private static readonly Fixed stopSpeed = new(0x1000);
+        private static readonly Fixed friction = new(0xe800);
 
         public void XYMovement(Mobj thing)
         {

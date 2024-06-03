@@ -50,7 +50,7 @@ namespace ManagedDoom
                 for (var i = 0; i < palettes.Length; i++)
                     palettes[i] = new uint[256];
 
-                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {
@@ -72,9 +72,9 @@ namespace ManagedDoom
                     var g = data[colorOffset + 1];
                     var b = data[colorOffset + 2];
 
-                    r = (byte)Math.Round(255 * CorrectionCurve(r / 255.0, p));
-                    g = (byte)Math.Round(255 * CorrectionCurve(g / 255.0, p));
-                    b = (byte)Math.Round(255 * CorrectionCurve(b / 255.0, p));
+                    r = (byte)Math.Round(255 * CorrectionCurve(r / 255.0, in p));
+                    g = (byte)Math.Round(255 * CorrectionCurve(g / 255.0, in p));
+                    b = (byte)Math.Round(255 * CorrectionCurve(b / 255.0, in p));
 
                     palettes[i][j] = (uint)((r << 0) | (g << 8) | (b << 16) | (255 << 24));
                 }
@@ -82,7 +82,7 @@ namespace ManagedDoom
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double CorrectionCurve(double x, double p)
+        private static double CorrectionCurve(double x, in double p)
         {
             return Math.Pow(x, p);
         }
