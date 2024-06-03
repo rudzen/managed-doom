@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,27 +21,40 @@ namespace ManagedDoom
 
         private void InitLookup(Wad wad)
         {
-            textures = new List<Texture>();
+            textures = [];
             nameToTexture = new Dictionary<string, Texture>();
             nameToNumber = new Dictionary<string, int>();
 
             for (var n = 1; n <= 2; n++)
             {
-                var lumpNumber = wad.GetLumpNumber("TEXTURE" + n);
+                var lumpNumber = wad.GetLumpNumber($"TEXTURE{n}");
                 if (lumpNumber == -1)
                     break;
 
-                var data = wad.ReadLump(lumpNumber);
-                var count = BitConverter.ToInt32(data, 0);
-                for (var i = 0; i < count; i++)
+                var lumpSize = wad.GetLumpSize(lumpNumber);
+
+                var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+                try
                 {
-                    var offset = BitConverter.ToInt32(data, 4 + 4 * i);
-                    var name = Texture.GetName(data, offset);
-                    var height = Texture.GetHeight(data, offset);
-                    var texture = DummyData.GetTexture(height);
-                    nameToNumber.TryAdd(name, textures.Count);
-                    textures.Add(texture);
-                    nameToTexture.TryAdd(name, texture);
+                    var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                    wad.ReadLump(lumpNumber, lumpBuffer);
+
+                    var count = BitConverter.ToInt32(lumpBuffer);
+                    for (var i = 0; i < count; i++)
+                    {
+                        var offset = BitConverter.ToInt32(lumpBuffer.Slice(4 + 4 * i, 4));
+                        var name = Texture.GetName(lumpBuffer.Slice(offset));
+                        var height = Texture.GetHeight(lumpBuffer, offset);
+                        var texture = DummyData.GetTexture(height);
+                        nameToNumber.TryAdd(name, textures.Count);
+                        textures.Add(texture);
+                        nameToTexture.TryAdd(name, texture);
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(lumpData);
                 }
             }
         }
@@ -58,6 +72,7 @@ namespace ManagedDoom
                     list.Add(texNum2);
                 }
             }
+
             switchList = list.ToArray();
         }
 
