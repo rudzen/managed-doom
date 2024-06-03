@@ -13,7 +13,6 @@
 //
 
 
-
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -28,20 +27,16 @@ namespace ManagedDoom
     public static class DeHackEd
     {
         private sealed record SourcePointTable(Action<World, Player, PlayerSpriteDef> PlayerAction, Action<World, Mobj> MobjAction);
-        
+
         private static SourcePointTable[] sourcePointerTable;
 
         public static void Initialize(CommandLineArgs args, Wad wad)
         {
             if (args.deh.Present)
-            {
                 ReadFiles(args.deh.Value);
-            }
 
             if (!args.nodeh.Present)
-            {
                 ReadDeHackEdLump(wad);
-            }
         }
 
         private static void ReadFiles(params string[] fileNames)
@@ -61,12 +56,12 @@ namespace ManagedDoom
                     ProcessLines(File.ReadLines(fileName));
                 }
 
-                Console.WriteLine("OK (" + string.Join(", ", fileNames.Select(Path.GetFileName)) + ") [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {
                 Console.WriteLine("Failed");
-                throw new Exception("Failed to apply DeHackEd patch: " + lastFileName, e);
+                throw new Exception($"Failed to apply DeHackEd patch: {lastFileName}", e);
             }
         }
 
@@ -75,24 +70,24 @@ namespace ManagedDoom
             var start = Stopwatch.GetTimestamp();
             var lump = wad.GetLumpNumber("DEHACKED");
 
-            if (lump != -1)
+            if (lump == -1)
+                return;
+
+            // Ensure the static members are initialized.
+            DoomInfo.Strings.PRESSKEY.GetHashCode();
+
+            try
             {
-                // Ensure the static members are initialized.
-                DoomInfo.Strings.PRESSKEY.GetHashCode();
+                Console.Write("Load DeHackEd patch from WAD: ");
 
-                try
-                {
-                    Console.Write("Load DeHackEd patch from WAD: ");
+                ProcessLines(ReadLines(wad.ReadLump(lump)));
 
-                    ProcessLines(ReadLines(wad.ReadLump(lump)));
-
-                    Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Failed");
-                    throw new Exception("Failed to apply DeHackEd patch!", e);
-                }
+                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed");
+                throw new Exception("Failed to apply DeHackEd patch!", e);
             }
         }
 
@@ -101,9 +96,7 @@ namespace ManagedDoom
             using var ms = new MemoryStream(data);
             using var sr = new StreamReader(ms);
             for (var line = sr.ReadLine(); line != null; line = sr.ReadLine())
-            {
                 yield return line;
-            }
         }
 
         private static void ProcessLines(IEnumerable<string> lines)
@@ -147,6 +140,7 @@ namespace ManagedDoom
                     lastBlockLine = lineNumber;
                 }
             }
+
             ProcessBlock(lastBlock, data, lastBlockLine);
         }
 
@@ -196,7 +190,7 @@ namespace ManagedDoom
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to process block: " + type + " (line " + lineNumber + ")", e);
+                throw new Exception($"Failed to process block: {type} (line {lineNumber})", e);
             }
         }
 
@@ -257,6 +251,7 @@ namespace ManagedDoom
             {
                 return;
             }
+
             var info = DoomInfo.States[targetFrameNumber];
 
             info.PlayerAction = sourcePointerTable[sourceFrameNumber].PlayerAction;
@@ -393,7 +388,8 @@ namespace ManagedDoom
                 }
                 else
                 {
-                    var value = line.Trim().Replace("\\n", "\n"); ;
+                    var value = line.Trim().Replace("\\n", "\n");
+                    ;
                     if (value.Last() != '\\')
                     {
                         sb!.Append(value);
@@ -457,46 +453,57 @@ namespace ManagedDoom
             {
                 return Block.Frame;
             }
+
             if (IsPointerBlockStart(split))
             {
                 return Block.Pointer;
             }
+
             if (IsSoundBlockStart(split))
             {
                 return Block.Sound;
             }
+
             if (IsAmmoBlockStart(split))
             {
                 return Block.Ammo;
             }
+
             if (IsWeaponBlockStart(split))
             {
                 return Block.Weapon;
             }
+
             if (IsCheatBlockStart(split))
             {
                 return Block.Cheat;
             }
+
             if (IsMiscBlockStart(split))
             {
                 return Block.Misc;
             }
+
             if (IsTextBlockStart(split))
             {
                 return Block.Text;
             }
+
             if (IsSpriteBlockStart(split))
             {
                 return Block.Sprite;
             }
+
             if (IsBexStringsBlockStart(split))
             {
                 return Block.BexStrings;
             }
+
             if (IsBexParsBlockStart(split))
             {
                 return Block.BexPars;
             }
+
             return Block.None;
         }
 
@@ -744,6 +751,7 @@ namespace ManagedDoom
                     dic[split[0].Trim()] = split[1].Trim();
                 }
             }
+
             return dic;
         }
 
@@ -759,7 +767,6 @@ namespace ManagedDoom
 
             return defaultValue;
         }
-
 
 
         private enum Block

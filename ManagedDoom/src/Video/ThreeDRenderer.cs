@@ -130,7 +130,6 @@ namespace ManagedDoom.Video
             projection = centerXFrac;
         }
 
-
         ////////////////////////////////////////////////////////////
         // Wall rendering
         ////////////////////////////////////////////////////////////
@@ -156,10 +155,8 @@ namespace ManagedDoom.Video
             {
                 int t;
 
-                if (Trig.Tan(i) > Fixed.FromInt(2))
-                {
+                if (Trig.Tan(i) > Fixed.IntTwo)
                     t = -1;
-                }
                 else if (Trig.Tan(i) < Fixed.FromInt(-2))
                 {
                     t = windowWidth + 1;
@@ -781,36 +778,22 @@ namespace ManagedDoom.Video
             // Find the corners of the box that define the edges from
             // current viewpoint.
             if (viewX <= bbox[Box.Left])
-            {
                 bx = 0;
-            }
             else if (viewX < bbox[Box.Right])
-            {
                 bx = 1;
-            }
             else
-            {
                 bx = 2;
-            }
 
             if (viewY >= bbox[Box.Top])
-            {
                 by = 0;
-            }
             else if (viewY > bbox[Box.Bottom])
-            {
                 by = 1;
-            }
             else
-            {
                 by = 2;
-            }
 
             var viewPos = (by << 2) + bx;
             if (viewPos == 5)
-            {
                 return true;
-            }
 
             var x1 = bbox[viewPosToFrustumTangent[viewPos][0]];
             var y1 = bbox[viewPosToFrustumTangent[viewPos][1]];
@@ -825,9 +808,7 @@ namespace ManagedDoom.Video
 
             // Sitting on a line?
             if (span >= Angle.Ang180)
-            {
                 return true;
-            }
 
             var tSpan1 = angle1 + clipAngle;
 
@@ -837,9 +818,7 @@ namespace ManagedDoom.Video
 
                 // Totally off the left edge?
                 if (tSpan1 >= span)
-                {
                     return false;
-                }
 
                 angle1 = clipAngle;
             }
@@ -851,9 +830,7 @@ namespace ManagedDoom.Video
 
                 // Totally off the left edge?
                 if (tSpan2 >= span)
-                {
                     return false;
-                }
 
                 angle2 = -clipAngle;
             }
@@ -865,23 +842,17 @@ namespace ManagedDoom.Video
 
             // Does not cross a pixel.
             if (sx1 == sx2)
-            {
                 return false;
-            }
 
             sx2--;
 
             var start = 0;
             while (clipRanges[start].Last < sx2)
-            {
                 start++;
-            }
 
+            // The clippost contains the new span.
             if (sx1 >= clipRanges[start].First && sx2 <= clipRanges[start].Last)
-            {
-                // The clippost contains the new span.
                 return false;
-            }
 
             return true;
         }
@@ -899,9 +870,7 @@ namespace ManagedDoom.Video
 
             // Back side? I.e. backface culling?
             if (span >= Angle.Ang180)
-            {
                 return;
-            }
 
             // Global angle needed by segcalc.
             var rwAngle1 = angle1;
@@ -916,9 +885,7 @@ namespace ManagedDoom.Video
 
                 // Totally off the left edge?
                 if (tSpan1 >= span)
-                {
                     return;
-                }
 
                 angle1 = clipAngle;
             }
@@ -930,9 +897,7 @@ namespace ManagedDoom.Video
 
                 // Totally off the left edge?
                 if (tSpan2 >= span)
-                {
                     return;
-                }
 
                 angle2 = -clipAngle;
             }
@@ -943,9 +908,7 @@ namespace ManagedDoom.Video
 
             // Does not cross a pixel?
             if (x1 == x2)
-            {
                 return;
-            }
 
             var frontSector = seg.FrontSector;
             var backSector = seg.BackSector;
@@ -1002,9 +965,7 @@ namespace ManagedDoom.Video
             // Find the first range that touches the range
             // (adjacent pixels are touching).
             while (clipRanges[start].Last < x1 - 1)
-            {
                 start++;
-            }
 
             if (x1 < clipRanges[start].First)
             {
@@ -1018,7 +979,7 @@ namespace ManagedDoom.Video
 
                     while (next != start)
                     {
-                        clipRanges[next].CopyFrom(clipRanges[next - 1]);
+                        clipRanges[next].CopyFrom(in clipRanges[next - 1]);
                         next--;
                     }
 
@@ -1036,9 +997,7 @@ namespace ManagedDoom.Video
 
             // Bottom contained in start?
             if (x2 <= clipRanges[start].Last)
-            {
                 return;
-            }
 
             next = start;
             while (x2 >= clipRanges[next + 1].First - 1)
@@ -1074,7 +1033,7 @@ namespace ManagedDoom.Video
             while (next++ != clipRangeCount)
             {
                 // Remove a post.
-                clipRanges[++start].CopyFrom(clipRanges[next]);
+                clipRanges[++start].CopyFrom(in clipRanges[next]);
             }
 
             clipRangeCount = start + 1;
@@ -1510,17 +1469,9 @@ namespace ManagedDoom.Video
             {
                 lowerWallTexture = textures[world.Specials.TextureTranslation[side.BottomTexture]];
                 lowerWallWidthMask = lowerWallTexture.Width - 1;
-
-                if ((line.Flags & LineFlags.DontPegBottom) != 0)
-                {
-                    lowerTextureAlt = worldFrontZ1;
-                }
-                else
-                {
-                    lowerTextureAlt = worldBackZ2;
-                }
-
-                lowerTextureAlt += side.RowOffset;
+                lowerTextureAlt = (line.Flags & LineFlags.DontPegBottom) != 0
+                    ? worldFrontZ1 + side.RowOffset
+                    : worldBackZ2 + side.RowOffset;
             }
 
             //
@@ -1531,9 +1482,7 @@ namespace ManagedDoom.Video
 
             var offsetAngle = Angle.Abs(rwNormalAngle - rwAngle1);
             if (offsetAngle > Angle.Ang90)
-            {
                 offsetAngle = Angle.Ang90;
-            }
 
             var distAngle = Angle.Ang90 - offsetAngle;
 
@@ -1569,20 +1518,14 @@ namespace ManagedDoom.Video
             {
                 var textureOffsetAngle = rwNormalAngle - rwAngle1;
                 if (textureOffsetAngle > Angle.Ang180)
-                {
                     textureOffsetAngle = -textureOffsetAngle;
-                }
 
                 if (textureOffsetAngle > Angle.Ang90)
-                {
                     textureOffsetAngle = Angle.Ang90;
-                }
 
                 rwOffset = hypotenuse * Trig.Sin(textureOffsetAngle);
                 if (rwNormalAngle - rwAngle1 < Angle.Ang180)
-                {
                     rwOffset = -rwOffset;
-                }
 
                 rwOffset += seg.Offset + side.TextureOffset;
 
@@ -1590,13 +1533,9 @@ namespace ManagedDoom.Video
 
                 var wallLightLevel = (frontSector.LightLevel >> lightSegShift) + extraLight;
                 if (seg.Vertex1.Y == seg.Vertex2.Y)
-                {
                     wallLightLevel--;
-                }
                 else if (seg.Vertex1.X == seg.Vertex2.X)
-                {
                     wallLightLevel++;
-                }
 
                 wallLights = scaleLight[Math.Clamp(wallLightLevel, 0, lightLevelCount - 1)];
             }
@@ -1674,7 +1613,6 @@ namespace ManagedDoom.Video
 
             visWallRange.UpperClip = -1;
             visWallRange.LowerClip = -1;
-            visWallRange.Silhouette = 0;
 
             if (frontSectorFloorHeight > backSectorFloorHeight)
             {
@@ -1686,6 +1624,8 @@ namespace ManagedDoom.Video
                 visWallRange.Silhouette = Silhouette.Lower;
                 visWallRange.LowerSilHeight = Fixed.MaxValue;
             }
+            else
+                visWallRange.Silhouette = Silhouette.None;
 
             if (frontSectorCeilingHeight < backSectorCeilingHeight)
             {
@@ -1779,14 +1719,10 @@ namespace ManagedDoom.Video
                     var wy2 = Math.Min(drawUpperWallY2, lowerClip[x] - 1);
                     var source = upperWallTexture!.Composite.Columns[textureColumn & upperWallWidthMask];
                     if (source.Length > 0)
-                    {
                         DrawColumn(source[0], wallLights![lightIndex], x, wy1, wy2, invScale, uperTextureAlt);
-                    }
 
                     if (upperClip[x] < wy2)
-                    {
                         upperClip[x] = (short)wy2;
-                    }
 
                     portalY1Frac += portalY1Step;
                 }
@@ -1797,9 +1733,7 @@ namespace ManagedDoom.Video
                     DrawCeilingColumn(frontSector, ceilingFlat, planeLights, x, cy1, cy2, frontSectorCeilingHeight);
 
                     if (upperClip[x] < cy2)
-                    {
                         upperClip[x] = (short)cy2;
-                    }
                 }
 
                 if (drawLowerWall)
@@ -1811,9 +1745,7 @@ namespace ManagedDoom.Video
                     var wy2 = Math.Min(drawLowerWallY2, lowerClip[x] - 1);
                     var source = lowerWallTexture!.Composite.Columns[textureColumn & lowerWallWidthMask];
                     if (source.Length > 0)
-                    {
                         DrawColumn(source[0], wallLights![lightIndex], x, wy1, wy2, invScale, lowerTextureAlt);
-                    }
 
                     if (drawFloor)
                     {
@@ -2205,10 +2137,9 @@ namespace ManagedDoom.Video
             floorPrevY2 = y2;
         }
 
-
         private void DrawColumn(
             Column column,
-            byte[] map,
+            ReadOnlySpan<byte> map,
             int x,
             int y1,
             int y2,
@@ -2216,9 +2147,7 @@ namespace ManagedDoom.Video
             Fixed textureAlt)
         {
             if (y2 - y1 < 0)
-            {
                 return;
-            }
 
             // Framebuffer destination address.
             // Use ylookup LUT to avoid multiply with ScreenWidth.
@@ -2246,8 +2175,8 @@ namespace ManagedDoom.Video
 
         private void DrawColumnTranslation(
             Column column,
-            byte[] translation,
-            byte[] map,
+            ReadOnlySpan<byte> translation,
+            ReadOnlySpan<byte> map,
             int x,
             int y1,
             int y2,
@@ -2255,9 +2184,7 @@ namespace ManagedDoom.Video
             Fixed textureAlt)
         {
             if (y2 - y1 < 0)
-            {
                 return;
-            }
 
             // Framebuffer destination address.
             // Use ylookup LUT to avoid multiply with ScreenWidth.
@@ -2329,7 +2256,7 @@ namespace ManagedDoom.Video
 
         private void DrawMaskedColumn(
             Column[] columns,
-            byte[] map,
+            ReadOnlySpan<byte> map,
             int x,
             Fixed topY,
             Fixed scale,
@@ -2358,8 +2285,8 @@ namespace ManagedDoom.Video
 
         private void DrawMaskedColumnTranslation(
             Column[] columns,
-            byte[] translation,
-            byte[] map,
+            ReadOnlySpan<byte> translation,
+            ReadOnlySpan<byte> map,
             int x,
             Fixed topY,
             Fixed scale,
@@ -2387,7 +2314,7 @@ namespace ManagedDoom.Video
         }
 
         private void DrawMaskedFuzzColumn(
-            Column[] columns,
+            ReadOnlySpan<Column> columns,
             int x,
             Fixed topY,
             Fixed scale,
@@ -2405,9 +2332,7 @@ namespace ManagedDoom.Video
                 y2 = Math.Min(y2, lowerClip - 1);
 
                 if (y1 <= y2)
-                {
                     DrawFuzzColumn(column, x, y1, y2);
-                }
             }
         }
 
@@ -2715,17 +2640,17 @@ namespace ManagedDoom.Video
             }
             else if (((int)(sprite.MobjFlags & MobjFlags.Translation) >> (int)MobjFlags.TransShift) != 0)
             {
-                byte[] translation;
+                Span<byte> translation;
                 switch (((int)(sprite.MobjFlags & MobjFlags.Translation) >> (int)MobjFlags.TransShift))
                 {
                     case 1:
-                        translation = greenToGray;
+                        translation = greenToGray.AsSpan();
                         break;
                     case 2:
-                        translation = greenToBrown;
+                        translation = greenToBrown.AsSpan();
                         break;
                     default:
-                        translation = greenToRed;
+                        translation = greenToRed.AsSpan();
                         break;
                 }
 
@@ -2786,18 +2711,14 @@ namespace ManagedDoom.Video
 
             // Off the right side?
             if (x1 > windowWidth)
-            {
                 return;
-            }
 
             tx += Fixed.FromInt(lump.Width);
             var x2 = ((centerXFrac + tx * weaponScale).Data >> Fixed.FracBits) - 1;
 
             // Off the left side?
             if (x2 < 0)
-            {
                 return;
-            }
 
             // Store information in a vissprite.
             var vis = weaponSprite;
@@ -2820,36 +2741,25 @@ namespace ManagedDoom.Video
             }
 
             if (vis.X1 > x1)
-            {
                 vis.StartFrac += vis.InvScale * (vis.X1 - x1);
-            }
 
             vis.Patch = lump;
 
             if (fixedColorMap == 0)
-            {
-                if ((psp.State.Frame & 0x8000) == 0)
-                {
-                    vis.ColorMap = spriteLights[maxScaleLight - 1];
-                }
-                else
-                {
-                    vis.ColorMap = colorMap.FullBright;
-                }
-            }
+                vis.ColorMap = (psp.State.Frame & 0x8000) == 0
+                    ? spriteLights[maxScaleLight - 1]
+                    : colorMap.FullBright;
             else
-            {
                 vis.ColorMap = colorMap[fixedColorMap];
-            }
 
             if (fuzz)
             {
                 var frac = vis.StartFrac;
                 for (var x = vis.X1; x <= vis.X2; x++)
                 {
-                    var texturecolumn = frac.Data >> Fixed.FracBits;
+                    var textureColumn = frac.Data >> Fixed.FracBits;
                     DrawMaskedFuzzColumn(
-                        vis.Patch.Columns[texturecolumn],
+                        vis.Patch.Columns[textureColumn],
                         x,
                         centerYFrac - (vis.TextureAlt * vis.Scale),
                         vis.Scale,
@@ -2926,19 +2836,19 @@ namespace ManagedDoom.Video
         }
 
 
-        private class ClipRange
+        private struct ClipRange
         {
             public int First;
             public int Last;
 
-            public void CopyFrom(ClipRange range)
+            public void CopyFrom(in ClipRange range)
             {
                 First = range.First;
                 Last = range.Last;
             }
         }
 
-        private class VisWallRange
+        private sealed class VisWallRange
         {
             public Seg Seg;
 
@@ -2966,12 +2876,13 @@ namespace ManagedDoom.Video
         [Flags]
         private enum Silhouette
         {
+            None = 0,
             Upper = 1,
             Lower = 2,
             Both = 3
         }
 
-        private class VisSprite
+        private sealed class VisSprite
         {
             public int X1;
             public int X2;
@@ -3001,7 +2912,7 @@ namespace ManagedDoom.Video
             public MobjFlags MobjFlags;
         }
 
-        private class VisSpriteComparer : IComparer<VisSprite>
+        private sealed class VisSpriteComparer : IComparer<VisSprite>
         {
             public int Compare(VisSprite x, VisSprite y)
             {

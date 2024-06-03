@@ -15,6 +15,7 @@
 
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom
 {
@@ -23,7 +24,7 @@ namespace ManagedDoom
         public static readonly Fixed MeleeRange = Fixed.FromInt(64);
         public static readonly Fixed MissileRange = Fixed.FromInt(32 * 64);
 
-        public static readonly Fixed WeaponTop = Fixed.FromInt(32);
+        private static readonly Fixed WeaponTop = Fixed.FromInt(32);
         public static readonly Fixed WeaponBottom = Fixed.FromInt(128);
 
         private static readonly Fixed RaiseSpeed = Fixed.FromInt(6);
@@ -33,19 +34,18 @@ namespace ManagedDoom
 
         private Fixed currentBulletSlope;
 
-
         public WeaponBehavior(World world)
         {
             this.world = world;
         }
 
-
-        public void Light0(Player player)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Light0(Player player)
         {
             player.ExtraLight = 0;
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WeaponReady(Player player, PlayerSpriteDef psp)
         {
             var pb = world.PlayerBehavior;
@@ -87,9 +87,7 @@ namespace ManagedDoom
                 }
             }
             else
-            {
                 player.AttackDown = false;
-            }
 
             // Bob the weapon based on movement speed.
             var angle = (128 * player.Mobj.World.LevelTime) & Trig.FineMask;
@@ -99,34 +97,23 @@ namespace ManagedDoom
             psp.Sy = WeaponTop + player.Bob * Trig.Sin(angle);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CheckAmmo(Player player)
         {
             var ammo = DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo;
 
             // Minimal amount for one shot varies.
-            int count;
-            if (player.ReadyWeapon == WeaponType.Bfg)
+            var count = player.ReadyWeapon switch
             {
-                count = DoomInfo.DeHackEdConst.BfgCellsPerShot;
-            }
-            else if (player.ReadyWeapon == WeaponType.SuperShotgun)
-            {
-                // Double barrel.
-                count = 2;
-            }
-            else
-            {
-                // Regular.
-                count = 1;
-            }
+                WeaponType.Bfg          => DoomInfo.DeHackEdConst.BfgCellsPerShot,
+                WeaponType.SuperShotgun => 2, // double barrel
+                _                       => 1  // regular
+            };
 
             // Some do not need ammunition anyway.
             // Return if current ammunition sufficient.
             if (ammo == AmmoType.NoAmmo || player.Ammo[(int)ammo] >= count)
-            {
                 return true;
-            }
 
             // Out of ammo, pick a weapon to change to.
             // Preferences are set here.
@@ -139,18 +126,18 @@ namespace ManagedDoom
                     player.PendingWeapon = WeaponType.Plasma;
                 }
                 else if (player.WeaponOwned[(int)WeaponType.SuperShotgun] &&
-                    player.Ammo[(int)AmmoType.Shell] > 2 &&
-                    world.Options.GameMode == GameMode.Commercial)
+                         player.Ammo[(int)AmmoType.Shell] > 2 &&
+                         world.Options.GameMode == GameMode.Commercial)
                 {
                     player.PendingWeapon = WeaponType.SuperShotgun;
                 }
                 else if (player.WeaponOwned[(int)WeaponType.Chaingun] &&
-                    player.Ammo[(int)AmmoType.Clip] > 0)
+                         player.Ammo[(int)AmmoType.Clip] > 0)
                 {
                     player.PendingWeapon = WeaponType.Chaingun;
                 }
                 else if (player.WeaponOwned[(int)WeaponType.Shotgun] &&
-                    player.Ammo[(int)AmmoType.Shell] > 0)
+                         player.Ammo[(int)AmmoType.Shell] > 0)
                 {
                     player.PendingWeapon = WeaponType.Shotgun;
                 }
@@ -163,13 +150,13 @@ namespace ManagedDoom
                     player.PendingWeapon = WeaponType.Chainsaw;
                 }
                 else if (player.WeaponOwned[(int)WeaponType.Missile] &&
-                    player.Ammo[(int)AmmoType.Missile] > 0)
+                         player.Ammo[(int)AmmoType.Missile] > 0)
                 {
                     player.PendingWeapon = WeaponType.Missile;
                 }
                 else if (player.WeaponOwned[(int)WeaponType.Bfg] &&
-                    player.Ammo[(int)AmmoType.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
-                    world.Options.GameMode != GameMode.Shareware)
+                         player.Ammo[(int)AmmoType.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
+                         world.Options.GameMode != GameMode.Shareware)
                 {
                     player.PendingWeapon = WeaponType.Bfg;
                 }
@@ -178,7 +165,6 @@ namespace ManagedDoom
                     // If everything fails.
                     player.PendingWeapon = WeaponType.Fist;
                 }
-
             } while (player.PendingWeapon == WeaponType.NoChange);
 
             // Now set appropriate weapon overlay.
@@ -190,7 +176,7 @@ namespace ManagedDoom
             return false;
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RecursiveSound(Sector sec, int soundblocks, Mobj soundtarget, int validCount)
         {
             // Wake up all monsters in this sector.
@@ -209,35 +195,27 @@ namespace ManagedDoom
             foreach (var check in sec.Lines.AsSpan())
             {
                 if ((check.Flags & LineFlags.TwoSided) == 0)
-                {
                     continue;
-                }
 
                 mc.LineOpening(check);
 
+                // Closed door.
                 if (mc.OpenRange <= Fixed.Zero)
-                {
-                    // Closed door.
                     continue;
-                }
 
                 var other = check.FrontSide.Sector == sec ? check.BackSide.Sector : check.FrontSide.Sector;
 
                 if ((check.Flags & LineFlags.SoundBlock) != 0)
                 {
                     if (soundblocks == 0)
-                    {
                         RecursiveSound(other, 1, soundtarget, validCount);
-                    }
                 }
                 else
-                {
                     RecursiveSound(other, soundblocks, soundtarget, validCount);
-                }
             }
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void NoiseAlert(Mobj target, Mobj emmiter)
         {
             RecursiveSound(
@@ -247,13 +225,11 @@ namespace ManagedDoom
                 world.GetNewValidCount());
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FireWeapon(Player player)
         {
             if (!CheckAmmo(player))
-            {
                 return;
-            }
 
             player.Mobj.SetState(MobjState.PlayAtk1);
 
@@ -263,16 +239,14 @@ namespace ManagedDoom
             NoiseAlert(player.Mobj, player.Mobj);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Lower(Player player, PlayerSpriteDef psp)
         {
             psp.Sy += LowerSpeed;
 
             // Is already down.
             if (psp.Sy < WeaponBottom)
-            {
                 return;
-            }
 
             // Player is dead.
             if (player.PlayerState == PlayerState.Dead)
@@ -299,15 +273,13 @@ namespace ManagedDoom
             pb.BringUpWeapon(player);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Raise(Player player, PlayerSpriteDef psp)
         {
             psp.Sy -= RaiseSpeed;
 
             if (psp.Sy > WeaponTop)
-            {
                 return;
-            }
 
             psp.Sy = WeaponTop;
 
@@ -317,17 +289,14 @@ namespace ManagedDoom
             world.PlayerBehavior.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Punch(Player player)
         {
             var random = world.Random;
 
             var damage = (random.Next() % 10 + 1) << 1;
-
             if (player.Powers[(int)PowerType.Strength] != 0)
-            {
                 damage *= 10;
-            }
 
             var hs = world.Hitscan;
 
@@ -337,15 +306,15 @@ namespace ManagedDoom
             var slope = hs.AimLineAttack(player.Mobj, angle, MeleeRange);
             hs.LineAttack(player.Mobj, angle, MeleeRange, slope, damage);
 
-            // Turn to face target.
-            if (hs.LineTarget != null)
-            {
-                world.StartSound(player.Mobj, Sfx.PUNCH, SfxType.Weapon);
+            // Do we need to turn to face target?
+            if (hs.LineTarget == null)
+                return;
 
-                player.Mobj.Angle = Geometry.PointToAngle(
-                    player.Mobj.X, player.Mobj.Y,
-                    hs.LineTarget.X, hs.LineTarget.Y);
-            }
+            world.StartSound(player.Mobj, Sfx.PUNCH, SfxType.Weapon);
+
+            player.Mobj.Angle = Geometry.PointToAngle(
+                player.Mobj.X, player.Mobj.Y,
+                hs.LineTarget.X, hs.LineTarget.Y);
         }
 
 
@@ -382,30 +351,22 @@ namespace ManagedDoom
                 // The code below is based on Mocha Doom's implementation.
                 // It is still unclear for me why this code works like the original verion...
                 if ((int)(targetAngle - player.Mobj.Angle).Data < -Angle.Ang90.Data / 20)
-                {
                     player.Mobj.Angle = targetAngle + Angle.Ang90 / 21;
-                }
                 else
-                {
                     player.Mobj.Angle -= Angle.Ang90 / 20;
-                }
             }
             else
             {
                 if (targetAngle - player.Mobj.Angle > Angle.Ang90 / 20)
-                {
                     player.Mobj.Angle = targetAngle - Angle.Ang90 / 21;
-                }
                 else
-                {
                     player.Mobj.Angle += Angle.Ang90 / 20;
-                }
             }
 
             player.Mobj.Flags |= MobjFlags.JustAttacked;
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReFire(Player player)
         {
             // Check for fire.
@@ -424,7 +385,7 @@ namespace ManagedDoom
             }
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void BulletSlope(Mobj mo)
         {
             var hs = world.Hitscan;
@@ -434,36 +395,33 @@ namespace ManagedDoom
 
             currentBulletSlope = hs.AimLineAttack(mo, angle, Fixed.FromInt(1024));
 
-            if (hs.LineTarget == null)
-            {
-                angle += new Angle(1 << 26);
-                currentBulletSlope = hs.AimLineAttack(mo, angle, Fixed.FromInt(1024));
-                if (hs.LineTarget == null)
-                {
-                    angle -= new Angle(2 << 26);
-                    currentBulletSlope = hs.AimLineAttack(mo, angle, Fixed.FromInt(1024));
-                }
-            }
+            if (hs.LineTarget != null)
+                return;
+
+            angle += new Angle(1 << 26);
+            currentBulletSlope = hs.AimLineAttack(mo, angle, Fixed.FromInt(1024));
+
+            if (hs.LineTarget != null)
+                return;
+
+            angle -= new Angle(2 << 26);
+            currentBulletSlope = hs.AimLineAttack(mo, angle, Fixed.FromInt(1024));
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GunShot(Mobj mo, bool accurate)
         {
             var random = world.Random;
-
             var damage = 5 * (random.Next() % 3 + 1);
 
             var angle = mo.Angle;
-
             if (!accurate)
-            {
                 angle += new Angle((random.Next() - random.Next()) << 18);
-            }
 
             world.Hitscan.LineAttack(mo, angle, MissileRange, currentBulletSlope, damage);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FirePistol(Player player)
         {
             world.StartSound(player.Mobj, Sfx.PISTOL, SfxType.Weapon);
@@ -482,13 +440,13 @@ namespace ManagedDoom
             GunShot(player.Mobj, player.Refire == 0);
         }
 
-
-        public void Light1(Player player)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Light1(Player player)
         {
             player.ExtraLight = 1;
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FireShotgun(Player player)
         {
             world.StartSound(player.Mobj, Sfx.SHOTGN, SfxType.Weapon);
@@ -510,21 +468,19 @@ namespace ManagedDoom
             }
         }
 
-
-        public void Light2(Player player)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Light2(Player player)
         {
             player.ExtraLight = 2;
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FireCGun(Player player, PlayerSpriteDef psp)
         {
             world.StartSound(player.Mobj, Sfx.PISTOL, SfxType.Weapon);
 
             if (player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo] == 0)
-            {
                 return;
-            }
 
             player.Mobj.SetState(MobjState.PlayAtk2);
 
@@ -541,7 +497,7 @@ namespace ManagedDoom
             GunShot(player.Mobj, player.Refire == 0);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FireShotgun2(Player player)
         {
             world.StartSound(player.Mobj, Sfx.DSHTGN, SfxType.Weapon);
@@ -574,32 +530,32 @@ namespace ManagedDoom
             }
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CheckReload(Player player)
         {
             CheckAmmo(player);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OpenShotgun2(Player player)
         {
             world.StartSound(player.Mobj, Sfx.DBOPN, SfxType.Weapon);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LoadShotgun2(Player player)
         {
             world.StartSound(player.Mobj, Sfx.DBLOAD, SfxType.Weapon);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CloseShotgun2(Player player)
         {
             world.StartSound(player.Mobj, Sfx.DBCLS, SfxType.Weapon);
             ReFire(player);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GunFlash(Player player)
         {
             player.Mobj.SetState(MobjState.PlayAtk2);
@@ -610,7 +566,7 @@ namespace ManagedDoom
                 DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FireMissile(Player player)
         {
             player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
@@ -618,7 +574,7 @@ namespace ManagedDoom
             world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Rocket);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FirePlasma(Player player)
         {
             player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
@@ -631,13 +587,13 @@ namespace ManagedDoom
             world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Plasma);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void A_BFGsound(Player player)
         {
             world.StartSound(player.Mobj, Sfx.BFG, SfxType.Weapon);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FireBFG(Player player)
         {
             player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
@@ -645,7 +601,7 @@ namespace ManagedDoom
             world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Bfg);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void BFGSpray(Mobj bfgBall)
         {
             var hs = world.Hitscan;
@@ -660,9 +616,7 @@ namespace ManagedDoom
                 hs.AimLineAttack(bfgBall.Target, an, Fixed.FromInt(16 * 64));
 
                 if (hs.LineTarget == null)
-                {
                     continue;
-                }
 
                 world.ThingAllocation.SpawnMobj(
                     hs.LineTarget.X,
@@ -672,9 +626,7 @@ namespace ManagedDoom
 
                 var damage = 0;
                 for (var j = 0; j < 15; j++)
-                {
                     damage += (random.Next() & 7) + 1;
-                }
 
                 world.ThingInteraction.DamageMobj(
                     hs.LineTarget,

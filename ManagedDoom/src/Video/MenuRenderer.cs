@@ -23,16 +23,13 @@ namespace ManagedDoom.Video
     {
         private static readonly char[] cursor = ['_'];
 
-        private Wad wad;
         private readonly DrawScreen screen;
 
         private readonly PatchCache cache;
 
         public MenuRenderer(Wad wad, DrawScreen screen)
         {
-            this.wad = wad;
             this.screen = screen;
-
             cache = new PatchCache(wad);
         }
 

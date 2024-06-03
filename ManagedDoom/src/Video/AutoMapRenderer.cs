@@ -254,25 +254,16 @@ namespace ManagedDoom.Video
             {
                 var player = players[i];
                 if (options.Deathmatch != 0 && !options.DemoPlayback && player != consolePlayer)
-                {
                     continue;
-                }
 
                 if (!player.InGame)
-                {
                     continue;
-                }
 
-                int color;
-                if (player.Powers[(int)PowerType.Invisibility] > 0)
-                {
-                    // Close to black.
-                    color = 246;
-                }
-                else
-                {
-                    color = playerColors[i];
-                }
+                const int closeToBlack = 246;
+                // Close to black or set base player color
+                var color = player.Powers[(int)PowerType.Invisibility] > 0
+                    ? closeToBlack
+                    : playerColors[i];
 
                 DrawCharacter(player.Mobj, playerArrow, color);
             }

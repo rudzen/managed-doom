@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -26,15 +25,18 @@ namespace ManagedDoom
         public const int FracBits = 16;
         public const int FracUnit = 1 << FracBits;
 
-        public static readonly Fixed Zero = new(0);
-        public static readonly Fixed One = new(FracUnit);
+        public static Fixed Zero => new(0);
+        public static Fixed One => new(FracUnit);
 
-        public static readonly Fixed MaxValue = new(int.MaxValue);
-        public static readonly Fixed MinValue = new(int.MinValue);
+        public static Fixed IntTwo => FromInt(2);
+        public static Fixed IntMinusTwo => FromInt(-2);
 
-        public static readonly Fixed Epsilon = new(1);
-        public static readonly Fixed OnePlusEpsilon = new(FracUnit + 1);
-        public static readonly Fixed OneMinusEpsilon = new(FracUnit - 1);
+        public static Fixed MaxValue => new(int.MaxValue);
+        public static Fixed MinValue => new(int.MinValue);
+
+        public static Fixed Epsilon => new(1);
+        public static Fixed OnePlusEpsilon => new(FracUnit + 1);
+        public static Fixed OneMinusEpsilon => new(FracUnit - 1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Fixed(int data)
@@ -112,7 +114,7 @@ namespace ManagedDoom
         {
             return new Fixed((int)((a.Data * (long)b.Data) >> FracBits));
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fixed operator *(int a, Fixed b)
         {
@@ -174,7 +176,7 @@ namespace ManagedDoom
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fixed operator >>(Fixed a, int b)
+        public static Fixed operator >> (Fixed a, int b)
         {
             return new Fixed(a.Data >> b);
         }

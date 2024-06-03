@@ -16,7 +16,7 @@
 
 namespace ManagedDoom
 {
-    public enum GameSkill
+    public enum GameSkill : byte
     {
         Baby,
         Easy,

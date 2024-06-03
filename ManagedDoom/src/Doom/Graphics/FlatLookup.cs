@@ -14,13 +14,14 @@
 //
 
 
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom
 {
@@ -57,17 +58,11 @@ namespace ManagedDoom
                 fEndCount + ffEndCount >= 2;
 
             if (standard || customFlatTrick)
-            {
                 InitStandard(wad);
-            }
             else if (deutexMerge)
-            {
                 InitDeuTexMerge(wad);
-            }
             else
-            {
                 throw new Exception("Failed to read flats.");
-            }
         }
 
         private void InitStandard(Wad wad)
@@ -85,7 +80,7 @@ namespace ManagedDoom
 
                 nameToFlat = new Dictionary<string, Flat>();
                 nameToNumber = new Dictionary<string, int>();
-                
+
                 for (var lump = firstFlat; lump <= lastFlat; lump++)
                 {
                     if (wad.GetLumpSize(lump) != 4096)
@@ -126,34 +121,27 @@ namespace ManagedDoom
                     if (flatZone)
                     {
                         if (name is "F_END" or "FF_END")
-                        {
                             flatZone = false;
-                        }
                         else
-                        {
                             allFlats.Add(lump);
-                        }
                     }
-                    else
-                    {
-                        if (name is "F_START" or "FF_START")
-                        {
-                            flatZone = true;
-                        }
-                    }
+                    else if (name is "F_START" or "FF_START")
+                        flatZone = true;
                 }
+
                 allFlats.Reverse();
 
                 var dupCheck = new HashSet<string>();
                 var distinctFlats = new List<int>();
                 foreach (var lump in allFlats)
                 {
-                    if (!dupCheck.Contains(wad.LumpInfos[lump].Name))
-                    {
-                        distinctFlats.Add(lump);
-                        dupCheck.Add(wad.LumpInfos[lump].Name);
-                    }
+                    if (dupCheck.Contains(wad.LumpInfos[lump].Name))
+                        continue;
+
+                    distinctFlats.Add(lump);
+                    dupCheck.Add(wad.LumpInfos[lump].Name);
                 }
+
                 distinctFlats.Reverse();
 
                 flats = new Flat[distinctFlats.Count];
@@ -181,7 +169,7 @@ namespace ManagedDoom
                 SkyFlatNumber = nameToNumber["F_SKY1"];
                 SkyFlat = nameToFlat["F_SKY1"];
 
-                Console.WriteLine("OK (" + nameToFlat.Count + " flats)");
+                Console.WriteLine($"OK ({nameToFlat.Count} flats)");
             }
             catch (Exception e)
             {
@@ -192,7 +180,9 @@ namespace ManagedDoom
 
         public int GetNumber(string name)
         {
-            if (nameToNumber.TryGetValue(name, out var number))
+            ref var number = ref CollectionsMarshal.GetValueRefOrNullRef(nameToNumber, name);
+
+            if (!Unsafe.IsNullRef(ref number))
                 return number;
 
             return -1;
@@ -217,7 +207,6 @@ namespace ManagedDoom
         public Flat this[int num] => flats[num];
         public Flat this[string name] => nameToFlat[name];
         public int SkyFlatNumber { get; private set; }
-
         public Flat SkyFlat { get; private set; }
     }
 }

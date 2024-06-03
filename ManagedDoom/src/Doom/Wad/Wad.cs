@@ -143,6 +143,19 @@ namespace ManagedDoom
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public (int, int) GetLumpNumberAndSize(string name)
+        {
+            var lumpSpan = CollectionsMarshal.AsSpan(lumpInfos);
+            for (var i = lumpSpan.Length - 1; i >= 0; i--)
+            {
+                if (lumpSpan[i].Name == name)
+                    return (i, lumpSpan[i].Size);
+            }
+
+            return (-1, -1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetLumpSize(int number)
         {
             return lumpInfos[number].Size;
@@ -249,7 +262,7 @@ namespace ManagedDoom
 
             return gameMode != default;
         }
-        
+
         private static MissionPack GetMissionPack(IReadOnlyList<string> names)
         {
             foreach (var name in names)
@@ -263,7 +276,7 @@ namespace ManagedDoom
         private static bool TryGetMissionPack(ReadOnlySpan<char> name, out MissionPack missionPack)
         {
             missionPack = default;
-            
+
             Span<char> lower = stackalloc char[name.Length];
             name.ToLower(lower, CultureInfo.InvariantCulture);
 

@@ -31,18 +31,16 @@ namespace ManagedDoom
                 Console.Write("Load texture animation info: ");
                 var start = Stopwatch.GetTimestamp();
 
-                var list = new List<TextureAnimationInfo>();
+                var list = new List<TextureAnimationInfo>(DoomInfo.TextureAnimation.Length);
 
-                foreach (var animDef in DoomInfo.TextureAnimation)
+                foreach (var animDef in DoomInfo.TextureAnimation.AsSpan())
                 {
                     int picNum;
                     int basePic;
                     if (animDef.IsTexture)
                     {
                         if (textures.GetNumber(animDef.StartName) == -1)
-                        {
                             continue;
-                        }
 
                         picNum = textures.GetNumber(animDef.EndName);
                         basePic = textures.GetNumber(animDef.StartName);
@@ -50,9 +48,7 @@ namespace ManagedDoom
                     else
                     {
                         if (flats.GetNumber(animDef.StartName) == -1)
-                        {
                             continue;
-                        }
 
                         picNum = flats.GetNumber(animDef.EndName);
                         basePic = flats.GetNumber(animDef.StartName);
@@ -66,16 +62,14 @@ namespace ManagedDoom
                         animDef.Speed);
 
                     if (anim.NumPics < 2)
-                    {
-                        throw new Exception("Bad animation cycle from " + animDef.StartName + " to " + animDef.EndName + "!");
-                    }
+                        throw new Exception($"Bad animation cycle from {animDef.StartName} to {animDef.EndName}!");
 
                     list.Add(anim);
                 }
 
                 Animations = list.ToArray();
 
-                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {

@@ -16,4 +16,4 @@
 
 namespace ManagedDoom;
 
-public sealed record AnimationDef(bool IsTexture, string EndName, string StartName, int Speed);
+public sealed record AnimationDef(bool IsTexture, string EndName, string StartName, int Speed = 8);

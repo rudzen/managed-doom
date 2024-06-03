@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 
 namespace ManagedDoom
 {
@@ -448,14 +449,8 @@ namespace ManagedDoom
                 Write(data, p + 240, player.ColorMap);
                 for (var i = 0; i < (int)PlayerSprite.Count; i++)
                 {
-                    if (player.PlayerSprites[i].State == null)
-                    {
-                        Write(data, p + 244 + 16 * i, 0);
-                    }
-                    else
-                    {
-                        Write(data, p + 244 + 16 * i, player.PlayerSprites[i].State.Number);
-                    }
+                    var number = player.PlayerSprites[i].State == null ? 0 : player.PlayerSprites[i].State.Number;
+                    Write(data, p + 244 + 16 * i, number);
                     Write(data, p + 244 + 16 * i + 4, player.PlayerSprites[i].Tics);
                     Write(data, p + 244 + 16 * i + 8, player.PlayerSprites[i].Sx.Data);
                     Write(data, p + 244 + 16 * i + 12, player.PlayerSprites[i].Sy.Data);
@@ -565,9 +560,7 @@ namespace ManagedDoom
 
                 var version = ReadVersion();
                 if (version != "VERSION 109")
-                {
                     throw new Exception("Unsupported version!");
-                }
             }
 
             public void Load(DoomGame game)
@@ -577,9 +570,7 @@ namespace ManagedDoom
                 options.Episode = data[ptr++];
                 options.Map = data[ptr++];
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
                     options.Players[i].InGame = data[ptr++] != 0;
-                }
 
                 game.InitNew(options.Skill, options.Episode, options.Map);
 
@@ -610,14 +601,14 @@ namespace ManagedDoom
 
             private string ReadDescription()
             {
-                var value = DoomInterop.ToString(data, ptr, DescriptionSize);
+                var value = DoomInterop.ToString(data.AsSpan(ptr, DescriptionSize));
                 ptr += DescriptionSize;
                 return value;
             }
 
             private string ReadVersion()
             {
-                var value = DoomInterop.ToString(data, ptr, versionSize);
+                var value = DoomInterop.ToString(data.AsSpan(ptr, versionSize));
                 ptr += versionSize;
                 return value;
             }
@@ -628,9 +619,7 @@ namespace ManagedDoom
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
                     if (!players[i].InGame)
-                    {
                         continue;
-                    }
 
                     PadPointer();
 
@@ -641,18 +630,12 @@ namespace ManagedDoom
             private void UnArchiveWorld(World world)
             {
                 // Do sectors.
-                var sectors = world.Map.Sectors;
-                for (var i = 0; i < sectors.Length; i++)
-                {
-                    ptr = UnArchiveSector(sectors[i], data, ptr);
-                }
+                foreach (var sector in world.Map.Sectors.AsSpan())
+                    ptr = UnArchiveSector(sector, data, ptr);
 
                 // Do lines.
-                var lines = world.Map.Lines;
-                for (var i = 0; i < lines.Length; i++)
-                {
-                    ptr = UnArchiveLine(lines[i], data, ptr);
-                }
+                foreach (var line in world.Map.Lines.AsSpan())
+                    ptr = UnArchiveLine(line, data, ptr);
             }
 
             private void UnArchiveThinkers(World world)
@@ -953,50 +936,47 @@ namespace ManagedDoom
                 return p + 280;
             }
 
-            private static int UnArchiveSector(Sector sector, byte[] data, int p)
+            private static int UnArchiveSector(Sector sector, ReadOnlySpan<byte> data, int ptr)
             {
-                sector.FloorHeight = Fixed.FromInt(BitConverter.ToInt16(data, p));
-                sector.CeilingHeight = Fixed.FromInt(BitConverter.ToInt16(data, p + 2));
-                sector.FloorFlat = BitConverter.ToInt16(data, p + 4);
-                sector.CeilingFlat = BitConverter.ToInt16(data, p + 6);
-                sector.LightLevel = BitConverter.ToInt16(data, p + 8);
-                sector.Special = (SectorSpecial)BitConverter.ToInt16(data, p + 10);
-                sector.Tag = BitConverter.ToInt16(data, p + 12);
+                var root = data.Slice(ptr, 14);
+                sector.FloorHeight = Fixed.FromInt(BitConverter.ToInt16(root[..2]));
+                sector.CeilingHeight = Fixed.FromInt(BitConverter.ToInt16(root.Slice(2, 2)));
+                sector.FloorFlat = BitConverter.ToInt16(root.Slice(4, 2));
+                sector.CeilingFlat = BitConverter.ToInt16(root.Slice(6, 2));
+                sector.LightLevel = BitConverter.ToInt16(root.Slice(8, 2));
+                sector.Special = (SectorSpecial)BitConverter.ToInt16(root.Slice(10, 2));
+                sector.Tag = BitConverter.ToInt16(root.Slice(12, 2));
                 sector.SpecialData = null;
                 sector.SoundTarget = null;
-                return p + 14;
+                return ptr + 14;
             }
 
-            private static int UnArchiveLine(LineDef line, byte[] data, int p)
+            private static int UnArchiveLine(LineDef line, ReadOnlySpan<byte> data, int p)
             {
-                line.Flags = (LineFlags)BitConverter.ToInt16(data, p);
-                line.Special = (LineSpecial)BitConverter.ToInt16(data, p + 2);
-                line.Tag = BitConverter.ToInt16(data, p + 4);
+                var root = data.Slice(p, 6);
+                line.Flags = (LineFlags)BitConverter.ToInt16(root[..2]);
+                line.Special = (LineSpecial)BitConverter.ToInt16(data.Slice(2, 2));
+                line.Tag = BitConverter.ToInt16(data.Slice(4, 2));
                 p += 6;
 
                 if (line.FrontSide != null)
-                {
-                    var side = line.FrontSide;
-                    side.TextureOffset = Fixed.FromInt(BitConverter.ToInt16(data, p));
-                    side.RowOffset = Fixed.FromInt(BitConverter.ToInt16(data, p + 2));
-                    side.TopTexture = BitConverter.ToInt16(data, p + 4);
-                    side.BottomTexture = BitConverter.ToInt16(data, p + 6);
-                    side.MiddleTexture = BitConverter.ToInt16(data, p + 8);
-                    p += 10;
-                }
+                    p = PopulateLine(line.FrontSide, data, p);
 
                 if (line.BackSide != null)
-                {
-                    var side = line.BackSide;
-                    side.TextureOffset = Fixed.FromInt(BitConverter.ToInt16(data, p));
-                    side.RowOffset = Fixed.FromInt(BitConverter.ToInt16(data, p + 2));
-                    side.TopTexture = BitConverter.ToInt16(data, p + 4);
-                    side.BottomTexture = BitConverter.ToInt16(data, p + 6);
-                    side.MiddleTexture = BitConverter.ToInt16(data, p + 8);
-                    p += 10;
-                }
+                    p = PopulateLine(line.BackSide, data, p);
 
                 return p;
+
+                static int PopulateLine(SideDef side, ReadOnlySpan<byte> root, int p)
+                {
+                    root = root.Slice(p, 10);
+                    side.TextureOffset = Fixed.FromInt(BitConverter.ToInt16(root[..2]));
+                    side.RowOffset = Fixed.FromInt(BitConverter.ToInt16(root.Slice(2, 2)));
+                    side.TopTexture = BitConverter.ToInt16(root.Slice(4, 2));
+                    side.BottomTexture = BitConverter.ToInt16(root.Slice(6, 2));
+                    side.MiddleTexture = BitConverter.ToInt16(root.Slice(8, 2));
+                    return p + 10;
+                }
             }
         }
     }

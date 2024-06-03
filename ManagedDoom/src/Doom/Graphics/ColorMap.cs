@@ -37,8 +37,7 @@ namespace ManagedDoom
 
                 const string lump = "COLORMAP";
 
-                var lumpNumber = wad.GetLumpNumber(lump);
-                var lumpSize = wad.GetLumpSize(lumpNumber);
+                var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
 
                 var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
 
