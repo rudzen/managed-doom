@@ -33,8 +33,8 @@ namespace ManagedDoom
                     _                    => Doom2[mapNumber]
                 };
             }
-            
-            public static readonly IReadOnlyList<IReadOnlyList<DoomString>> Doom = new DoomString[][]
+
+            public static IReadOnlyList<IReadOnlyList<DoomString>> Doom => new DoomString[][]
             {
                 [
                     Strings.HUSTR_E1M1,

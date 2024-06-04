@@ -44,8 +44,8 @@ namespace ManagedDoom
                 var options = world.Options;
 
                 var name = wad.GameMode == GameMode.Commercial
-                    ? "MAP" + options.Map.ToString("00")
-                    : "E" + options.Episode + "M" + options.Map;
+                    ? $"MAP{options.Map:00}"
+                    : $"E{options.Episode}M{options.Map}";
 
                 Console.Write($"Load map '{name}': ");
 
@@ -104,10 +104,12 @@ namespace ManagedDoom
 
                 foreach (var line in Lines)
                 {
-                    if (line.FrontSector != sector && line.BackSector != sector) continue;
+                    if (line.FrontSector != sector && line.BackSector != sector)
+                        continue;
+                    
                     sectorLines.Add(line);
-                    Box.AddPoint(boundingBox, line.Vertex1.X, line.Vertex1.Y);
-                    Box.AddPoint(boundingBox, line.Vertex2.X, line.Vertex2.Y);
+                    Box.AddPoint(boundingBox, line.Vertex1);
+                    Box.AddPoint(boundingBox, line.Vertex2);
                 }
 
                 sector.Lines = sectorLines.ToArray();

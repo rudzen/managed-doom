@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Video;
 using ManagedDoom.UserInput;
@@ -380,13 +381,14 @@ namespace ManagedDoom
                             throw new Exception("Demo playback is not initialized!");
                         
                         var result = DemoPlayback.Update();
-                        if (result == UpdateResult.NeedWipe)
+                        switch (result)
                         {
-                            StartWipe();
-                        }
-                        else if (result == UpdateResult.Completed)
-                        {
-                            Quit($"FPS: {DemoPlayback.Fps:0.0}");
+                            case UpdateResult.NeedWipe:
+                                StartWipe();
+                                break;
+                            case UpdateResult.Completed:
+                                Quit($"FPS: {DemoPlayback.Fps:0.0}");
+                                break;
                         }
                         break;
 
@@ -398,9 +400,7 @@ namespace ManagedDoom
                             cmds[Options.ConsolePlayer].Buttons |= (byte)(TicCmdButtons.Special | TicCmdButtons.Pause);
                         }
                         if (Game.Update(cmds) == UpdateResult.NeedWipe)
-                        {
                             StartWipe();
-                        }
                         break;
 
                     default:
@@ -411,9 +411,7 @@ namespace ManagedDoom
             if (Wiping)
             {
                 if (WipeEffect.Update() == UpdateResult.Completed)
-                {
                     Wiping = false;
-                }
             }
 
             sound.Update();
@@ -425,19 +423,7 @@ namespace ManagedDoom
 
         private void CheckMouseState()
         {
-            bool mouseShouldBeGrabbed;
-            if (!video.HasFocus())
-            {
-                mouseShouldBeGrabbed = false;
-            }
-            else if (config.video_fullscreen)
-            {
-                mouseShouldBeGrabbed = true;
-            }
-            else
-            {
-                mouseShouldBeGrabbed = State == DoomState.Game && !Menu.Active;
-            }
+            var mouseShouldBeGrabbed = ShouldMouseBeGrabbed();
 
             if (mouseGrabbed)
             {
@@ -455,6 +441,12 @@ namespace ManagedDoom
                     mouseGrabbed = true;
                 }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool ShouldMouseBeGrabbed()
+        {
+            return video.HasFocus() && (config.video_fullscreen || State == DoomState.Game && !Menu.Active);
         }
 
         private void StartWipe()

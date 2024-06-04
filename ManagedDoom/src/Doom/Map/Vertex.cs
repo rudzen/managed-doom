@@ -16,6 +16,7 @@
 
 using System;
 using System.Buffers;
+using System.Numerics;
 
 namespace ManagedDoom
 {
@@ -29,18 +30,10 @@ namespace ManagedDoom
             this.Y = y;
         }
 
-        public static Vertex FromData(ReadOnlySpan<byte> data)
+        private static Vertex FromData(ReadOnlySpan<byte> data)
         {
             var x = BitConverter.ToInt16(data);
             var y = BitConverter.ToInt16(data.Slice(2, 2));
-
-            return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
-        }
-
-        public static Vertex FromData(byte[] data, int offset)
-        {
-            var x = BitConverter.ToInt16(data, offset);
-            var y = BitConverter.ToInt16(data, offset + 2);
 
             return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
         }

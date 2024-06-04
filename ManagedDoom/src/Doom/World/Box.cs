@@ -14,6 +14,8 @@
 //
 
 
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom
 {
     public static class Box
@@ -29,25 +31,20 @@ namespace ManagedDoom
             box[Bottom] = box[Left] = Fixed.MaxValue;
         }
 
-        public static void AddPoint(Fixed[] box, Fixed x, Fixed y)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void AddPoint(Fixed[] box, Vertex vertex)
         {
+            var x = vertex.X;
+            var y = vertex.Y;
             if (x < box[Left])
-            {
                 box[Left] = x;
-            }
             else if (x > box[Right])
-            {
                 box[Right] = x;
-            }
 
             if (y < box[Bottom])
-            {
                 box[Bottom] = y;
-            }
             else if (y > box[Top])
-            {
                 box[Top] = y;
-            }
         }
     }
 }

@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -71,33 +70,16 @@ namespace ManagedDoom.Silk
 
         private static IDecoder ReadData(byte[] data, bool loop)
         {
-            var isMus = true;
-            for (var i = 0; i < MusDecoder.MusHeader.Length; i++)
-            {
-                if (data[i] != MusDecoder.MusHeader[i])
-                {
-                    isMus = false;
-                }
-            }
+            var dataSpan = data.AsSpan();
+            var isMus = dataSpan[..MusDecoder.MusHeader.Length].SequenceEqual(MusDecoder.MusHeader);
 
             if (isMus)
-            {
                 return new MusDecoder(data, loop);
-            }
 
-            var isMidi = true;
-            for (var i = 0; i < MidiDecoder.MidiHeader.Length; i++)
-            {
-                if (data[i] != MidiDecoder.MidiHeader[i])
-                {
-                    isMidi = false;
-                }
-            }
+            var isMidi = dataSpan[..MidiDecoder.MidiHeader.Length].SequenceEqual(MidiDecoder.MidiHeader);
 
             if (isMidi)
-            {
                 return new MidiDecoder(data, loop);
-            }
 
             throw new Exception("Unknown format!");
         }
@@ -106,7 +88,9 @@ namespace ManagedDoom.Silk
         {
             Console.WriteLine("Shutdown music.");
 
-            if (stream == null) return;
+            if (stream is null)
+                return;
+
             stream.Dispose();
             stream = null;
         }
@@ -195,23 +179,21 @@ namespace ManagedDoom.Silk
 
             public void Dispose()
             {
-                if (audioStream == null) return;
+                if (audioStream is null)
+                    return;
+
                 audioStream.Stop();
                 audioStream.Dispose();
                 audioStream = null;
             }
         }
 
-
-
         private interface IDecoder
         {
             void RenderWaveform(Synthesizer synthesizer, Span<float> left, Span<float> right);
         }
 
-
-
-        private class MusDecoder : IDecoder
+        private sealed class MusDecoder : IDecoder
         {
             public const int SampleRate = 44100;
             public const int BlockLength = SampleRate / 140;
@@ -257,14 +239,12 @@ namespace ManagedDoom.Silk
                 instrumentCount = BitConverter.ToUInt16(data, 12);
                 instruments = new int[instrumentCount];
                 for (var i = 0; i < instruments.Length; i++)
-                {
                     instruments[i] = BitConverter.ToUInt16(data, 16 + 2 * i);
-                }
 
                 events = new MusEvent[128];
                 for (var i = 0; i < events.Length; i++)
                     events[i] = new MusEvent();
-                
+
                 eventCount = 0;
 
                 lastVolume = new int[16];
@@ -306,36 +286,29 @@ namespace ManagedDoom.Silk
             private void ProcessMidiEvents(Synthesizer synthesizer)
             {
                 if (delay > 0)
-                {
                     delay--;
-                }
 
-                if (delay == 0)
-                {
-                    delay = ReadSingleEventGroup();
-                    SendEvents(synthesizer);
+                if (delay != 0)
+                    return;
 
-                    if (delay == -1)
-                    {
-                        synthesizer.NoteOffAll(false);
+                delay = ReadSingleEventGroup();
+                SendEvents(synthesizer);
 
-                        if (loop)
-                        {
-                            Reset();
-                        }
-                    }
-                }
+                if (delay != -1)
+                    return;
+
+                synthesizer.NoteOffAll(false);
+
+                if (loop)
+                    Reset();
             }
 
             private void Reset()
             {
                 for (var i = 0; i < lastVolume.Length; i++)
-                {
                     lastVolume[i] = 0;
-                }
 
                 p = scoreStart;
-
                 delay = 0;
             }
 
@@ -346,14 +319,10 @@ namespace ManagedDoom.Silk
                 {
                     var result = ReadSingleEvent();
                     if (result == ReadResult.EndOfGroup)
-                    {
                         break;
-                    }
 
                     if (result == ReadResult.EndOfFile)
-                    {
                         return -1;
-                    }
                 }
 
                 var time = 0;
@@ -362,9 +331,7 @@ namespace ManagedDoom.Silk
                     var value = data[p++];
                     time = time * 128 + (value & 127);
                     if ((value & 128) == 0)
-                    {
                         break;
-                    }
                 }
 
                 return time;
@@ -374,13 +341,14 @@ namespace ManagedDoom.Silk
             {
                 var channelNumber = data[p] & 0xF;
 
-                if (channelNumber == 15)
+                switch (channelNumber)
                 {
-                    channelNumber = 9;
-                }
-                else if (channelNumber >= 9)
-                {
-                    channelNumber++;
+                    case 15:
+                        channelNumber = 9;
+                        break;
+                    case >= 9:
+                        channelNumber++;
+                        break;
                 }
 
                 var eventType = (data[p] & 0x70) >> 4;
@@ -414,9 +382,7 @@ namespace ManagedDoom.Silk
 
                         me.Data1 = noteNumber;
                         if (noteVolume == -1)
-                        {
                             me.Data2 = lastVolume[channelNumber];
-                        }
                         else
                         {
                             me.Data2 = noteVolume;
@@ -468,12 +434,9 @@ namespace ManagedDoom.Silk
                         throw new Exception("Unknown event type!");
                 }
 
-                if (last)
-                {
-                    return ReadResult.EndOfGroup;
-                }
-
-                return ReadResult.Ongoing;
+                return last
+                    ? ReadResult.EndOfGroup
+                    : ReadResult.Ongoing;
             }
 
             private void SendEvents(Synthesizer synthesizer)
@@ -506,6 +469,7 @@ namespace ManagedDoom.Silk
                                     synthesizer.ResetAllControllers(me.Channel);
                                     break;
                             }
+
                             break;
 
                         case 4: // CONTROL CHANGE
@@ -547,6 +511,7 @@ namespace ManagedDoom.Silk
                                     synthesizer.ProcessMidiMessage(me.Channel, 0xB0, 0x40, me.Data2);
                                     break;
                             }
+
                             break;
                     }
                 }
@@ -568,9 +533,7 @@ namespace ManagedDoom.Silk
             }
         }
 
-
-
-        private class MidiDecoder : IDecoder
+        private sealed class MidiDecoder : IDecoder
         {
             public static readonly byte[] MidiHeader =
             [
@@ -588,13 +551,12 @@ namespace ManagedDoom.Silk
             public MidiDecoder(byte[] data, bool loop)
             {
                 midi = new MidiFile(new MemoryStream(data));
-
                 this.loop = loop;
             }
 
             public void RenderWaveform(Synthesizer synthesizer, Span<float> left, Span<float> right)
             {
-                if (sequencer == null)
+                if (sequencer is null)
                 {
                     sequencer = new MidiFileSequencer(synthesizer);
                     sequencer.Play(midi, loop);

@@ -63,8 +63,7 @@ namespace ManagedDoom.Silk
                 window.Resize += OnResize;
                 window.Closing += OnClose;
 
-                var end = Stopwatch.GetElapsedTime(start);
-                Console.WriteLine("Startup time: " + end);
+                Console.WriteLine($"Startup time: [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {
@@ -76,9 +75,7 @@ namespace ManagedDoom.Silk
         private void Quit()
         {
             if (Exception != null)
-            {
                 ExceptionDispatchInfo.Throw(Exception);
-            }
         }
 
         private void OnLoad()
@@ -94,13 +91,9 @@ namespace ManagedDoom.Silk
             {
                 audioDevice = new AudioDevice();
                 if (!args.nosfx.Present)
-                {
                     sound = new SilkSound(config, content, audioDevice);
-                }
                 if (!args.nomusic.Present)
-                {
                     music = SilkConfigUtilities.GetMusicInstance(config, content, audioDevice);
-                }
             }
 
             userInput = new SilkUserInput(config, window, this, !args.nomouse.Present);
@@ -117,13 +110,8 @@ namespace ManagedDoom.Silk
             {
                 frameCount++;
 
-                if (frameCount % fpsScale == 0)
-                {
-                    if (doom.Update() == UpdateResult.Completed)
-                    {
-                        window.Close();
-                    }
-                }
+                if (frameCount % fpsScale == 0 && doom.Update() == UpdateResult.Completed)
+                    window.Close();
             }
             catch (Exception e)
             {
@@ -131,9 +119,7 @@ namespace ManagedDoom.Silk
             }
 
             if (Exception != null)
-            {
                 window.Close();
-            }
         }
 
         private void OnRender(double obj)
@@ -142,7 +128,7 @@ namespace ManagedDoom.Silk
             {
                 var frameFrac = Fixed.FromInt(frameCount % fpsScale + 1) / fpsScale;
                 video.Render(doom, frameFrac);
-                //Console.WriteLine("FPS: " + window.FramesPerSecond);
+                //Console.WriteLine($"FPS: {frameFrac}");
             }
             catch (Exception e)
             {

@@ -168,43 +168,31 @@ namespace ManagedDoom
                 // You can cycle through multiple states in a tic.
                 if (Tics == 0)
                 {
+                    // Freed itself.
                     if (!SetState(State.Next))
-                    {
-                        // Freed itself.
                         return;
-                    }
                 }
             }
             else
             {
                 // Check for nightmare respawn.
                 if ((Flags & MobjFlags.CountKill) == 0)
-                {
                     return;
-                }
 
                 var options = World.Options;
                 if (!(options.Skill == GameSkill.Nightmare || options.RespawnMonsters))
-                {
                     return;
-                }
 
                 MoveCount++;
 
                 if (MoveCount < 12 * 35)
-                {
                     return;
-                }
 
                 if ((World.LevelTime & 31) != 0)
-                {
                     return;
-                }
 
                 if (World.Random.Next() > 4)
-                {
                     return;
-                }
 
                 NightmareRespawn();
             }
@@ -295,9 +283,7 @@ namespace ManagedDoom
             mobj.Angle = sp.Angle;
 
             if ((sp.Flags & ThingFlags.Ambush) != 0)
-            {
                 mobj.Flags |= MobjFlags.Ambush;
-            }
 
             mobj.ReactionTime = 18;
 
