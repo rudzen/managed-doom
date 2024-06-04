@@ -1,11 +1,12 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class Miscellaneous
+public sealed class Miscellaneous(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void Altdeath()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DataPath, "altdeath_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();

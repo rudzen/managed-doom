@@ -1,6 +1,6 @@
 ﻿namespace ManagedDoom.Tests.UnitTests;
 
-public sealed class GeometryTest
+public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void PointOnSide1()
@@ -164,7 +164,9 @@ public sealed class GeometryTest
     [Fact]
     public void PointInSubsectorE1M1()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+
+        using var content = GameContent.CreateDummy(wadFile);
         var options = new GameOptions();
         var world = new World(content, options, null);
         var map = new Map(content, world);
@@ -213,7 +215,9 @@ public sealed class GeometryTest
     [Fact]
     public void PointInSubsectorMap01()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+
+        using var content = GameContent.CreateDummy(wadFile);
         var options = new GameOptions();
         var world = new World(content, options, null);
         var map = new Map(content, world);

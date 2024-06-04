@@ -1,13 +1,14 @@
 ﻿namespace ManagedDoom.Tests.UnitTests;
 
-public sealed class MapTest
+public sealed class MapTest(WadPath wadPath) : IClassFixture<WadPath>
 {
     private const double MaxRadius = 32;
 
     [Fact]
     public void LoadE1M1()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+        using var content = GameContent.CreateDummy(wadFile);
         var options = new GameOptions();
         var world = new World(content, options, null);
         var map = new Map(content, world);
@@ -52,7 +53,8 @@ public sealed class MapTest
     [Fact]
     public void LoadMap01()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wadFile);
         var options = new GameOptions();
         var world = new World(content, options, null);
         var map = new Map(content, world);

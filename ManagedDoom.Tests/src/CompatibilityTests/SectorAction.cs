@@ -1,13 +1,13 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class SectorAction
+public sealed class SectorAction(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void TeleporterTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "teleporter_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "teleporter_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "teleporter_test.lmp");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -33,10 +33,10 @@ public sealed class SectorAction
     [Fact]
     public void LocalDoorTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "localdoor_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "localdoor_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "localdoor_test.lmp");
 
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -68,10 +68,10 @@ public sealed class SectorAction
     [Fact]
     public void PlatformTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "platform_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "platform_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "platform_test.lmp");
 
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -103,10 +103,10 @@ public sealed class SectorAction
     [Fact]
     public void SilentCrusherTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "silent_crusher_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "silent_crusher_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "silent_crusher_test.lmp");
 
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);

@@ -1,12 +1,12 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class PlayerMovement
+public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void PlayerMovementTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "player_movement_test.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "player_movement_test.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "player_movement_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -33,8 +33,8 @@ public sealed class PlayerMovement
     [Fact]
     public void ThingCollisionTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "thing_collision_test.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "thing_collision_test.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "thing_collision_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -61,8 +61,8 @@ public sealed class PlayerMovement
     [Fact]
     public void AutoAimTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "autoaim_test.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "autoaim_test.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "autoaim_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();

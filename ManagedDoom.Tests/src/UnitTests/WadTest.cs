@@ -1,11 +1,12 @@
 ﻿namespace ManagedDoom.Tests.UnitTests;
 
-public sealed class WadTest
+public sealed class WadTest(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void LumpNumberDoom1()
     {
-        using var wad = new Wad(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+        using var wad = new Wad(wadFile);
         Assert.Equal(0, wad.GetLumpNumber("PLAYPAL"));
         Assert.Equal(1, wad.GetLumpNumber("COLORMAP"));
         Assert.Equal(7, wad.GetLumpNumber("E1M1"));
@@ -16,7 +17,8 @@ public sealed class WadTest
     [Fact]
     public void LumpNumberDoom2()
     {
-        using var wad = new Wad(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+        using var wad = new Wad(wadFile);
         Assert.Equal(0, wad.GetLumpNumber("PLAYPAL"));
         Assert.Equal(1, wad.GetLumpNumber("COLORMAP"));
         Assert.Equal(6, wad.GetLumpNumber("MAP01"));
@@ -27,7 +29,8 @@ public sealed class WadTest
     [Fact]
     public void FlatSizeDoom1()
     {
-        using var wad = new Wad(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+        using var wad = new Wad(wadFile);
         var start = wad.GetLumpNumber("F_START") + 1;
         var end = wad.GetLumpNumber("F_END");
         for (var lump = start; lump < end; lump++)
@@ -40,7 +43,8 @@ public sealed class WadTest
     [Fact]
     public void FlatSizeDoom2()
     {
-        using var wad = new Wad(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+        using var wad = new Wad(wadFile);
         var start = wad.GetLumpNumber("F_START") + 1;
         var end = wad.GetLumpNumber("F_END");
         for (var lump = start; lump < end; lump++)

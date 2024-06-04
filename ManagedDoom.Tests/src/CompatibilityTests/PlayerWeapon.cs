@@ -1,13 +1,13 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class PlayerWeapon
+public sealed class PlayerWeapon(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void PunchTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "punch_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "punch_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "punch_test.lmp");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -33,9 +33,9 @@ public sealed class PlayerWeapon
     [Fact]
     public void ChainsawTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "chainsaw_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "chainsaw_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "chainsaw_test.lmp");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -61,9 +61,9 @@ public sealed class PlayerWeapon
     [Fact]
     public void ShotgunTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "shotgun_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "shotgun_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "shotgun_test.lmp");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -89,9 +89,9 @@ public sealed class PlayerWeapon
     [Fact]
     public void SuperShotgunTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "supershotgun_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "supershotgun_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "supershotgun_test.lmp");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -117,10 +117,9 @@ public sealed class PlayerWeapon
     [Fact]
     public void ChaingunTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "chaingun_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "chaingun_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "chaingun_test.lmp");
-
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -146,10 +145,9 @@ public sealed class PlayerWeapon
     [Fact]
     public void RocketTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "rocket_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "rocket_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "rocket_test.lmp");
-
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -175,10 +173,10 @@ public sealed class PlayerWeapon
     [Fact]
     public void PlasmaTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "plasma_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "plasma_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "plasma_test.lmp");
 
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -204,10 +202,10 @@ public sealed class PlayerWeapon
     [Fact]
     public void BfgTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "bfg_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "bfg_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "bfg_test.lmp");
 
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -233,10 +231,10 @@ public sealed class PlayerWeapon
     [Fact]
     public void SkyShootTest()
     {
-        var wad = Path.Combine(WadPath.DataPath, "sky_shoot_test.wad");
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "sky_shoot_test.wad")];
         var demoFile = Path.Combine(WadPath.DataPath, "sky_shoot_test.lmp");
 
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);

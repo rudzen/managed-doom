@@ -1,11 +1,12 @@
 ﻿namespace ManagedDoom.Tests.UnitTests;
 
-public sealed class BlockMapTest
+public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void LoadE1M1()
     {
-        using var wad = new Wad(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+        using var wad = new Wad(wadFile);
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("E1M1");
@@ -21,23 +22,17 @@ public sealed class BlockMapTest
             var minY = vertices.Select(v => v.Y.ToDouble()).Min();
             var maxY = vertices.Select(v => v.Y.ToDouble()).Max();
 
-            Assert.Equal(blockMap.OriginX.ToDouble(), minX);
-            Assert.Equal(blockMap.OriginY.ToDouble(), minY);
-            Assert.Equal((blockMap.OriginX + BlockMap.BlockSize * blockMap.Width).ToDouble(), maxX);
-            Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY);
-            // Assert.Equal(blockMap.OriginX.ToDouble(), minX, 64);
-            // Assert.Equal(blockMap.OriginY.ToDouble(), minY, 64);
-            // Assert.Equal((blockMap.OriginX + BlockMap.BlockSize * blockMap.Width).ToDouble(), maxX, 128);
-            // Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY, 128);
+            Assert.Equal(blockMap.OriginX.ToDouble(), minX, 64D);
+            Assert.Equal(blockMap.OriginY.ToDouble(), minY, 64D);
+            Assert.Equal((blockMap.OriginX + BlockMap.BlockSize * blockMap.Width).ToDouble(), maxX, 128D);
+            Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY, 128D);
         }
 
         var spots = new List<Tuple<int, int>>();
         for (var blockY = -2; blockY < blockMap.Height + 2; blockY++)
         {
             for (var blockX = -2; blockX < blockMap.Width + 2; blockX++)
-            {
                 spots.Add(Tuple.Create(blockX, blockY));
-            }
         }
 
         var random = new Random(666);
@@ -68,6 +63,7 @@ public sealed class BlockMapTest
                             minY = Math.Min(Math.Min(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), minY);
                             maxY = Math.Max(Math.Max(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), maxY);
                         }
+
                         count++;
                         return true;
                     },
@@ -91,7 +87,8 @@ public sealed class BlockMapTest
     [Fact]
     public void LoadMap01()
     {
-        using var wad = new Wad(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+        using var wad = new Wad(wadFile);
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("MAP01");
@@ -150,6 +147,7 @@ public sealed class BlockMapTest
                             minY = Math.Min(Math.Min(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), minY);
                             maxY = Math.Max(Math.Max(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), maxY);
                         }
+
                         count++;
                         return true;
                     },

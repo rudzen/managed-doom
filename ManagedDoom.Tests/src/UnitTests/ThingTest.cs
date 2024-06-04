@@ -1,13 +1,15 @@
 ﻿namespace ManagedDoom.Tests.UnitTests;
 
-public sealed class ThingTest
+public sealed class ThingTest(WadPath wadPath) : IClassFixture<WadPath>
 {
     private const double delta = 1.0E-9;
 
     [Fact]
     public void LoadE1M1()
     {
-        using var wad = new Wad(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+
+        using var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("E1M1");
         var things = MapThing.FromWad(wad, map + 1);
 
@@ -35,7 +37,9 @@ public sealed class ThingTest
     [Fact]
     public void LoadMap01()
     {
-        using var wad = new Wad(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+
+        using var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("MAP01");
         var things = MapThing.FromWad(wad, map + 1);
 

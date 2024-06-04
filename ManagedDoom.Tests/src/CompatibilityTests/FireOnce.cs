@@ -1,11 +1,12 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class FireOnce
+public sealed class FireOnce(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void Map01()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var options = new GameOptions
         {
             Skill = GameSkill.Hard,

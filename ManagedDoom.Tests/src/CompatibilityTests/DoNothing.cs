@@ -1,11 +1,12 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class DoNothing
+public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void E1M1()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wad = wadPath.GetWadPath(WadFile.Doom1);
+        using var content = GameContent.CreateDummy(wad);
         var options = new GameOptions
         {
             Skill = GameSkill.Hard,
@@ -38,7 +39,8 @@ public sealed class DoNothing
     [Fact]
     public void Map01()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var options = new GameOptions
         {
             Skill = GameSkill.Hard,
@@ -66,7 +68,8 @@ public sealed class DoNothing
     [Fact]
     public void Map11Nomonsters()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var options = new GameOptions
         {
             Skill = GameSkill.Medium,

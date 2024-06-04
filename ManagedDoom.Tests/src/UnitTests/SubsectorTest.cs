@@ -1,11 +1,12 @@
 ﻿namespace ManagedDoom.Tests.UnitTests;
 
-public sealed class SubsectorTest
+public sealed class SubsectorTest(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void LoadE1M1()
     {
-        using var wad = new Wad(WadPath.Doom1);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom1);
+        using var wad = new Wad(wadFile);
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("E1M1");
@@ -34,7 +35,8 @@ public sealed class SubsectorTest
     [Fact]
     public void LoadMap01()
     {
-        using var wad = new Wad(WadPath.Doom2);
+        var wadFile = wadPath.GetWadPath(WadFile.Doom2);
+        using var wad = new Wad(wadFile);
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("MAP01");

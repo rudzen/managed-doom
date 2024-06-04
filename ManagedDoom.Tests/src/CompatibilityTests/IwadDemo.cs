@@ -1,12 +1,13 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class IwadDemo
+public sealed class IwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void Doom1SharewareDemo1()
     {
         const string lump = "DEMO1";
-        using var content = GameContent.CreateDummy(WadPath.Doom1Shareware);
+        var wad = wadPath.GetWadPath(WadFile.Doom1Shareware);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump(lump));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -39,7 +40,8 @@ public sealed class IwadDemo
     public void Doom1SharewareDemo2()
     {
         const string lump = "DEMO2";
-        using var content = GameContent.CreateDummy(WadPath.Doom1Shareware);
+        var wad = wadPath.GetWadPath(WadFile.Doom1Shareware);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump(lump));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -72,7 +74,8 @@ public sealed class IwadDemo
     public void Doom1SharewareDemo3()
     {
         const string lump = "DEMO3";
-        using var content = GameContent.CreateDummy(WadPath.Doom1Shareware);
+        var wad = wadPath.GetWadPath(WadFile.Doom1Shareware);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump(lump));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -105,7 +108,8 @@ public sealed class IwadDemo
     public void Doom1Demo1()
     {
         const string lump = "DEMO1";
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wad = wadPath.GetWadPath(WadFile.Doom1);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump(lump));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -138,7 +142,8 @@ public sealed class IwadDemo
     public void Doom1Demo2()
     {
         const string lump = "DEMO2";
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wad = wadPath.GetWadPath(WadFile.Doom1);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump(lump));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -171,7 +176,8 @@ public sealed class IwadDemo
     public void Doom1Demo3()
     {
         const string lump = "DEMO3";
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wad = wadPath.GetWadPath(WadFile.Doom1);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump(lump));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -203,7 +209,8 @@ public sealed class IwadDemo
     [Fact]
     public void Doom1Demo4()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom1);
+        var wad = wadPath.GetWadPath(WadFile.Doom1);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO4"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -235,7 +242,8 @@ public sealed class IwadDemo
     [Fact]
     public void Doom2Demo1()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -267,7 +275,8 @@ public sealed class IwadDemo
     [Fact]
     public void Doom2Demo2()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -299,7 +308,8 @@ public sealed class IwadDemo
     [Fact]
     public void Doom2Demo3_Final2()
     {
-        using var content = GameContent.CreateDummy(WadPath.Doom2);
+        var wad = wadPath.GetWadPath(WadFile.Doom2);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         demo.Options.GameVersion = GameVersion.Final2;
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -332,7 +342,8 @@ public sealed class IwadDemo
     [Fact]
     public void TntDemo1()
     {
-        using var content = GameContent.CreateDummy(WadPath.Tnt);
+        var wad = wadPath.GetWadPath(WadFile.Tnt);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -364,7 +375,8 @@ public sealed class IwadDemo
     [Fact]
     public void TntDemo2()
     {
-        using var content = GameContent.CreateDummy(WadPath.Tnt);
+        var wad = wadPath.GetWadPath(WadFile.Tnt);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -396,7 +408,8 @@ public sealed class IwadDemo
     [Fact]
     public void TntDemo3()
     {
-        using var content = GameContent.CreateDummy(WadPath.Tnt);
+        var wad = wadPath.GetWadPath(WadFile.Tnt);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -428,7 +441,8 @@ public sealed class IwadDemo
     [Fact]
     public void PlutoniaDemo1()
     {
-        using var content = GameContent.CreateDummy(WadPath.Plutonia);
+        var wad = wadPath.GetWadPath(WadFile.Plutonia);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -460,7 +474,8 @@ public sealed class IwadDemo
     [Fact]
     public void PlutoniaDemo2()
     {
-        using var content = GameContent.CreateDummy(WadPath.Plutonia);
+        var wad = wadPath.GetWadPath(WadFile.Plutonia);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -492,7 +507,8 @@ public sealed class IwadDemo
     [Fact]
     public void PlutoniaDemo3_Final2()
     {
-        using var content = GameContent.CreateDummy(WadPath.Plutonia);
+        var wad = wadPath.GetWadPath(WadFile.Plutonia);
+        using var content = GameContent.CreateDummy(wad);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"))
         {
             Options =

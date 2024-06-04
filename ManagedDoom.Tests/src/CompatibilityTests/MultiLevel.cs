@@ -1,12 +1,12 @@
 ﻿namespace ManagedDoom.Tests.CompatibilityTests;
 
-public sealed class MultiLevel
+public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
 {
     [Fact]
     public void MultiLevelTest_Doom1()
     {
-        var wad = Path.Combine(WadPath.DataPath, "multilevel_test_doom1.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom1, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom1), Path.Combine(WadPath.DataPath, "multilevel_test_doom1.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "multilevel_test_doom1.lmp");
         var demo = new Demo(demoFile)
         {
@@ -132,8 +132,8 @@ public sealed class MultiLevel
     [Fact]
     public void MultiLevelTest_Doom2()
     {
-        var wad = Path.Combine(WadPath.DataPath, "multilevel_test_doom2.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "multilevel_test_doom2.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "multilevel_test_doom2.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -253,8 +253,8 @@ public sealed class MultiLevel
     [Fact]
     public void FinaleTest1()
     {
-        var wad = Path.Combine(WadPath.DataPath, "finale_test.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "finale_test.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "finale_test1.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -314,8 +314,8 @@ public sealed class MultiLevel
     [Fact]
     public void FinaleTest2()
     {
-        var wad = Path.Combine(WadPath.DataPath, "finale_test.wad");
-        using var content = GameContent.CreateDummy(WadPath.Doom2, wad);
+        string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "finale_test.wad")];
+        using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "finale_test2.lmp");
         var demo = new Demo(demoFile);
         var cmds = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
