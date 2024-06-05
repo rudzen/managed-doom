@@ -59,12 +59,6 @@ public static partial class SaveAndLoad
         options.Sound.SetListener(game.World.ConsolePlayer.Mobj);
     }
 
-    private static int PadPointer(int ptr)
-    {
-        ptr += (4 - (ptr & 3)) & 3;
-        return ptr;
-    }
-
     private static int ReadDescription(Span<byte> data, int ptr, out string description)
     {
         description = DoomInterop.ToString(data.Slice(ptr, DescriptionSize));
