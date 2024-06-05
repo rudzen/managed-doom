@@ -17,6 +17,14 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ManagedDoom.Config;
+using ManagedDoom.Doom;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.Opening;
+using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Video
 {
@@ -88,7 +96,7 @@ namespace ManagedDoom.Video
             palette.ResetColors(in gammaCorrectionParameters[config.video_gammacorrection]);
         }
 
-        private void RenderDoom(Doom doom, Fixed frameFrac)
+        private void RenderDoom(Doom.Doom doom, Fixed frameFrac)
         {
             switch (doom.State)
             {
@@ -118,7 +126,7 @@ namespace ManagedDoom.Video
             }
         }
 
-        private void RenderMenu(Doom doom)
+        private void RenderMenu(Doom.Doom doom)
         {
             if (doom.Menu.Active)
             {
@@ -179,7 +187,7 @@ namespace ManagedDoom.Video
             }
         }
 
-        public void Render(Doom doom, byte[] destination, Fixed frameFrac)
+        public void Render(Doom.Doom doom, byte[] destination, Fixed frameFrac)
         {
             if (doom.Wiping)
             {
@@ -211,7 +219,7 @@ namespace ManagedDoom.Video
             WriteData(colors, destination);
         }
 
-        private void RenderWipe(Doom doom, byte[] destination)
+        private void RenderWipe(Doom.Doom doom, byte[] destination)
         {
             RenderDoom(doom, Fixed.One);
 

@@ -14,7 +14,10 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+
+namespace ManagedDoom.Doom.World
 {
     public sealed class Intercept
     {

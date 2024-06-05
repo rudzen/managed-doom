@@ -14,6 +14,8 @@
 //
 
 
-namespace ManagedDoom;
+using ManagedDoom.UserInput;
+
+namespace ManagedDoom.Doom.Event;
 
 public readonly record struct DoomEvent(EventType Type, DoomKey Key);

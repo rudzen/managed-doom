@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     [Flags]
     public enum CheatFlags

@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Math
 {
     public static partial class Trig
     {

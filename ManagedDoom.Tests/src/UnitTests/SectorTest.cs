@@ -1,4 +1,8 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Wad;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class SectorTest(WadPath wadPath) : IClassFixture<WadPath>
 {

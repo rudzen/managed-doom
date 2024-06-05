@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Menu
 {
     public abstract class MenuItem
     {

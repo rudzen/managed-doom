@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class FlatLookup : IFlatLookup
     {
@@ -32,7 +32,7 @@ namespace ManagedDoom
         private Dictionary<string, Flat> nameToFlat;
         private Dictionary<string, int> nameToNumber;
 
-        public FlatLookup(Wad wad)
+        public FlatLookup(Wad.Wad wad)
         {
             var fStartCount = CountLump(wad, "F_START");
             var fEndCount = CountLump(wad, "F_END");
@@ -65,7 +65,7 @@ namespace ManagedDoom
                 throw new Exception("Failed to read flats.");
         }
 
-        private void InitStandard(Wad wad)
+        private void InitStandard(Wad.Wad wad)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace ManagedDoom
             }
         }
 
-        private void InitDeuTexMerge(Wad wad)
+        private void InitDeuTexMerge(Wad.Wad wad)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace ManagedDoom
             return flats.GetEnumerator();
         }
 
-        private static int CountLump(Wad wad, string name)
+        private static int CountLump(Wad.Wad wad, string name)
         {
             return wad.LumpInfos.Count(lump => lump.Name == name);
         }

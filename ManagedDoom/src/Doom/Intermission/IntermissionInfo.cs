@@ -14,10 +14,9 @@
 //
 
 
+using ManagedDoom.Doom.Game;
 
-using System;
-
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Intermission
 {
     public class IntermissionInfo
     {
@@ -53,25 +52,25 @@ namespace ManagedDoom
 
         public int MaxKillCount
         {
-            get => Math.Max(maxKillCount, 1);
+            get => System.Math.Max(maxKillCount, 1);
             set => maxKillCount = value;
         }
 
         public int MaxItemCount
         {
-            get => Math.Max(maxItemCount, 1);
+            get => System.Math.Max(maxItemCount, 1);
             set => maxItemCount = value;
         }
 
         public int MaxSecretCount
         {
-            get => Math.Max(maxSecretCount, 1);
+            get => System.Math.Max(maxSecretCount, 1);
             set => maxSecretCount = value;
         }
 
         public int TotalFrags
         {
-            get => Math.Max(totalFrags, 1);
+            get => System.Math.Max(totalFrags, 1);
             set => totalFrags = value;
         }
 

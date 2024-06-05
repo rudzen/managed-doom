@@ -1,4 +1,6 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Wad;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class WadTest(WadPath wadPath) : IClassFixture<WadPath>
 {

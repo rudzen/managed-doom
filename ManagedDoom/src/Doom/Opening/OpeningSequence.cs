@@ -14,7 +14,10 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Game;
+
+namespace ManagedDoom.Doom.Opening
 {
     public sealed class OpeningSequence
     {

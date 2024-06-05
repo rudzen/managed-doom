@@ -17,7 +17,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics.Dummy
 {
     public sealed class DummyFlatLookup : IFlatLookup
     {
@@ -26,7 +26,7 @@ namespace ManagedDoom
         private readonly Dictionary<string, Flat> nameToFlat;
         private readonly Dictionary<string, int> nameToNumber;
 
-        public DummyFlatLookup(Wad wad)
+        public DummyFlatLookup(Wad.Wad wad)
         {
             var firstFlat = wad.GetLumpNumber("F_START") + 1;
             var lastFlat = wad.GetLumpNumber("F_END") - 1;

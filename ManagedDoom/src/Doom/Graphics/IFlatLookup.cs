@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public interface IFlatLookup : IReadOnlyList<Flat>
     {

@@ -14,7 +14,9 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Math;
+
+namespace ManagedDoom.Doom.World
 {
     public sealed class PlayerSpriteDef
     {

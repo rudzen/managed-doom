@@ -18,8 +18,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Common
 {
     public static class DoomDebug
     {
@@ -29,7 +31,7 @@ namespace ManagedDoom
             return (3 * a) ^ b;
         }
 
-        public static int GetMobjHash(World world)
+        public static int GetMobjHash(World.World world)
         {
             var hash = 0;
             foreach (var thinker in world.Thinkers)
@@ -111,7 +113,7 @@ namespace ManagedDoom
             return sb.ToString();
         }
 
-        public static void DumpMobjCsv(string path, World world)
+        public static void DumpMobjCsv(string path, World.World world)
         {
             using var writer = new StreamWriter(path);
             foreach (var thinker in world.Thinkers)
@@ -124,7 +126,7 @@ namespace ManagedDoom
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetSectorHash(World world)
+        public static int GetSectorHash(World.World world)
         {
             return world.Map.Sectors.Aggregate(0, (current, sector) => CombineHash(current, GetSectorHash(sector)));
         }

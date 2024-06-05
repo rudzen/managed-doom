@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Intermission
 {
 	public sealed class Animation
 	{

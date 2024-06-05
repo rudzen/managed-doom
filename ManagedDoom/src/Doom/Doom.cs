@@ -14,16 +14,20 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
-using ManagedDoom.Video;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Menu;
+using ManagedDoom.Doom.Opening;
 using ManagedDoom.UserInput;
+using ManagedDoom.Video;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom
 {
     public sealed class Doom
     {
@@ -308,7 +312,7 @@ namespace ManagedDoom
                         return false;
                     }
 
-                    video.WindowSize = Math.Min(video.WindowSize + 1, video.MaxWindowSize);
+                    video.WindowSize = System.Math.Min(video.WindowSize + 1, video.MaxWindowSize);
                     sound.StartSound(Sfx.STNMOV);
                     return true;
 
@@ -322,7 +326,7 @@ namespace ManagedDoom
                         return false;
                     }
 
-                    video.WindowSize = Math.Max(video.WindowSize - 1, 0);
+                    video.WindowSize = System.Math.Max(video.WindowSize - 1, 0);
                     sound.StartSound(Sfx.STNMOV);
                     return true;
 

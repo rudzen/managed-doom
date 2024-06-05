@@ -21,6 +21,10 @@ using System.Runtime.ExceptionServices;
 using DrippyAL;
 using MeltySynth;
 using ManagedDoom.Audio;
+using ManagedDoom.Config;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Silk
 {

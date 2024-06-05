@@ -14,11 +14,10 @@
 //
 
 
-
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Reject
     {
@@ -37,7 +36,7 @@ namespace ManagedDoom
             this.sectorCount = sectorCount;
         }
 
-        public static Reject FromWad(Wad wad, int lump, Sector[] sectors)
+        public static Reject FromWad(Wad.Wad wad, int lump, Sector[] sectors)
         {
             return new Reject(wad.ReadLump(lump), sectors.Length);
         }

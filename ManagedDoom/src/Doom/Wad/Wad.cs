@@ -24,8 +24,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Wad
 {
     public sealed class Wad : IDisposable
     {

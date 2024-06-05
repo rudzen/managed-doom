@@ -18,8 +18,12 @@ using System;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Sector
     {
@@ -87,7 +91,7 @@ namespace ManagedDoom
                 tag);
         }
 
-        public static Sector[] FromWad(Wad wad, int lump, IFlatLookup flats)
+        public static Sector[] FromWad(Wad.Wad wad, int lump, IFlatLookup flats)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

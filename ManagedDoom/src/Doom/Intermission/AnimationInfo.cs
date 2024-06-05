@@ -15,8 +15,9 @@
 
 
 using System.Collections.Generic;
+using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Intermission
 {
     public sealed class AnimationInfo
     {

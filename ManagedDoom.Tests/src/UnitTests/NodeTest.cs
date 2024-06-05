@@ -1,4 +1,9 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Graphics.Dummy;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Wad;
+using ManagedDoom.Doom.World;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class NodeTest(WadPath wadPath) : IClassFixture<WadPath>
 {

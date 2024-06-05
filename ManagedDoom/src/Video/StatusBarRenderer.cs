@@ -16,6 +16,11 @@
 
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Wad;
+using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Video
 {

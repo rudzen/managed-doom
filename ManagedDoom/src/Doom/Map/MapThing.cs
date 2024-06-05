@@ -16,8 +16,9 @@
 
 using System;
 using System.Buffers;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class MapThing
     {
@@ -60,7 +61,7 @@ namespace ManagedDoom
                 (ThingFlags)flags);
         }
 
-        public static MapThing[] FromWad(Wad wad, int lump)
+        public static MapThing[] FromWad(Wad.Wad wad, int lump)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

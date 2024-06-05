@@ -14,21 +14,21 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using ManagedDoom.Doom.Info;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class SpriteLookup : ISpriteLookup
     {
         private readonly SpriteDef[] spriteDefs;
 
-        public SpriteLookup(Wad wad)
+        public SpriteLookup(Wad.Wad wad)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace ManagedDoom
             }
         }
 
-        private static IEnumerable<int> EnumerateSprites(Wad wad)
+        private static IEnumerable<int> EnumerateSprites(Wad.Wad wad)
         {
             var spriteSection = false;
 
@@ -163,7 +163,7 @@ namespace ManagedDoom
             }
         }
 
-        private static Patch CachedRead(int lump, Wad wad, Dictionary<int, Patch> cache)
+        private static Patch CachedRead(int lump, Wad.Wad wad, Dictionary<int, Patch> cache)
         {
             ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, lump, out var exists);
             if (exists) return value;

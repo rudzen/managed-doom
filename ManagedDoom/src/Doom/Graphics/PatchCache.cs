@@ -17,14 +17,14 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class PatchCache
     {
-        private readonly Wad wad;
+        private readonly Wad.Wad wad;
         private readonly Dictionary<string, Patch> cache;
 
-        public PatchCache(Wad wad)
+        public PatchCache(Wad.Wad wad)
         {
             this.wad = wad;
 

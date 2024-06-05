@@ -14,13 +14,13 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using ManagedDoom.Doom.Info;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class TextureAnimation
     {

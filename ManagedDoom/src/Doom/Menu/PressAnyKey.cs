@@ -14,11 +14,12 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Event;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Menu
 {
     public sealed class PressAnyKey : MenuDef
     {

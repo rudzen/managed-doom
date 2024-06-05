@@ -14,11 +14,14 @@
 //
 
 
-
 using System;
 using System.Linq;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.UserInput;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public sealed class Cheat
     {
@@ -179,7 +182,7 @@ namespace ManagedDoom
             else
             {
                 player.Cheats |= CheatFlags.GodMode;
-                player.Health = Math.Max(DoomInfo.DeHackEdConst.GodModeHealth, player.Health);
+                player.Health = System.Math.Max(DoomInfo.DeHackEdConst.GodModeHealth, player.Health);
                 player.Mobj.Health = player.Health;
                 player.SendMessage(DoomInfo.Strings.STSTR_DQDON);
             }
@@ -399,7 +402,7 @@ namespace ManagedDoom
                 options.Episode = episode;
                 options.Map = map;
             }
-            world.Options.Music.StartMusic(Map.GetMapBgm(options), true);
+            world.Options.Music.StartMusic(Map.Map.GetMapBgm(options), true);
             world.ConsolePlayer.SendMessage(DoomInfo.Strings.STSTR_MUS);
         }
 

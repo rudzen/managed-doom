@@ -14,8 +14,9 @@
 //
 
 
+using ManagedDoom.Doom.Common;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Info
 {
     public sealed record DoomStringPair(DoomString First, DoomString Second);
     

@@ -16,8 +16,13 @@
 
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public sealed class ThingAllocation
     {
@@ -551,7 +556,7 @@ namespace ManagedDoom
             var subsector = Geometry.PointInSubsector(x, y, world.Map);
 
             var angle = (Angle.Ang45.Data >> Trig.AngleToFineShift) *
-                        ((int)Math.Round(mthing.Angle.ToDegree()) / 45);
+                        ((int)System.Math.Round(mthing.Angle.ToDegree()) / 45);
 
             //
             // The code below to reproduce respawn fog bug in deathmath

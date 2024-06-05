@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Common
 {
     public sealed class DoomRandom
     {

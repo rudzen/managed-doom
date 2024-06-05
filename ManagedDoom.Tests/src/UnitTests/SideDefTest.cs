@@ -1,4 +1,9 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Graphics.Dummy;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Wad;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class SideDefTest(WadPath wadPath) : IClassFixture<WadPath>
 {

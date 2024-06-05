@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Graphics;
 
 public sealed record Flat(string Name, byte[] Data)
 {

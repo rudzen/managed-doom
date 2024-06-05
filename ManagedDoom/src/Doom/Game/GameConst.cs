@@ -14,7 +14,9 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Math;
+
+namespace ManagedDoom.Doom.Game
 {
     public static class GameConst
     {

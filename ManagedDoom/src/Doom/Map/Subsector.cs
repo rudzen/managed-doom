@@ -14,11 +14,10 @@
 //
 
 
-
 using System;
 using System.Buffers;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Subsector
     {
@@ -42,7 +41,7 @@ namespace ManagedDoom
                 firstSegNumber);
         }
 
-        public static Subsector[] FromWad(Wad wad, int lump, Seg[] segs)
+        public static Subsector[] FromWad(Wad.Wad wad, int lump, Seg[] segs)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

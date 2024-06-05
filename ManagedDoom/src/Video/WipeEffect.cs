@@ -17,6 +17,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
 using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Video

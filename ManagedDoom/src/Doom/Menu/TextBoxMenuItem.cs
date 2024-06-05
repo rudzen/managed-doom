@@ -14,11 +14,10 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Menu
 {
     public class TextBoxMenuItem : MenuItem
     {

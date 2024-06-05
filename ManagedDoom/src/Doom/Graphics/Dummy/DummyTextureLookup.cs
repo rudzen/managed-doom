@@ -2,8 +2,9 @@
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Info;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics.Dummy
 {
     public sealed class DummyTextureLookup : ITextureLookup
     {
@@ -13,13 +14,13 @@ namespace ManagedDoom
 
         private int[] switchList;
 
-        public DummyTextureLookup(Wad wad)
+        public DummyTextureLookup(Wad.Wad wad)
         {
             InitLookup(wad);
             InitSwitchList();
         }
 
-        private void InitLookup(Wad wad)
+        private void InitLookup(Wad.Wad wad)
         {
             textures = [];
             nameToTexture = new Dictionary<string, Texture>();

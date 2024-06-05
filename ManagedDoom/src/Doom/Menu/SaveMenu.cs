@@ -16,8 +16,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.UserInput;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Menu
 {
     public sealed class SaveMenu : MenuDef
     {

@@ -16,7 +16,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom;
+namespace ManagedDoom.Audio;
 
 public enum Sfx
 {

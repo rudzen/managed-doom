@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Common
 {
     public sealed class DoomString
     {

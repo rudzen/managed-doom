@@ -14,13 +14,14 @@
 //
 
 
-
 using System;
 using System.Diagnostics;
 using System.IO;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Opening
 {
     public sealed class DemoPlayback
     {

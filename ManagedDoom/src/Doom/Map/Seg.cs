@@ -16,8 +16,9 @@
 
 using System;
 using System.Buffers;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Seg
     {
@@ -67,7 +68,7 @@ namespace ManagedDoom
                 (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
         }
 
-        public static Seg[] FromWad(Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
+        public static Seg[] FromWad(Wad.Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

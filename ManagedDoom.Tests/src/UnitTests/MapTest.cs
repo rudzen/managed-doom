@@ -1,4 +1,9 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class MapTest(WadPath wadPath) : IClassFixture<WadPath>
 {

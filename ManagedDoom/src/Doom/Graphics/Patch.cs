@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed record Patch(
         string Name,
@@ -66,7 +66,7 @@ namespace ManagedDoom
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Patch FromWad(Wad wad, string name)
+        public static Patch FromWad(Wad.Wad wad, string name)
         {
             return FromData(name, wad.ReadLump(name));
         }
@@ -84,7 +84,7 @@ namespace ManagedDoom
                         break;
                     var length = data[p + 1];
                     var offset = p + 3;
-                    need = Math.Max(offset + 128, need);
+                    need = System.Math.Max(offset + 128, need);
                     p += length + 4;
                 }
             }

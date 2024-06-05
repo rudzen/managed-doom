@@ -14,12 +14,14 @@
 //
 
 
-using ManagedDoom.Video;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Intermission;
 using ManagedDoom.UserInput;
+using ManagedDoom.Video;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
     public sealed class GameOptions
     {

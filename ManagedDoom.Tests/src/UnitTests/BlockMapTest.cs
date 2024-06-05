@@ -1,4 +1,8 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Graphics.Dummy;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Wad;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
 {

@@ -14,11 +14,10 @@
 //
 
 
-
 using System;
 using System.IO;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
     public sealed class Demo
     {

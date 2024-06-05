@@ -15,8 +15,11 @@
 
 
 using System;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
     public sealed class Player
     {

@@ -14,7 +14,9 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Event;
+
+namespace ManagedDoom.Doom.Menu
 {
     public abstract class MenuDef
     {

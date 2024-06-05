@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom.UserInput
 {
     public enum DoomMouseButton
     {

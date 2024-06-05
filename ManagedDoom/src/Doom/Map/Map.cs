@@ -18,19 +18,25 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Map
     {
-        private readonly World world;
+        private readonly World.World world;
 
-        public Map(GameContent resources, World world)
+        public Map(GameContent resources, World.World world)
             : this(resources.Wad, resources.Textures, resources.Flats, resources.Animation, world)
         {
         }
 
-        public Map(Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World world)
+        public Map(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World.World world)
         {
             try
             {

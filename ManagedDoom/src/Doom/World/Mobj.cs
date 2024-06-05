@@ -14,7 +14,14 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+
+namespace ManagedDoom.Doom.World
 {
     public class Mobj : Thinker
     {

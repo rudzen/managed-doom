@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Common
 {
     public static class DoomInterop
     {

@@ -14,7 +14,9 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Graphics;
+
+namespace ManagedDoom.Doom.Info
 {
     public static partial class DoomInfo
     {

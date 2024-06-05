@@ -1,4 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Graphics.Dummy;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Tests.UnitTests;
 

@@ -14,7 +14,14 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.UserInput;
+
+namespace ManagedDoom.Doom.World
 {
     public sealed class World
     {
@@ -35,7 +42,7 @@ namespace ManagedDoom
             this.Game = game;
             this.Random = options.Random;
 
-            Map = new Map(resources, this);
+            Map = new Map.Map(resources, this);
 
             Thinkers = new Thinkers(this);
             Specials = new Specials(this);
@@ -102,7 +109,7 @@ namespace ManagedDoom
 
             dummy = new Mobj(this);
 
-            options.Music.StartMusic(Map.GetMapBgm(options), true);
+            options.Music.StartMusic(ManagedDoom.Doom.Map.Map.GetMapBgm(options), true);
         }
 
         public UpdateResult Update()
@@ -272,7 +279,7 @@ namespace ManagedDoom
 
         public DoomRandom Random { get; }
 
-        public Map Map { get; }
+        public Map.Map Map { get; }
 
         public Thinkers Thinkers { get; }
 

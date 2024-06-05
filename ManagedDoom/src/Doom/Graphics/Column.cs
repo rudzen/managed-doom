@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Graphics;
 
 public sealed record Column(int TopDelta, byte[] Data, int Offset, int Length)
 {

@@ -15,8 +15,13 @@
 
 
 using System;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Intermission
 {
 	public sealed class Finale
 	{

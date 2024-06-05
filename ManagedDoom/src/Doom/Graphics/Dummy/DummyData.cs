@@ -14,11 +14,9 @@
 //
 
 
-
-using System;
 using System.Collections.Generic;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics.Dummy
 {
     public static class DummyData
     {

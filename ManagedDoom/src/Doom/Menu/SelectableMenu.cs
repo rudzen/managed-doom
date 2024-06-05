@@ -15,8 +15,11 @@
 
 
 using System.Collections.Generic;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.UserInput;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Menu
 {
     public sealed class SelectableMenu : MenuDef
     {

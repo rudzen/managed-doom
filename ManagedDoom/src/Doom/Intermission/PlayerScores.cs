@@ -14,7 +14,9 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Game;
+
+namespace ManagedDoom.Doom.Intermission
 {
     public class PlayerScores
     {

@@ -15,10 +15,9 @@
 
 
 using System;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Math
 {
     public readonly struct Fixed
     {

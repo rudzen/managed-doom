@@ -14,6 +14,6 @@
 //
 
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Graphics;
 
 public sealed record SpriteDef(SpriteFrame[] Frames);

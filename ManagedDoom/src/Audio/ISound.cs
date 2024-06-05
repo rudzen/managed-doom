@@ -14,6 +14,8 @@
 //
 
 
+using ManagedDoom.Doom.World;
+
 namespace ManagedDoom.Audio
 {
     public interface ISound

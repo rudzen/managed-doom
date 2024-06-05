@@ -14,10 +14,14 @@
 //
 
 
-
 using System;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public sealed class MonsterBehavior
     {

@@ -15,8 +15,13 @@
 
 
 using System.Collections.Generic;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.UserInput;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public sealed class AutoMap
     {

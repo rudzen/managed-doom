@@ -14,6 +14,6 @@
 //
 
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Graphics;
 
 public sealed record SpriteFrame(bool Rotate, Patch[] Patches, bool[] Flip);

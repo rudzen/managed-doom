@@ -14,17 +14,18 @@
 //
 
 
-
 using System;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Graphics.Dummy;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
     public sealed class GameContent : IDisposable
     {
         private GameContent(string[] wadPaths)
         {
-            Wad = new Wad(wadPaths);
+            Wad = new Wad.Wad(wadPaths);
             Palette = new Palette(Wad);
             ColorMap = new ColorMap(Wad);
             Textures = new DummyTextureLookup(Wad);
@@ -35,7 +36,7 @@ namespace ManagedDoom
 
         public GameContent(CommandLineArgs args)
         {
-            Wad = new Wad(ConfigUtilities.GetWadPaths(args));
+            Wad = new Wad.Wad(ConfigUtilities.GetWadPaths(args));
 
             DeHackEd.Initialize(args, Wad);
 
@@ -61,7 +62,7 @@ namespace ManagedDoom
             Wad = null;
         }
 
-        public Wad Wad { get; private set; }
+        public Wad.Wad Wad { get; private set; }
 
         public Palette Palette { get; private set; }
 

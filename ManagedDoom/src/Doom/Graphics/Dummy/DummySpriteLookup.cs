@@ -14,17 +14,17 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Info;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics.Dummy
 {
     public sealed class DummySpriteLookup : ISpriteLookup
     {
         private readonly SpriteDef[] spriteDefs;
 
-        public DummySpriteLookup(Wad wad)
+        public DummySpriteLookup(Wad.Wad wad)
         {
             var temp = new Dictionary<string, List<SpriteInfo>>();
             for (var i = 0; i < (int)Sprite.Count; i++)
@@ -121,7 +121,7 @@ namespace ManagedDoom
             }
         }
 
-        private static IEnumerable<int> EnumerateSprites(Wad wad)
+        private static IEnumerable<int> EnumerateSprites(Wad.Wad wad)
         {
             var spriteSection = false;
 

@@ -16,11 +16,10 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class ColorMap
     {
@@ -28,7 +27,7 @@ namespace ManagedDoom
 
         private readonly byte[][] data;
 
-        public ColorMap(Wad wad)
+        public ColorMap(Wad.Wad wad)
         {
             try
             {

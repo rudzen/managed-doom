@@ -14,7 +14,7 @@
 //
 
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
     public enum GameState
     {

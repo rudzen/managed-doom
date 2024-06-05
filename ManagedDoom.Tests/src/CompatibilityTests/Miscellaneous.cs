@@ -1,4 +1,7 @@
-﻿namespace ManagedDoom.Tests.CompatibilityTests;
+﻿using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
+
+namespace ManagedDoom.Tests.CompatibilityTests;
 
 public sealed class Miscellaneous(WadPath wadPath) : IClassFixture<WadPath>
 {

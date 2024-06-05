@@ -14,10 +14,9 @@
 //
 
 
-
 using System;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class TexturePatch
     {

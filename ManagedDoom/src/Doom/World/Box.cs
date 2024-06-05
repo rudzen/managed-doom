@@ -15,8 +15,10 @@
 
 
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public static class Box
     {

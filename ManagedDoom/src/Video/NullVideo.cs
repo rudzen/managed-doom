@@ -14,6 +14,8 @@
 //
 
 
+using ManagedDoom.Doom.Math;
+
 namespace ManagedDoom.Video
 {
     public class NullVideo : IVideo
@@ -25,7 +27,7 @@ namespace ManagedDoom.Video
             return instance ??= new NullVideo();
         }
 
-        public void Render(Doom doom, Fixed frameFrac)
+        public void Render(Doom.Doom doom, Fixed frameFrac)
         {
         }
 

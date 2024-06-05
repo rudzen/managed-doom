@@ -16,9 +16,9 @@
 
 using System;
 using System.Buffers;
-using System.Numerics;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Vertex
     {
@@ -38,7 +38,7 @@ namespace ManagedDoom
             return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
         }
 
-        public static Vertex[] FromWad(Wad wad, int lump)
+        public static Vertex[] FromWad(Wad.Wad wad, int lump)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

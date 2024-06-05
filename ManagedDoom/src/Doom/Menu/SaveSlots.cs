@@ -18,8 +18,9 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Common;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Menu
 {
     public sealed class SaveSlots
     {

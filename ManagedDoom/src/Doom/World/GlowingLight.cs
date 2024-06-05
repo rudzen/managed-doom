@@ -14,7 +14,9 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Doom.Map;
+
+namespace ManagedDoom.Doom.World
 {
     public sealed class GlowingLight : Thinker
     {

@@ -15,8 +15,9 @@
 
 
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public static class BoxEx
     {

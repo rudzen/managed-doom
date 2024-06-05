@@ -21,6 +21,7 @@ using Silk.NET.Maths;
 using Silk.NET.Windowing;
 using DrippyAL;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Silk
 {

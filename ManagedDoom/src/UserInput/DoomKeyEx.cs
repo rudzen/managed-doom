@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ManagedDoom
+namespace ManagedDoom.UserInput
 {
     public static class DoomKeyEx
     {

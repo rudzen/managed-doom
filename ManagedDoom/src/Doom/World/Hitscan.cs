@@ -14,10 +14,11 @@
 //
 
 
-
 using System;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public sealed class Hitscan
     {

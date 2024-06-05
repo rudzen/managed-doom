@@ -1,7 +1,7 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using ManagedDoom.UserInput;
 
-namespace ManagedDoom;
+namespace ManagedDoom.Config;
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(ConfigValues))]

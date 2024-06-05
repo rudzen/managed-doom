@@ -14,13 +14,12 @@
 //
 
 
-
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class Palette
     {
@@ -36,7 +35,7 @@ namespace ManagedDoom
 
         private readonly uint[][] palettes;
 
-        public Palette(Wad wad)
+        public Palette(Wad.Wad wad)
         {
             try
             {
@@ -72,9 +71,9 @@ namespace ManagedDoom
                     var g = data[colorOffset + 1];
                     var b = data[colorOffset + 2];
 
-                    r = (byte)Math.Round(255 * CorrectionCurve(r / 255.0, in p));
-                    g = (byte)Math.Round(255 * CorrectionCurve(g / 255.0, in p));
-                    b = (byte)Math.Round(255 * CorrectionCurve(b / 255.0, in p));
+                    r = (byte)System.Math.Round(255 * CorrectionCurve(r / 255.0, in p));
+                    g = (byte)System.Math.Round(255 * CorrectionCurve(g / 255.0, in p));
+                    b = (byte)System.Math.Round(255 * CorrectionCurve(b / 255.0, in p));
 
                     palettes[i][j] = (uint)((r << 0) | (g << 8) | (b << 16) | (255 << 24));
                 }
@@ -84,7 +83,7 @@ namespace ManagedDoom
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double CorrectionCurve(double x, in double p)
         {
-            return Math.Pow(x, p);
+            return System.Math.Pow(x, p);
         }
 
         public uint[] this[int paletteNumber] => palettes[paletteNumber];

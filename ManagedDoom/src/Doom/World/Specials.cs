@@ -14,11 +14,13 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public class Specials
     {

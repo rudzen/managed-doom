@@ -14,11 +14,12 @@
 //
 
 
-
 using System;
 using System.Buffers;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class LineDef
     {
@@ -94,7 +95,7 @@ namespace ManagedDoom
                 side1Number != -1 ? sides[side1Number] : null);
         }
 
-        public static LineDef[] FromWad(Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
+        public static LineDef[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

@@ -16,6 +16,12 @@
 
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.Wad;
+using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Video
 {

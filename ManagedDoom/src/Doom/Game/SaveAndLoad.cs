@@ -14,12 +14,16 @@
 //
 
 
-
 using System;
 using System.IO;
-using System.Linq;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
     /// <summary>
     /// Vanilla-compatible save and load, full of messy binary handling code.
@@ -134,7 +138,7 @@ namespace ManagedDoom
                 ptr += (4 - (ptr & 3)) & 3;
             }
 
-            private void ArchivePlayers(World world)
+            private void ArchivePlayers(World.World world)
             {
                 var players = world.Options.Players;
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
@@ -150,7 +154,7 @@ namespace ManagedDoom
                 }
             }
 
-            private void ArchiveWorld(World world)
+            private void ArchiveWorld(World.World world)
             {
                 // Do sectors.
                 var sectors = world.Map.Sectors;
@@ -167,7 +171,7 @@ namespace ManagedDoom
                 }
             }
 
-            private void ArchiveThinkers(World world)
+            private void ArchiveThinkers(World.World world)
             {
                 var thinkers = world.Thinkers;
 
@@ -223,7 +227,7 @@ namespace ManagedDoom
                         {
                             Write(data, ptr + 140, (short)mobj.SpawnPoint.X.ToIntFloor());
                             Write(data, ptr + 142, (short)mobj.SpawnPoint.Y.ToIntFloor());
-                            Write(data, ptr + 144, (short)Math.Round(mobj.SpawnPoint.Angle.ToDegree()));
+                            Write(data, ptr + 144, (short)System.Math.Round(mobj.SpawnPoint.Angle.ToDegree()));
                             Write(data, ptr + 146, (short)mobj.SpawnPoint.Type);
                             Write(data, ptr + 148, (short)mobj.SpawnPoint.Flags);
                         }
@@ -234,7 +238,7 @@ namespace ManagedDoom
                 data[ptr++] = (byte)ThinkerClass.End;
             }
 
-            private void ArchiveSpecials(World world)
+            private void ArchiveSpecials(World.World world)
             {
                 var thinkers = world.Thinkers;
                 var sa = world.SectorAction;
@@ -613,7 +617,7 @@ namespace ManagedDoom
                 return value;
             }
 
-            private void UnArchivePlayers(World world)
+            private void UnArchivePlayers(World.World world)
             {
                 var players = world.Options.Players;
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
@@ -627,7 +631,7 @@ namespace ManagedDoom
                 }
             }
 
-            private void UnArchiveWorld(World world)
+            private void UnArchiveWorld(World.World world)
             {
                 // Do sectors.
                 foreach (var sector in world.Map.Sectors.AsSpan())
@@ -638,7 +642,7 @@ namespace ManagedDoom
                     ptr = UnArchiveLine(line, data, ptr);
             }
 
-            private void UnArchiveThinkers(World world)
+            private void UnArchiveThinkers(World.World world)
             {
                 var thinkers = world.Thinkers;
                 var ta = world.ThingAllocation;
@@ -717,7 +721,7 @@ namespace ManagedDoom
                 }
             }
 
-            private void UnArchiveSpecials(World world)
+            private void UnArchiveSpecials(World.World world)
             {
                 var thinkers = world.Thinkers;
                 var sa = world.SectorAction;

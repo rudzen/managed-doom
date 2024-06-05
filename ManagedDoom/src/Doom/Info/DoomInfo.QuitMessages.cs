@@ -15,8 +15,9 @@
 
 
 using System.Collections.Generic;
+using ManagedDoom.Doom.Common;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Info
 {
     public static partial class DoomInfo
     {

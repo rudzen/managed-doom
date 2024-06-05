@@ -16,8 +16,10 @@
 
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Info
 {
     public static partial class DoomInfo
     {

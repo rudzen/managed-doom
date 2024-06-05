@@ -14,11 +14,13 @@
 //
 
 
+using ManagedDoom.Doom.Math;
+
 namespace ManagedDoom.Video
 {
     public interface IVideo
     {
-        public void Render(Doom doom, Fixed frameFrac);
+        public void Render(Doom.Doom doom, Fixed frameFrac);
         public void InitializeWipe();
         public bool HasFocus();
 

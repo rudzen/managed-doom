@@ -1,4 +1,6 @@
-﻿namespace ManagedDoom.Tests.UnitTests;
+﻿using ManagedDoom.Doom.Math;
+
+namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class AngleTest
 {

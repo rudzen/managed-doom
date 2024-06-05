@@ -16,8 +16,9 @@
 
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Common;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class Texture
     {
@@ -82,8 +83,8 @@ namespace ManagedDoom
                 var left = patch.OriginX;
                 var right = left + patch.Width;
 
-                var start = Math.Max(left, 0);
-                var end = Math.Min(right, width);
+                var start = System.Math.Max(left, 0);
+                var end = System.Math.Min(right, width);
 
                 for (var x = start; x < end; x++)
                 {
@@ -97,7 +98,7 @@ namespace ManagedDoom
                 }
             }
 
-            var padding = Math.Max(128 - height, 0);
+            var padding = System.Math.Max(128 - height, 0);
             var data = new byte[height * compositeColumnCount + padding];
             var i = 0;
             for (var x = 0; x < width; x++)

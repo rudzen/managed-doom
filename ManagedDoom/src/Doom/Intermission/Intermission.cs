@@ -15,8 +15,11 @@
 
 
 using System.Collections.Generic;
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Intermission
 {
     public sealed class Intermission
     {

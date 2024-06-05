@@ -14,10 +14,11 @@
 //
 
 
-
 using System;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
     public class MobjStateDef
     {

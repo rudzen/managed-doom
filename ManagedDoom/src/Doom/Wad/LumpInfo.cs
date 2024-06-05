@@ -16,7 +16,7 @@
 
 using System.IO;
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Wad;
 
 public sealed record LumpInfo(string Name, Stream Stream, int Position, int Size)
 {

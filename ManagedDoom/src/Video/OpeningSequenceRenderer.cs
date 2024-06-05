@@ -14,6 +14,11 @@
 //
 
 
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.Opening;
+using ManagedDoom.Doom.Wad;
+
 namespace ManagedDoom.Video
 {
     public class OpeningSequenceRenderer

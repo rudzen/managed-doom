@@ -14,6 +14,6 @@
 //
 
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Graphics;
 
 public sealed record AnimationDef(bool IsTexture, string EndName, string StartName, int Speed = 8);

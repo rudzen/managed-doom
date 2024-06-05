@@ -14,7 +14,12 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.UserInput;
+
+namespace ManagedDoom.Doom.Menu
 {
     public sealed class HelpScreen : MenuDef
     {

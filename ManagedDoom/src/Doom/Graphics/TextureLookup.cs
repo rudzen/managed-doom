@@ -18,8 +18,10 @@ using System;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Info;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Graphics
 {
     public sealed class TextureLookup : ITextureLookup
     {
@@ -27,17 +29,17 @@ namespace ManagedDoom
         private Dictionary<string, Texture> nameToTexture;
         private Dictionary<string, int> nameToNumber;
 
-        public TextureLookup(Wad wad) : this(wad, false)
+        public TextureLookup(Wad.Wad wad) : this(wad, false)
         {
         }
 
-        public TextureLookup(Wad wad, bool useDummy)
+        public TextureLookup(Wad.Wad wad, bool useDummy)
         {
             InitLookup(wad);
             InitSwitchList();
         }
 
-        private void InitLookup(Wad wad)
+        private void InitLookup(Wad.Wad wad)
         {
             textures = [];
             nameToTexture = new Dictionary<string, Texture>();
@@ -108,7 +110,7 @@ namespace ManagedDoom
             return -1;
         }
 
-        private static Patch[] LoadPatches(Wad wad)
+        private static Patch[] LoadPatches(Wad.Wad wad)
         {
             var patchNames = LoadPatchNames(wad);
             var patches = new Patch[patchNames.Length];
@@ -140,7 +142,7 @@ namespace ManagedDoom
             return patches;
         }
 
-        private static string[] LoadPatchNames(Wad wad)
+        private static string[] LoadPatchNames(Wad.Wad wad)
         {
             const string lumpName = "PNAMES";
             var lumpNumber = wad.GetLumpNumber(lumpName);

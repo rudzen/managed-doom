@@ -14,11 +14,13 @@
 //
 
 
-
 using System;
 using System.Buffers;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class SideDef
     {
@@ -58,7 +60,7 @@ namespace ManagedDoom
                 sectorNum != -1 ? sectors[sectorNum] : null);
         }
 
-        public static SideDef[] FromWad(Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
+        public static SideDef[] FromWad(Wad.Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

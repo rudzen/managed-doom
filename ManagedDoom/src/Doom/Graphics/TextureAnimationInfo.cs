@@ -14,6 +14,6 @@
 //
 
 
-namespace ManagedDoom;
+namespace ManagedDoom.Doom.Graphics;
 
 public sealed record TextureAnimationInfo(bool IsTexture, int PicNum, int BasePic, int NumPics, int Speed);

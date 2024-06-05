@@ -14,7 +14,11 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
+
+namespace ManagedDoom.Doom.Info
 {
     public static partial class DoomInfo
     {

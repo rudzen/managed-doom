@@ -14,6 +14,8 @@
 //
 
 
+using ManagedDoom.Doom.Game;
+
 namespace ManagedDoom.UserInput
 {
     public sealed class NullUserInput : IUserInput

@@ -16,8 +16,9 @@
 
 using System;
 using System.Buffers;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class Node
     {
@@ -107,7 +108,7 @@ namespace ManagedDoom
                 backChild: backChild);
         }
 
-        public static Node[] FromWad(Wad wad, int lump)
+        public static Node[] FromWad(Wad.Wad wad, int lump)
         {
             var lumpSize = wad.GetLumpSize(lump);
             if (lumpSize % dataSize != 0)

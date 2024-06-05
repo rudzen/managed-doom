@@ -10,6 +10,9 @@ using Silk.NET.Windowing;
 using Silk.NET.Windowing.Glfw;
 using DrippyAL;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Silk
 {
@@ -32,7 +35,7 @@ namespace ManagedDoom.Silk
 
         private SilkUserInput userInput;
 
-        private Doom doom;
+        private Doom.Doom doom;
 
         private int fpsScale;
         private int frameCount;
@@ -101,7 +104,7 @@ namespace ManagedDoom.Silk
 
             userInput = new SilkUserInput(config.Values, window, this, !args.nomouse.Present);
 
-            doom = new Doom(args, config.Values, content, video, sound, music, userInput);
+            doom = new Doom.Doom(args, config.Values, content, video, sound, music, userInput);
 
             fpsScale = args.timedemo.Present ? 1 : config.Values.video_fpsscale;
             frameCount = -1;

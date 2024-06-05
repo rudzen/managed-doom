@@ -17,8 +17,10 @@
 using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Map
 {
     public sealed class BlockMap
     {
@@ -50,7 +52,7 @@ namespace ManagedDoom
             ThingLists = new Mobj[width * height];
         }
 
-        public static BlockMap FromWad(Wad wad, int lump, LineDef[] lines)
+        public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
         {
             var lumpSize = wad.GetLumpSize(lump);
 

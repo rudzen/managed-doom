@@ -14,10 +14,11 @@
 //
 
 
-
 using System;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Math
 {
     public static class Geometry
     {
@@ -183,7 +184,7 @@ namespace ManagedDoom
         /// <summary>
         /// Get the subsector which contains the point.
         /// </summary>
-        public static Subsector PointInSubsector(Fixed x, Fixed y, Map map)
+        public static Subsector PointInSubsector(Fixed x, Fixed y, Map.Map map)
         {
             // Single subsector is a special case.
             if (map.Nodes.Length == 0)

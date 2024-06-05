@@ -14,7 +14,10 @@
 //
 
 
-namespace ManagedDoom
+using ManagedDoom.Audio;
+using ManagedDoom.Doom.Math;
+
+namespace ManagedDoom.Doom.World
 {
     public sealed class MobjInfo
     {

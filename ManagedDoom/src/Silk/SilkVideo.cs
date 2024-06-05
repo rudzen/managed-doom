@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
+using ManagedDoom.Config;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Math;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using TrippyGL;
@@ -71,7 +74,7 @@ namespace ManagedDoom.Silk
             }
         }
 
-        public void Render(Doom doom, Fixed frameFrac)
+        public void Render(Doom.Doom doom, Fixed frameFrac)
         {
             renderer.Render(doom, textureData, frameFrac);
 

@@ -14,24 +14,29 @@
 
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
+using ManagedDoom.Audio;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom
 {
     public static class DeHackEd
     {
-        private sealed record SourcePointTable(Action<World, Player, PlayerSpriteDef> PlayerAction, Action<World, Mobj> MobjAction);
+        private sealed record SourcePointTable(Action<World.World, Player, PlayerSpriteDef> PlayerAction, Action<World.World, Mobj> MobjAction);
 
         private static SourcePointTable[] sourcePointerTable;
 
-        public static void Initialize(CommandLineArgs args, Wad wad)
+        public static void Initialize(CommandLineArgs args, Wad.Wad wad)
         {
             if (args.deh.Present)
                 ReadFiles(args.deh.Value);
@@ -66,7 +71,7 @@ namespace ManagedDoom
             }
         }
 
-        private static void ReadDeHackEdLump(Wad wad)
+        private static void ReadDeHackEdLump(Wad.Wad wad)
         {
             var start = Stopwatch.GetTimestamp();
             var lump = wad.GetLumpNumber("DEHACKED");

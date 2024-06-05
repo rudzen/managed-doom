@@ -14,10 +14,13 @@
 //
 
 
-
 using System;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.World
 {
 	public sealed class StatusBar
 	{

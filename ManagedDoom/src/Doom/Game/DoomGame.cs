@@ -14,12 +14,14 @@
 //
 
 
-
 using System;
 using System.IO;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Event;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Intermission;
 
-namespace ManagedDoom
+namespace ManagedDoom.Doom.Game
 {
 	public sealed class DoomGame
 	{
@@ -284,7 +286,7 @@ namespace ManagedDoom
 
 			Options.Sound.Reset();
 
-			World = new World(content, Options, this);
+			World = new World.World(content, Options, this);
 
 			Options.UserInput.Reset();
 		}
@@ -453,7 +455,7 @@ namespace ManagedDoom
 			}
 
 			State = GameState.Intermission;
-			Intermission = new Intermission(Options, imInfo);
+			Intermission = new Intermission.Intermission(Options, imInfo);
 		}
 
 		private void DoWorldDone()
@@ -480,11 +482,11 @@ namespace ManagedDoom
 
 		public void InitNew(GameSkill skill, int episode, int map)
 		{
-			Options.Skill = (GameSkill)Math.Clamp((int)skill, (int)GameSkill.Baby, (int)GameSkill.Nightmare);
+			Options.Skill = (GameSkill)System.Math.Clamp((int)skill, (int)GameSkill.Baby, (int)GameSkill.Nightmare);
 
 			if (Options.GameMode == GameMode.Retail)
 			{
-				Options.Episode = Math.Clamp(episode, 1, 4);
+				Options.Episode = System.Math.Clamp(episode, 1, 4);
 			}
 			else if (Options.GameMode == GameMode.Shareware)
 			{
@@ -492,16 +494,16 @@ namespace ManagedDoom
 			}
 			else
 			{
-				Options.Episode = Math.Clamp(episode, 1, 4);
+				Options.Episode = System.Math.Clamp(episode, 1, 4);
 			}
 
 			if (Options.GameMode == GameMode.Commercial)
 			{
-				Options.Map = Math.Clamp(map, 1, 32);
+				Options.Map = System.Math.Clamp(map, 1, 32);
 			}
 			else
 			{
-				Options.Map = Math.Clamp(map, 1, 9);
+				Options.Map = System.Math.Clamp(map, 1, 9);
 			}
 
 			Options.Random.Clear();
@@ -584,9 +586,9 @@ namespace ManagedDoom
 
 		public int GameTic { get; private set; }
 
-		public World World { get; private set; }
+		public World.World World { get; private set; }
 
-		public Intermission Intermission { get; private set; }
+		public Intermission.Intermission Intermission { get; private set; }
 
 		public Finale Finale { get; private set; }
 
