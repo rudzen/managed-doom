@@ -122,22 +122,22 @@ namespace ManagedDoom.Doom.World
             var player = world.ConsolePlayer;
             if (world.Options.GameMode == GameMode.Commercial)
             {
-                for (var i = 0; i < (int)WeaponTypes.Count; i++)
+                for (var i = 0; i < (int)WeaponType.Count; i++)
                 {
                     player.WeaponOwned[i] = true;
                 }
             }
             else
             {
-                for (var i = 0; i <= (int)WeaponTypes.Missile; i++)
+                for (var i = 0; i <= (int)WeaponType.Missile; i++)
                 {
                     player.WeaponOwned[i] = true;
                 }
-                player.WeaponOwned[(int)WeaponTypes.Chainsaw] = true;
+                player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
                 if (world.Options.GameMode != GameMode.Shareware)
                 {
-                    player.WeaponOwned[(int)WeaponTypes.Plasma] = true;
-                    player.WeaponOwned[(int)WeaponTypes.Bfg] = true;
+                    player.WeaponOwned[(int)WeaponType.Plasma] = true;
+                    player.WeaponOwned[(int)WeaponType.Bfg] = true;
                 }
             }
 
@@ -328,7 +328,7 @@ namespace ManagedDoom.Doom.World
         private void GiveChainsaw()
         {
             var player = world.ConsolePlayer;
-            player.WeaponOwned[(int)WeaponTypes.Chainsaw] = true;
+            player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
             player.SendMessage(DoomInfo.Strings.STSTR_CHOPPERS);
         }
 

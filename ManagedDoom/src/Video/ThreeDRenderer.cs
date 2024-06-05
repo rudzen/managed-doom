@@ -2415,7 +2415,7 @@ namespace ManagedDoom.Video
             {
                 // Choose a different rotation based on player view.
                 var ang = Geometry.PointToAngle(viewX, viewY, thingX, thingY);
-                var rot = (ang.Data - thing.Angle.Data + Angle.Ang45.Data / 2 * 9) >> 29;
+                var rot = (ang.Data - thing.Angle.Data + (uint)(Angle.Ang45.Data / 2) * 9) >> 29;
                 lump = spriteFrame.Patches[rot];
                 flip = spriteFrame.Flip[rot];
             }

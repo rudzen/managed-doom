@@ -14,8 +14,6 @@
 //
 
 
-using System.Runtime.CompilerServices;
-
 namespace ManagedDoom.Doom.Common
 {
     public sealed class DoomRandom
@@ -55,14 +53,12 @@ namespace ManagedDoom.Doom.Common
             index = seed & 0xff;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Next()
         {
             index = (index + 1) & 0xff;
             return table[index];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             index = 0;

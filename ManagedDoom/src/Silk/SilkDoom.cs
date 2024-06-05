@@ -59,7 +59,7 @@ namespace ManagedDoom.Silk
                 var windowOptions = WindowOptions.Default;
                 windowOptions.Size = new Vector2D<int>(config.Values.video_screenwidth, config.Values.video_screenheight);
                 windowOptions.Title = ApplicationInfo.Title;
-                windowOptions.VSync = false;
+                windowOptions.VSync = true;
                 windowOptions.WindowState = config.Values.video_fullscreen ? WindowState.Fullscreen : WindowState.Normal;
 
                 window = Window.Create(windowOptions);
@@ -207,12 +207,12 @@ namespace ManagedDoom.Silk
 
         public void Dispose()
         {
-            if (window is null)
-                return;
-
-            window.Close();
-            window.Dispose();
-            window = null;
+            if (window != null)
+            {
+                window.Close();
+                window.Dispose();
+                window = null;
+            }
         }
 
         public string QuitMessage => doom.QuitMessage;

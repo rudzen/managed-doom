@@ -1381,7 +1381,7 @@ namespace ManagedDoom.Doom.World
         }
 
 
-        private static readonly Angle traceAngle = new(0xc000000);
+        private static readonly Angle traceAngle = new Angle(0xc000000);
 
         public void Tracer(Mobj actor)
         {

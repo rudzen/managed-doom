@@ -58,7 +58,6 @@ namespace ManagedDoom.Doom.Game
                 if (Options.Players[i].InGame)
                     playerCount++;
             }
-
             if (playerCount >= 2)
                 Options.NetGame = true;
         }
@@ -81,14 +80,14 @@ namespace ManagedDoom.Doom.Game
             var players = Options.Players;
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (!players[i].InGame)
-                    continue;
-
-                var cmd = cmds[i];
-                cmd.ForwardMove = (sbyte)data[p++];
-                cmd.SideMove = (sbyte)data[p++];
-                cmd.AngleTurn = (short)(data[p++] << 8);
-                cmd.Buttons = data[p++];
+                if (players[i].InGame)
+                {
+                    var cmd = cmds[i];
+                    cmd.ForwardMove = (sbyte)data[p++];
+                    cmd.SideMove = (sbyte)data[p++];
+                    cmd.AngleTurn = (short)(data[p++] << 8);
+                    cmd.Buttons = data[p++];
+                }
             }
 
             return true;

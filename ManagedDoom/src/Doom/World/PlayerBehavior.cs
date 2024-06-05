@@ -129,23 +129,23 @@ namespace ManagedDoom.Doom.World
                 // Not in the middle of an attack.
                 var newWeapon = new WeaponType((cmd.Buttons & TicCmdButtons.WeaponMask) >> TicCmdButtons.WeaponShift);
 
-                if (newWeapon == (int)WeaponTypes.Fist &&
-                    player.WeaponOwned[(int)WeaponTypes.Chainsaw] &&
-                    !(player.ReadyWeapon == WeaponTypes.Chainsaw && player.Powers[(int)PowerType.Strength] != 0))
+                if (newWeapon == WeaponType.Fist &&
+                    player.WeaponOwned[WeaponType.Chainsaw] &&
+                    !(player.ReadyWeapon == WeaponType.Chainsaw && player.Powers[(int)PowerType.Strength] != 0))
                 {
                     newWeapon = WeaponType.Chainsaw;
                 }
 
                 if ((world.Options.GameMode == GameMode.Commercial) &&
-                    newWeapon == (int)WeaponTypes.Shotgun &&
-                    player.WeaponOwned[(int)WeaponTypes.SuperShotgun] &&
-                    player.ReadyWeapon != WeaponTypes.SuperShotgun)
+                    newWeapon == WeaponType.Shotgun &&
+                    player.WeaponOwned[WeaponType.SuperShotgun] &&
+                    player.ReadyWeapon != WeaponType.SuperShotgun)
                 {
                     newWeapon = WeaponType.SuperShotgun;
                 }
 
                 if (player.WeaponOwned[newWeapon] &&
-                    newWeapon != (int)player.ReadyWeapon)
+                    newWeapon != player.ReadyWeapon)
                 {
                     // Do not go to plasma or BFG in shareware, even if cheated.
                     if ((newWeapon != WeaponType.Plasma && newWeapon != WeaponType.Bfg) ||
@@ -527,11 +527,15 @@ namespace ManagedDoom.Doom.World
         /// </summary>
         public void BringUpWeapon(Player player)
         {
-            if (player.PendingWeapon == WeaponTypes.NoChange)
+            if (player.PendingWeapon == WeaponType.NoChange)
+            {
                 player.PendingWeapon = player.ReadyWeapon;
+            }
 
-            if (player.PendingWeapon == WeaponTypes.Chainsaw)
+            if (player.PendingWeapon == WeaponType.Chainsaw)
+            {
                 world.StartSound(player.Mobj, Sfx.SAWUP, SfxType.Weapon);
+            }
 
             var newState = DoomInfo.WeaponInfos[player.PendingWeapon].UpState;
 
