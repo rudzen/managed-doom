@@ -165,168 +165,150 @@ public static partial class SaveAndLoad
         // Read in saved thinkers.
         foreach (var thinker in thinkers)
         {
-            if (thinker.ThinkerState == ThinkerState.InStasis)
+            switch (thinker)
             {
-                var ceiling = thinker as CeilingMove;
-                if (sa.CheckActiveCeiling(ceiling))
+                // check for stasis state
+                case CeilingMove ceilingMove when thinker.ThinkerState == ThinkerState.InStasis:
                 {
-                    data[ptr++] = (byte)SpecialClass.Ceiling;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, ceiling.ThinkerState);
-                    Write(data, ptr + 12, (int)ceiling.Type);
-                    Write(data, ptr + 16, ceiling.Sector.Number);
-                    Write(data, ptr + 20, ceiling.BottomHeight.Data);
-                    Write(data, ptr + 24, ceiling.TopHeight.Data);
-                    Write(data, ptr + 28, ceiling.Speed.Data);
-                    Write(data, ptr + 32, ceiling.Crush ? 1 : 0);
-                    Write(data, ptr + 36, ceiling.Direction);
-                    Write(data, ptr + 40, ceiling.Tag);
-                    Write(data, ptr + 44, ceiling.OldDirection);
-                    ptr += 48;
-                }
+                    if (sa.CheckActiveCeiling(ceilingMove))
+                        ptr = WriteCeilingMove(ceilingMove, data, ptr);
 
-                continue;
-            }
-
-            {
-                var ceiling = thinker as CeilingMove;
-                if (ceiling != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Ceiling;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, ceiling.ThinkerState);
-                    Write(data, ptr + 12, (int)ceiling.Type);
-                    Write(data, ptr + 16, ceiling.Sector.Number);
-                    Write(data, ptr + 20, ceiling.BottomHeight.Data);
-                    Write(data, ptr + 24, ceiling.TopHeight.Data);
-                    Write(data, ptr + 28, ceiling.Speed.Data);
-                    Write(data, ptr + 32, ceiling.Crush ? 1 : 0);
-                    Write(data, ptr + 36, ceiling.Direction);
-                    Write(data, ptr + 40, ceiling.Tag);
-                    Write(data, ptr + 44, ceiling.OldDirection);
-                    ptr += 48;
                     continue;
                 }
-            }
-
-            {
-                var door = thinker as VerticalDoor;
-                if (door != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Door;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, door.ThinkerState);
-                    Write(data, ptr + 12, (int)door.Type);
-                    Write(data, ptr + 16, door.Sector.Number);
-                    Write(data, ptr + 20, door.TopHeight.Data);
-                    Write(data, ptr + 24, door.Speed.Data);
-                    Write(data, ptr + 28, door.Direction);
-                    Write(data, ptr + 32, door.TopWait);
-                    Write(data, ptr + 36, door.TopCountDown);
-                    ptr += 40;
+                case CeilingMove ceilingMove:
+                    ptr = WriteCeilingMove(ceilingMove, data, ptr);
                     continue;
-                }
-            }
-
-            {
-                var floor = thinker as FloorMove;
-                if (floor != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Floor;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, floor.ThinkerState);
-                    Write(data, ptr + 12, (int)floor.Type);
-                    Write(data, ptr + 16, floor.Crush ? 1 : 0);
-                    Write(data, ptr + 20, floor.Sector.Number);
-                    Write(data, ptr + 24, floor.Direction);
-                    Write(data, ptr + 28, (int)floor.NewSpecial);
-                    Write(data, ptr + 32, floor.Texture);
-                    Write(data, ptr + 36, floor.FloorDestHeight.Data);
-                    Write(data, ptr + 40, floor.Speed.Data);
-                    ptr += 44;
+                case VerticalDoor door:
+                    ptr = WriteVerticalDoor(door, data, ptr);
                     continue;
-                }
-            }
-
-            {
-                var plat = thinker as Platform;
-                if (plat != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Plat;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, plat.ThinkerState);
-                    Write(data, ptr + 12, plat.Sector.Number);
-                    Write(data, ptr + 16, plat.Speed.Data);
-                    Write(data, ptr + 20, plat.Low.Data);
-                    Write(data, ptr + 24, plat.High.Data);
-                    Write(data, ptr + 28, plat.Wait);
-                    Write(data, ptr + 32, plat.Count);
-                    Write(data, ptr + 36, (int)plat.Status);
-                    Write(data, ptr + 40, (int)plat.OldStatus);
-                    Write(data, ptr + 44, plat.Crush ? 1 : 0);
-                    Write(data, ptr + 48, plat.Tag);
-                    Write(data, ptr + 52, (int)plat.Type);
-                    ptr += 56;
+                case FloorMove floor:
+                    ptr = WriteFloorMove(floor, data, ptr);
                     continue;
-                }
-            }
-
-            {
-                var flash = thinker as LightFlash;
-                if (flash != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Flash;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, flash.ThinkerState);
-                    Write(data, ptr + 12, flash.Sector.Number);
-                    Write(data, ptr + 16, flash.Count);
-                    Write(data, ptr + 20, flash.MaxLight);
-                    Write(data, ptr + 24, flash.MinLight);
-                    Write(data, ptr + 28, flash.MaxTime);
-                    Write(data, ptr + 32, flash.MinTime);
-                    ptr += 36;
+                case Platform plat:
+                    ptr = WritePlatform(plat, data, ptr);
                     continue;
-                }
-            }
-
-            {
-                var strobe = thinker as StrobeFlash;
-                if (strobe != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Strobe;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, strobe.ThinkerState);
-                    Write(data, ptr + 12, strobe.Sector.Number);
-                    Write(data, ptr + 16, strobe.Count);
-                    Write(data, ptr + 20, strobe.MinLight);
-                    Write(data, ptr + 24, strobe.MaxLight);
-                    Write(data, ptr + 28, strobe.DarkTime);
-                    Write(data, ptr + 32, strobe.BrightTime);
-                    ptr += 36;
+                case LightFlash flash:
+                    WriteLightFlash(flash, data, ptr);
                     continue;
-                }
-            }
-
-            {
-                var glow = thinker as GlowingLight;
-                if (glow != null)
-                {
-                    data[ptr++] = (byte)SpecialClass.Glow;
-                    ptr = PadPointer(ptr);
-                    WriteThinkerState(data, ptr + 8, glow.ThinkerState);
-                    Write(data, ptr + 12, glow.Sector.Number);
-                    Write(data, ptr + 16, glow.MinLight);
-                    Write(data, ptr + 20, glow.MaxLight);
-                    Write(data, ptr + 24, glow.Direction);
-                    ptr += 28;
+                case StrobeFlash strobe:
+                    ptr = WriteStrobeFlash(strobe, data, ptr);
                     continue;
-                }
+                case GlowingLight glow:
+                    ptr = WriteGlowingLight(glow, data, ptr);
+                    break;
             }
         }
 
         data[ptr++] = (byte)SpecialClass.EndSpecials;
 
         return ptr;
+    }
+
+    private static int WriteCeilingMove(CeilingMove ceiling, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Ceiling;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, ceiling.ThinkerState);
+        Write(data, ptr + 12, (int)ceiling.Type);
+        Write(data, ptr + 16, ceiling.Sector.Number);
+        Write(data, ptr + 20, ceiling.BottomHeight.Data);
+        Write(data, ptr + 24, ceiling.TopHeight.Data);
+        Write(data, ptr + 28, ceiling.Speed.Data);
+        Write(data, ptr + 32, ceiling.Crush ? 1 : 0);
+        Write(data, ptr + 36, ceiling.Direction);
+        Write(data, ptr + 40, ceiling.Tag);
+        Write(data, ptr + 44, ceiling.OldDirection);
+        return ptr + 48;
+    }
+
+    private static int WriteVerticalDoor(VerticalDoor door, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Door;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, door.ThinkerState);
+        Write(data, ptr + 12, (int)door.Type);
+        Write(data, ptr + 16, door.Sector.Number);
+        Write(data, ptr + 20, door.TopHeight.Data);
+        Write(data, ptr + 24, door.Speed.Data);
+        Write(data, ptr + 28, door.Direction);
+        Write(data, ptr + 32, door.TopWait);
+        Write(data, ptr + 36, door.TopCountDown);
+        return ptr + 40;
+    }
+
+    private static int WriteFloorMove(FloorMove floor, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Floor;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, floor.ThinkerState);
+        Write(data, ptr + 12, (int)floor.Type);
+        Write(data, ptr + 16, floor.Crush ? 1 : 0);
+        Write(data, ptr + 20, floor.Sector.Number);
+        Write(data, ptr + 24, floor.Direction);
+        Write(data, ptr + 28, (int)floor.NewSpecial);
+        Write(data, ptr + 32, floor.Texture);
+        Write(data, ptr + 36, floor.FloorDestHeight.Data);
+        Write(data, ptr + 40, floor.Speed.Data);
+        return ptr + 44;
+    }
+
+    private static int WritePlatform(Platform plat, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Plat;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, plat.ThinkerState);
+        Write(data, ptr + 12, plat.Sector.Number);
+        Write(data, ptr + 16, plat.Speed.Data);
+        Write(data, ptr + 20, plat.Low.Data);
+        Write(data, ptr + 24, plat.High.Data);
+        Write(data, ptr + 28, plat.Wait);
+        Write(data, ptr + 32, plat.Count);
+        Write(data, ptr + 36, (int)plat.Status);
+        Write(data, ptr + 40, (int)plat.OldStatus);
+        Write(data, ptr + 44, plat.Crush ? 1 : 0);
+        Write(data, ptr + 48, plat.Tag);
+        Write(data, ptr + 52, (int)plat.Type);
+        return ptr + 56;
+    }
+
+    private static int WriteLightFlash(LightFlash flash, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Flash;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, flash.ThinkerState);
+        Write(data, ptr + 12, flash.Sector.Number);
+        Write(data, ptr + 16, flash.Count);
+        Write(data, ptr + 20, flash.MaxLight);
+        Write(data, ptr + 24, flash.MinLight);
+        Write(data, ptr + 28, flash.MaxTime);
+        Write(data, ptr + 32, flash.MinTime);
+        return ptr + 36;
+    }
+
+    private static int WriteStrobeFlash(StrobeFlash strobe, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Strobe;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, strobe.ThinkerState);
+        Write(data, ptr + 12, strobe.Sector.Number);
+        Write(data, ptr + 16, strobe.Count);
+        Write(data, ptr + 20, strobe.MinLight);
+        Write(data, ptr + 24, strobe.MaxLight);
+        Write(data, ptr + 28, strobe.DarkTime);
+        Write(data, ptr + 32, strobe.BrightTime);
+        return ptr + 36;
+    }
+
+    private static int WriteGlowingLight(GlowingLight glow, Span<byte> data, int ptr)
+    {
+        data[ptr++] = (byte)SpecialClass.Glow;
+        ptr = PadPointer(ptr);
+        WriteThinkerState(data, ptr + 8, glow.ThinkerState);
+        Write(data, ptr + 12, glow.Sector.Number);
+        Write(data, ptr + 16, glow.MinLight);
+        Write(data, ptr + 20, glow.MaxLight);
+        Write(data, ptr + 24, glow.Direction);
+        return ptr + 28;
     }
 
     private static int ArchivePlayer(Player player, Span<byte> data, int p)
@@ -339,35 +321,31 @@ public static partial class SaveAndLoad
         Write(data, p + 32, player.Health);
         Write(data, p + 36, player.ArmorPoints);
         Write(data, p + 40, player.ArmorType);
-        for (var i = 0; i < (int)PowerType.Count; i++)
-        {
+
+        for (var i = 0; i < player.Powers.Length; i++)
             Write(data, p + 44 + 4 * i, player.Powers[i]);
-        }
 
-        for (var i = 0; i < (int)PowerType.Count; i++)
-        {
-            Write(data, p + 68 + 4 * i, player.Cards[i] ? 1 : 0);
-        }
+        for (var i = 0; i < player.Cards.Length; i++)
+            Write(data, p + 68 + 4 * i, player.Cards[i].AsByte());
 
-        Write(data, p + 92, player.Backpack ? 1 : 0);
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-        {
+        Write(data, p + 92, player.Backpack.AsByte());
+
+        for (var i = 0; i < player.Frags.Length; i++)
             Write(data, p + 96 + 4 * i, player.Frags[i]);
-        }
 
         Write(data, p + 112, (int)player.ReadyWeapon);
         Write(data, p + 116, (int)player.PendingWeapon);
-        for (var i = 0; i < (int)WeaponType.Count; i++)
+        for (var i = 0; i < player.WeaponOwned.Length; i++)
         {
             Write(data, p + 120 + 4 * i, player.WeaponOwned[i] ? 1 : 0);
         }
 
-        for (var i = 0; i < (int)AmmoType.Count; i++)
+        for (var i = 0; i < player.Ammo.Length; i++)
         {
             Write(data, p + 156 + 4 * i, player.Ammo[i]);
         }
 
-        for (var i = 0; i < (int)AmmoType.Count; i++)
+        for (var i = 0; i < player.MaxAmmo.Length; i++)
         {
             Write(data, p + 172 + 4 * i, player.MaxAmmo[i]);
         }
@@ -384,23 +362,16 @@ public static partial class SaveAndLoad
         Write(data, p + 232, player.ExtraLight);
         Write(data, p + 236, player.FixedColorMap);
         Write(data, p + 240, player.ColorMap);
-        for (var i = 0; i < (int)PlayerSprite.Count; i++)
+        for (var i = 0; i < player.PlayerSprites.Length; i++)
         {
-            if (player.PlayerSprites[i].State == null)
-            {
-                Write(data, p + 244 + 16 * i, 0);
-            }
-            else
-            {
-                Write(data, p + 244 + 16 * i, player.PlayerSprites[i].State.Number);
-            }
-
+            var spriteState = player.PlayerSprites[i].State is null ? 0 : player.PlayerSprites[i].State.Number;
+            Write(data, p + 244 + 16 * i, spriteState);
             Write(data, p + 244 + 16 * i + 4, player.PlayerSprites[i].Tics);
             Write(data, p + 244 + 16 * i + 8, player.PlayerSprites[i].Sx.Data);
             Write(data, p + 244 + 16 * i + 12, player.PlayerSprites[i].Sy.Data);
         }
 
-        Write(data, p + 276, player.DidSecret ? 1 : 0);
+        Write(data, p + 276, player.DidSecret.AsByte());
 
         return p + 280;
     }
