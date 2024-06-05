@@ -8,7 +8,7 @@ namespace ManagedDoom.Doom.Game;
 
 public static partial class SaveAndLoad
 {
-    public static int SaveHeader(string description, Span<byte> data)
+    private static int SaveHeader(string description, Span<byte> data)
     {
         var ptr = WriteDescription(data, description);
         return WriteVersion(data, ptr);
@@ -31,7 +31,7 @@ public static partial class SaveAndLoad
         return ptr + versionSize;
     }
 
-    public static int Save(DoomGame game, Span<byte> data, int ptr)
+    private static int Save(DoomGame game, Span<byte> data, int ptr)
     {
         var options = game.World.Options;
         data[ptr++] = (byte)options.Skill;

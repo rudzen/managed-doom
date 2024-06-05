@@ -326,13 +326,11 @@ public static partial class SaveAndLoad
 
     private static ThinkerState ReadThinkerState(Span<byte> data)
     {
-        switch (BitConverter.ToInt32(data))
+        return BitConverter.ToInt32(data) switch
         {
-            case 0:
-                return ThinkerState.InStasis;
-            default:
-                return ThinkerState.Active;
-        }
+            0 => ThinkerState.InStasis,
+            _ => ThinkerState.Active
+        };
     }
 
     private static int UnArchivePlayer(Player player, Span<byte> data, int p)
@@ -387,9 +385,7 @@ public static partial class SaveAndLoad
         {
             player.PlayerSprites[i].State = DoomInfo.States[BitConverter.ToInt32(data.Slice(p + 244 + 16 * i))];
             if (player.PlayerSprites[i].State.Number == (int)MobjState.Null)
-            {
                 player.PlayerSprites[i].State = null;
-            }
 
             player.PlayerSprites[i].Tics = BitConverter.ToInt32(data.Slice(p + 244 + 16 * i + 4));
             player.PlayerSprites[i].Sx = new Fixed(BitConverter.ToInt32(data.Slice(p + 244 + 16 * i + 8)));

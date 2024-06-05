@@ -25,10 +25,10 @@ namespace ManagedDoom.Doom.Game;
 /// </summary>
 public static partial class SaveAndLoad
 {
-    public const int DescriptionSize = 24;
+    private const int DescriptionSize = 24;
 
-    public const int versionSize = 16;
-    public const int saveBufferSize = 360 * 1024;
+    private const int versionSize = 16;
+    private const int saveBufferSize = 360 * 1024;
 
     private enum ThinkerClass
     {
@@ -56,7 +56,7 @@ public static partial class SaveAndLoad
 
         try
         {
-            var fileBuffer = fileData.AsSpan();
+            var fileBuffer = fileData.AsSpan(0, saveBufferSize);
 
             var ptr = SaveHeader(description, fileBuffer);
             ptr = Save(game, fileBuffer, ptr);
@@ -119,8 +119,4 @@ public static partial class SaveAndLoad
         ptr += (4 - (ptr & 3)) & 3;
         return ptr;
     }
-
-    ////////////////////////////////////////////////////////////
-    // Save game
-    ////////////////////////////////////////////////////////////
 }
