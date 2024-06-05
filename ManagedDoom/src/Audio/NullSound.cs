@@ -16,59 +16,58 @@
 
 using ManagedDoom.Doom.World;
 
-namespace ManagedDoom.Audio
+namespace ManagedDoom.Audio;
+
+public sealed class NullSound : ISound
 {
-    public sealed class NullSound : ISound
+    private static NullSound instance;
+
+    public static NullSound GetInstance()
     {
-        private static NullSound instance;
+        return instance ??= new NullSound();
+    }
 
-        public static NullSound GetInstance()
-        {
-            return instance ??= new NullSound();
-        }
+    public void SetListener(Mobj listener)
+    {
+    }
 
-        public void SetListener(Mobj listener)
-        {
-        }
+    public void Update()
+    {
+    }
 
-        public void Update()
-        {
-        }
+    public void StartSound(Sfx sfx)
+    {
+    }
 
-        public void StartSound(Sfx sfx)
-        {
-        }
+    public void StartSound(Mobj mobj, Sfx sfx, SfxType type)
+    {
+    }
 
-        public void StartSound(Mobj mobj, Sfx sfx, SfxType type)
-        {
-        }
+    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume)
+    {
+    }
 
-        public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume)
-        {
-        }
+    public void StopSound(Mobj mobj)
+    {
+    }
 
-        public void StopSound(Mobj mobj)
-        {
-        }
+    public void Reset()
+    {
+    }
 
-        public void Reset()
-        {
-        }
+    public void Pause()
+    {
+    }
 
-        public void Pause()
-        {
-        }
+    public void Resume()
+    {
+    }
 
-        public void Resume()
-        {
-        }
+    public int MaxVolume => 15;
 
-        public int MaxVolume => 15;
-
-        public int Volume
-        {
-            get => 0;
-            set { }
-        }
+    public int Volume
+    {
+        get => 0;
+        set { }
     }
 }

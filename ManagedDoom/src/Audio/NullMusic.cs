@@ -14,30 +14,26 @@
 //
 
 
-namespace ManagedDoom.Audio
+namespace ManagedDoom.Audio;
+
+public sealed class NullMusic : IMusic
 {
-    public sealed class NullMusic : IMusic
+    private static NullMusic instance;
+
+    public static NullMusic GetInstance()
     {
-        private static NullMusic instance;
+        return instance ??= new NullMusic();
+    }
 
-        public static NullMusic GetInstance()
-        {
-            return instance ??= new NullMusic();
-        }
+    public void StartMusic(Bgm bgm, bool loop)
+    {
+    }
 
-        public void StartMusic(Bgm bgm, bool loop)
-        {
-        }
+    public int MaxVolume => 15;
 
-        public int MaxVolume => 15;
-
-        public int Volume
-        {
-            get => 0;
-
-            set
-            {
-            }
-        }
+    public int Volume
+    {
+        get => 0;
+        set { }
     }
 }
