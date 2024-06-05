@@ -304,7 +304,7 @@ namespace ManagedDoom.Doom.Game
             gameAction = GameAction.Nothing;
 
             var directory = ConfigUtilities.GetExeDirectory;
-            var path = Path.Combine(directory, "doomsav" + loadGameSlotNumber + ".dsg");
+            var path = Path.Combine(directory, $"doomsav{loadGameSlotNumber}.dsg");
             SaveAndLoad.Load(this, path);
         }
 
@@ -499,14 +499,8 @@ namespace ManagedDoom.Doom.Game
                 Options.Episode = System.Math.Clamp(episode, 1, 4);
             }
 
-            if (Options.GameMode == GameMode.Commercial)
-            {
-                Options.Map = System.Math.Clamp(map, 1, 32);
-            }
-            else
-            {
-                Options.Map = System.Math.Clamp(map, 1, 9);
-            }
+            var maxMap = Options.GameMode == GameMode.Commercial ? 32 : 9;
+            Options.Map = System.Math.Clamp(map, 1, maxMap);
 
             Options.Random.Clear();
 
