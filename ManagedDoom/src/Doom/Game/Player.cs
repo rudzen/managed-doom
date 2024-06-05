@@ -99,7 +99,7 @@ namespace ManagedDoom.Doom.Game
 
             Frags = new int[MaxPlayerCount];
 
-            WeaponOwned = new bool[(int)WeaponType.Count];
+            WeaponOwned = new bool[WeaponType.Count];
             Ammo = new int[(int)AmmoType.Count];
             MaxAmmo = new int[(int)AmmoType.Count];
 
@@ -131,8 +131,8 @@ namespace ManagedDoom.Doom.Game
 
             Array.Clear(Frags);
 
-            ReadyWeapon = 0;
-            PendingWeapon = 0;
+            ReadyWeapon = WeaponType.Fist;
+            PendingWeapon = WeaponType.Fist;
 
             Array.Clear(WeaponOwned);
             Array.Clear(Ammo);
@@ -199,8 +199,8 @@ namespace ManagedDoom.Doom.Game
             Array.Clear(Ammo);
             Array.Clear(MaxAmmo);
 
-            WeaponOwned[(int)WeaponType.Fist] = true;
-            WeaponOwned[(int)WeaponType.Pistol] = true;
+            WeaponOwned[WeaponType.Fist] = true;
+            WeaponOwned[WeaponType.Pistol] = true;
             Ammo[(int)AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
             for (var i = 0; i < (int)AmmoType.Count; i++)
             {

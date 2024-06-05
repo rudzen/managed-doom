@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Info;
@@ -69,11 +70,10 @@ namespace ManagedDoom.Doom.Game
         }
 
 
-
         ////////////////////////////////////////////////////////////
         // Save game
         ////////////////////////////////////////////////////////////
-        
+
         private class SaveGame
         {
             private readonly byte[] data;
@@ -94,6 +94,7 @@ namespace ManagedDoom.Doom.Game
                 {
                     data[i] = (byte)description[i];
                 }
+
                 ptr += DescriptionSize;
             }
 
@@ -104,6 +105,7 @@ namespace ManagedDoom.Doom.Game
                 {
                     data[ptr + i] = (byte)version[i];
                 }
+
                 ptr += versionSize;
             }
 
@@ -133,9 +135,10 @@ namespace ManagedDoom.Doom.Game
                 writer.Write(data, 0, ptr);
             }
 
-            private void PadPointer()
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private static int PadPointer(int p)
             {
-                ptr += (4 - (ptr & 3)) & 3;
+                return (4 - (p & 3)) & 3;
             }
 
             private void ArchivePlayers(World.World world)
@@ -144,12 +147,9 @@ namespace ManagedDoom.Doom.Game
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
                     if (!players[i].InGame)
-                    {
                         continue;
-                    }
 
-                    PadPointer();
-
+                    ptr = PadPointer(ptr);
                     ptr = ArchivePlayer(players[i], data, ptr);
                 }
             }
@@ -158,17 +158,13 @@ namespace ManagedDoom.Doom.Game
             {
                 // Do sectors.
                 var sectors = world.Map.Sectors;
-                for (var i = 0; i < sectors.Length; i++)
-                {
-                    ptr = ArchiveSector(sectors[i], data, ptr);
-                }
+                foreach (var sector in sectors)
+                    ptr = ArchiveSector(sector, data, ptr);
 
                 // Do lines.
                 var lines = world.Map.Lines;
-                for (var i = 0; i < lines.Length; i++)
-                {
-                    ptr = ArchiveLine(lines[i], data, ptr);
-                }
+                foreach (var line in lines)
+                    ptr = ArchiveLine(line, data, ptr);
             }
 
             private void ArchiveThinkers(World.World world)
@@ -181,7 +177,7 @@ namespace ManagedDoom.Doom.Game
                     if (thinker is Mobj mobj)
                     {
                         data[ptr++] = (byte)ThinkerClass.Mobj;
-                        PadPointer();
+                        ptr = PadPointer(ptr);
 
                         WriteThinkerState(data, ptr + 8, mobj.ThinkerState);
                         Write(data, ptr + 12, mobj.X.Data);
@@ -214,6 +210,7 @@ namespace ManagedDoom.Doom.Game
                         {
                             Write(data, ptr + 132, mobj.Player.Number + 1);
                         }
+
                         Write(data, ptr + 136, mobj.LastLook);
                         if (mobj.SpawnPoint == null)
                         {
@@ -231,6 +228,7 @@ namespace ManagedDoom.Doom.Game
                             Write(data, ptr + 146, (short)mobj.SpawnPoint.Type);
                             Write(data, ptr + 148, (short)mobj.SpawnPoint.Flags);
                         }
+
                         ptr += 154;
                     }
                 }
@@ -250,11 +248,11 @@ namespace ManagedDoom.Doom.Game
                     {
                         if (thinker is not CeilingMove ceiling)
                             continue;
-                        
+
                         if (sa.CheckActiveCeiling(ceiling))
                         {
                             data[ptr++] = (byte)SpecialClass.Ceiling;
-                            PadPointer();
+                            ptr = PadPointer(ptr);
                             WriteThinkerState(data, ptr + 8, ceiling.ThinkerState);
                             Write(data, ptr + 12, (int)ceiling.Type);
                             Write(data, ptr + 16, ceiling.Sector.Number);
@@ -267,139 +265,144 @@ namespace ManagedDoom.Doom.Game
                             Write(data, ptr + 44, ceiling.OldDirection);
                             ptr += 48;
                         }
+
                         continue;
                     }
 
+                    switch (thinker)
                     {
-                        if (thinker is CeilingMove ceiling)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Ceiling;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, ceiling.ThinkerState);
-                            Write(data, ptr + 12, (int)ceiling.Type);
-                            Write(data, ptr + 16, ceiling.Sector.Number);
-                            Write(data, ptr + 20, ceiling.BottomHeight.Data);
-                            Write(data, ptr + 24, ceiling.TopHeight.Data);
-                            Write(data, ptr + 28, ceiling.Speed.Data);
-                            Write(data, ptr + 32, ceiling.Crush ? 1 : 0);
-                            Write(data, ptr + 36, ceiling.Direction);
-                            Write(data, ptr + 40, ceiling.Tag);
-                            Write(data, ptr + 44, ceiling.OldDirection);
-                            ptr += 48;
+                        case CeilingMove ceilingMove:
+                            WriteCeilingMove(ceilingMove);
                             continue;
-                        }
-                    }
-
-                    {
-                        if (thinker is VerticalDoor door)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Door;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, door.ThinkerState);
-                            Write(data, ptr + 12, (int)door.Type);
-                            Write(data, ptr + 16, door.Sector.Number);
-                            Write(data, ptr + 20, door.TopHeight.Data);
-                            Write(data, ptr + 24, door.Speed.Data);
-                            Write(data, ptr + 28, door.Direction);
-                            Write(data, ptr + 32, door.TopWait);
-                            Write(data, ptr + 36, door.TopCountDown);
-                            ptr += 40;
+                        case VerticalDoor door:
+                            WriteVerticalDoor(door);
                             continue;
-                        }
-                    }
-
-                    {
-                        if (thinker is FloorMove floor)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Floor;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, floor.ThinkerState);
-                            Write(data, ptr + 12, (int)floor.Type);
-                            Write(data, ptr + 16, floor.Crush ? 1 : 0);
-                            Write(data, ptr + 20, floor.Sector.Number);
-                            Write(data, ptr + 24, floor.Direction);
-                            Write(data, ptr + 28, (int)floor.NewSpecial);
-                            Write(data, ptr + 32, floor.Texture);
-                            Write(data, ptr + 36, floor.FloorDestHeight.Data);
-                            Write(data, ptr + 40, floor.Speed.Data);
-                            ptr += 44;
+                        case FloorMove floor:
+                            WriteFloorMove(floor);
                             continue;
-                        }
-                    }
-
-                    {
-                        if (thinker is Platform plat)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Plat;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, plat.ThinkerState);
-                            Write(data, ptr + 12, plat.Sector.Number);
-                            Write(data, ptr + 16, plat.Speed.Data);
-                            Write(data, ptr + 20, plat.Low.Data);
-                            Write(data, ptr + 24, plat.High.Data);
-                            Write(data, ptr + 28, plat.Wait);
-                            Write(data, ptr + 32, plat.Count);
-                            Write(data, ptr + 36, (int)plat.Status);
-                            Write(data, ptr + 40, (int)plat.OldStatus);
-                            Write(data, ptr + 44, plat.Crush ? 1 : 0);
-                            Write(data, ptr + 48, plat.Tag);
-                            Write(data, ptr + 52, (int)plat.Type);
-                            ptr += 56;
+                        case Platform plat:
+                            WritePlatform(plat);
                             continue;
-                        }
-                    }
-
-                    {
-                        if (thinker is LightFlash flash)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Flash;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, flash.ThinkerState);
-                            Write(data, ptr + 12, flash.Sector.Number);
-                            Write(data, ptr + 16, flash.Count);
-                            Write(data, ptr + 20, flash.MaxLight);
-                            Write(data, ptr + 24, flash.MinLight);
-                            Write(data, ptr + 28, flash.MaxTime);
-                            Write(data, ptr + 32, flash.MinTime);
-                            ptr += 36;
+                        case LightFlash flash:
+                            WriteLightFlash(flash);
                             continue;
-                        }
-                    }
-
-                    {
-                        if (thinker is StrobeFlash strobe)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Strobe;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, strobe.ThinkerState);
-                            Write(data, ptr + 12, strobe.Sector.Number);
-                            Write(data, ptr + 16, strobe.Count);
-                            Write(data, ptr + 20, strobe.MinLight);
-                            Write(data, ptr + 24, strobe.MaxLight);
-                            Write(data, ptr + 28, strobe.DarkTime);
-                            Write(data, ptr + 32, strobe.BrightTime);
-                            ptr += 36;
+                        case StrobeFlash strobe:
+                            WriteStrobeFlash(strobe);
                             continue;
-                        }
-                    }
-
-                    {
-                        if (thinker is GlowingLight glow)
-                        {
-                            data[ptr++] = (byte)SpecialClass.Glow;
-                            PadPointer();
-                            WriteThinkerState(data, ptr + 8, glow.ThinkerState);
-                            Write(data, ptr + 12, glow.Sector.Number);
-                            Write(data, ptr + 16, glow.MinLight);
-                            Write(data, ptr + 20, glow.MaxLight);
-                            Write(data, ptr + 24, glow.Direction);
-                            ptr += 28;
-                            continue;
-                        }
+                        case GlowingLight glow:
+                            WriteGlowingLight(glow);
+                            break;
                     }
                 }
 
                 data[ptr++] = (byte)SpecialClass.EndSpecials;
+            }
+
+            private void WriteCeilingMove(CeilingMove ceilingMove)
+            {
+                data[ptr++] = (byte)SpecialClass.Ceiling;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, ceilingMove.ThinkerState);
+                Write(data, ptr + 12, (int)ceilingMove.Type);
+                Write(data, ptr + 16, ceilingMove.Sector.Number);
+                Write(data, ptr + 20, ceilingMove.BottomHeight.Data);
+                Write(data, ptr + 24, ceilingMove.TopHeight.Data);
+                Write(data, ptr + 28, ceilingMove.Speed.Data);
+                Write(data, ptr + 32, ceilingMove.Crush ? 1 : 0);
+                Write(data, ptr + 36, ceilingMove.Direction);
+                Write(data, ptr + 40, ceilingMove.Tag);
+                Write(data, ptr + 44, ceilingMove.OldDirection);
+                ptr += 48;
+            }
+
+            private void WriteVerticalDoor(VerticalDoor door)
+            {
+                data[ptr++] = (byte)SpecialClass.Door;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, door.ThinkerState);
+                Write(data, ptr + 12, (int)door.Type);
+                Write(data, ptr + 16, door.Sector.Number);
+                Write(data, ptr + 20, door.TopHeight.Data);
+                Write(data, ptr + 24, door.Speed.Data);
+                Write(data, ptr + 28, door.Direction);
+                Write(data, ptr + 32, door.TopWait);
+                Write(data, ptr + 36, door.TopCountDown);
+                ptr += 40;
+            }
+
+            private void WriteFloorMove(FloorMove floor)
+            {
+                data[ptr++] = (byte)SpecialClass.Floor;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, floor.ThinkerState);
+                Write(data, ptr + 12, (int)floor.Type);
+                Write(data, ptr + 16, floor.Crush ? 1 : 0);
+                Write(data, ptr + 20, floor.Sector.Number);
+                Write(data, ptr + 24, floor.Direction);
+                Write(data, ptr + 28, (int)floor.NewSpecial);
+                Write(data, ptr + 32, floor.Texture);
+                Write(data, ptr + 36, floor.FloorDestHeight.Data);
+                Write(data, ptr + 40, floor.Speed.Data);
+                ptr += 44;
+            }
+
+            private void WritePlatform(Platform plat)
+            {
+                data[ptr++] = (byte)SpecialClass.Plat;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, plat.ThinkerState);
+                Write(data, ptr + 12, plat.Sector.Number);
+                Write(data, ptr + 16, plat.Speed.Data);
+                Write(data, ptr + 20, plat.Low.Data);
+                Write(data, ptr + 24, plat.High.Data);
+                Write(data, ptr + 28, plat.Wait);
+                Write(data, ptr + 32, plat.Count);
+                Write(data, ptr + 36, (int)plat.Status);
+                Write(data, ptr + 40, (int)plat.OldStatus);
+                Write(data, ptr + 44, plat.Crush ? 1 : 0);
+                Write(data, ptr + 48, plat.Tag);
+                Write(data, ptr + 52, (int)plat.Type);
+                ptr += 56;
+            }
+
+            private void WriteLightFlash(LightFlash flash)
+            {
+                data[ptr++] = (byte)SpecialClass.Flash;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, flash.ThinkerState);
+                Write(data, ptr + 12, flash.Sector.Number);
+                Write(data, ptr + 16, flash.Count);
+                Write(data, ptr + 20, flash.MaxLight);
+                Write(data, ptr + 24, flash.MinLight);
+                Write(data, ptr + 28, flash.MaxTime);
+                Write(data, ptr + 32, flash.MinTime);
+                ptr += 36;
+            }
+
+            private void WriteStrobeFlash(StrobeFlash strobe)
+            {
+                data[ptr++] = (byte)SpecialClass.Strobe;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, strobe.ThinkerState);
+                Write(data, ptr + 12, strobe.Sector.Number);
+                Write(data, ptr + 16, strobe.Count);
+                Write(data, ptr + 20, strobe.MinLight);
+                Write(data, ptr + 24, strobe.MaxLight);
+                Write(data, ptr + 28, strobe.DarkTime);
+                Write(data, ptr + 32, strobe.BrightTime);
+                ptr += 36;
+            }
+
+            private void WriteGlowingLight(GlowingLight glow)
+            {
+                data[ptr++] = (byte)SpecialClass.Glow;
+                ptr = PadPointer(ptr);
+                WriteThinkerState(data, ptr + 8, glow.ThinkerState);
+                Write(data, ptr + 12, glow.Sector.Number);
+                Write(data, ptr + 16, glow.MinLight);
+                Write(data, ptr + 20, glow.MaxLight);
+                Write(data, ptr + 24, glow.Direction);
+                ptr += 28;
             }
 
             private static int ArchivePlayer(Player player, byte[] data, int p)
@@ -416,29 +419,31 @@ namespace ManagedDoom.Doom.Game
                 {
                     Write(data, p + 44 + 4 * i, player.Powers[i]);
                 }
+
                 for (var i = 0; i < (int)PowerType.Count; i++)
                 {
                     Write(data, p + 68 + 4 * i, player.Cards[i] ? 1 : 0);
                 }
+
                 Write(data, p + 92, player.Backpack ? 1 : 0);
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
                     Write(data, p + 96 + 4 * i, player.Frags[i]);
                 }
+
                 Write(data, p + 112, (int)player.ReadyWeapon);
                 Write(data, p + 116, (int)player.PendingWeapon);
-                for (var i = 0; i < (int)WeaponType.Count; i++)
+                for (var i = 0; i < (int)WeaponTypes.Count; i++)
                 {
                     Write(data, p + 120 + 4 * i, player.WeaponOwned[i] ? 1 : 0);
                 }
+
                 for (var i = 0; i < (int)AmmoType.Count; i++)
-                {
                     Write(data, p + 156 + 4 * i, player.Ammo[i]);
-                }
+
                 for (var i = 0; i < (int)AmmoType.Count; i++)
-                {
                     Write(data, p + 172 + 4 * i, player.MaxAmmo[i]);
-                }
+
                 Write(data, p + 188, player.AttackDown ? 1 : 0);
                 Write(data, p + 192, player.UseDown ? 1 : 0);
                 Write(data, p + 196, (int)player.Cheats);
@@ -459,6 +464,7 @@ namespace ManagedDoom.Doom.Game
                     Write(data, p + 244 + 16 * i + 8, player.PlayerSprites[i].Sx.Data);
                     Write(data, p + 244 + 16 * i + 12, player.PlayerSprites[i].Sy.Data);
                 }
+
                 Write(data, p + 276, player.DidSecret ? 1 : 0);
 
                 return p + 280;
@@ -480,7 +486,7 @@ namespace ManagedDoom.Doom.Game
             {
                 Write(data, p, (short)line.Flags);
                 Write(data, p + 2, (short)line.Special);
-                Write(data, p + 4, (short)line.Tag);
+                Write(data, p + 4, line.Tag);
                 p += 6;
 
                 if (line.FrontSide != null)
@@ -510,6 +516,7 @@ namespace ManagedDoom.Doom.Game
 
             private static void Write(byte[] data, int p, int value)
             {
+                // Unsafe.As<byte, int>(ref data[p]) = value;
                 data[p] = (byte)value;
                 data[p + 1] = (byte)(value >> 8);
                 data[p + 2] = (byte)(value >> 16);
@@ -518,10 +525,13 @@ namespace ManagedDoom.Doom.Game
 
             private static void Write(byte[] data, int p, uint value)
             {
+                var b = BitConverter.GetBytes(value);
+                // Unsafe.As<byte, uint>(ref data[p]) = value;
                 data[p] = (byte)value;
                 data[p + 1] = (byte)(value >> 8);
                 data[p + 2] = (byte)(value >> 16);
                 data[p + 3] = (byte)(value >> 24);
+                Console.WriteLine("");
             }
 
             private static void Write(byte[] data, int p, short value)
@@ -543,7 +553,6 @@ namespace ManagedDoom.Doom.Game
                 }
             }
         }
-
 
 
         ////////////////////////////////////////////////////////////
@@ -589,15 +598,14 @@ namespace ManagedDoom.Doom.Game
                 UnArchiveSpecials(game.World);
 
                 if (data[ptr] != 0x1d)
-                {
                     throw new Exception("Bad savegame!");
-                }
 
                 game.World.LevelTime = levelTime;
 
                 options.Sound.SetListener(game.World.ConsolePlayer.Mobj);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveOptimization)]
             private void PadPointer()
             {
                 ptr += (4 - (ptr & 3)) & 3;
@@ -651,10 +659,9 @@ namespace ManagedDoom.Doom.Game
                 foreach (var thinker in thinkers)
                 {
                     if (thinker is Mobj mobj)
-                    {
                         ta.RemoveMobj(mobj);
-                    }
                 }
+
                 thinkers.Reset();
 
                 // Read in saved thinkers.
@@ -700,6 +707,7 @@ namespace ManagedDoom.Doom.Game
                                 mobj.Player = world.Options.Players[playerNumber - 1];
                                 mobj.Player.Mobj = mobj;
                             }
+
                             mobj.LastLook = BitConverter.ToInt32(data, ptr + 136);
                             mobj.SpawnPoint = new MapThing(
                                 Fixed.FromInt(BitConverter.ToInt16(data, ptr + 140)),
@@ -725,6 +733,7 @@ namespace ManagedDoom.Doom.Game
             {
                 var thinkers = world.Thinkers;
                 var sa = world.SectorAction;
+                var dataSpan = data.AsSpan();
 
                 // Read in saved thinkers.
                 while (true)
@@ -738,18 +747,19 @@ namespace ManagedDoom.Doom.Game
 
                         case SpecialClass.Ceiling:
                             PadPointer();
+                            var ceilingData = dataSpan.Slice(ptr + 8, 48);
                             var ceiling = new CeilingMove(world);
-                            ceiling.ThinkerState = ReadThinkerState(data, ptr + 8);
-                            ceiling.Type = (CeilingMoveType)BitConverter.ToInt32(data, ptr + 12);
-                            ceiling.Sector = world.Map.Sectors[BitConverter.ToInt32(data, ptr + 16)];
+                            ceiling.ThinkerState = ReadThinkerState(ceilingData.Slice(ptr, 4));
+                            ceiling.Type = (CeilingMoveType)BitConverter.ToInt32(ceilingData.Slice(4, 4));
+                            ceiling.Sector = world.Map.Sectors[BitConverter.ToInt32(ceilingData.Slice(8, 4))];
                             ceiling.Sector.SpecialData = ceiling;
-                            ceiling.BottomHeight = new Fixed(BitConverter.ToInt32(data, ptr + 20));
-                            ceiling.TopHeight = new Fixed(BitConverter.ToInt32(data, ptr + 24));
-                            ceiling.Speed = new Fixed(BitConverter.ToInt32(data, ptr + 28));
-                            ceiling.Crush = BitConverter.ToInt32(data, ptr + 32) != 0;
-                            ceiling.Direction = BitConverter.ToInt32(data, ptr + 36);
-                            ceiling.Tag = BitConverter.ToInt32(data, ptr + 40);
-                            ceiling.OldDirection = BitConverter.ToInt32(data, ptr + 44);
+                            ceiling.BottomHeight = new Fixed(BitConverter.ToInt32(ceilingData.Slice(12, 4)));
+                            ceiling.TopHeight = new Fixed(BitConverter.ToInt32(ceilingData.Slice(16, 4)));
+                            ceiling.Speed = new Fixed(BitConverter.ToInt32(ceilingData.Slice(20, 4)));
+                            ceiling.Crush = BitConverter.ToInt32(ceilingData.Slice(24, 4)) != 0;
+                            ceiling.Direction = BitConverter.ToInt32(ceilingData.Slice(28, 4));
+                            ceiling.Tag = BitConverter.ToInt32(ceilingData.Slice(32, 4));
+                            ceiling.OldDirection = BitConverter.ToInt32(ceilingData.Slice(36, 4));
                             ptr += 48;
 
                             thinkers.Add(ceiling);
@@ -873,6 +883,15 @@ namespace ManagedDoom.Doom.Game
                 }
             }
 
+            private static ThinkerState ReadThinkerState(ReadOnlySpan<byte> data)
+            {
+                return BitConverter.ToInt32(data[..4]) switch
+                {
+                    0 => ThinkerState.InStasis,
+                    _ => ThinkerState.Active
+                };
+            }
+
             private static int UnArchivePlayer(Player player, byte[] data, int p)
             {
                 player.Clear();
@@ -889,29 +908,35 @@ namespace ManagedDoom.Doom.Game
                 {
                     player.Powers[i] = BitConverter.ToInt32(data, p + 44 + 4 * i);
                 }
+
                 for (var i = 0; i < (int)PowerType.Count; i++)
                 {
                     player.Cards[i] = BitConverter.ToInt32(data, p + 68 + 4 * i) != 0;
                 }
+
                 player.Backpack = BitConverter.ToInt32(data, p + 92) != 0;
                 for (var i = 0; i < Player.MaxPlayerCount; i++)
                 {
                     player.Frags[i] = BitConverter.ToInt32(data, p + 96 + 4 * i);
                 }
-                player.ReadyWeapon = (WeaponType)BitConverter.ToInt32(data, p + 112);
-                player.PendingWeapon = (WeaponType)BitConverter.ToInt32(data, p + 116);
-                for (var i = 0; i < (int)WeaponType.Count; i++)
+
+                player.ReadyWeapon = new WeaponType(BitConverter.ToInt32(data, p + 112));
+                player.PendingWeapon = new WeaponType(BitConverter.ToInt32(data, p + 116));
+                for (var i = 0; i < (int)WeaponTypes.Count; i++)
                 {
                     player.WeaponOwned[i] = BitConverter.ToInt32(data, p + 120 + 4 * i) != 0;
                 }
+
                 for (var i = 0; i < (int)AmmoType.Count; i++)
                 {
                     player.Ammo[i] = BitConverter.ToInt32(data, p + 156 + 4 * i);
                 }
+
                 for (var i = 0; i < (int)AmmoType.Count; i++)
                 {
                     player.MaxAmmo[i] = BitConverter.ToInt32(data, p + 172 + 4 * i);
                 }
+
                 player.AttackDown = BitConverter.ToInt32(data, p + 188) != 0;
                 player.UseDown = BitConverter.ToInt32(data, p + 192) != 0;
                 player.Cheats = (CheatFlags)BitConverter.ToInt32(data, p + 196);
@@ -931,10 +956,12 @@ namespace ManagedDoom.Doom.Game
                     {
                         player.PlayerSprites[i].State = null;
                     }
+
                     player.PlayerSprites[i].Tics = BitConverter.ToInt32(data, p + 244 + 16 * i + 4);
                     player.PlayerSprites[i].Sx = new Fixed(BitConverter.ToInt32(data, p + 244 + 16 * i + 8));
                     player.PlayerSprites[i].Sy = new Fixed(BitConverter.ToInt32(data, p + 244 + 16 * i + 12));
                 }
+
                 player.DidSecret = BitConverter.ToInt32(data, p + 276) != 0;
 
                 return p + 280;
@@ -959,8 +986,8 @@ namespace ManagedDoom.Doom.Game
             {
                 var root = data.Slice(p, 6);
                 line.Flags = (LineFlags)BitConverter.ToInt16(root[..2]);
-                line.Special = (LineSpecial)BitConverter.ToInt16(data.Slice(2, 2));
-                line.Tag = BitConverter.ToInt16(data.Slice(4, 2));
+                line.Special = (LineSpecial)BitConverter.ToInt16(root.Slice(2, 2));
+                line.Tag = BitConverter.ToInt16(root.Slice(4, 2));
                 p += 6;
 
                 if (line.FrontSide != null)

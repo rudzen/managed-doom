@@ -24,10 +24,8 @@ namespace ManagedDoom.Doom.Graphics.Dummy
 
         public static Patch GetPatch()
         {
-            if (dummyPatch != null)
-            {
+            if (dummyPatch is not null)
                 return dummyPatch;
-            }
 
             var width = 64;
             var height = 128;
@@ -39,8 +37,8 @@ namespace ManagedDoom.Doom.Graphics.Dummy
             }
 
             var columns = new Column[width][];
-            var c1 = new Column[] { new Column(0, data, 0, height) };
-            var c2 = new Column[] { new Column(0, data, 32, height) };
+            var c1 = new Column[] { new(0, data, 0, height) };
+            var c2 = new Column[] { new(0, data, 32, height) };
             for (var x = 0; x < width; x++)
             {
                 columns[x] = x / 32 % 2 == 0 ? c1 : c2;
@@ -53,7 +51,7 @@ namespace ManagedDoom.Doom.Graphics.Dummy
 
 
 
-        private static readonly Dictionary<int, Texture> dummyTextures = new Dictionary<int, Texture>();
+        private static readonly Dictionary<int, Texture> dummyTextures = new();
 
         public static Texture GetTexture(int height)
         {
@@ -62,7 +60,7 @@ namespace ManagedDoom.Doom.Graphics.Dummy
                 return dummyTextures[height];
             }
 
-            var patch = new TexturePatch[] { new TexturePatch(0, 0, GetPatch()) };
+            var patch = new TexturePatch[] { new(0, 0, GetPatch()) };
 
             dummyTextures.Add(height, new Texture("DUMMY", false, 64, height, patch));
 

@@ -176,7 +176,7 @@ namespace ManagedDoom.Doom.World
 			var notChainsawAttack =
 				source == null ||
 				source.Player == null ||
-				source.Player.ReadyWeapon != WeaponType.Chainsaw;
+				source.Player.ReadyWeapon != WeaponTypes.Chainsaw;
 
 			if (inflictor != null && (target.Flags & MobjFlags.NoClip) == 0 && notChainsawAttack)
 			{

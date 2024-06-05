@@ -24,7 +24,7 @@ namespace ManagedDoom.Doom.Map
     {
         private const int dataSize = 10;
 
-        public static readonly MapThing Empty = new MapThing(
+        public static readonly MapThing Empty = new(
             Fixed.Zero,
             Fixed.Zero,
             Angle.Ang0,

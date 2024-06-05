@@ -204,9 +204,9 @@ namespace ManagedDoom.Video
                     scale);
             }
 
-            if (DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
+            if (DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
             {
-                var num = player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo];
+                var num = player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo];
                 DrawNumber(ready, num);
             }
 
