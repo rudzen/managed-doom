@@ -27,7 +27,7 @@ namespace ManagedDoom.Silk
         private int silkWindowWidth;
         private int silkWindowHeight;
 
-        public SilkVideo(Config config, GameContent content, IWindow window, GL gl)
+        public SilkVideo(ConfigValues config, GameContent content, IWindow window, GL gl)
         {
             try
             {

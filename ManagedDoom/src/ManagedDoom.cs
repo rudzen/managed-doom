@@ -1,5 +1,6 @@
 ﻿using System;
 using ManagedDoom;
+using ManagedDoom.Config;
 using ManagedDoom.Silk;
 
 Console.ForegroundColor = ConsoleColor.White;

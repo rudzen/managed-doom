@@ -16,6 +16,7 @@
 
 
 using System;
+using ManagedDoom.Config;
 
 namespace ManagedDoom
 {

@@ -26,13 +26,13 @@ namespace ManagedDoom.Silk
 {
     public sealed class SilkMusic : IMusic, IDisposable
     {
-        private readonly Config config;
+        private readonly ConfigValues config;
         private readonly Wad wad;
 
         private MusStream stream;
         private Bgm current;
 
-        public SilkMusic(Config config, GameContent content, AudioDevice device, string sfPath)
+        public SilkMusic(ConfigValues config, GameContent content, AudioDevice device, string sfPath)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace ManagedDoom.Silk
                 stream = new MusStream(this, config, device, sfPath);
                 current = Bgm.NONE;
 
-                Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
+                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
             }
             catch (Exception e)
             {
@@ -109,7 +109,7 @@ namespace ManagedDoom.Silk
             private const int blockLength = 2048;
 
             private readonly SilkMusic parent;
-            private readonly Config config;
+            private readonly ConfigValues config;
 
             private readonly Synthesizer synthesizer;
 
@@ -121,7 +121,7 @@ namespace ManagedDoom.Silk
             private volatile IDecoder current;
             private volatile IDecoder reserved;
 
-            public MusStream(SilkMusic parent, Config config, AudioDevice device, string sfPath)
+            public MusStream(SilkMusic parent, ConfigValues config, AudioDevice device, string sfPath)
             {
                 this.parent = parent;
                 this.config = config;

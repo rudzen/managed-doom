@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using ManagedDoom.Config;
 
 namespace ManagedDoom
 {

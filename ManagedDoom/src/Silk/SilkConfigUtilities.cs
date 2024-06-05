@@ -20,20 +20,21 @@ using System.IO;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
 using DrippyAL;
+using ManagedDoom.Config;
 
 namespace ManagedDoom.Silk
 {
     public static class SilkConfigUtilities
     {
-        public static Config GetConfig()
+        public static Config.Config GetConfig()
         {
-            var config = new Config(ConfigUtilities.GetConfigPath());
+            var config = new Config.Config(ConfigUtilities.GetConfigPath());
 
             if (!config.IsRestoredFromFile)
             {
                 var vm = GetDefaultVideoMode();
-                config.video_screenwidth = vm.Resolution!.Value.X;
-                config.video_screenheight = vm.Resolution.Value.Y;
+                config.Values.video_screenwidth = vm.Resolution!.Value.X;
+                config.Values.video_screenheight = vm.Resolution.Value.Y;
             }
 
             return config;
@@ -67,15 +68,13 @@ namespace ManagedDoom.Silk
             return new VideoMode(new Vector2D<int>(currentWidth, currentHeight));
         }
 
-        public static SilkMusic GetMusicInstance(Config config, GameContent content, AudioDevice device)
+        public static SilkMusic GetMusicInstance(ConfigValues config, GameContent content, AudioDevice device)
         {
             var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.audio_soundfont);
             if (File.Exists(sfPath))
-            {
                 return new SilkMusic(config, content, device, sfPath);
-            }
 
-            Console.WriteLine("SoundFont '" + config.audio_soundfont + "' was not found!");
+            Console.WriteLine($"SoundFont '{config.audio_soundfont}' was not found!");
             return null;
         }
     }

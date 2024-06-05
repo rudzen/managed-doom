@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using System.Threading;
 using Silk.NET.Input;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Maths;
@@ -8,14 +9,16 @@ using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using Silk.NET.Windowing.Glfw;
 using DrippyAL;
+using ManagedDoom.Config;
 
 namespace ManagedDoom.Silk
 {
     public partial class SilkDoom
     {
+        private readonly Semaphore saveSemaphore = new(1, 1);
         private readonly CommandLineArgs args;
 
-        private readonly Config config;
+        private readonly Config.Config config;
         private readonly GameContent content;
 
         private IWindow window;
@@ -44,17 +47,17 @@ namespace ManagedDoom.Silk
                 GlfwWindowing.RegisterPlatform();
                 GlfwInput.RegisterPlatform();
 
-                config = Config.Default = SilkConfigUtilities.GetConfig();
+                config = SilkConfigUtilities.GetConfig();
                 content = new GameContent(args);
 
-                config.video_screenwidth = Math.Clamp(config.video_screenwidth, 320, 3200);
-                config.video_screenheight = Math.Clamp(config.video_screenheight, 200, 2000);
+                config.Values.video_screenwidth = Math.Clamp(config.Values.video_screenwidth, 320, 3200);
+                config.Values.video_screenheight = Math.Clamp(config.Values.video_screenheight, 200, 2000);
 
                 var windowOptions = WindowOptions.Default;
-                windowOptions.Size = new Vector2D<int>(config.video_screenwidth, config.video_screenheight);
+                windowOptions.Size = new Vector2D<int>(config.Values.video_screenwidth, config.Values.video_screenheight);
                 windowOptions.Title = ApplicationInfo.Title;
-                windowOptions.VSync = false;
-                windowOptions.WindowState = config.video_fullscreen ? WindowState.Fullscreen : WindowState.Normal;
+                windowOptions.VSync = true;
+                windowOptions.WindowState = config.Values.video_fullscreen ? WindowState.Fullscreen : WindowState.Normal;
 
                 window = Window.Create(windowOptions);
                 window.Load += OnLoad;
@@ -74,7 +77,7 @@ namespace ManagedDoom.Silk
 
         private void Quit()
         {
-            if (Exception != null)
+            if (Exception is not null)
                 ExceptionDispatchInfo.Throw(Exception);
         }
 
@@ -85,22 +88,22 @@ namespace ManagedDoom.Silk
             gl.Clear(ClearBufferMask.ColorBufferBit);
             window.SwapBuffers();
 
-            video = new SilkVideo(config, content, window, gl);
+            video = new SilkVideo(config.Values, content, window, gl);
 
             if (!args.nosound.Present && !(args.nosfx.Present && args.nomusic.Present))
             {
                 audioDevice = new AudioDevice();
                 if (!args.nosfx.Present)
-                    sound = new SilkSound(config, content, audioDevice);
+                    sound = new SilkSound(config.Values, content, audioDevice);
                 if (!args.nomusic.Present)
-                    music = SilkConfigUtilities.GetMusicInstance(config, content, audioDevice);
+                    music = SilkConfigUtilities.GetMusicInstance(config.Values, content, audioDevice);
             }
 
-            userInput = new SilkUserInput(config, window, this, !args.nomouse.Present);
+            userInput = new SilkUserInput(config.Values, window, this, !args.nomouse.Present);
 
-            doom = new Doom(args, config, content, video, sound, music, userInput);
+            doom = new Doom(args, config.Values, content, video, sound, music, userInput);
 
-            fpsScale = args.timedemo.Present ? 1 : config.video_fpsscale;
+            fpsScale = args.timedemo.Present ? 1 : config.Values.video_fpsscale;
             frameCount = -1;
         }
 
@@ -118,7 +121,7 @@ namespace ManagedDoom.Silk
                 Exception = e;
             }
 
-            if (Exception != null)
+            if (Exception is not null)
                 window.Close();
         }
 
@@ -128,7 +131,6 @@ namespace ManagedDoom.Silk
             {
                 var frameFrac = Fixed.FromInt(frameCount % fpsScale + 1) / fpsScale;
                 video.Render(doom, frameFrac);
-                //Console.WriteLine($"FPS: {frameFrac}");
             }
             catch (Exception e)
             {
@@ -143,43 +145,51 @@ namespace ManagedDoom.Silk
 
         private void OnClose()
         {
-            if (userInput != null)
+            if (userInput is not null)
             {
                 userInput.Dispose();
                 userInput = null;
             }
 
-            if (music != null)
+            if (music is not null)
             {
                 music.Dispose();
                 music = null;
             }
 
-            if (sound != null)
+            if (sound is not null)
             {
                 sound.Dispose();
                 sound = null;
             }
 
-            if (audioDevice != null)
+            if (audioDevice is not null)
             {
                 audioDevice.Dispose();
                 audioDevice = null;
             }
 
-            if (video != null)
+            if (video is not null)
             {
                 video.Dispose();
                 video = null;
             }
 
-            if (gl != null)
+            if (gl is not null)
             {
                 gl.Dispose();
                 gl = null;
             }
 
-            config.Save(ConfigUtilities.GetConfigPath());
+            saveSemaphore.WaitOne();
+            try
+            {
+                config.Save(ConfigUtilities.GetConfigPath());
+            }
+            finally
+            {
+                saveSemaphore.Release();
+            }
         }
 
         public void KeyDown(Key key)

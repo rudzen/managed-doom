@@ -36,7 +36,7 @@ namespace ManagedDoom.Silk
         private const float closeDist = 160;
         private const float attenuator = clipDist - closeDist;
 
-        private readonly Config config;
+        private readonly ConfigValues config;
 
         private AudioClip[] buffers;
         private readonly float[] amplitudes;
@@ -55,7 +55,7 @@ namespace ManagedDoom.Silk
 
         private long lastUpdate;
 
-        public SilkSound(Config config, GameContent content, AudioDevice device)
+        public SilkSound(ConfigValues config, GameContent content, AudioDevice device)
         {
             try
             {

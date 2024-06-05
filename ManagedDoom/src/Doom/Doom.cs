@@ -19,15 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Audio;
+using ManagedDoom.Config;
 using ManagedDoom.Video;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom
 {
-    public class Doom
+    public sealed class Doom
     {
         private readonly CommandLineArgs args;
-        private readonly Config config;
+        private readonly ConfigValues config;
         private readonly GameContent content;
         private readonly IVideo video;
         private readonly ISound sound;
@@ -47,7 +48,7 @@ namespace ManagedDoom
 
         private bool mouseGrabbed;
 
-        public Doom(CommandLineArgs args, Config config, GameContent content, IVideo video, ISound sound, IMusic music, IUserInput userInput)
+        public Doom(CommandLineArgs args, ConfigValues config, GameContent content, IVideo video, ISound sound, IMusic music, IUserInput userInput)
         {
             video ??= NullVideo.GetInstance();
             sound ??= NullSound.GetInstance();

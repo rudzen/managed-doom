@@ -26,8 +26,8 @@ namespace ManagedDoom.Silk
             }
             else
             {
-                config.video_fpsscale = Math.Clamp(config.video_fpsscale, 1, 100);
-                var targetFps = 35 * config.video_fpsscale;
+                config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
+                var targetFps = 35 * config.Values.video_fpsscale;
                 window.UpdatesPerSecond = targetFps;
                 window.FramesPerSecond = targetFps;
             }
@@ -52,8 +52,8 @@ namespace ManagedDoom.Silk
 
         public void Run()
         {
-            config.video_fpsscale = Math.Clamp(config.video_fpsscale, 1, 100);
-            var targetFps = 35 * config.video_fpsscale;
+            config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
+            var targetFps = 35 * config.Values.video_fpsscale;
 
             window.FramesPerSecond = 0;
             window.UpdatesPerSecond = 0;

@@ -19,221 +19,208 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ManagedDoom
+namespace ManagedDoom.Config;
+
+public sealed class CommandLineArgs
 {
-    public sealed class CommandLineArgs
+    public Arg<string> iwad { get; }
+    public Arg<string[]> file { get; }
+    public Arg<string[]> deh { get; }
+
+    public Arg<Tuple<int, int>> warp { get; }
+    public Arg<int> episode { get; }
+    public Arg<int> skill { get; }
+
+    public Arg deathmatch { get; }
+    public Arg altdeath { get; }
+    public Arg fast { get; }
+    public Arg respawn { get; }
+    public Arg nomonsters { get; }
+    public Arg solonet { get; }
+
+    public Arg<string> playdemo { get; }
+    public Arg<string> timedemo { get; }
+
+    public Arg<int> loadgame { get; }
+
+    public Arg nomouse { get; }
+    public Arg nosound { get; }
+    public Arg nosfx { get; }
+    public Arg nomusic { get; }
+
+    public Arg nodeh { get; }
+
+    public CommandLineArgs(string[] args)
     {
-        public Arg<string> iwad { get; }
-        public Arg<string[]> file { get; }
-        public Arg<string[]> deh { get; }
+        iwad = GetString(args, "-iwad");
+        file = Check_file(args);
+        deh = Check_deh(args);
 
-        public Arg<Tuple<int, int>> warp { get; }
-        public Arg<int> episode { get; }
-        public Arg<int> skill { get; }
+        warp = Check_warp(args);
+        episode = GetInt(args, "-episode");
+        skill = GetInt(args, "-skill");
 
-        public Arg deathmatch { get; }
-        public Arg altdeath { get; }
-        public Arg fast { get; }
-        public Arg respawn { get; }
-        public Arg nomonsters { get; }
-        public Arg solonet { get; }
+        deathmatch = new Arg(args.Contains("-deathmatch"));
+        altdeath = new Arg(args.Contains("-altdeath"));
+        fast = new Arg(args.Contains("-fast"));
+        respawn = new Arg(args.Contains("-respawn"));
+        nomonsters = new Arg(args.Contains("-nomonsters"));
+        solonet = new Arg(args.Contains("-solo-net"));
 
-        public Arg<string> playdemo { get; }
-        public Arg<string> timedemo { get; }
+        playdemo = GetString(args, "-playdemo");
+        timedemo = GetString(args, "-timedemo");
 
-        public Arg<int> loadgame { get; }
+        loadgame = GetInt(args, "-loadgame");
 
-        public Arg nomouse { get; }
-        public Arg nosound { get; }
-        public Arg nosfx { get; }
-        public Arg nomusic { get; }
+        nomouse = new Arg(args.Contains("-nomouse"));
+        nosound = new Arg(args.Contains("-nosound"));
+        nosfx = new Arg(args.Contains("-nosfx"));
+        nomusic = new Arg(args.Contains("-nomusic"));
 
-        public Arg nodeh { get; }
+        nodeh = new Arg(args.Contains("-nodeh"));
 
-        public CommandLineArgs(string[] args)
+        // Check for drag & drop.
+        if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
         {
-            iwad = GetString(args, "-iwad");
-            file = Check_file(args);
-            deh = Check_deh(args);
+            string iwadPath = null;
+            var pwadPaths = new List<string>();
+            var dehPaths = new List<string>();
 
-            warp = Check_warp(args);
-            episode = GetInt(args, "-episode");
-            skill = GetInt(args, "-skill");
-
-            deathmatch = new Arg(args.Contains("-deathmatch"));
-            altdeath = new Arg(args.Contains("-altdeath"));
-            fast = new Arg(args.Contains("-fast"));
-            respawn = new Arg(args.Contains("-respawn"));
-            nomonsters = new Arg(args.Contains("-nomonsters"));
-            solonet = new Arg(args.Contains("-solo-net"));
-
-            playdemo = GetString(args, "-playdemo");
-            timedemo = GetString(args, "-timedemo");
-
-            loadgame = GetInt(args, "-loadgame");
-
-            nomouse = new Arg(args.Contains("-nomouse"));
-            nosound = new Arg(args.Contains("-nosound"));
-            nosfx = new Arg(args.Contains("-nosfx"));
-            nomusic = new Arg(args.Contains("-nomusic"));
-
-            nodeh = new Arg(args.Contains("-nodeh"));
-
-            // Check for drag & drop.
-            if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
+            foreach (var path in args)
             {
-                string iwadPath = null;
-                var pwadPaths = new List<string>();
-                var dehPaths = new List<string>();
+                var extension = Path.GetExtension(path).ToLower();
 
-                foreach (var path in args)
+                if (extension == ".wad")
                 {
-                    var extension = Path.GetExtension(path).ToLower();
-
-                    if (extension == ".wad")
-                    {
-                        if (ConfigUtilities.IsIwad(path))
-                        {
-                            iwadPath = path;
-                        }
-                        else
-                        {
-                            pwadPaths.Add(path);
-                        }
-                    }
-                    else if (extension == ".deh")
-                    {
-                        dehPaths.Add(path);
-                    }
+                    if (ConfigUtilities.IsIwad(path))
+                        iwadPath = path;
+                    else
+                        pwadPaths.Add(path);
                 }
-
-                if (iwadPath != null)
-                {
-                    iwad = new Arg<string>(iwadPath);
-                }
-
-                if (pwadPaths.Count > 0)
-                {
-                    file = new Arg<string[]>(pwadPaths.ToArray());
-                }
-
-                if (dehPaths.Count > 0)
-                {
-                    deh = new Arg<string[]>(dehPaths.ToArray());
-                }
+                else if (extension == ".deh")
+                    dehPaths.Add(path);
             }
-        }
 
-        private static Arg<string[]> Check_file(string[] args)
+            if (iwadPath != null)
+                iwad = new Arg<string>(iwadPath);
+
+            if (pwadPaths.Count > 0)
+                file = new Arg<string[]>(pwadPaths.ToArray());
+
+            if (dehPaths.Count > 0)
+                deh = new Arg<string[]>(dehPaths.ToArray());
+        }
+    }
+
+    private static Arg<string[]> Check_file(string[] args)
+    {
+        var values = GetValues(args, "-file");
+        if (values.Length >= 1)
         {
-            var values = GetValues(args, "-file");
-            if (values.Length >= 1)
-            {
-                return new Arg<string[]>(values);
-            }
-
-            return new Arg<string[]>();
+            return new Arg<string[]>(values);
         }
 
-        private static Arg<string[]> Check_deh(string[] args)
+        return new Arg<string[]>();
+    }
+
+    private static Arg<string[]> Check_deh(string[] args)
+    {
+        var values = GetValues(args, "-deh");
+        if (values.Length >= 1)
         {
-            var values = GetValues(args, "-deh");
-            if (values.Length >= 1)
-            {
-                return new Arg<string[]>(values);
-            }
-
-            return new Arg<string[]>();
+            return new Arg<string[]>(values);
         }
 
-        private static Arg<Tuple<int, int>> Check_warp(string[] args)
+        return new Arg<string[]>();
+    }
+
+    private static Arg<Tuple<int, int>> Check_warp(string[] args)
+    {
+        var values = GetValues(args, "-warp");
+        if (values.Length == 1)
         {
-            var values = GetValues(args, "-warp");
-            if (values.Length == 1)
+            if (int.TryParse(values[0], out var map))
             {
-                if (int.TryParse(values[0], out var map))
-                {
-                    return new Arg<Tuple<int, int>>(Tuple.Create(1, map));
-                }
+                return new Arg<Tuple<int, int>>(Tuple.Create(1, map));
             }
-            else if (values.Length == 2)
-            {
-                if (int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map))
-                {
-                    return new Arg<Tuple<int, int>>(Tuple.Create(episode, map));
-                }
-            }
-
-            return new Arg<Tuple<int, int>>();
         }
-
-        private static Arg<string> GetString(string[] args, string name)
+        else if (values.Length == 2)
         {
-            var values = GetValues(args, name);
-            if (values.Length == 1)
+            if (int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map))
             {
-                return new Arg<string>(values[0]);
+                return new Arg<Tuple<int, int>>(Tuple.Create(episode, map));
             }
-
-            return new Arg<string>();
         }
 
-        private static Arg<int> GetInt(string[] args, string name)
+        return new Arg<Tuple<int, int>>();
+    }
+
+    private static Arg<string> GetString(string[] args, string name)
+    {
+        var values = GetValues(args, name);
+        if (values.Length == 1)
         {
-            var values = GetValues(args, name);
-            if (values.Length == 1)
-            {
-                if (int.TryParse(values[0], out var result))
-                {
-                    return new Arg<int>(result);
-                }
-            }
-
-            return new Arg<int>();
+            return new Arg<string>(values[0]);
         }
 
-        private static string[] GetValues(string[] args, string name)
+        return new Arg<string>();
+    }
+
+    private static Arg<int> GetInt(string[] args, string name)
+    {
+        var values = GetValues(args, name);
+        if (values.Length == 1)
         {
-            return args
-                   .SkipWhile(arg => arg != name)
-                   .Skip(1)
-                   .TakeWhile(arg => arg[0] != '-')
-                   .ToArray();
+            if (int.TryParse(values[0], out var result))
+            {
+                return new Arg<int>(result);
+            }
         }
 
+        return new Arg<int>();
+    }
 
-        public readonly struct Arg
+    private static string[] GetValues(string[] args, string name)
+    {
+        return args
+               .SkipWhile(arg => arg != name)
+               .Skip(1)
+               .TakeWhile(arg => arg[0] != '-')
+               .ToArray();
+    }
+
+
+    public readonly struct Arg
+    {
+        public Arg()
         {
-            public Arg()
-            {
-                this.Present = false;
-            }
-
-            public Arg(bool present)
-            {
-                this.Present = present;
-            }
-
-            public bool Present { get; }
+            this.Present = false;
         }
 
-        public struct Arg<T>
+        public Arg(bool present)
         {
-            public Arg()
-            {
-                this.Present = false;
-                this.Value = default;
-            }
-
-            public Arg(T value)
-            {
-                this.Present = true;
-                this.Value = value;
-            }
-
-            public bool Present { get; }
-
-            public T Value { get; }
+            this.Present = present;
         }
+
+        public bool Present { get; }
+    }
+
+    public struct Arg<T>
+    {
+        public Arg()
+        {
+            this.Present = false;
+            this.Value = default;
+        }
+
+        public Arg(T value)
+        {
+            this.Present = true;
+            this.Value = value;
+        }
+
+        public bool Present { get; }
+
+        public T Value { get; }
     }
 }

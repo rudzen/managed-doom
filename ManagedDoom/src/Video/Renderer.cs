@@ -37,7 +37,7 @@ namespace ManagedDoom.Video
             0.50
         ];
 
-        private readonly Config config;
+        private readonly ConfigValues config;
 
         private readonly Palette palette;
 
@@ -56,7 +56,7 @@ namespace ManagedDoom.Video
         private readonly int wipeBandWidth;
         private readonly byte[] wipeBuffer;
 
-        public Renderer(Config config, GameContent content)
+        public Renderer(ConfigValues config, GameContent content)
         {
             this.config = config;
 

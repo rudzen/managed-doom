@@ -16,6 +16,7 @@
 
 using ManagedDoom.Video;
 using ManagedDoom.Audio;
+using ManagedDoom.Config;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom

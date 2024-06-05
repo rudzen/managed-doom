@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Config;
 
 namespace ManagedDoom
 {

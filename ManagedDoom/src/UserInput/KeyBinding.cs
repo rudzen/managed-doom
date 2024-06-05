@@ -17,41 +17,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ManagedDoom
 {
-    public sealed class KeyBinding
+    [JsonSourceGenerationOptions(WriteIndented = true)]
+    [JsonSerializable(typeof(KeyBinding))]
+    public sealed partial class KeyBinding
     {
-        private static readonly KeyBinding empty = new();
+        private static readonly KeyBinding empty = new([], []);
 
-        private readonly DoomKey[] keys;
-        private readonly DoomMouseButton[] mouseButtons;
-
-        private KeyBinding()
-        {
-            keys = [];
-            mouseButtons = [];
-        }
+        public DoomKey[] Keys { get; set; }
+        public DoomMouseButton[] MouseButtons { get; set; }
 
         public KeyBinding(DoomKey[] keys, DoomMouseButton[] mouseButtons)
         {
-            this.keys = keys;
-            this.mouseButtons = mouseButtons;
+            Keys = keys;
+            MouseButtons = mouseButtons;
         }
-
-        public KeyBinding(DoomKey[] keys) : this(keys, [])
-        {
-        }
-
+        
         public override string ToString()
         {
-            var keyValues = keys.Select(DoomKeyEx.ToString);
-            var mouseValues = mouseButtons.Select(DoomMouseButtonEx.ToString);
+            var keyValues = Keys.Select(DoomKeyEx.ToString);
+            var mouseValues = MouseButtons.Select(DoomMouseButtonEx.ToString);
             var values = keyValues.Concat(mouseValues).ToArray();
-            if (values.Length > 0)
-                return string.Join(", ", values);
-
-            return "none";
+            return values.Length > 0 ? string.Join(", ", values) : "none";
         }
 
         public static KeyBinding Parse(string value)
@@ -83,8 +73,5 @@ namespace ManagedDoom
 
             return new KeyBinding(keys.ToArray(), mouseButtons.ToArray());
         }
-
-        public IReadOnlyList<DoomKey> Keys => keys;
-        public IReadOnlyList<DoomMouseButton> MouseButtons => mouseButtons;
     }
 }

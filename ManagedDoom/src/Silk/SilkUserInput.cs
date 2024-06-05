@@ -12,7 +12,7 @@ namespace ManagedDoom.Silk
 {
     public class SilkUserInput : IUserInput, IDisposable
     {
-        private readonly Config config;
+        private readonly ConfigValues config;
         private readonly IWindow window;
 
         private IInputContext input;
@@ -30,7 +30,7 @@ namespace ManagedDoom.Silk
         private float mouseDeltaX;
         private float mouseDeltaY;
 
-        public SilkUserInput(Config config, IWindow window, SilkDoom doom, bool useMouse)
+        public SilkUserInput(ConfigValues config, IWindow window, SilkDoom doom, bool useMouse)
         {
             try
             {

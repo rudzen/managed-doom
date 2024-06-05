@@ -14,75 +14,72 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace ManagedDoom
+namespace ManagedDoom.Config;
+
+public static class ConfigUtilities
 {
-    public static class ConfigUtilities
+    private static readonly string[] iwadNames =
+    [
+        "DOOM2.WAD",
+        "PLUTONIA.WAD",
+        "TNT.WAD",
+        "DOOM.WAD",
+        "DOOM1.WAD",
+        "FREEDOOM2.WAD",
+        "FREEDOOM1.WAD"
+    ];
+
+    public static string GetExeDirectory => Path.GetDirectoryName(Environment.ProcessPath)!;
+
+    public static string GetConfigPath()
     {
-        private static readonly string[] iwadNames =
-        [
-            "DOOM2.WAD",
-            "PLUTONIA.WAD",
-            "TNT.WAD",
-            "DOOM.WAD",
-            "DOOM1.WAD",
-            "FREEDOOM2.WAD",
-            "FREEDOOM1.WAD"
-        ];
+        return Path.Combine(GetExeDirectory, "managed-doom.json");
+    }
 
-        public static string GetExeDirectory => Path.GetDirectoryName(Environment.ProcessPath)!;
-
-        public static string GetConfigPath()
+    private static string GetDefaultIwadPath()
+    {
+        var exeDirectory = GetExeDirectory;
+        var currentDirectory = Directory.GetCurrentDirectory();
+        foreach (var name in iwadNames)
         {
-            return Path.Combine(GetExeDirectory, "managed-doom.cfg");
+            var path = Path.Combine(exeDirectory, name);
+            if (File.Exists(path))
+                return path;
+
+            path = Path.Combine(currentDirectory, name);
+            if (File.Exists(path))
+                return path;
         }
 
-        private static string GetDefaultIwadPath()
+        throw new Exception("No IWAD was found!");
+    }
+
+    public static bool IsIwad(string path)
+    {
+        var name = Path.GetFileName(path);
+        return iwadNames.Any(wadFile => string.Equals(name, wadFile, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public static IEnumerable<string> GetWadPaths(CommandLineArgs args)
+    {
+        if (args.iwad.Present)
         {
-            var exeDirectory = GetExeDirectory;
-            var currentDirectory = Directory.GetCurrentDirectory();
-            foreach (var name in iwadNames)
-            {
-                var path = Path.Combine(exeDirectory, name);
-                if (File.Exists(path))
-                    return path;
-
-                path = Path.Combine(currentDirectory, name);
-                if (File.Exists(path))
-                    return path;
-            }
-
-            throw new Exception("No IWAD was found!");
+            yield return args.iwad.Value;
+        }
+        else
+        {
+            yield return GetDefaultIwadPath();
         }
 
-        public static bool IsIwad(string path)
+        if (args.file.Present)
         {
-            var name = Path.GetFileName(path);
-            return iwadNames.Any(wadFile => string.Equals(name, wadFile, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public static IEnumerable<string> GetWadPaths(CommandLineArgs args)
-        {
-            if (args.iwad.Present)
-            {
-                yield return args.iwad.Value;
-            }
-            else
-            {
-                yield return GetDefaultIwadPath();
-            }
-
-            if (args.file.Present)
-            {
-                foreach (var path in args.file.Value)
-                    yield return path;
-            }
+            foreach (var path in args.file.Value)
+                yield return path;
         }
     }
 }
