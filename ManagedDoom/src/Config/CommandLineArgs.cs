@@ -14,12 +14,13 @@
 //
 
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace ManagedDoom.Config;
+
+public sealed record Warp(int Episode, int Map);
 
 public sealed class CommandLineArgs
 {
@@ -27,7 +28,7 @@ public sealed class CommandLineArgs
     public Arg<string[]> file { get; }
     public Arg<string[]> deh { get; }
 
-    public Arg<Tuple<int, int>> warp { get; }
+    public Arg<Warp> warp { get; }
     public Arg<int> episode { get; }
     public Arg<int> skill { get; }
 
@@ -53,8 +54,8 @@ public sealed class CommandLineArgs
     public CommandLineArgs(string[] args)
     {
         iwad = GetString(args, "-iwad");
-        file = Check_file(args);
-        deh = Check_deh(args);
+        file = Check(args, "-file");
+        deh = Check(args, "-deh");
 
         warp = Check_warp(args);
         episode = GetInt(args, "-episode");
@@ -82,7 +83,7 @@ public sealed class CommandLineArgs
         // Check for drag & drop.
         if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
         {
-            string iwadPath = null;
+            var iwadPath = string.Empty;
             var pwadPaths = new List<string>();
             var dehPaths = new List<string>();
 
@@ -101,7 +102,7 @@ public sealed class CommandLineArgs
                     dehPaths.Add(path);
             }
 
-            if (iwadPath != null)
+            if (!string.IsNullOrEmpty(iwadPath))
                 iwad = new Arg<string>(iwadPath);
 
             if (pwadPaths.Count > 0)
@@ -112,72 +113,35 @@ public sealed class CommandLineArgs
         }
     }
 
-    private static Arg<string[]> Check_file(string[] args)
+    private static Arg<string[]> Check(string[] args, string value)
     {
-        var values = GetValues(args, "-file");
-        if (values.Length >= 1)
-        {
-            return new Arg<string[]>(values);
-        }
-
-        return new Arg<string[]>();
+        var values = GetValues(args, value);
+        return values.Length >= 1 ? new Arg<string[]>(values) : new Arg<string[]>();
     }
 
-    private static Arg<string[]> Check_deh(string[] args)
-    {
-        var values = GetValues(args, "-deh");
-        if (values.Length >= 1)
-        {
-            return new Arg<string[]>(values);
-        }
-
-        return new Arg<string[]>();
-    }
-
-    private static Arg<Tuple<int, int>> Check_warp(string[] args)
+    private static Arg<Warp> Check_warp(string[] args)
     {
         var values = GetValues(args, "-warp");
-        if (values.Length == 1)
+        return values.Length switch
         {
-            if (int.TryParse(values[0], out var map))
-            {
-                return new Arg<Tuple<int, int>>(Tuple.Create(1, map));
-            }
-        }
-        else if (values.Length == 2)
-        {
-            if (int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map))
-            {
-                return new Arg<Tuple<int, int>>(Tuple.Create(episode, map));
-            }
-        }
-
-        return new Arg<Tuple<int, int>>();
+            1 when int.TryParse(values[0], out var map)                                             => new Arg<Warp>(new(1, map)),
+            2 when int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map) => new Arg<Warp>(new(episode, map)),
+            _                                                                                       => new Arg<Warp>()
+        };
     }
 
     private static Arg<string> GetString(string[] args, string name)
     {
         var values = GetValues(args, name);
-        if (values.Length == 1)
-        {
-            return new Arg<string>(values[0]);
-        }
-
-        return new Arg<string>();
+        return values.Length == 1 ? new Arg<string>(values[0]) : new Arg<string>();
     }
 
     private static Arg<int> GetInt(string[] args, string name)
     {
         var values = GetValues(args, name);
-        if (values.Length == 1)
-        {
-            if (int.TryParse(values[0], out var result))
-            {
-                return new Arg<int>(result);
-            }
-        }
-
-        return new Arg<int>();
+        return values.Length == 1 && int.TryParse(values[0], out var result)
+            ? new Arg<int>(result)
+            : new Arg<int>();
     }
 
     private static string[] GetValues(string[] args, string name)
@@ -189,23 +153,9 @@ public sealed class CommandLineArgs
                .ToArray();
     }
 
+    public readonly record struct Arg(bool Present);
 
-    public readonly struct Arg
-    {
-        public Arg()
-        {
-            this.Present = false;
-        }
-
-        public Arg(bool present)
-        {
-            this.Present = present;
-        }
-
-        public bool Present { get; }
-    }
-
-    public struct Arg<T>
+    public readonly struct Arg<T>
     {
         public Arg()
         {
@@ -215,7 +165,7 @@ public sealed class CommandLineArgs
 
         public Arg(T value)
         {
-            this.Present = true;
+            this.Present = value is not null;
             this.Value = value;
         }
 

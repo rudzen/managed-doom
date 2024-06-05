@@ -110,8 +110,8 @@ namespace ManagedDoom.Doom
             if (args.warp.Present)
             {
                 nextState = DoomState.Game;
-                Options.Episode = args.warp.Value.Item1;
-                Options.Map = args.warp.Value.Item2;
+                Options.Episode = args.warp.Value.Episode;
+                Options.Map = args.warp.Value.Map;
                 Game.DeferedInitNew();
             }
             else if (args.episode.Present)
