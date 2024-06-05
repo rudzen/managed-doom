@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.World;
 using ManagedDoom.Extensions;
@@ -395,31 +396,26 @@ public static partial class SaveAndLoad
         Write(data, p + 4, (short)line.Tag);
         p += 6;
 
-        if (line.FrontSide != null)
-        {
-            var side = line.FrontSide;
-            Write(data, p, (short)side.TextureOffset.ToIntFloor());
-            Write(data, p + 2, (short)side.RowOffset.ToIntFloor());
-            Write(data, p + 4, (short)side.TopTexture);
-            Write(data, p + 6, (short)side.BottomTexture);
-            Write(data, p + 8, (short)side.MiddleTexture);
-            p += 10;
-        }
+        if (line.FrontSide is not null)
+            p = WriteSideDef(line.FrontSide, data, p);
 
-        if (line.BackSide != null)
-        {
-            var side = line.BackSide;
-            Write(data, p, (short)side.TextureOffset.ToIntFloor());
-            Write(data, p + 2, (short)side.RowOffset.ToIntFloor());
-            Write(data, p + 4, (short)side.TopTexture);
-            Write(data, p + 6, (short)side.BottomTexture);
-            Write(data, p + 8, (short)side.MiddleTexture);
-            p += 10;
-        }
+        if (line.BackSide is not null)
+            p = WriteSideDef(line.BackSide, data, p);
 
         return p;
     }
 
+    private static int WriteSideDef(SideDef side, Span<byte> data, int p)
+    {
+        Write(data, p, (short)side.TextureOffset.ToIntFloor());
+        Write(data, p + 2, (short)side.RowOffset.ToIntFloor());
+        Write(data, p + 4, (short)side.TopTexture);
+        Write(data, p + 6, (short)side.BottomTexture);
+        Write(data, p + 8, (short)side.MiddleTexture);
+        return p + 10;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Write(Span<byte> data, int p, int value)
     {
         data[p] = (byte)value;
@@ -428,6 +424,7 @@ public static partial class SaveAndLoad
         data[p + 3] = (byte)(value >> 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Write(Span<byte> data, int p, uint value)
     {
         data[p] = (byte)value;
@@ -436,22 +433,16 @@ public static partial class SaveAndLoad
         data[p + 3] = (byte)(value >> 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Write(Span<byte> data, int p, short value)
     {
         data[p] = (byte)value;
         data[p + 1] = (byte)(value >> 8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteThinkerState(Span<byte> data, int p, ThinkerState state)
     {
-        switch (state)
-        {
-            case ThinkerState.InStasis:
-                Write(data, p, 0);
-                break;
-            default:
-                Write(data, p, 1);
-                break;
-        }
+        Write(data, p, (state != ThinkerState.InStasis).AsByte());
     }
 }
