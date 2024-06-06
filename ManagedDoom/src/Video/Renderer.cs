@@ -100,14 +100,14 @@ namespace ManagedDoom.Video
         {
             switch (doom.State)
             {
+                case DoomState.Game:
+                    RenderGame(doom.Game, frameFrac);
+                    break;
                 case DoomState.Opening:
                     openingSequence.Render(doom.Opening, frameFrac);
                     break;
                 case DoomState.DemoPlayback:
                     RenderGame(doom.DemoPlayback.Game, frameFrac);
-                    break;
-                case DoomState.Game:
-                    RenderGame(doom.Game, frameFrac);
                     break;
             }
 
@@ -187,7 +187,7 @@ namespace ManagedDoom.Video
             }
         }
 
-        public void Render(Doom.Doom doom, byte[] destination, Fixed frameFrac)
+        public void Render(Doom.Doom doom, Span<byte> destination, Fixed frameFrac)
         {
             if (doom.Wiping)
             {
@@ -219,7 +219,7 @@ namespace ManagedDoom.Video
             WriteData(colors, destination);
         }
 
-        private void RenderWipe(Doom.Doom doom, byte[] destination)
+        private void RenderWipe(Doom.Doom doom, Span<byte> destination)
         {
             RenderDoom(doom, Fixed.One);
 
@@ -256,9 +256,9 @@ namespace ManagedDoom.Video
         }
 
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        private void WriteData(uint[] colors, byte[] destination)
+        private void WriteData(ReadOnlySpan<uint> colors, Span<byte> destination)
         {
-            var screenData = screen.Data;
+            var screenData = screen.Data.AsSpan();
             var p = MemoryMarshal.Cast<byte, uint>(destination);
             for (var i = 0; i < p.Length; i++)
                 p[i] = colors[screenData[i]];
