@@ -19,54 +19,53 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public sealed class ColorMap
 {
-    public sealed class ColorMap
+    public const int Inverse = 32;
+
+    private readonly byte[][] data;
+
+    public ColorMap(Wad.Wad wad)
     {
-        public const int Inverse = 32;
-
-        private readonly byte[][] data;
-
-        public ColorMap(Wad.Wad wad)
+        try
         {
+            Console.Write("Load color map: ");
+            var start = Stopwatch.GetTimestamp();
+
+            const string lump = "COLORMAP";
+
+            var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
+
+            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
             try
             {
-                Console.Write("Load color map: ");
-                var start = Stopwatch.GetTimestamp();
+                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+                wad.ReadLump(lumpNumber, lumpBuffer);
 
-                const string lump = "COLORMAP";
+                var num = lumpSize / 256;
 
-                var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
+                data = new byte[num][];
+                for (var i = 0; i < num; i++)
+                    data[i] = lumpBuffer.Slice(256 * i, 256).ToArray();
 
-                var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-                try
-                {
-                    var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                    wad.ReadLump(lumpNumber, lumpBuffer);
-
-                    var num = lumpSize / 256;
-
-                    data = new byte[num][];
-                    for (var i = 0; i < num; i++)
-                        data[i] = lumpBuffer.Slice(256 * i, 256).ToArray();
-
-                    Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(lumpData);
-                }
+                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
             }
-            catch (Exception e)
+            finally
             {
-                Console.WriteLine("Failed");
-                ExceptionDispatchInfo.Throw(e);
+                ArrayPool<byte>.Shared.Return(lumpData);
             }
         }
-
-        public byte[] this[int index] => data[index];
-
-        public byte[] FullBright => data[0];
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
     }
+
+    public byte[] this[int index] => data[index];
+
+    public byte[] FullBright => data[0];
 }

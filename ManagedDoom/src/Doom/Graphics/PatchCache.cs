@@ -17,43 +17,41 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public sealed class PatchCache
 {
-    public sealed class PatchCache
+    private readonly Wad.Wad wad;
+    private readonly Dictionary<string, Patch> cache;
+
+    public PatchCache(Wad.Wad wad)
     {
-        private readonly Wad.Wad wad;
-        private readonly Dictionary<string, Patch> cache;
+        this.wad = wad;
+        cache = new Dictionary<string, Patch>(32);
+    }
 
-        public PatchCache(Wad.Wad wad)
+    public Patch this[string name]
+    {
+        get
         {
-            this.wad = wad;
+            ref var p2 = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, name, out var exists);
 
-            cache = new Dictionary<string, Patch>(32);
-        }
-
-        public Patch this[string name]
-        {
-            get
-            {
-                ref var p2 = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, name, out var exists);
-
-                if (exists)
-                    return p2;
-
-                p2 = Patch.FromWad(wad, name);
-
+            if (exists)
                 return p2;
-            }
-        }
 
-        public int GetWidth(string name)
-        {
-            return this[name].Width;
-        }
+            p2 = Patch.FromWad(wad, name);
 
-        public int GetHeight(string name)
-        {
-            return this[name].Height;
+            return p2;
         }
+    }
+
+    public int GetWidth(string name)
+    {
+        return this[name].Width;
+    }
+
+    public int GetHeight(string name)
+    {
+        return this[name].Height;
     }
 }

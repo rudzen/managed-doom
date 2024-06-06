@@ -16,43 +16,40 @@
 
 using System;
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public sealed class TexturePatch
 {
-    public sealed class TexturePatch
+    public const int DataSize = 10;
+
+    private readonly Patch patch;
+
+    public TexturePatch(
+        int originX,
+        int originY,
+        Patch patch)
     {
-        public const int DataSize = 10;
+        this.OriginX = originX;
+        this.OriginY = originY;
+        this.patch = patch;
+    }
 
-        private readonly Patch patch;
+    public string Name => patch.Name;
+    public int OriginX { get; }
+    public int OriginY { get; }
+    public int Width => patch.Width;
+    public int Height => patch.Height;
+    public Column[][] Columns => patch.Columns;
 
-        public TexturePatch(
-            int originX,
-            int originY,
-            Patch patch)
-        {
-            this.OriginX = originX;
-            this.OriginY = originY;
-            this.patch = patch;
-        }
+    public static TexturePatch FromData(ReadOnlySpan<byte> data, Patch[] patches)
+    {
+        var originX = BitConverter.ToInt16(data);
+        var originY = BitConverter.ToInt16(data[2..]);
+        var patchNum = BitConverter.ToInt16(data[4..]);
 
-        public static TexturePatch FromData(ReadOnlySpan<byte> data, Patch[] patches)
-        {
-            var originX = BitConverter.ToInt16(data);
-            var originY = BitConverter.ToInt16(data[2..]);
-            var patchNum = BitConverter.ToInt16(data[4..]);
-
-            return new TexturePatch(
-                originX,
-                originY,
-                patches[patchNum]);
-        }
-
-        public string Name => patch.Name;
-        public int OriginX { get; }
-
-        public int OriginY { get; }
-
-        public int Width => patch.Width;
-        public int Height => patch.Height;
-        public Column[][] Columns => patch.Columns;
+        return new TexturePatch(
+            originX,
+            originY,
+            patches[patchNum]);
     }
 }

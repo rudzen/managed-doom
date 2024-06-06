@@ -19,73 +19,72 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public sealed class Palette
 {
-    public sealed class Palette
+    public const int DamageStart = 1;
+    public const int DamageCount = 8;
+
+    public const int BonusStart = 9;
+    public const int BonusCount = 4;
+
+    public const int IronFeet = 13;
+
+    private readonly byte[] data;
+
+    private readonly uint[][] palettes;
+
+    public Palette(Wad.Wad wad)
     {
-        public const int DamageStart = 1;
-        public const int DamageCount = 8;
-
-        public const int BonusStart = 9;
-        public const int BonusCount = 4;
-
-        public const int IronFeet = 13;
-
-        private readonly byte[] data;
-
-        private readonly uint[][] palettes;
-
-        public Palette(Wad.Wad wad)
+        try
         {
-            try
-            {
-                Console.Write("Load palette: ");
-                var start = Stopwatch.GetTimestamp();
+            Console.Write("Load palette: ");
+            var start = Stopwatch.GetTimestamp();
 
-                data = wad.ReadLump("PLAYPAL");
+            data = wad.ReadLump("PLAYPAL");
 
-                var count = data.Length / (3 * 256);
-                palettes = new uint[count][];
-                for (var i = 0; i < palettes.Length; i++)
-                    palettes[i] = new uint[256];
-
-                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Failed");
-                ExceptionDispatchInfo.Throw(e);
-            }
-        }
-
-        public void ResetColors(in double p)
-        {
+            var count = data.Length / (3 * 256);
+            palettes = new uint[count][];
             for (var i = 0; i < palettes.Length; i++)
+                palettes[i] = new uint[256];
+
+            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
+    }
+
+    public uint[] this[int paletteNumber] => palettes[paletteNumber];
+
+    public void ResetColors(in double p)
+    {
+        for (var i = 0; i < palettes.Length; i++)
+        {
+            var paletteOffset = (3 * 256) * i;
+            for (var j = 0; j < 256; j++)
             {
-                var paletteOffset = (3 * 256) * i;
-                for (var j = 0; j < 256; j++)
-                {
-                    var colorOffset = paletteOffset + 3 * j;
+                var colorOffset = paletteOffset + 3 * j;
 
-                    var r = data[colorOffset];
-                    var g = data[colorOffset + 1];
-                    var b = data[colorOffset + 2];
+                var r = data[colorOffset];
+                var g = data[colorOffset + 1];
+                var b = data[colorOffset + 2];
 
-                    r = (byte)System.Math.Round(255 * CorrectionCurve(r / 255.0, in p));
-                    g = (byte)System.Math.Round(255 * CorrectionCurve(g / 255.0, in p));
-                    b = (byte)System.Math.Round(255 * CorrectionCurve(b / 255.0, in p));
+                r = (byte)System.Math.Round(255 * CorrectionCurve(r / 255.0, in p));
+                g = (byte)System.Math.Round(255 * CorrectionCurve(g / 255.0, in p));
+                b = (byte)System.Math.Round(255 * CorrectionCurve(b / 255.0, in p));
 
-                    palettes[i][j] = (uint)((r << 0) | (g << 8) | (b << 16) | (255 << 24));
-                }
+                palettes[i][j] = (uint)((r << 0) | (g << 8) | (b << 16) | (255 << 24));
             }
         }
+    }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double CorrectionCurve(double x, in double p)
-        {
-            return System.Math.Pow(x, p);
-        }
-
-        public uint[] this[int paletteNumber] => palettes[paletteNumber];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static double CorrectionCurve(double x, in double p)
+    {
+        return System.Math.Pow(x, p);
     }
 }

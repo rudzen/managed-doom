@@ -14,10 +14,9 @@
 //
 
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public interface ISpriteLookup
 {
-    public interface ISpriteLookup
-    {
-        public SpriteDef this[Sprite sprite] { get; }
-    }
+    public SpriteDef this[Sprite sprite] { get; }
 }

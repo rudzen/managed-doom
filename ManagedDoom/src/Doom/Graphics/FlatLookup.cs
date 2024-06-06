@@ -23,190 +23,188 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public sealed class FlatLookup : IFlatLookup
 {
-    public sealed class FlatLookup : IFlatLookup
+    private Flat[] flats;
+
+    private Dictionary<string, Flat> nameToFlat;
+    private Dictionary<string, int> nameToNumber;
+
+    public FlatLookup(Wad.Wad wad)
     {
-        private Flat[] flats;
+        var fStartCount = CountLump(wad, "F_START");
+        var fEndCount = CountLump(wad, "F_END");
+        var ffStartCount = CountLump(wad, "FF_START");
+        var ffEndCount = CountLump(wad, "FF_END");
 
-        private Dictionary<string, Flat> nameToFlat;
-        private Dictionary<string, int> nameToNumber;
+        // Usual case.
+        var standard =
+            fStartCount == 1 &&
+            fEndCount == 1 &&
+            ffStartCount == 0 &&
+            ffEndCount == 0;
 
-        public FlatLookup(Wad.Wad wad)
+        // A trick to add custom flats is used.
+        // https://www.doomworld.com/tutorials/fx2.php
+        var customFlatTrick =
+            fStartCount == 1 &&
+            fEndCount >= 2;
+
+        // Need deutex to add flats.
+        var deutexMerge =
+            fStartCount + ffStartCount >= 2 &&
+            fEndCount + ffEndCount >= 2;
+
+        if (standard || customFlatTrick)
+            InitStandard(wad);
+        else if (deutexMerge)
+            InitDeuTexMerge(wad);
+        else
+            throw new Exception("Failed to read flats.");
+    }
+
+    public int Count => flats.Length;
+    public Flat this[int num] => flats[num];
+    public Flat this[string name] => nameToFlat[name];
+    public int SkyFlatNumber { get; private set; }
+    public Flat SkyFlat { get; private set; }
+
+    private void InitStandard(Wad.Wad wad)
+    {
+        try
         {
-            var fStartCount = CountLump(wad, "F_START");
-            var fEndCount = CountLump(wad, "F_END");
-            var ffStartCount = CountLump(wad, "FF_START");
-            var ffEndCount = CountLump(wad, "FF_END");
+            Console.Write("Load flats: ");
+            var start = Stopwatch.GetTimestamp();
 
-            // Usual case.
-            var standard =
-                fStartCount == 1 &&
-                fEndCount == 1 &&
-                ffStartCount == 0 &&
-                ffEndCount == 0;
+            var firstFlat = wad.GetLumpNumber("F_START") + 1;
+            var lastFlat = wad.GetLumpNumber("F_END") - 1;
+            var count = lastFlat - firstFlat + 1;
 
-            // A trick to add custom flats is used.
-            // https://www.doomworld.com/tutorials/fx2.php
-            var customFlatTrick =
-                fStartCount == 1 &&
-                fEndCount >= 2;
+            flats = new Flat[count];
 
-            // Need deutex to add flats.
-            var deutexMerge =
-                fStartCount + ffStartCount >= 2 &&
-                fEndCount + ffEndCount >= 2;
+            nameToFlat = new Dictionary<string, Flat>();
+            nameToNumber = new Dictionary<string, int>();
 
-            if (standard || customFlatTrick)
-                InitStandard(wad);
-            else if (deutexMerge)
-                InitDeuTexMerge(wad);
-            else
-                throw new Exception("Failed to read flats.");
-        }
-
-        private void InitStandard(Wad.Wad wad)
-        {
-            try
+            for (var lump = firstFlat; lump <= lastFlat; lump++)
             {
-                Console.Write("Load flats: ");
-                var start = Stopwatch.GetTimestamp();
+                if (wad.GetLumpSize(lump) != 4096)
+                    continue;
 
-                var firstFlat = wad.GetLumpNumber("F_START") + 1;
-                var lastFlat = wad.GetLumpNumber("F_END") - 1;
-                var count = lastFlat - firstFlat + 1;
+                var number = lump - firstFlat;
+                var name = wad.LumpInfos[lump].Name;
+                var flat = new Flat(name, wad.ReadLump(lump));
 
-                flats = new Flat[count];
-
-                nameToFlat = new Dictionary<string, Flat>();
-                nameToNumber = new Dictionary<string, int>();
-
-                for (var lump = firstFlat; lump <= lastFlat; lump++)
-                {
-                    if (wad.GetLumpSize(lump) != 4096)
-                        continue;
-
-                    var number = lump - firstFlat;
-                    var name = wad.LumpInfos[lump].Name;
-                    var flat = new Flat(name, wad.ReadLump(lump));
-
-                    flats[number] = flat;
-                    nameToFlat[name] = flat;
-                    nameToNumber[name] = number;
-                }
-
-                SkyFlatNumber = nameToNumber["F_SKY1"];
-                SkyFlat = nameToFlat["F_SKY1"];
-
-                Console.WriteLine($"OK ({nameToFlat.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
+                flats[number] = flat;
+                nameToFlat[name] = flat;
+                nameToNumber[name] = number;
             }
-            catch (Exception e)
+
+            SkyFlatNumber = nameToNumber["F_SKY1"];
+            SkyFlat = nameToFlat["F_SKY1"];
+
+            Console.WriteLine($"OK ({nameToFlat.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
+    }
+
+    private void InitDeuTexMerge(Wad.Wad wad)
+    {
+        try
+        {
+            Console.Write("Load flats: ");
+
+            var allFlats = new List<int>();
+            var flatZone = false;
+            for (var lump = 0; lump < wad.LumpInfos.Count; lump++)
             {
-                Console.WriteLine("Failed");
-                ExceptionDispatchInfo.Throw(e);
+                var name = wad.LumpInfos[lump].Name;
+                if (flatZone)
+                {
+                    if (name is "F_END" or "FF_END")
+                        flatZone = false;
+                    else
+                        allFlats.Add(lump);
+                }
+                else if (name is "F_START" or "FF_START")
+                    flatZone = true;
             }
-        }
 
-        private void InitDeuTexMerge(Wad.Wad wad)
-        {
-            try
+            allFlats.Reverse();
+
+            var dupCheck = new HashSet<string>();
+            var distinctFlats = new List<int>();
+            foreach (var lump in allFlats)
             {
-                Console.Write("Load flats: ");
+                if (dupCheck.Contains(wad.LumpInfos[lump].Name))
+                    continue;
 
-                var allFlats = new List<int>();
-                var flatZone = false;
-                for (var lump = 0; lump < wad.LumpInfos.Count; lump++)
-                {
-                    var name = wad.LumpInfos[lump].Name;
-                    if (flatZone)
-                    {
-                        if (name is "F_END" or "FF_END")
-                            flatZone = false;
-                        else
-                            allFlats.Add(lump);
-                    }
-                    else if (name is "F_START" or "FF_START")
-                        flatZone = true;
-                }
-
-                allFlats.Reverse();
-
-                var dupCheck = new HashSet<string>();
-                var distinctFlats = new List<int>();
-                foreach (var lump in allFlats)
-                {
-                    if (dupCheck.Contains(wad.LumpInfos[lump].Name))
-                        continue;
-
-                    distinctFlats.Add(lump);
-                    dupCheck.Add(wad.LumpInfos[lump].Name);
-                }
-
-                distinctFlats.Reverse();
-
-                flats = new Flat[distinctFlats.Count];
-
-                nameToFlat = new Dictionary<string, Flat>();
-                nameToNumber = new Dictionary<string, int>();
-
-                for (var number = 0; number < flats.Length; number++)
-                {
-                    var lump = distinctFlats[number];
-
-                    if (wad.GetLumpSize(lump) != 4096)
-                    {
-                        continue;
-                    }
-
-                    var name = wad.LumpInfos[lump].Name;
-                    var flat = new Flat(name, wad.ReadLump(lump));
-
-                    flats[number] = flat;
-                    nameToFlat[name] = flat;
-                    nameToNumber[name] = number;
-                }
-
-                SkyFlatNumber = nameToNumber["F_SKY1"];
-                SkyFlat = nameToFlat["F_SKY1"];
-
-                Console.WriteLine($"OK ({nameToFlat.Count} flats)");
+                distinctFlats.Add(lump);
+                dupCheck.Add(wad.LumpInfos[lump].Name);
             }
-            catch (Exception e)
+
+            distinctFlats.Reverse();
+
+            flats = new Flat[distinctFlats.Count];
+
+            nameToFlat = new Dictionary<string, Flat>();
+            nameToNumber = new Dictionary<string, int>();
+
+            for (var number = 0; number < flats.Length; number++)
             {
-                Console.WriteLine("Failed");
-                ExceptionDispatchInfo.Throw(e);
+                var lump = distinctFlats[number];
+
+                if (wad.GetLumpSize(lump) != 4096)
+                    continue;
+
+                var name = wad.LumpInfos[lump].Name;
+                var flat = new Flat(name, wad.ReadLump(lump));
+
+                flats[number] = flat;
+                nameToFlat[name] = flat;
+                nameToNumber[name] = number;
             }
-        }
 
-        public int GetNumber(string name)
+            SkyFlatNumber = nameToNumber["F_SKY1"];
+            SkyFlat = nameToFlat["F_SKY1"];
+
+            Console.WriteLine($"OK ({nameToFlat.Count} flats)");
+        }
+        catch (Exception e)
         {
-            ref var number = ref CollectionsMarshal.GetValueRefOrNullRef(nameToNumber, name);
-
-            if (!Unsafe.IsNullRef(ref number))
-                return number;
-
-            return -1;
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
         }
+    }
 
-        public IEnumerator<Flat> GetEnumerator()
-        {
-            return ((IEnumerable<Flat>)flats).GetEnumerator();
-        }
+    public int GetNumber(string name)
+    {
+        ref var number = ref CollectionsMarshal.GetValueRefOrNullRef(nameToNumber, name);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return flats.GetEnumerator();
-        }
+        if (!Unsafe.IsNullRef(ref number))
+            return number;
 
-        private static int CountLump(Wad.Wad wad, string name)
-        {
-            return wad.LumpInfos.Count(lump => lump.Name == name);
-        }
+        return -1;
+    }
 
-        public int Count => flats.Length;
-        public Flat this[int num] => flats[num];
-        public Flat this[string name] => nameToFlat[name];
-        public int SkyFlatNumber { get; private set; }
-        public Flat SkyFlat { get; private set; }
+    public IEnumerator<Flat> GetEnumerator()
+    {
+        return ((IEnumerable<Flat>)flats).GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return flats.GetEnumerator();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int CountLump(Wad.Wad wad, string name)
+    {
+        return wad.LumpInfos.Count(lump => lump.Name == name);
     }
 }

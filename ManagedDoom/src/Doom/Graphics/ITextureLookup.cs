@@ -16,12 +16,9 @@
 
 using System.Collections.Generic;
 
-namespace ManagedDoom.Doom.Graphics
+namespace ManagedDoom.Doom.Graphics;
+
+public interface ITextureLookup : ILookup<Texture>, IReadOnlyList<Texture>
 {
-    public interface ITextureLookup : IReadOnlyList<Texture>
-    {
-        int GetNumber(string name);
-        Texture this[string name] { get; }
-        public int[] SwitchList { get; }
-    }
+    public int[] SwitchList { get; }
 }
