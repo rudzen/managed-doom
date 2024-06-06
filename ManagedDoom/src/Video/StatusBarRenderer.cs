@@ -204,9 +204,9 @@ namespace ManagedDoom.Video
                     scale);
             }
 
-            if (DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
+            if (DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
             {
-                var num = player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo];
+                var num = player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo];
                 DrawNumber(ready, num);
             }
 
@@ -299,10 +299,11 @@ namespace ManagedDoom.Video
             if (num == 0)
             {
                 screen.DrawPatch(
-                    widget.Patches[0],
-                    scale * (x - w),
-                    scale * widget.Y,
-                    scale);
+                    patch: widget.Patches[0],
+                    x: scale * (x - w),
+                    y: scale * widget.Y,
+                    scale: scale
+                );
             }
 
             // Draw the new number.
@@ -323,10 +324,11 @@ namespace ManagedDoom.Video
             if (neg)
             {
                 screen.DrawPatch(
-                    patches.TallMinus,
-                    scale * (x - 8),
-                    scale * widget.Y,
-                    scale);
+                    patch: patches.TallMinus,
+                    x: scale * (x - 8),
+                    y: scale * widget.Y,
+                    scale: scale
+                );
             }
 
             //screen.DrawText("MHFJDSHFJKDHSJKFHDSJKFDS", 100, 100, 1);
@@ -353,7 +355,6 @@ namespace ManagedDoom.Video
                 scale * mi.Y,
                 scale);
         }
-
 
         private sealed record NumberWidget(int X, int Y, int Width, Patch[] Patches);
 
