@@ -14,14 +14,13 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public enum GameSkill : byte
 {
-    public enum GameSkill : byte
-    {
-        Baby,
-        Easy,
-        Medium,
-        Hard,
-        Nightmare
-    }
+    Baby,
+    Easy,
+    Medium,
+    Hard,
+    Nightmare
 }

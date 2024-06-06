@@ -21,96 +21,95 @@ using ManagedDoom.Doom.Intermission;
 using ManagedDoom.UserInput;
 using ManagedDoom.Video;
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public sealed class GameOptions
 {
-    public sealed class GameOptions
+    public GameOptions()
     {
-        public GameOptions()
-        {
-            GameVersion = GameVersion.Version109;
-            GameMode = GameMode.Commercial;
-            MissionPack = MissionPack.Doom2;
+        GameVersion = GameVersion.Version109;
+        GameMode = GameMode.Commercial;
+        MissionPack = MissionPack.Doom2;
 
-            Players = new Player[Player.MaxPlayerCount];
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
-                Players[i] = new Player(i);
-            }
-            Players[0].InGame = true;
-            ConsolePlayer = 0;
+        Players = new Player[Player.MaxPlayerCount];
+        for (var i = 0; i < Players.Length; i++)
+            Players[i] = new Player(i);
 
-            Episode = 1;
-            Map = 1;
-            Skill = GameSkill.Medium;
+        Players[0].InGame = true;
+        ConsolePlayer = 0;
 
-            DemoPlayback = false;
-            NetGame = false;
+        Episode = 1;
+        Map = 1;
+        Skill = GameSkill.Medium;
 
-            Deathmatch = 0;
-            FastMonsters = false;
-            RespawnMonsters = false;
-            NoMonsters = false;
+        DemoPlayback = false;
+        NetGame = false;
 
-            IntermissionInfo = new IntermissionInfo();
+        Deathmatch = 0;
+        FastMonsters = false;
+        RespawnMonsters = false;
+        NoMonsters = false;
 
-            Random = new DoomRandom();
+        IntermissionInfo = new IntermissionInfo();
 
-            Video = NullVideo.GetInstance();
-            Sound = NullSound.GetInstance();
-            Music = NullMusic.GetInstance();
-            UserInput = NullUserInput.GetInstance();
-        }
+        Random = new DoomRandom();
 
-        public GameOptions(CommandLineArgs args, GameContent content) : this()
-        {
-            if (args.solonet.Present)
-            {
-                NetGame = true;
-            }
-
-            GameVersion = content.Wad.GameVersion;
-            GameMode = content.Wad.GameMode;
-            MissionPack = content.Wad.MissionPack;
-        }
-
-        public GameVersion GameVersion { get; set; }
-
-        public GameMode GameMode { get; set; }
-
-        public MissionPack MissionPack { get; set; }
-
-        public Player[] Players { get; }
-
-        public int ConsolePlayer { get; set; }
-
-        public int Episode { get; set; }
-
-        public int Map { get; set; }
-
-        public GameSkill Skill { get; set; }
-
-        public bool DemoPlayback { get; set; }
-
-        public bool NetGame { get; set; }
-
-        public int Deathmatch { get; set; }
-
-        public bool FastMonsters { get; set; }
-
-        public bool RespawnMonsters { get; set; }
-
-        public bool NoMonsters { get; set; }
-
-        public IntermissionInfo IntermissionInfo { get; }
-
-        public DoomRandom Random { get; }
-
-        public IVideo Video { get; set; }
-
-        public ISound Sound { get; set; }
-
-        public IMusic Music { get; set; }
-
-        public IUserInput UserInput { get; set; }
+        Video = NullVideo.GetInstance();
+        Sound = NullSound.GetInstance();
+        Music = NullMusic.GetInstance();
+        UserInput = NullUserInput.GetInstance();
     }
+
+    public GameOptions(CommandLineArgs args, GameContent content) : this()
+    {
+        if (args.solonet.Present)
+        {
+            NetGame = true;
+        }
+
+        GameVersion = content.Wad.GameVersion;
+        GameMode = content.Wad.GameMode;
+        MissionPack = content.Wad.MissionPack;
+    }
+
+
+    public GameVersion GameVersion { get; set; }
+
+    public GameMode GameMode { get; set; }
+
+    public MissionPack MissionPack { get; set; }
+
+    public Player[] Players { get; }
+
+    public int ConsolePlayer { get; set; }
+
+    public int Episode { get; set; }
+
+    public int Map { get; set; }
+
+    public GameSkill Skill { get; set; }
+
+    public bool DemoPlayback { get; set; }
+
+    public bool NetGame { get; set; }
+
+    public int Deathmatch { get; set; }
+
+    public bool FastMonsters { get; set; }
+
+    public bool RespawnMonsters { get; set; }
+
+    public bool NoMonsters { get; set; }
+
+    public IntermissionInfo IntermissionInfo { get; }
+
+    public DoomRandom Random { get; }
+
+    public IVideo Video { get; set; }
+
+    public ISound Sound { get; set; }
+
+    public IMusic Music { get; set; }
+
+    public IUserInput UserInput { get; init; }
 }

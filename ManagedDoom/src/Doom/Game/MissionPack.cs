@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public enum MissionPack
 {
-    public enum MissionPack
-    {
-        Doom2,
-        Plutonia,
-        Tnt
-    }
+    Doom2,
+    Plutonia,
+    Tnt
 }

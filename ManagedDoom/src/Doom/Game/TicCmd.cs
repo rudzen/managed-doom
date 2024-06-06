@@ -14,32 +14,31 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public sealed class TicCmd
 {
-    public sealed class TicCmd
+    public sbyte ForwardMove { get; set; }
+
+    public sbyte SideMove { get; set; }
+
+    public short AngleTurn { get; set; }
+
+    public byte Buttons { get; set; }
+
+    public void Clear()
     {
-        public void Clear()
-        {
-            ForwardMove = 0;
-            SideMove = 0;
-            AngleTurn = 0;
-            Buttons = 0;
-        }
+        ForwardMove = 0;
+        SideMove = 0;
+        AngleTurn = 0;
+        Buttons = 0;
+    }
 
-        public void CopyFrom(TicCmd cmd)
-        {
-            ForwardMove = cmd.ForwardMove;
-            SideMove = cmd.SideMove;
-            AngleTurn = cmd.AngleTurn;
-            Buttons = cmd.Buttons;
-        }
-
-        public sbyte ForwardMove { get; set; }
-
-        public sbyte SideMove { get; set; }
-
-        public short AngleTurn { get; set; }
-
-        public byte Buttons { get; set; }
+    public void CopyFrom(TicCmd cmd)
+    {
+        ForwardMove = cmd.ForwardMove;
+        SideMove = cmd.SideMove;
+        AngleTurn = cmd.AngleTurn;
+        Buttons = cmd.Buttons;
     }
 }

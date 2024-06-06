@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public enum GameState
 {
-    public enum GameState
-    {
-        Level,
-        Intermission,
-        Finale
-    }
+    Level,
+    Intermission,
+    Finale
 }

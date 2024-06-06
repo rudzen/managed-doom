@@ -14,13 +14,12 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public enum GameVersion
 {
-    public enum GameVersion
-    {
-        Version109,
-        Ultimate,
-        Final,
-        Final2
-    }
+    Version109,
+    Ultimate,
+    Final,
+    Final2
 }

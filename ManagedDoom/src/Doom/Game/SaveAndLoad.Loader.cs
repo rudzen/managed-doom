@@ -67,8 +67,8 @@ public static partial class SaveAndLoad
 
     private static int ReadVersion(Span<byte> data, int ptr, out string version)
     {
-        version = DoomInterop.ToString(data.Slice(ptr, versionSize));
-        return ptr + versionSize;
+        version = DoomInterop.ToString(data.Slice(ptr, VersionSize));
+        return ptr + VersionSize;
     }
 
     private static int UnArchivePlayers(World.World world, Span<byte> data, int ptr)

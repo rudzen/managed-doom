@@ -14,17 +14,16 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public enum PlayerState
 {
-    public enum PlayerState
-    {
-        // Playing or camping.
-        Live,
+    // Playing or camping.
+    Live,
 
-        // Dead on the ground, view follows killer.
-        Dead,
+    // Dead on the ground, view follows killer.
+    Dead,
 
-        // Ready to restart / respawn???
-        Reborn
-    }
+    // Ready to restart / respawn???
+    Reborn
 }

@@ -17,84 +17,83 @@
 using System;
 using System.IO;
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public sealed class Demo
 {
-    public sealed class Demo
+    private readonly byte[] data;
+    private readonly int playerCount;
+    private int p;
+
+    public Demo(byte[] data)
     {
-        private int p;
-        private readonly byte[] data;
+        p = 0;
 
-        private readonly int playerCount;
+        if (data[p++] != 109)
+            throw new Exception("Demo is from a different game version!");
 
-        public Demo(byte[] data)
+        this.data = data;
+
+        Options = new GameOptions
         {
-            p = 0;
+            Skill = (GameSkill)data[p++],
+            Episode = data[p++],
+            Map = data[p++],
+            Deathmatch = data[p++],
+            RespawnMonsters = data[p++] != 0,
+            FastMonsters = data[p++] != 0,
+            NoMonsters = data[p++] != 0,
+            ConsolePlayer = data[p++]
+        };
 
-            if (data[p++] != 109)
-                throw new Exception("Demo is from a different game version!");
+        Options.Players[0].InGame = data[p++] != 0;
+        Options.Players[1].InGame = data[p++] != 0;
+        Options.Players[2].InGame = data[p++] != 0;
+        Options.Players[3].InGame = data[p++] != 0;
 
-            this.data = data;
+        Options.DemoPlayback = true;
 
-            Options = new GameOptions
+        playerCount = 0;
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            if (Options.Players[i].InGame)
+                playerCount++;
+        }
+
+        if (playerCount >= 2)
+            Options.NetGame = true;
+    }
+
+    public Demo(string fileName) : this(File.ReadAllBytes(fileName))
+    {
+    }
+
+    public GameOptions Options { get; }
+
+    public bool ReadCmd(ReadOnlySpan<TicCmd> cmds)
+    {
+        if (p == data.Length)
+            return false;
+
+        if (data[p] == 0x80)
+            return false;
+
+        if (p + 4 * playerCount > data.Length)
+            return false;
+
+        var players = Options.Players;
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            if (players[i].InGame)
             {
-                Skill = (GameSkill)data[p++],
-                Episode = data[p++],
-                Map = data[p++],
-                Deathmatch = data[p++],
-                RespawnMonsters = data[p++] != 0,
-                FastMonsters = data[p++] != 0,
-                NoMonsters = data[p++] != 0,
-                ConsolePlayer = data[p++]
-            };
-
-            Options.Players[0].InGame = data[p++] != 0;
-            Options.Players[1].InGame = data[p++] != 0;
-            Options.Players[2].InGame = data[p++] != 0;
-            Options.Players[3].InGame = data[p++] != 0;
-
-            Options.DemoPlayback = true;
-
-            playerCount = 0;
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
-                if (Options.Players[i].InGame)
-                    playerCount++;
+                var cmd = cmds[i];
+                cmd.ForwardMove = (sbyte)data[p++];
+                cmd.SideMove = (sbyte)data[p++];
+                cmd.AngleTurn = (short)(data[p++] << 8);
+                cmd.Buttons = data[p++];
             }
-            if (playerCount >= 2)
-                Options.NetGame = true;
         }
 
-        public Demo(string fileName) : this(File.ReadAllBytes(fileName))
-        {
-        }
-
-        public bool ReadCmd(ReadOnlySpan<TicCmd> cmds)
-        {
-            if (p == data.Length)
-                return false;
-
-            if (data[p] == 0x80)
-                return false;
-
-            if (p + 4 * playerCount > data.Length)
-                return false;
-
-            var players = Options.Players;
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
-                if (players[i].InGame)
-                {
-                    var cmd = cmds[i];
-                    cmd.ForwardMove = (sbyte)data[p++];
-                    cmd.SideMove = (sbyte)data[p++];
-                    cmd.AngleTurn = (short)(data[p++] << 8);
-                    cmd.Buttons = data[p++];
-                }
-            }
-
-            return true;
-        }
-
-        public GameOptions Options { get; }
+        return true;
     }
 }

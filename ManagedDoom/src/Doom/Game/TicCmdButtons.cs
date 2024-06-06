@@ -14,28 +14,27 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public static class TicCmdButtons
 {
-    public static class TicCmdButtons
-    {
-        public const byte Attack = 1;
+    public const byte Attack = 1;
 
-        // Use button, to open doors, activate switches.
-        public const byte Use = 2;
+    // Use button, to open doors, activate switches.
+    public const byte Use = 2;
 
-        // Flag: game events, not really buttons.
-        public const byte Special = 128;
-        public const byte SpecialMask = 3;
+    // Flag: game events, not really buttons.
+    public const byte Special = 128;
+    public const byte SpecialMask = 3;
 
-        // Flag, weapon change pending.
-        // If true, the next 3 bits hold weapon num.
-        public const byte Change = 4;
+    // Flag, weapon change pending.
+    // If true, the next 3 bits hold weapon num.
+    public const byte Change = 4;
 
-        // The 3bit weapon mask and shift, convenience.
-        public const byte WeaponMask = 8 + 16 + 32;
-        public const byte WeaponShift = 3;
+    // The 3bit weapon mask and shift, convenience.
+    public const byte WeaponMask = 8 + 16 + 32;
+    public const byte WeaponShift = 3;
 
-        // Pause the game.
-        public const byte Pause = 1;
-    }
+    // Pause the game.
+    public const byte Pause = 1;
 }

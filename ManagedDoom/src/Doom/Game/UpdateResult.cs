@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public enum UpdateResult
 {
-    public enum UpdateResult
-    {
-        None,
-        Completed,
-        NeedWipe
-    }
+    None,
+    Completed,
+    NeedWipe
 }

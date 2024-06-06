@@ -16,14 +16,13 @@
 
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.Game
+namespace ManagedDoom.Doom.Game;
+
+public static class GameConst
 {
-    public static class GameConst
-    {
-        public const int TicRate = 35;
+    public const int TicRate = 35;
 
-        public static readonly Fixed MaxThingRadius = Fixed.FromInt(32);
+    public static readonly Fixed MaxThingRadius = Fixed.FromInt(32);
 
-        public const int TurboThreshold = 0x32;
-    }
+    public const int TurboThreshold = 0x32;
 }

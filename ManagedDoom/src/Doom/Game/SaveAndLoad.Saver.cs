@@ -28,7 +28,7 @@ public static partial class SaveAndLoad
         for (var i = 0; i < version.Length; i++)
             data[ptr + i] = (byte)version[i];
 
-        return ptr + versionSize;
+        return ptr + VersionSize;
     }
 
     private static int Save(DoomGame game, Span<byte> data, int ptr)

@@ -27,8 +27,8 @@ public static partial class SaveAndLoad
 {
     private const int DescriptionSize = 24;
 
-    private const int versionSize = 16;
-    private const int saveBufferSize = 360 * 1024;
+    private const int VersionSize = 16;
+    private const int SaveBufferSize = 360 * 1024;
 
     private enum ThinkerClass
     {
@@ -52,11 +52,11 @@ public static partial class SaveAndLoad
     {
         Console.WriteLine($"Saving game to: {path}");
         var start = Stopwatch.GetTimestamp();
-        var fileData = ArrayPool<byte>.Shared.Rent(saveBufferSize);
+        var fileData = ArrayPool<byte>.Shared.Rent(SaveBufferSize);
 
         try
         {
-            var fileBuffer = fileData.AsSpan(0, saveBufferSize);
+            var fileBuffer = fileData.AsSpan(0, SaveBufferSize);
 
             var ptr = SaveHeader(description, fileBuffer);
             ptr = Save(game, fileBuffer, ptr);
@@ -101,7 +101,7 @@ public static partial class SaveAndLoad
             var ptr = ValidateHeader(fileBuffer);
 
             // check current position
-            if (ptr != (versionSize + DescriptionSize))
+            if (ptr != (VersionSize + DescriptionSize))
                 throw new Exception($"Invalid save file header size: {path}");
 
             Load(game, fileBuffer, ptr);
