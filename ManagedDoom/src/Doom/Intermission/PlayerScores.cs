@@ -16,29 +16,23 @@
 
 using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom.Doom.Intermission
+namespace ManagedDoom.Doom.Intermission;
+
+public sealed class PlayerScores
 {
-    public class PlayerScores
-    {
-        // Whether the player is in game.
+    // Whether the player is in game.
 
-        // Player stats, kills, collected items etc.
+    // Player stats, kills, collected items etc.
 
-        public PlayerScores()
-        {
-            Frags = new int[Player.MaxPlayerCount];
-        }
+    public bool InGame { get; set; }
 
-        public bool InGame { get; set; }
+    public int KillCount { get; set; }
 
-        public int KillCount { get; set; }
+    public int ItemCount { get; set; }
 
-        public int ItemCount { get; set; }
+    public int SecretCount { get; set; }
 
-        public int SecretCount { get; set; }
+    public int Time { get; set; }
 
-        public int Time { get; set; }
-
-        public int[] Frags { get; }
-    }
+    public int[] Frags { get; } = new int[Player.MaxPlayerCount];
 }

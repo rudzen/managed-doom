@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Intermission
+namespace ManagedDoom.Doom.Intermission;
+
+public enum IntermissionState
 {
-    public enum IntermissionState
-    {
-        NoState = -1,
-        StatCount,
-        ShowNextLoc
-    }
+    NoState = -1,
+    StatCount,
+    ShowNextLoc
 }

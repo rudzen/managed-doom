@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Intermission
+namespace ManagedDoom.Doom.Intermission;
+
+public enum AnimationType
 {
-    public enum AnimationType
-    {
-        Always,
-        Random,
-        Level
-    }
+    Always,
+    Random,
+    Level
 }

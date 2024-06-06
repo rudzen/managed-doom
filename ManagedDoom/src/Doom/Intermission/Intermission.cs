@@ -19,100 +19,396 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom.Doom.Intermission
+namespace ManagedDoom.Doom.Intermission;
+
+public sealed class Intermission
 {
-    public sealed class Intermission
+    private const int showNextLocDelay = 4;
+
+    // Contains information passed into intermission.
+    private readonly PlayerScores[] scores;
+
+    // Used to accelerate or skip a stage.
+    private bool accelerateStage;
+
+    // Specifies current state.
+
+    private readonly int[] killCount;
+    private readonly int[] itemCount;
+    private readonly int[] secretCount;
+    private readonly int[] fragCount;
+    private int pauseCount;
+
+    private int spState;
+
+    private int ngState;
+
+    private int dmState;
+
+    // Used for general timing.
+    private int count;
+
+    // Used for timing of background animation.
+    private int bgCount;
+
+    private bool completed;
+
+    public Intermission(GameOptions options, IntermissionInfo info)
     {
-        // Contains information passed into intermission.
-        private readonly PlayerScores[] scores;
+        this.Options = options;
+        this.Info = info;
 
-        // Used to accelerate or skip a stage.
-        private bool accelerateStage;
+        scores = info.Players;
 
-        // Specifies current state.
+        killCount = new int[Player.MaxPlayerCount];
+        itemCount = new int[Player.MaxPlayerCount];
+        secretCount = new int[Player.MaxPlayerCount];
+        fragCount = new int[Player.MaxPlayerCount];
 
-        private readonly int[] killCount;
-        private readonly int[] itemCount;
-        private readonly int[] secretCount;
-        private readonly int[] fragCount;
-        private int pauseCount;
-
-        private int spState;
-
-        private int ngState;
-
-        private int dmState;
-
-        // Used for general timing.
-        private int count;
-
-        // Used for timing of background animation.
-        private int bgCount;
-
-        private bool completed;
-
-        public Intermission(GameOptions options, IntermissionInfo info)
+        DeathmatchFrags = new int[Player.MaxPlayerCount][];
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
         {
-            this.Options = options;
-            this.Info = info;
+            DeathmatchFrags[i] = new int[Player.MaxPlayerCount];
+        }
 
-            scores = info.Players;
+        DeathmatchTotals = new int[Player.MaxPlayerCount];
 
-            killCount = new int[Player.MaxPlayerCount];
-            itemCount = new int[Player.MaxPlayerCount];
-            secretCount = new int[Player.MaxPlayerCount];
-            fragCount = new int[Player.MaxPlayerCount];
+        if (options.Deathmatch != 0)
+        {
+            InitDeathmatchStats();
+        }
+        else if (options.NetGame)
+        {
+            InitNetGameStats();
+        }
+        else
+        {
+            InitSinglePLayerStats();
+        }
 
-            DeathmatchFrags = new int[Player.MaxPlayerCount][];
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
+        completed = false;
+    }
+
+    public GameOptions Options { get; }
+    public IntermissionInfo Info { get; }
+    public IntermissionState State { get; private set; }
+    public IReadOnlyList<int> KillCount => killCount;
+    public IReadOnlyList<int> ItemCount => itemCount;
+    public IReadOnlyList<int> SecretCount => secretCount;
+    public IReadOnlyList<int> FragCount => fragCount;
+    public int TimeCount { get; private set; }
+    public int ParCount { get; private set; }
+    public int[][] DeathmatchFrags { get; }
+    public int[] DeathmatchTotals { get; }
+    public bool DoFrags { get; private set; }
+    public DoomRandom Random { get; private set; }
+    public Animation[] Animations { get; private set; }
+    public bool ShowYouAreHere { get; private set; }
+
+    ////////////////////////////////////////////////////////////
+    // Initialization
+    ////////////////////////////////////////////////////////////
+
+    private void InitSinglePLayerStats()
+    {
+        State = IntermissionState.StatCount;
+        accelerateStage = false;
+        spState = 1;
+        killCount[0] = itemCount[0] = secretCount[0] = -1;
+        TimeCount = ParCount = -1;
+        pauseCount = GameConst.TicRate;
+
+        InitAnimatedBack();
+    }
+
+    private void InitNetGameStats()
+    {
+        State = IntermissionState.StatCount;
+        accelerateStage = false;
+        ngState = 1;
+        pauseCount = GameConst.TicRate;
+
+        var frags = 0;
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            if (!Options.Players[i].InGame)
             {
-                DeathmatchFrags[i] = new int[Player.MaxPlayerCount];
+                continue;
             }
-            DeathmatchTotals = new int[Player.MaxPlayerCount];
 
-            if (options.Deathmatch != 0)
+            killCount[i] = itemCount[i] = secretCount[i] = fragCount[i] = 0;
+
+            frags += GetFragSum(i);
+        }
+
+        DoFrags = frags > 0;
+
+        InitAnimatedBack();
+    }
+
+    private void InitDeathmatchStats()
+    {
+        State = IntermissionState.StatCount;
+        accelerateStage = false;
+        dmState = 1;
+        pauseCount = GameConst.TicRate;
+
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            if (Options.Players[i].InGame)
             {
-                InitDeathmatchStats();
+                for (var j = 0; j < Player.MaxPlayerCount; j++)
+                {
+                    if (Options.Players[j].InGame)
+                    {
+                        DeathmatchFrags[i][j] = 0;
+                    }
+                }
+
+                DeathmatchTotals[i] = 0;
             }
-            else if (options.NetGame)
+        }
+
+        InitAnimatedBack();
+    }
+
+    private void InitNoState()
+    {
+        State = IntermissionState.NoState;
+        accelerateStage = false;
+        count = 10;
+    }
+
+    private void InitShowNextLoc()
+    {
+        State = IntermissionState.ShowNextLoc;
+        accelerateStage = false;
+        count = showNextLocDelay * GameConst.TicRate;
+
+        InitAnimatedBack();
+    }
+
+    private void InitAnimatedBack()
+    {
+        if (Options.GameMode == GameMode.Commercial)
+        {
+            return;
+        }
+
+        if (Info.Episode > 2)
+        {
+            return;
+        }
+
+        if (Animations == null)
+        {
+            Animations = new Animation[AnimationInfo.Episodes[Info.Episode].Count];
+            for (var i = 0; i < Animations.Length; i++)
             {
-                InitNetGameStats();
+                Animations[i] = new Animation(this, AnimationInfo.Episodes[Info.Episode][i], i);
+            }
+
+            Random = new DoomRandom();
+        }
+
+        foreach (var animation in Animations)
+        {
+            animation.Reset(bgCount);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    // Update
+    ////////////////////////////////////////////////////////////
+
+    public UpdateResult Update()
+    {
+        // Counter for general background animation.
+        bgCount++;
+
+        CheckForAccelerate();
+
+        if (bgCount == 1)
+        {
+            // intermission music
+            if (Options.GameMode == GameMode.Commercial)
+            {
+                Options.Music.StartMusic(Bgm.DM2INT, true);
             }
             else
             {
-                InitSinglePLayerStats();
+                Options.Music.StartMusic(Bgm.INTER, true);
+            }
+        }
+
+        switch (State)
+        {
+            case IntermissionState.StatCount:
+                if (Options.Deathmatch != 0)
+                {
+                    UpdateDeathmatchStats();
+                }
+                else if (Options.NetGame)
+                {
+                    UpdateNetGameStats();
+                }
+                else
+                {
+                    UpdateSinglePlayerStats();
+                }
+
+                break;
+
+            case IntermissionState.ShowNextLoc:
+                UpdateShowNextLoc();
+                break;
+
+            case IntermissionState.NoState:
+                UpdateNoState();
+                break;
+        }
+
+        if (completed)
+        {
+            return UpdateResult.Completed;
+        }
+
+        if (bgCount == 1)
+        {
+            return UpdateResult.NeedWipe;
+        }
+
+        return UpdateResult.None;
+    }
+
+    private void UpdateSinglePlayerStats()
+    {
+        UpdateAnimatedBack();
+
+        if (accelerateStage && spState != 10)
+        {
+            accelerateStage = false;
+            killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
+            itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
+            secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
+            TimeCount = scores[0].Time / GameConst.TicRate;
+            ParCount = Info.ParTime / GameConst.TicRate;
+            StartSound(Sfx.BAREXP);
+            spState = 10;
+        }
+
+        if (spState == 2)
+        {
+            killCount[0] += 2;
+
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
             }
 
-            completed = false;
+            if (killCount[0] >= (scores[0].KillCount * 100) / Info.MaxKillCount)
+            {
+                killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
+                StartSound(Sfx.BAREXP);
+                spState++;
+            }
+        }
+        else if (spState == 4)
+        {
+            itemCount[0] += 2;
+
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
+
+            if (itemCount[0] >= (scores[0].ItemCount * 100) / Info.MaxItemCount)
+            {
+                itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
+                StartSound(Sfx.BAREXP);
+                spState++;
+            }
+        }
+        else if (spState == 6)
+        {
+            secretCount[0] += 2;
+
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
+
+            if (secretCount[0] >= (scores[0].SecretCount * 100) / Info.MaxSecretCount)
+            {
+                secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
+                StartSound(Sfx.BAREXP);
+                spState++;
+            }
         }
 
-
-
-        ////////////////////////////////////////////////////////////
-        // Initialization
-        ////////////////////////////////////////////////////////////
-        
-        private void InitSinglePLayerStats()
+        else if (spState == 8)
         {
-            State = IntermissionState.StatCount;
-            accelerateStage = false;
-            spState = 1;
-            killCount[0] = itemCount[0] = secretCount[0] = -1;
-            TimeCount = ParCount = -1;
-            pauseCount = GameConst.TicRate;
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
 
-            InitAnimatedBack();
+            TimeCount += 3;
+
+            if (TimeCount >= scores[0].Time / GameConst.TicRate)
+            {
+                TimeCount = scores[0].Time / GameConst.TicRate;
+            }
+
+            ParCount += 3;
+
+            if (ParCount >= Info.ParTime / GameConst.TicRate)
+            {
+                ParCount = Info.ParTime / GameConst.TicRate;
+
+                if (TimeCount >= scores[0].Time / GameConst.TicRate)
+                {
+                    StartSound(Sfx.BAREXP);
+                    spState++;
+                }
+            }
         }
-
-
-        private void InitNetGameStats()
+        else if (spState == 10)
         {
-            State = IntermissionState.StatCount;
-            accelerateStage = false;
-            ngState = 1;
-            pauseCount = GameConst.TicRate;
+            if (accelerateStage)
+            {
+                StartSound(Sfx.SGCOCK);
 
-            var frags = 0;
+                if (Options.GameMode == GameMode.Commercial)
+                {
+                    InitNoState();
+                }
+                else
+                {
+                    InitShowNextLoc();
+                }
+            }
+        }
+        else if ((spState & 1) != 0)
+        {
+            if (--pauseCount == 0)
+            {
+                spState++;
+                pauseCount = GameConst.TicRate;
+            }
+        }
+    }
+
+    private void UpdateNetGameStats()
+    {
+        UpdateAnimatedBack();
+
+        bool stillTicking;
+
+        if (accelerateStage && ngState != 10)
+        {
+            accelerateStage = false;
+
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
                 if (!Options.Players[i].InGame)
@@ -120,22 +416,189 @@ namespace ManagedDoom.Doom.Intermission
                     continue;
                 }
 
-                killCount[i] = itemCount[i] = secretCount[i] = fragCount[i] = 0;
-
-                frags += GetFragSum(i);
+                killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
+                itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
+                secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
             }
-            DoFrags = frags > 0;
 
-            InitAnimatedBack();
+            StartSound(Sfx.BAREXP);
+
+            ngState = 10;
         }
 
-
-        private void InitDeathmatchStats()
+        if (ngState == 2)
         {
-            State = IntermissionState.StatCount;
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
+
+            stillTicking = false;
+
+            for (var i = 0; i < Player.MaxPlayerCount; i++)
+            {
+                if (!Options.Players[i].InGame)
+                {
+                    continue;
+                }
+
+                killCount[i] += 2;
+                if (killCount[i] >= (scores[i].KillCount * 100) / Info.MaxKillCount)
+                {
+                    killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
+                }
+                else
+                {
+                    stillTicking = true;
+                }
+            }
+
+            if (!stillTicking)
+            {
+                StartSound(Sfx.BAREXP);
+                ngState++;
+            }
+        }
+        else if (ngState == 4)
+        {
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
+
+            stillTicking = false;
+
+            for (var i = 0; i < Player.MaxPlayerCount; i++)
+            {
+                if (!Options.Players[i].InGame)
+                {
+                    continue;
+                }
+
+                itemCount[i] += 2;
+                if (itemCount[i] >= (scores[i].ItemCount * 100) / Info.MaxItemCount)
+                {
+                    itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
+                }
+                else
+                {
+                    stillTicking = true;
+                }
+            }
+
+            if (!stillTicking)
+            {
+                StartSound(Sfx.BAREXP);
+                ngState++;
+            }
+        }
+        else if (ngState == 6)
+        {
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
+
+            stillTicking = false;
+
+            for (var i = 0; i < Player.MaxPlayerCount; i++)
+            {
+                if (!Options.Players[i].InGame)
+                {
+                    continue;
+                }
+
+                secretCount[i] += 2;
+                if (secretCount[i] >= (scores[i].SecretCount * 100) / Info.MaxSecretCount)
+                {
+                    secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
+                }
+                else
+                {
+                    stillTicking = true;
+                }
+            }
+
+            if (!stillTicking)
+            {
+                StartSound(Sfx.BAREXP);
+                if (DoFrags)
+                {
+                    ngState++;
+                }
+                else
+                {
+                    ngState += 3;
+                }
+            }
+        }
+        else if (ngState == 8)
+        {
+            if ((bgCount & 3) == 0)
+            {
+                StartSound(Sfx.PISTOL);
+            }
+
+            stillTicking = false;
+
+            for (var i = 0; i < Player.MaxPlayerCount; i++)
+            {
+                if (!Options.Players[i].InGame)
+                {
+                    continue;
+                }
+
+                fragCount[i] += 1;
+                var sum = GetFragSum(i);
+                if (fragCount[i] >= sum)
+                {
+                    fragCount[i] = sum;
+                }
+                else
+                {
+                    stillTicking = true;
+                }
+            }
+
+            if (!stillTicking)
+            {
+                StartSound(Sfx.PLDETH);
+                ngState++;
+            }
+        }
+        else if (ngState == 10)
+        {
+            if (accelerateStage)
+            {
+                StartSound(Sfx.SGCOCK);
+
+                if (Options.GameMode == GameMode.Commercial)
+                {
+                    InitNoState();
+                }
+                else
+                {
+                    InitShowNextLoc();
+                }
+            }
+        }
+        else if ((ngState & 1) != 0)
+        {
+            if (--pauseCount == 0)
+            {
+                ngState++;
+                pauseCount = GameConst.TicRate;
+            }
+        }
+    }
+
+    private void UpdateDeathmatchStats()
+    {
+        UpdateAnimatedBack();
+
+        if (accelerateStage && dmState != 4)
+        {
             accelerateStage = false;
-            dmState = 1;
-            pauseCount = GameConst.TicRate;
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
@@ -145,702 +608,209 @@ namespace ManagedDoom.Doom.Intermission
                     {
                         if (Options.Players[j].InGame)
                         {
-                            DeathmatchFrags[i][j] = 0;
+                            DeathmatchFrags[i][j] = scores[i].Frags[j];
                         }
-                    }
-                    DeathmatchTotals[i] = 0;
-                }
-            }
-
-            InitAnimatedBack();
-        }
-
-
-        private void InitNoState()
-        {
-            State = IntermissionState.NoState;
-            accelerateStage = false;
-            count = 10;
-        }
-
-
-        private static readonly int showNextLocDelay = 4;
-
-        private void InitShowNextLoc()
-        {
-            State = IntermissionState.ShowNextLoc;
-            accelerateStage = false;
-            count = showNextLocDelay * GameConst.TicRate;
-
-            InitAnimatedBack();
-        }
-
-
-        private void InitAnimatedBack()
-        {
-            if (Options.GameMode == GameMode.Commercial)
-            {
-                return;
-            }
-
-            if (Info.Episode > 2)
-            {
-                return;
-            }
-
-            if (Animations == null)
-            {
-                Animations = new Animation[AnimationInfo.Episodes[Info.Episode].Count];
-                for (var i = 0; i < Animations.Length; i++)
-                {
-                    Animations[i] = new Animation(this, AnimationInfo.Episodes[Info.Episode][i], i);
-                }
-
-                Random = new DoomRandom();
-            }
-
-            foreach (var animation in Animations)
-            {
-                animation.Reset(bgCount);
-            }
-        }
-
-
-
-        ////////////////////////////////////////////////////////////
-        // Update
-        ////////////////////////////////////////////////////////////
-
-        public UpdateResult Update()
-        {
-            // Counter for general background animation.
-            bgCount++;
-
-            CheckForAccelerate();
-
-            if (bgCount == 1)
-            {
-                // intermission music
-                if (Options.GameMode == GameMode.Commercial)
-                {
-                    Options.Music.StartMusic(Bgm.DM2INT, true);
-                }
-                else
-                {
-                    Options.Music.StartMusic(Bgm.INTER, true);
-                }
-            }
-
-            switch (State)
-            {
-                case IntermissionState.StatCount:
-                    if (Options.Deathmatch != 0)
-                    {
-                        UpdateDeathmatchStats();
-                    }
-                    else if (Options.NetGame)
-                    {
-                        UpdateNetGameStats();
-                    }
-                    else
-                    {
-                        UpdateSinglePlayerStats();
-                    }
-                    break;
-
-                case IntermissionState.ShowNextLoc:
-                    UpdateShowNextLoc();
-                    break;
-
-                case IntermissionState.NoState:
-                    UpdateNoState();
-                    break;
-            }
-
-            if (completed)
-            {
-                return UpdateResult.Completed;
-            }
-
-            if (bgCount == 1)
-            {
-                return UpdateResult.NeedWipe;
-            }
-
-            return UpdateResult.None;
-        }
-
-
-        private void UpdateSinglePlayerStats()
-        {
-            UpdateAnimatedBack();
-
-            if (accelerateStage && spState != 10)
-            {
-                accelerateStage = false;
-                killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
-                itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
-                secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
-                TimeCount = scores[0].Time / GameConst.TicRate;
-                ParCount = Info.ParTime / GameConst.TicRate;
-                StartSound(Sfx.BAREXP);
-                spState = 10;
-            }
-
-            if (spState == 2)
-            {
-                killCount[0] += 2;
-
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                if (killCount[0] >= (scores[0].KillCount * 100) / Info.MaxKillCount)
-                {
-                    killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
-                    StartSound(Sfx.BAREXP);
-                    spState++;
-                }
-            }
-            else if (spState == 4)
-            {
-                itemCount[0] += 2;
-
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                if (itemCount[0] >= (scores[0].ItemCount * 100) / Info.MaxItemCount)
-                {
-                    itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
-                    StartSound(Sfx.BAREXP);
-                    spState++;
-                }
-            }
-            else if (spState == 6)
-            {
-                secretCount[0] += 2;
-
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                if (secretCount[0] >= (scores[0].SecretCount * 100) / Info.MaxSecretCount)
-                {
-                    secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
-                    StartSound(Sfx.BAREXP);
-                    spState++;
-                }
-            }
-
-            else if (spState == 8)
-            {
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                TimeCount += 3;
-
-                if (TimeCount >= scores[0].Time / GameConst.TicRate)
-                {
-                    TimeCount = scores[0].Time / GameConst.TicRate;
-                }
-
-                ParCount += 3;
-
-                if (ParCount >= Info.ParTime / GameConst.TicRate)
-                {
-                    ParCount = Info.ParTime / GameConst.TicRate;
-
-                    if (TimeCount >= scores[0].Time / GameConst.TicRate)
-                    {
-                        StartSound(Sfx.BAREXP);
-                        spState++;
-                    }
-                }
-            }
-            else if (spState == 10)
-            {
-                if (accelerateStage)
-                {
-                    StartSound(Sfx.SGCOCK);
-
-                    if (Options.GameMode == GameMode.Commercial)
-                    {
-                        InitNoState();
-                    }
-                    else
-                    {
-                        InitShowNextLoc();
-                    }
-                }
-            }
-            else if ((spState & 1) != 0)
-            {
-                if (--pauseCount == 0)
-                {
-                    spState++;
-                    pauseCount = GameConst.TicRate;
-                }
-            }
-        }
-
-
-        private void UpdateNetGameStats()
-        {
-            UpdateAnimatedBack();
-
-            bool stillTicking;
-
-            if (accelerateStage && ngState != 10)
-            {
-                accelerateStage = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (!Options.Players[i].InGame)
-                    {
-                        continue;
-                    }
-
-                    killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
-                    itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
-                    secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
-                }
-
-                StartSound(Sfx.BAREXP);
-
-                ngState = 10;
-            }
-
-            if (ngState == 2)
-            {
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                stillTicking = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (!Options.Players[i].InGame)
-                    {
-                        continue;
-                    }
-
-                    killCount[i] += 2;
-                    if (killCount[i] >= (scores[i].KillCount * 100) / Info.MaxKillCount)
-                    {
-                        killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
-                    }
-                    else
-                    {
-                        stillTicking = true;
-                    }
-                }
-
-                if (!stillTicking)
-                {
-                    StartSound(Sfx.BAREXP);
-                    ngState++;
-                }
-            }
-            else if (ngState == 4)
-            {
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                stillTicking = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (!Options.Players[i].InGame)
-                    {
-                        continue;
-                    }
-
-                    itemCount[i] += 2;
-                    if (itemCount[i] >= (scores[i].ItemCount * 100) / Info.MaxItemCount)
-                    {
-                        itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
-                    }
-                    else
-                    {
-                        stillTicking = true;
-                    }
-                }
-
-                if (!stillTicking)
-                {
-                    StartSound(Sfx.BAREXP);
-                    ngState++;
-                }
-            }
-            else if (ngState == 6)
-            {
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                stillTicking = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (!Options.Players[i].InGame)
-                    {
-                        continue;
-                    }
-
-                    secretCount[i] += 2;
-                    if (secretCount[i] >= (scores[i].SecretCount * 100) / Info.MaxSecretCount)
-                    {
-                        secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
-                    }
-                    else
-                    {
-                        stillTicking = true;
-                    }
-                }
-
-                if (!stillTicking)
-                {
-                    StartSound(Sfx.BAREXP);
-                    if (DoFrags)
-                    {
-                        ngState++;
-                    }
-                    else
-                    {
-                        ngState += 3;
-                    }
-                }
-            }
-            else if (ngState == 8)
-            {
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                stillTicking = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (!Options.Players[i].InGame)
-                    {
-                        continue;
-                    }
-
-                    fragCount[i] += 1;
-                    var sum = GetFragSum(i);
-                    if (fragCount[i] >= sum)
-                    {
-                        fragCount[i] = sum;
-                    }
-                    else
-                    {
-                        stillTicking = true;
-                    }
-                }
-
-                if (!stillTicking)
-                {
-                    StartSound(Sfx.PLDETH);
-                    ngState++;
-                }
-            }
-            else if (ngState == 10)
-            {
-                if (accelerateStage)
-                {
-                    StartSound(Sfx.SGCOCK);
-
-                    if (Options.GameMode == GameMode.Commercial)
-                    {
-                        InitNoState();
-                    }
-                    else
-                    {
-                        InitShowNextLoc();
-                    }
-                }
-            }
-            else if ((ngState & 1) != 0)
-            {
-                if (--pauseCount == 0)
-                {
-                    ngState++;
-                    pauseCount = GameConst.TicRate;
-                }
-            }
-        }
-
-
-        private void UpdateDeathmatchStats()
-        {
-            UpdateAnimatedBack();
-
-            if (accelerateStage && dmState != 4)
-            {
-                accelerateStage = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (Options.Players[i].InGame)
-                    {
-                        for (var j = 0; j < Player.MaxPlayerCount; j++)
-                        {
-                            if (Options.Players[j].InGame)
-                            {
-                                DeathmatchFrags[i][j] = scores[i].Frags[j];
-                            }
-                        }
-
-                        DeathmatchTotals[i] = GetFragSum(i);
-                    }
-                }
-
-                StartSound(Sfx.BAREXP);
-
-                dmState = 4;
-            }
-
-            if (dmState == 2)
-            {
-                if ((bgCount & 3) == 0)
-                {
-                    StartSound(Sfx.PISTOL);
-                }
-
-                var stillticking = false;
-
-                for (var i = 0; i < Player.MaxPlayerCount; i++)
-                {
-                    if (!Options.Players[i].InGame) continue;
-                    for (var j = 0; j < Player.MaxPlayerCount; j++)
-                    {
-                        if (!Options.Players[j].InGame || DeathmatchFrags[i][j] == scores[i].Frags[j]) continue;
-                        if (scores[i].Frags[j] < 0)
-                        {
-                            DeathmatchFrags[i][j]--;
-                        }
-                        else
-                        {
-                            DeathmatchFrags[i][j]++;
-                        }
-
-                        if (DeathmatchFrags[i][j] > 99)
-                        {
-                            DeathmatchFrags[i][j] = 99;
-                        }
-
-                        if (DeathmatchFrags[i][j] < -99)
-                        {
-                            DeathmatchFrags[i][j] = -99;
-                        }
-
-                        stillticking = true;
                     }
 
                     DeathmatchTotals[i] = GetFragSum(i);
-
-                    if (DeathmatchTotals[i] > 99)
-                    {
-                        DeathmatchTotals[i] = 99;
-                    }
-
-                    if (DeathmatchTotals[i] < -99)
-                    {
-                        DeathmatchTotals[i] = -99;
-                    }
-
-                }
-
-                if (!stillticking)
-                {
-                    StartSound(Sfx.BAREXP);
-                    dmState++;
-                }
-
-            }
-            else if (dmState == 4)
-            {
-                if (accelerateStage)
-                {
-                    StartSound(Sfx.SLOP);
-
-                    if (Options.GameMode == GameMode.Commercial)
-                    {
-                        InitNoState();
-                    }
-                    else
-                    {
-                        InitShowNextLoc();
-                    }
                 }
             }
-            else if ((dmState & 1) != 0)
-            {
-                if (--pauseCount == 0)
-                {
-                    dmState++;
-                    pauseCount = GameConst.TicRate;
-                }
-            }
+
+            StartSound(Sfx.BAREXP);
+
+            dmState = 4;
         }
 
-
-        private void UpdateShowNextLoc()
+        if (dmState == 2)
         {
-            UpdateAnimatedBack();
-
-            if (--count == 0 || accelerateStage)
+            if ((bgCount & 3) == 0)
             {
-                InitNoState();
-            }
-            else
-            {
-                ShowYouAreHere = (count & 31) < 20;
-            }
-        }
-
-
-        private void UpdateNoState()
-        {
-
-            UpdateAnimatedBack();
-
-            if (--count == 0)
-            {
-                completed = true;
-            }
-        }
-
-
-        private void UpdateAnimatedBack()
-        {
-            if (Options.GameMode == GameMode.Commercial)
-            {
-                return;
+                StartSound(Sfx.PISTOL);
             }
 
-            if (Info.Episode > 2)
-            {
-                return;
-            }
-
-            foreach (var a in Animations)
-            {
-                a.Update(bgCount);
-            }
-        }
-
-
-
-        ////////////////////////////////////////////////////////////
-        // Check for button press
-        ////////////////////////////////////////////////////////////
-
-        private void CheckForAccelerate()
-        {
-            // Check for button presses to skip delays.
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
-                var player = Options.Players[i];
-                if (player.InGame)
-                {
-                    if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
-                    {
-                        if (!player.AttackDown)
-                        {
-                            accelerateStage = true;
-                        }
-                        player.AttackDown = true;
-                    }
-                    else
-                    {
-                        player.AttackDown = false;
-                    }
-
-                    if ((player.Cmd.Buttons & TicCmdButtons.Use) != 0)
-                    {
-                        if (!player.UseDown)
-                        {
-                            accelerateStage = true;
-                        }
-                        player.UseDown = true;
-                    }
-                    else
-                    {
-                        player.UseDown = false;
-                    }
-                }
-            }
-        }
-
-
-
-        ////////////////////////////////////////////////////////////
-        // Miscellaneous functions
-        ////////////////////////////////////////////////////////////
-
-        private int GetFragSum(int playerNumber)
-        {
-            var frags = 0;
+            var stillticking = false;
 
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (Options.Players[i].InGame && i != playerNumber)
+                if (!Options.Players[i].InGame) continue;
+                for (var j = 0; j < Player.MaxPlayerCount; j++)
                 {
-                    frags += scores[playerNumber].Frags[i];
+                    if (!Options.Players[j].InGame || DeathmatchFrags[i][j] == scores[i].Frags[j]) continue;
+                    if (scores[i].Frags[j] < 0)
+                    {
+                        DeathmatchFrags[i][j]--;
+                    }
+                    else
+                    {
+                        DeathmatchFrags[i][j]++;
+                    }
+
+                    if (DeathmatchFrags[i][j] > 99)
+                    {
+                        DeathmatchFrags[i][j] = 99;
+                    }
+
+                    if (DeathmatchFrags[i][j] < -99)
+                    {
+                        DeathmatchFrags[i][j] = -99;
+                    }
+
+                    stillticking = true;
+                }
+
+                DeathmatchTotals[i] = GetFragSum(i);
+
+                if (DeathmatchTotals[i] > 99)
+                {
+                    DeathmatchTotals[i] = 99;
+                }
+
+                if (DeathmatchTotals[i] < -99)
+                {
+                    DeathmatchTotals[i] = -99;
                 }
             }
 
-            frags -= scores[playerNumber].Frags[playerNumber];
-
-            return frags;
+            if (!stillticking)
+            {
+                StartSound(Sfx.BAREXP);
+                dmState++;
+            }
         }
-
-
-        private void StartSound(Sfx sfx)
+        else if (dmState == 4)
         {
-            Options.Sound.StartSound(sfx);
+            if (accelerateStage)
+            {
+                StartSound(Sfx.SLOP);
+
+                if (Options.GameMode == GameMode.Commercial)
+                {
+                    InitNoState();
+                }
+                else
+                {
+                    InitShowNextLoc();
+                }
+            }
+        }
+        else if ((dmState & 1) != 0)
+        {
+            if (--pauseCount == 0)
+            {
+                dmState++;
+                pauseCount = GameConst.TicRate;
+            }
+        }
+    }
+
+    private void UpdateShowNextLoc()
+    {
+        UpdateAnimatedBack();
+
+        if (--count == 0 || accelerateStage)
+        {
+            InitNoState();
+        }
+        else
+        {
+            ShowYouAreHere = (count & 31) < 20;
+        }
+    }
+
+    private void UpdateNoState()
+    {
+        UpdateAnimatedBack();
+
+        if (--count == 0)
+        {
+            completed = true;
+        }
+    }
+
+    private void UpdateAnimatedBack()
+    {
+        if (Options.GameMode == GameMode.Commercial)
+        {
+            return;
         }
 
+        if (Info.Episode > 2)
+        {
+            return;
+        }
 
-        
-        public GameOptions Options { get; }
+        foreach (var a in Animations)
+        {
+            a.Update(bgCount);
+        }
+    }
 
-        public IntermissionInfo Info { get; }
+    ////////////////////////////////////////////////////////////
+    // Check for button press
+    ////////////////////////////////////////////////////////////
 
-        public IntermissionState State { get; private set; }
+    private void CheckForAccelerate()
+    {
+        // Check for button presses to skip delays.
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            var player = Options.Players[i];
+            if (player.InGame)
+            {
+                if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
+                {
+                    if (!player.AttackDown)
+                    {
+                        accelerateStage = true;
+                    }
 
-        public IReadOnlyList<int> KillCount => killCount;
-        public IReadOnlyList<int> ItemCount => itemCount;
-        public IReadOnlyList<int> SecretCount => secretCount;
-        public IReadOnlyList<int> FragCount => fragCount;
-        public int TimeCount { get; private set; }
+                    player.AttackDown = true;
+                }
+                else
+                {
+                    player.AttackDown = false;
+                }
 
-        public int ParCount { get; private set; }
+                if ((player.Cmd.Buttons & TicCmdButtons.Use) != 0)
+                {
+                    if (!player.UseDown)
+                    {
+                        accelerateStage = true;
+                    }
 
-        public int[][] DeathmatchFrags { get; }
+                    player.UseDown = true;
+                }
+                else
+                {
+                    player.UseDown = false;
+                }
+            }
+        }
+    }
 
-        public int[] DeathmatchTotals { get; }
+    ////////////////////////////////////////////////////////////
+    // Miscellaneous functions
+    ////////////////////////////////////////////////////////////
 
-        public bool DoFrags { get; private set; }
+    private int GetFragSum(int playerNumber)
+    {
+        var frags = 0;
 
-        public DoomRandom Random { get; private set; }
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            if (Options.Players[i].InGame && i != playerNumber)
+            {
+                frags += scores[playerNumber].Frags[i];
+            }
+        }
 
-        public Animation[] Animations { get; private set; }
+        frags -= scores[playerNumber].Frags[playerNumber];
 
-        public bool ShowYouAreHere { get; private set; }
+        return frags;
+    }
+
+    private void StartSound(Sfx sfx)
+    {
+        Options.Sound.StartSound(sfx);
     }
 }
