@@ -31,6 +31,7 @@ public sealed class ConfigValues
     public int video_gamescreensize { get; set; }
     public int video_gammacorrection { get; set; }
     public int video_fpsscale { get; set; }
+    public bool video_vsync { get; set; }
 
     public int audio_soundvolume { get; set; }
     public int audio_musicvolume { get; set; }
@@ -43,7 +44,7 @@ public sealed class ConfigValues
     public static ConfigValues CreateDefaults()
     {
         DoomMouseButton[] emptyMouseButtons = [];
-        
+
         var configValues = new ConfigValues
         {
             key_forward = new KeyBinding([DoomKey.Up, DoomKey.W], emptyMouseButtons),
@@ -67,6 +68,7 @@ public sealed class ConfigValues
             video_displaymessage = true,
             video_gammacorrection = 2,
             video_fpsscale = 2,
+            video_vsync = false,
             audio_soundvolume = 8,
             audio_musicvolume = 8,
             audio_randompitch = true,

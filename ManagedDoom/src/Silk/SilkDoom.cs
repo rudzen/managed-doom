@@ -59,7 +59,7 @@ namespace ManagedDoom.Silk
                 var windowOptions = WindowOptions.Default;
                 windowOptions.Size = new Vector2D<int>(config.Values.video_screenwidth, config.Values.video_screenheight);
                 windowOptions.Title = ApplicationInfo.Title;
-                windowOptions.VSync = true;
+                windowOptions.VSync = config.Values.video_vsync;
                 windowOptions.WindowState = config.Values.video_fullscreen ? WindowState.Fullscreen : WindowState.Normal;
 
                 window = Window.Create(windowOptions);
