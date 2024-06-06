@@ -20,46 +20,17 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.Map;
 
-// TODO (rudzen) : convert to record
-public sealed class Seg
+public sealed record Seg(
+    Vertex Vertex1,
+    Vertex Vertex2,
+    Fixed Offset,
+    Angle Angle,
+    SideDef SideDef,
+    LineDef LineDef,
+    Sector FrontSector,
+    Sector BackSector)
 {
     private const int dataSize = 12;
-
-    public Seg(
-        Vertex vertex1,
-        Vertex vertex2,
-        Fixed offset,
-        Angle angle,
-        SideDef sideDef,
-        LineDef lineDef,
-        Sector frontSector,
-        Sector backSector)
-    {
-        this.Vertex1 = vertex1;
-        this.Vertex2 = vertex2;
-        this.Offset = offset;
-        this.Angle = angle;
-        this.SideDef = sideDef;
-        this.LineDef = lineDef;
-        this.FrontSector = frontSector;
-        this.BackSector = backSector;
-    }
-
-    public Vertex Vertex1 { get; }
-
-    public Vertex Vertex2 { get; }
-
-    public Fixed Offset { get; }
-
-    public Angle Angle { get; }
-
-    public SideDef SideDef { get; }
-
-    public LineDef LineDef { get; }
-
-    public Sector FrontSector { get; }
-
-    public Sector BackSector { get; }
 
     private static Seg FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<LineDef> lines)
     {

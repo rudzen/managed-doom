@@ -19,24 +19,9 @@ using System.Buffers;
 
 namespace ManagedDoom.Doom.Map;
 
-//TODO (rudzen) : convert to record
-public sealed class Subsector
+public sealed record Subsector(Sector Sector, int SegCount, int FirstSeg)
 {
     private const int dataSize = 4;
-
-    private Subsector(Sector sector, int segCount, int firstSeg)
-    {
-        this.Sector = sector;
-        this.SegCount = segCount;
-        this.FirstSeg = firstSeg;
-    }
-
-
-    public Sector Sector { get; }
-
-    public int SegCount { get; }
-
-    public int FirstSeg { get; }
 
     private static Subsector FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Seg> segments)
     {
