@@ -14,13 +14,12 @@
 //
 
 
-namespace ManagedDoom.Doom.Event
+namespace ManagedDoom.Doom.Event;
+
+public enum EventType
 {
-    public enum EventType
-    {
-        KeyDown,
-        KeyUp,
-        Mouse,
-        Joystick
-    }
+    KeyDown,
+    KeyUp,
+    Mouse,
+    Joystick
 }
