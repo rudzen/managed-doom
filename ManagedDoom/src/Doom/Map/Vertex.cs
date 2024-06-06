@@ -18,57 +18,56 @@ using System;
 using System.Buffers;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+// TODO (rudzen) : convert to record
+public sealed class Vertex
 {
-    public sealed class Vertex
+    private const int dataSize = 4;
+
+    public Vertex(Fixed x, Fixed y)
     {
-        private const int dataSize = 4;
+        this.X = x;
+        this.Y = y;
+    }
 
-        public Vertex(Fixed x, Fixed y)
+    public Fixed X { get; }
+    public Fixed Y { get; }
+
+    private static Vertex FromData(ReadOnlySpan<byte> data)
+    {
+        var x = BitConverter.ToInt16(data);
+        var y = BitConverter.ToInt16(data.Slice(2, 2));
+
+        return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
+    }
+
+    public static Vertex[] FromWad(Wad.Wad wad, int lump)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            this.X = x;
-            this.Y = y;
-        }
+            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, lumpBuffer);
+            var count = lumpSize / dataSize;
+            var vertices = new Vertex[count];
 
-        private static Vertex FromData(ReadOnlySpan<byte> data)
-        {
-            var x = BitConverter.ToInt16(data);
-            var y = BitConverter.ToInt16(data.Slice(2, 2));
-
-            return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
-        }
-
-        public static Vertex[] FromWad(Wad.Wad wad, int lump)
-        {
-            var lumpSize = wad.GetLumpSize(lump);
-            if (lumpSize % dataSize != 0)
-                throw new Exception();
-
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
+            for (var i = 0; i < count; i++)
             {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, lumpBuffer);
-                var count = lumpSize / dataSize;
-                var vertices = new Vertex[count];
-
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = dataSize * i;
-                    vertices[i] = FromData(lumpBuffer[offset..]);
-                }
-
-                return vertices;
+                var offset = dataSize * i;
+                vertices[i] = FromData(lumpBuffer[offset..]);
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
+
+            return vertices;
         }
-
-        public Fixed X { get; }
-
-        public Fixed Y { get; }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(lumpData);
+        }
     }
 }

@@ -18,100 +18,100 @@ using System;
 using System.Buffers;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+// TODO (rudzen) : convert to record
+public sealed class Seg
 {
-    public sealed class Seg
+    private const int dataSize = 12;
+
+    public Seg(
+        Vertex vertex1,
+        Vertex vertex2,
+        Fixed offset,
+        Angle angle,
+        SideDef sideDef,
+        LineDef lineDef,
+        Sector frontSector,
+        Sector backSector)
     {
-        private const int dataSize = 12;
+        this.Vertex1 = vertex1;
+        this.Vertex2 = vertex2;
+        this.Offset = offset;
+        this.Angle = angle;
+        this.SideDef = sideDef;
+        this.LineDef = lineDef;
+        this.FrontSector = frontSector;
+        this.BackSector = backSector;
+    }
 
-        public Seg(
-            Vertex vertex1,
-            Vertex vertex2,
-            Fixed offset,
-            Angle angle,
-            SideDef sideDef,
-            LineDef lineDef,
-            Sector frontSector,
-            Sector backSector)
+    public Vertex Vertex1 { get; }
+
+    public Vertex Vertex2 { get; }
+
+    public Fixed Offset { get; }
+
+    public Angle Angle { get; }
+
+    public SideDef SideDef { get; }
+
+    public LineDef LineDef { get; }
+
+    public Sector FrontSector { get; }
+
+    public Sector BackSector { get; }
+
+    private static Seg FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<LineDef> lines)
+    {
+        var vertex1Number = BitConverter.ToInt16(data[..2]);
+        var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
+        var angle = BitConverter.ToInt16(data.Slice(4, 2));
+        var lineNumber = BitConverter.ToInt16(data.Slice(6, 2));
+        var side = BitConverter.ToInt16(data.Slice(8, 2));
+        var segOffset = BitConverter.ToInt16(data.Slice(10, 2));
+
+        var lineDef = lines[lineNumber];
+        var frontSide = side == 0 ? lineDef.FrontSide : lineDef.BackSide;
+        var backSide = side == 0 ? lineDef.BackSide : lineDef.FrontSide;
+
+        return new Seg(
+            vertices[vertex1Number],
+            vertices[vertex2Number],
+            Fixed.FromInt(segOffset),
+            new Angle((uint)angle << 16),
+            frontSide,
+            lineDef,
+            frontSide.Sector,
+            (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
+    }
+
+    public static Seg[] FromWad(Wad.Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            this.Vertex1 = vertex1;
-            this.Vertex2 = vertex2;
-            this.Offset = offset;
-            this.Angle = angle;
-            this.SideDef = sideDef;
-            this.LineDef = lineDef;
-            this.FrontSector = frontSector;
-            this.BackSector = backSector;
-        }
+            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, lumpBuffer);
 
-        private static Seg FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<LineDef> lines)
-        {
-            var vertex1Number = BitConverter.ToInt16(data[..2]);
-            var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
-            var angle = BitConverter.ToInt16(data.Slice(4, 2));
-            var lineNumber = BitConverter.ToInt16(data.Slice(6, 2));
-            var side = BitConverter.ToInt16(data.Slice(8, 2));
-            var segOffset = BitConverter.ToInt16(data.Slice(10, 2));
+            var count = lumpSize / dataSize;
+            var segments = new Seg[count];
 
-            var lineDef = lines[lineNumber];
-            var frontSide = side == 0 ? lineDef.FrontSide : lineDef.BackSide;
-            var backSide = side == 0 ? lineDef.BackSide : lineDef.FrontSide;
-
-            return new Seg(
-                vertices[vertex1Number],
-                vertices[vertex2Number],
-                Fixed.FromInt(segOffset),
-                new Angle((uint)angle << 16),
-                frontSide,
-                lineDef,
-                frontSide.Sector,
-                (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
-        }
-
-        public static Seg[] FromWad(Wad.Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
-        {
-            var lumpSize = wad.GetLumpSize(lump);
-            if (lumpSize % dataSize != 0)
-                throw new Exception();
-
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
+            for (var i = 0; i < count; i++)
             {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, lumpBuffer);
-
-                var count = lumpSize / dataSize;
-                var segments = new Seg[count];
-
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = dataSize * i;
-                    segments[i] = FromData(lumpBuffer.Slice(offset, dataSize), vertices, lines);
-                }
-
-                return segments;
+                var offset = dataSize * i;
+                segments[i] = FromData(lumpBuffer.Slice(offset, dataSize), vertices, lines);
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
+
+            return segments;
         }
-
-        public Vertex Vertex1 { get; }
-
-        public Vertex Vertex2 { get; }
-
-        public Fixed Offset { get; }
-
-        public Angle Angle { get; }
-
-        public SideDef SideDef { get; }
-
-        public LineDef LineDef { get; }
-
-        public Sector FrontSector { get; }
-
-        public Sector BackSector { get; }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(lumpData);
+        }
     }
 }

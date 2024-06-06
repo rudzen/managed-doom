@@ -20,149 +20,143 @@ using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public sealed class BlockMap
 {
-    public sealed class BlockMap
+    private const int IntBlockSize = 128;
+    public static readonly Fixed BlockSize = Fixed.FromInt(IntBlockSize);
+    public static readonly int BlockMask = BlockSize.Data - 1;
+    public const int FracToBlockShift = Fixed.FracBits + 7;
+    public const int BlockToFracShift = FracToBlockShift - Fixed.FracBits;
+
+    private readonly short[] table;
+
+    private readonly LineDef[] lines;
+
+    private BlockMap(
+        Fixed originX,
+        Fixed originY,
+        int width,
+        int height,
+        short[] table,
+        LineDef[] lines)
     {
-        private const int IntBlockSize = 128;
-        public static readonly Fixed BlockSize = Fixed.FromInt(IntBlockSize);
-        public static readonly int BlockMask = BlockSize.Data - 1;
-        public const int FracToBlockShift = Fixed.FracBits + 7;
-        public const int BlockToFracShift = FracToBlockShift - Fixed.FracBits;
+        this.OriginX = originX;
+        this.OriginY = originY;
+        this.Width = width;
+        this.Height = height;
+        this.table = table;
+        this.lines = lines;
 
-        private readonly short[] table;
+        ThingLists = new Mobj[width * height];
+    }
 
-        private readonly LineDef[] lines;
+    public Fixed OriginX { get; }
+    public Fixed OriginY { get; }
+    public int Width { get; }
+    public int Height { get; }
+    public Mobj[] ThingLists { get; }
 
-        private BlockMap(
-            Fixed originX,
-            Fixed originY,
-            int width,
-            int height,
-            short[] table,
-            LineDef[] lines)
+    public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            this.OriginX = originX;
-            this.OriginY = originY;
-            this.Width = width;
-            this.Height = height;
-            this.table = table;
-            this.lines = lines;
+            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, lumpBuffer);
 
-            ThingLists = new Mobj[width * height];
-        }
-
-        public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
-        {
-            var lumpSize = wad.GetLumpSize(lump);
-
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
+            var table = new short[lumpSize / 2];
+            for (var i = 0; i < table.Length; i++)
             {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, lumpBuffer);
-
-                var table = new short[lumpSize / 2];
-                for (var i = 0; i < table.Length; i++)
-                {
-                    var offset = 2 * i;
-                    table[i] = BitConverter.ToInt16(lumpBuffer.Slice(offset, 2));
-                }
-
-                var originX = Fixed.FromInt(table[0]);
-                var originY = Fixed.FromInt(table[1]);
-                var width = table[2];
-                var height = table[3];
-
-                return new BlockMap(
-                    originX,
-                    originY,
-                    width,
-                    height,
-                    table,
-                    lines);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetBlockX(Fixed x)
-        {
-            return (x - OriginX).Data >> FracToBlockShift;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetBlockY(Fixed y)
-        {
-            return (y - OriginY).Data >> FracToBlockShift;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetIndex(int blockX, int blockY)
-        {
-            if (0 <= blockX && blockX < Width && 0 <= blockY && blockY < Height)
-                return Width * blockY + blockX;
-
-            return -1;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetIndex(Fixed x, Fixed y)
-        {
-            var blockX = GetBlockX(x);
-            var blockY = GetBlockY(y);
-            return GetIndex(blockX, blockY);
-        }
-
-        public bool IterateLines(int blockX, int blockY, Func<LineDef, bool> func, int validCount)
-        {
-            var index = GetIndex(blockX, blockY);
-
-            if (index == -1)
-                return true;
-
-            for (var offset = table[4 + index]; table[offset] != -1; offset++)
-            {
-                var line = lines[table[offset]];
-
-                if (line.ValidCount == validCount)
-                    continue;
-
-                line.ValidCount = validCount;
-
-                if (!func(line))
-                    return false;
+                var offset = 2 * i;
+                table[i] = BitConverter.ToInt16(lumpBuffer.Slice(offset, 2));
             }
 
+            var originX = Fixed.FromInt(table[0]);
+            var originY = Fixed.FromInt(table[1]);
+            var width = table[2];
+            var height = table[3];
+
+            return new BlockMap(
+                originX,
+                originY,
+                width,
+                height,
+                table,
+                lines);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(lumpData);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetBlockX(Fixed x)
+    {
+        return (x - OriginX).Data >> FracToBlockShift;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetBlockY(Fixed y)
+    {
+        return (y - OriginY).Data >> FracToBlockShift;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetIndex(int blockX, int blockY)
+    {
+        if (0 <= blockX && blockX < Width && 0 <= blockY && blockY < Height)
+            return Width * blockY + blockX;
+
+        return -1;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetIndex(Fixed x, Fixed y)
+    {
+        var blockX = GetBlockX(x);
+        var blockY = GetBlockY(y);
+        return GetIndex(blockX, blockY);
+    }
+
+    public bool IterateLines(int blockX, int blockY, Func<LineDef, bool> func, int validCount)
+    {
+        var index = GetIndex(blockX, blockY);
+
+        if (index == -1)
             return true;
-        }
 
-        public bool IterateThings(int blockX, int blockY, Func<Mobj, bool> func)
+        for (var offset = table[4 + index]; table[offset] != -1; offset++)
         {
-            var index = GetIndex(blockX, blockY);
+            var line = lines[table[offset]];
 
-            if (index == -1)
-                return true;
+            if (line.ValidCount == validCount)
+                continue;
 
-            for (var mobj = ThingLists[index]; mobj != null; mobj = mobj.BlockNext)
-                if (!func(mobj))
-                    return false;
+            line.ValidCount = validCount;
 
-            return true;
+            if (!func(line))
+                return false;
         }
 
-        public Fixed OriginX { get; }
+        return true;
+    }
 
-        public Fixed OriginY { get; }
+    public bool IterateThings(int blockX, int blockY, Func<Mobj, bool> func)
+    {
+        var index = GetIndex(blockX, blockY);
 
-        public int Width { get; }
+        if (index == -1)
+            return true;
 
-        public int Height { get; }
+        for (var mobj = ThingLists[index]; mobj != null; mobj = mobj.BlockNext)
+            if (!func(mobj))
+                return false;
 
-        public Mobj[] ThingLists { get; }
+        return true;
     }
 }

@@ -17,65 +17,65 @@
 using System;
 using System.Buffers;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+//TODO (rudzen) : convert to record
+public sealed class Subsector
 {
-    public sealed class Subsector
+    private const int dataSize = 4;
+
+    private Subsector(Sector sector, int segCount, int firstSeg)
     {
-        private const int dataSize = 4;
+        this.Sector = sector;
+        this.SegCount = segCount;
+        this.FirstSeg = firstSeg;
+    }
 
-        private Subsector(Sector sector, int segCount, int firstSeg)
+
+    public Sector Sector { get; }
+
+    public int SegCount { get; }
+
+    public int FirstSeg { get; }
+
+    private static Subsector FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Seg> segments)
+    {
+        var segCount = BitConverter.ToInt16(data[..2]);
+        var firstSegNumber = BitConverter.ToInt16(data.Slice(2, 2));
+
+        return new Subsector(
+            segments[firstSegNumber].SideDef.Sector,
+            segCount,
+            firstSegNumber);
+    }
+
+    public static Subsector[] FromWad(Wad.Wad wad, int lump, Seg[] segs)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            this.Sector = sector;
-            this.SegCount = segCount;
-            this.FirstSeg = firstSeg;
-        }
+            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, lumpBuffer);
 
-        private static Subsector FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Seg> segments)
-        {
-            var segCount = BitConverter.ToInt16(data[..2]);
-            var firstSegNumber = BitConverter.ToInt16(data.Slice(2, 2));
+            var count = lumpSize / dataSize;
+            var subsectors = new Subsector[count];
 
-            return new Subsector(
-                segments[firstSegNumber].SideDef.Sector,
-                segCount,
-                firstSegNumber);
-        }
-
-        public static Subsector[] FromWad(Wad.Wad wad, int lump, Seg[] segs)
-        {
-            var lumpSize = wad.GetLumpSize(lump);
-            if (lumpSize % dataSize != 0)
-                throw new Exception();
-
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-            
-            try
+            for (var i = 0; i < count; i++)
             {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, lumpBuffer);
-                
-                var count = lumpSize / dataSize;
-                var subsectors = new Subsector[count];
-
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = dataSize * i;
-                    subsectors[i] = FromData(lumpBuffer.Slice(offset, dataSize), segs);
-                }
-
-                return subsectors;
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
+                var offset = dataSize * i;
+                subsectors[i] = FromData(lumpBuffer.Slice(offset, dataSize), segs);
             }
 
+            return subsectors;
         }
-
-        public Sector Sector { get; }
-
-        public int SegCount { get; }
-
-        public int FirstSeg { get; }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(lumpData);
+        }
     }
 }

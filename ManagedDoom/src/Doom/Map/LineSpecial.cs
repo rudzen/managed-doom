@@ -14,10 +14,9 @@
 //
 
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public enum LineSpecial
 {
-    public enum LineSpecial
-    {
-        Normal = 0
-    }
+    Normal = 0
 }

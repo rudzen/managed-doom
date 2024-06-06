@@ -14,13 +14,12 @@
 //
 
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public enum SlopeType
 {
-    public enum SlopeType
-    {
-        Horizontal,
-        Vertical,
-        Positive,
-        Negative
-    }
+    Horizontal,
+    Vertical,
+    Positive,
+    Negative
 }

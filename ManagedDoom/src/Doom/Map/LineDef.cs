@@ -19,143 +19,120 @@ using System.Buffers;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public sealed class LineDef
 {
-    public sealed class LineDef
+    private const int dataSize = 14;
+
+    public LineDef(
+        Vertex vertex1,
+        Vertex vertex2,
+        LineFlags flags,
+        LineSpecial special,
+        short tag,
+        SideDef frontSide,
+        SideDef backSide)
     {
-        private const int dataSize = 14;
+        this.Vertex1 = vertex1;
+        this.Vertex2 = vertex2;
+        this.Flags = flags;
+        this.Special = special;
+        this.Tag = tag;
+        this.FrontSide = frontSide;
+        this.BackSide = backSide;
 
-        public LineDef(
-            Vertex vertex1,
-            Vertex vertex2,
-            LineFlags flags,
-            LineSpecial special,
-            short tag,
-            SideDef frontSide,
-            SideDef backSide)
+        Dx = vertex2.X - vertex1.X;
+        Dy = vertex2.Y - vertex1.Y;
+
+        if (Dx == Fixed.Zero)
         {
-            this.Vertex1 = vertex1;
-            this.Vertex2 = vertex2;
-            this.Flags = flags;
-            this.Special = special;
-            this.Tag = tag;
-            this.FrontSide = frontSide;
-            this.BackSide = backSide;
-
-            Dx = vertex2.X - vertex1.X;
-            Dy = vertex2.Y - vertex1.Y;
-
-            if (Dx == Fixed.Zero)
-            {
-                SlopeType = SlopeType.Vertical;
-            }
-            else if (Dy == Fixed.Zero)
-            {
-                SlopeType = SlopeType.Horizontal;
-            }
-            else
-            {
-                if (Dy / Dx > Fixed.Zero)
-                {
-                    SlopeType = SlopeType.Positive;
-                }
-                else
-                {
-                    SlopeType = SlopeType.Negative;
-                }
-            }
-
-            BoundingBox = new Fixed[4];
-            BoundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
-            BoundingBox[Box.Bottom] = Fixed.Min(vertex1.Y, vertex2.Y);
-            BoundingBox[Box.Left] = Fixed.Min(vertex1.X, vertex2.X);
-            BoundingBox[Box.Right] = Fixed.Max(vertex1.X, vertex2.X);
-
-            FrontSector = frontSide?.Sector;
-            BackSector = backSide?.Sector;
+            SlopeType = SlopeType.Vertical;
+        }
+        else if (Dy == Fixed.Zero)
+        {
+            SlopeType = SlopeType.Horizontal;
+        }
+        else
+        {
+            SlopeType = Dy / Dx > Fixed.Zero ? SlopeType.Positive : SlopeType.Negative;
         }
 
-        private static LineDef FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
+        BoundingBox = new Fixed[4];
+        BoundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
+        BoundingBox[Box.Bottom] = Fixed.Min(vertex1.Y, vertex2.Y);
+        BoundingBox[Box.Left] = Fixed.Min(vertex1.X, vertex2.X);
+        BoundingBox[Box.Right] = Fixed.Max(vertex1.X, vertex2.X);
+
+        FrontSector = frontSide?.Sector;
+        BackSector = backSide?.Sector;
+    }
+
+    public Vertex Vertex1 { get; }
+    public Vertex Vertex2 { get; }
+    public Fixed Dx { get; }
+    public Fixed Dy { get; }
+    public LineFlags Flags { get; set; }
+    public LineSpecial Special { get; set; }
+    public short Tag { get; set; }
+    public SideDef FrontSide { get; }
+    public SideDef BackSide { get; }
+    public Fixed[] BoundingBox { get; }
+    public SlopeType SlopeType { get; }
+    public Sector FrontSector { get; }
+    public Sector BackSector { get; }
+    public int ValidCount { get; set; }
+    public Thinker SpecialData { get; set; }
+    public Mobj SoundOrigin { get; set; }
+
+    private static LineDef FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
+    {
+        var vertex1Number = BitConverter.ToInt16(data[..2]);
+        var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
+        var flags = BitConverter.ToInt16(data.Slice(4, 2));
+        var special = BitConverter.ToInt16(data.Slice(6, 2));
+        var tag = BitConverter.ToInt16(data.Slice(8, 2));
+        var side0Number = BitConverter.ToInt16(data.Slice(10, 2));
+        var side1Number = BitConverter.ToInt16(data.Slice(12, 2));
+
+        return new LineDef(
+            vertices[vertex1Number],
+            vertices[vertex2Number],
+            (LineFlags)flags,
+            (LineSpecial)special,
+            tag,
+            sides[side0Number],
+            side1Number != -1 ? sides[side1Number] : null);
+    }
+
+    public static LineDef[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            var vertex1Number = BitConverter.ToInt16(data[..2]);
-            var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
-            var flags = BitConverter.ToInt16(data.Slice(4, 2));
-            var special = BitConverter.ToInt16(data.Slice(6, 2));
-            var tag = BitConverter.ToInt16(data.Slice(8, 2));
-            var side0Number = BitConverter.ToInt16(data.Slice(10, 2));
-            var side1Number = BitConverter.ToInt16(data.Slice(12, 2));
+            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, lumpBuffer);
 
-            return new LineDef(
-                vertices[vertex1Number],
-                vertices[vertex2Number],
-                (LineFlags)flags,
-                (LineSpecial)special,
-                tag,
-                sides[side0Number],
-                side1Number != -1 ? sides[side1Number] : null);
+            var count = lumpSize / dataSize;
+            var lines = new LineDef[count];
+            ;
+
+            for (var i = 0; i < count; i++)
+            {
+                var offset = 14 * i;
+                lines[i] = FromData(lumpBuffer[offset..], vertices, sides);
+            }
+
+            return lines;
         }
-
-        public static LineDef[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
+        finally
         {
-            var lumpSize = wad.GetLumpSize(lump);
-            if (lumpSize % dataSize != 0)
-                throw new Exception();
-
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
-            {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, lumpBuffer);
-
-                var count = lumpSize / dataSize;
-                var lines = new LineDef[count]; ;
-
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = 14 * i;
-                    lines[i] = FromData(lumpBuffer[offset..], vertices, sides);
-                }
-
-                return lines;
-
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
+            ArrayPool<byte>.Shared.Return(lumpData);
         }
-
-        public Vertex Vertex1 { get; }
-
-        public Vertex Vertex2 { get; }
-
-        public Fixed Dx { get; }
-
-        public Fixed Dy { get; }
-
-        public LineFlags Flags { get; set; }
-
-        public LineSpecial Special { get; set; }
-
-        public short Tag { get; set; }
-
-        public SideDef FrontSide { get; }
-
-        public SideDef BackSide { get; }
-
-        public Fixed[] BoundingBox { get; }
-
-        public SlopeType SlopeType { get; }
-
-        public Sector FrontSector { get; }
-
-        public Sector BackSector { get; }
-
-        public int ValidCount { get; set; }
-
-        public Thinker SpecialData { get; set; }
-
-        public Mobj SoundOrigin { get; set; }
     }
 }

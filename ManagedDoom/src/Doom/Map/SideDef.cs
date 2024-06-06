@@ -20,86 +20,86 @@ using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public sealed class SideDef
 {
-    public sealed class SideDef
+    private const int dataSize = 30;
+
+    public SideDef(
+        Fixed textureOffset,
+        Fixed rowOffset,
+        int topTexture,
+        int bottomTexture,
+        int middleTexture,
+        Sector sector)
     {
-        private static readonly int dataSize = 30;
+        this.TextureOffset = textureOffset;
+        this.RowOffset = rowOffset;
+        this.TopTexture = topTexture;
+        this.BottomTexture = bottomTexture;
+        this.MiddleTexture = middleTexture;
+        this.Sector = sector;
+    }
 
-        public SideDef(
-            Fixed textureOffset,
-            Fixed rowOffset,
-            int topTexture,
-            int bottomTexture,
-            int middleTexture,
-            Sector sector)
+
+    public Fixed TextureOffset { get; set; }
+
+    public Fixed RowOffset { get; set; }
+
+    public int TopTexture { get; set; }
+
+    public int BottomTexture { get; set; }
+
+    public int MiddleTexture { get; set; }
+
+    public Sector Sector { get; }
+
+    private static SideDef FromData(ReadOnlySpan<byte> data, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
+    {
+        var textureOffset = BitConverter.ToInt16(data[..2]);
+        var rowOffset = BitConverter.ToInt16(data.Slice(2, 2));
+        var topTextureName = DoomInterop.ToString(data.Slice(4, 8));
+        var bottomTextureName = DoomInterop.ToString(data.Slice(12, 8));
+        var middleTextureName = DoomInterop.ToString(data.Slice(20, 8));
+        var sectorNum = BitConverter.ToInt16(data.Slice(28, 2));
+
+        return new SideDef(
+            Fixed.FromInt(textureOffset),
+            Fixed.FromInt(rowOffset),
+            textures.GetNumber(topTextureName),
+            textures.GetNumber(bottomTextureName),
+            textures.GetNumber(middleTextureName),
+            sectorNum != -1 ? sectors[sectorNum] : null);
+    }
+
+    public static SideDef[] FromWad(Wad.Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            this.TextureOffset = textureOffset;
-            this.RowOffset = rowOffset;
-            this.TopTexture = topTexture;
-            this.BottomTexture = bottomTexture;
-            this.MiddleTexture = middleTexture;
-            this.Sector = sector;
-        }
+            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, lumpBuffer);
 
-        private static SideDef FromData(ReadOnlySpan<byte> data, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
-        {
-            var textureOffset = BitConverter.ToInt16(data[..2]);
-            var rowOffset = BitConverter.ToInt16(data.Slice(2, 2));
-            var topTextureName = DoomInterop.ToString(data.Slice(4, 8));
-            var bottomTextureName = DoomInterop.ToString(data.Slice(12, 8));
-            var middleTextureName = DoomInterop.ToString(data.Slice(20, 8));
-            var sectorNum = BitConverter.ToInt16(data.Slice(28, 2));
+            var count = lumpSize / dataSize;
+            var sides = new SideDef[count];
 
-            return new SideDef(
-                Fixed.FromInt(textureOffset),
-                Fixed.FromInt(rowOffset),
-                textures.GetNumber(topTextureName),
-                textures.GetNumber(bottomTextureName),
-                textures.GetNumber(middleTextureName),
-                sectorNum != -1 ? sectors[sectorNum] : null);
-        }
-
-        public static SideDef[] FromWad(Wad.Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
-        {
-            var lumpSize = wad.GetLumpSize(lump);
-            if (lumpSize % dataSize != 0)
-                throw new Exception();
-
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
+            for (var i = 0; i < count; i++)
             {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, lumpBuffer);
-                
-                var count = lumpSize / dataSize;
-                var sides = new SideDef[count];
-
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = dataSize * i;
-                    sides[i] = FromData(lumpBuffer[offset..], textures, sectors);
-                }
-
-                return sides;
+                var offset = dataSize * i;
+                sides[i] = FromData(lumpBuffer[offset..], textures, sectors);
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
+
+            return sides;
         }
-
-        public Fixed TextureOffset { get; set; }
-
-        public Fixed RowOffset { get; set; }
-
-        public int TopTexture { get; set; }
-
-        public int BottomTexture { get; set; }
-
-        public int MiddleTexture { get; set; }
-
-        public Sector Sector { get; }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(lumpData);
+        }
     }
 }

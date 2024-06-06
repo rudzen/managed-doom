@@ -18,87 +18,82 @@ using System;
 using System.Buffers;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public sealed class MapThing
 {
-    public sealed class MapThing
+    private const int dataSize = 10;
+
+    public static readonly MapThing Empty = new(
+        Fixed.Zero,
+        Fixed.Zero,
+        Angle.Ang0,
+        0,
+        0);
+
+    public MapThing(
+        Fixed x,
+        Fixed y,
+        Angle angle,
+        int type,
+        ThingFlags flags)
     {
-        private const int dataSize = 10;
+        this.X = x;
+        this.Y = y;
+        this.Angle = angle;
+        this.Type = type;
+        this.Flags = flags;
+    }
 
-        public static readonly MapThing Empty = new MapThing(
-            Fixed.Zero,
-            Fixed.Zero,
-            Angle.Ang0,
-            0,
-            0);
+    private static MapThing FromData(ReadOnlySpan<byte> data)
+    {
+        var x = BitConverter.ToInt16(data[..2]);
+        var y = BitConverter.ToInt16(data.Slice(2, 2));
+        var angle = BitConverter.ToInt16(data.Slice(4, 2));
+        var type = BitConverter.ToInt16(data.Slice(6, 2));
+        var flags = BitConverter.ToInt16(data.Slice(8, 2));
 
-        public MapThing(
-            Fixed x,
-            Fixed y,
-            Angle angle,
-            int type,
-            ThingFlags flags)
+        return new MapThing(
+            Fixed.FromInt(x),
+            Fixed.FromInt(y),
+            new Angle(Angle.Ang45.Data * (uint)(angle / 45)),
+            type,
+            (ThingFlags)flags);
+    }
+
+    public Fixed X { get; }
+    public Fixed Y { get; }
+    public Angle Angle { get; }
+    public int Type { get; set; }
+    public ThingFlags Flags { get; }
+
+    public static MapThing[] FromWad(Wad.Wad wad, int lump)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var buffer = ArrayPool<byte>.Shared.Rent(lumpSize);
+
+        try
         {
-            this.X = x;
-            this.Y = y;
-            this.Angle = angle;
-            this.Type = type;
-            this.Flags = flags;
-        }
+            var bufferSpan = buffer.AsSpan(0, lumpSize);
+            wad.ReadLump(lump, bufferSpan);
 
-        private static MapThing FromData(ReadOnlySpan<byte> data)
-        {
-            var x = BitConverter.ToInt16(data[..2]);
-            var y = BitConverter.ToInt16(data.Slice(2, 2));
-            var angle = BitConverter.ToInt16(data.Slice(4, 2));
-            var type = BitConverter.ToInt16(data.Slice(6, 2));
-            var flags = BitConverter.ToInt16(data.Slice(8, 2));
+            var count = lumpSize / dataSize;
+            var things = new MapThing[count];
 
-            return new MapThing(
-                Fixed.FromInt(x),
-                Fixed.FromInt(y),
-                new Angle(Angle.Ang45.Data * (uint)(angle / 45)),
-                type,
-                (ThingFlags)flags);
-        }
-
-        public static MapThing[] FromWad(Wad.Wad wad, int lump)
-        {
-            var lumpSize = wad.GetLumpSize(lump);
-            if (lumpSize % dataSize != 0)
-                throw new Exception();
-
-            var buffer = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
+            for (var i = 0; i < count; i++)
             {
-                var bufferSpan = buffer.AsSpan(0, lumpSize);
-                wad.ReadLump(lump, bufferSpan);
-
-                var count = lumpSize / dataSize;
-                var things = new MapThing[count];
-
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = dataSize * i;
-                    things[i] = FromData(bufferSpan.Slice(offset, dataSize));
-                }
-
-                return things;
+                var offset = dataSize * i;
+                things[i] = FromData(bufferSpan.Slice(offset, dataSize));
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(buffer);
-            }
+
+            return things;
         }
-
-        public Fixed X { get; }
-
-        public Fixed Y { get; }
-
-        public Angle Angle { get; }
-
-        public int Type { get; set; }
-
-        public ThingFlags Flags { get; }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 }

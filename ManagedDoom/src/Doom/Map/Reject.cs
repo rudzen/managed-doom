@@ -17,41 +17,41 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom.Doom.Map
+namespace ManagedDoom.Doom.Map;
+
+public sealed class Reject
 {
-    public sealed class Reject
+    private readonly byte[] data;
+    private readonly int sectorCount;
+
+    private Reject(byte[] data, int sectorCount)
     {
-        private readonly byte[] data;
-        private readonly int sectorCount;
+        // If the reject table is too small, expand it to avoid crash.
+        // https://doomwiki.org/wiki/Reject#Reject_Overflow
+        var expectedLength = (sectorCount * sectorCount + 7) / 8;
+        if (data.Length < expectedLength)
+            Array.Resize(ref data, expectedLength);
 
-        private Reject(byte[] data, int sectorCount)
-        {
-            // If the reject table is too small, expand it to avoid crash.
-            // https://doomwiki.org/wiki/Reject#Reject_Overflow
-            var expectedLength = (sectorCount * sectorCount + 7) / 8;
-            if (data.Length < expectedLength)
-                Array.Resize(ref data, expectedLength);
+        this.data = data;
+        this.sectorCount = sectorCount;
+    }
 
-            this.data = data;
-            this.sectorCount = sectorCount;
-        }
+    public static Reject FromWad(Wad.Wad wad, int lump, Sector[] sectors)
+    {
+        // TODO (rudzen) : add a clever way to ready this lump with auto resize of buffer
+        return new Reject(wad.ReadLump(lump), sectors.Length);
+    }
 
-        public static Reject FromWad(Wad.Wad wad, int lump, Sector[] sectors)
-        {
-            return new Reject(wad.ReadLump(lump), sectors.Length);
-        }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Check(Sector sector1, Sector sector2)
+    {
+        var s1 = sector1.Number;
+        var s2 = sector2.Number;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Check(Sector sector1, Sector sector2)
-        {
-            var s1 = sector1.Number;
-            var s2 = sector2.Number;
+        var p = s1 * sectorCount + s2;
+        var byteIndex = p >> 3;
+        var bitIndex = 1 << (p & 7);
 
-            var p = s1 * sectorCount + s2;
-            var byteIndex = p >> 3;
-            var bitIndex = 1 << (p & 7);
-
-            return (data[byteIndex] & bitIndex) != 0;
-        }
+        return (data[byteIndex] & bitIndex) != 0;
     }
 }
