@@ -20,47 +20,46 @@ using System.Runtime.CompilerServices;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Common;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class SaveSlots
 {
-    public sealed class SaveSlots
+    private const int slotCount = 6;
+    private const int descriptionSize = 24;
+
+    private string[] slots = [];
+
+
+    public string this[int number]
     {
-        private const int slotCount = 6;
-        private const int descriptionSize = 24;
-
-        private string[] slots = [];
-
-        [SkipLocalsInit]
-        private void ReadSlots()
+        get
         {
-            Array.Resize(ref slots, slotCount);
+            if (slots.Length == 0)
+                ReadSlots();
 
-            var directory = ConfigUtilities.GetExeDirectory;
-            Span<byte> buffer = stackalloc byte[descriptionSize];
-            for (var i = 0; i < slots.Length; i++)
-            {
-                var path = Path.Combine(directory, $"doomsav{i}.dsg");
-                if (File.Exists(path))
-                {
-                    using var reader = new FileStream(path, FileMode.Open, FileAccess.Read);
-                    var read = reader.Read(buffer);
-                    slots[i] = DoomInterop.ToString(buffer[..read]);
-                }
-            }
+            return slots[number];
         }
 
-        public string this[int number]
+        set => slots[number] = value;
+    }
+
+    public int Count => slots.Length;
+
+    [SkipLocalsInit]
+    private void ReadSlots()
+    {
+        Array.Resize(ref slots, slotCount);
+
+        var directory = ConfigUtilities.GetExeDirectory;
+        Span<byte> buffer = stackalloc byte[descriptionSize];
+        for (var i = 0; i < slots.Length; i++)
         {
-            get
-            {
-                if (slots.Length == 0)
-                    ReadSlots();
-
-                return slots[number];
-            }
-
-            set => slots[number] = value;
+            var path = Path.Combine(directory, $"doomsav{i}.dsg");
+            if (!File.Exists(path))
+                continue;
+            using var reader = new FileStream(path, FileMode.Open, FileAccess.Read);
+            var read = reader.Read(buffer);
+            slots[i] = DoomInterop.ToString(buffer[..read]);
         }
-
-        public int Count => slots.Length;
     }
 }

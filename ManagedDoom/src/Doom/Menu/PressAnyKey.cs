@@ -19,32 +19,31 @@ using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class PressAnyKey : MenuDef
 {
-    public sealed class PressAnyKey : MenuDef
+    private readonly string[] text;
+    private readonly Action action;
+
+    public PressAnyKey(DoomMenu menu, string text, Action action) : base(menu)
     {
-        private readonly string[] text;
-        private readonly Action action;
+        this.text = text.Split('\n');
+        this.action = action;
+    }
 
-        public PressAnyKey(DoomMenu menu, string text, Action action) : base(menu)
+    public IReadOnlyList<string> Text => text;
+
+    public override bool DoEvent(in DoomEvent e)
+    {
+        if (e.Type == EventType.KeyDown)
         {
-            this.text = text.Split('\n');
-            this.action = action;
+            action?.Invoke();
+
+            Menu.Close();
+            Menu.StartSound(Sfx.SWTCHX);
         }
 
-        public override bool DoEvent(in DoomEvent e)
-        {
-            if (e.Type == EventType.KeyDown)
-            {
-                action?.Invoke();
-
-                Menu.Close();
-                Menu.StartSound(Sfx.SWTCHX);
-            }
-
-            return true;
-        }
-
-        public IReadOnlyList<string> Text => text;
+        return true;
     }
 }

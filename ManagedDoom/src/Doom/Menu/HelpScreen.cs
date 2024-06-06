@@ -17,50 +17,49 @@
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
+using ManagedDoom.Extensions;
 using ManagedDoom.UserInput;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class HelpScreen : MenuDef
 {
-    public sealed class HelpScreen : MenuDef
+    private readonly int pageCount;
+
+    public HelpScreen(DoomMenu menu) : base(menu)
     {
-        private readonly int pageCount;
+        pageCount = (menu.Options.GameMode == GameMode.Shareware).AsByte() + 1;
+    }
 
-        public HelpScreen(DoomMenu menu) : base(menu)
+    public int Page { get; private set; }
+
+    public override void Open()
+    {
+        Page = pageCount - 1;
+    }
+
+    public override bool DoEvent(in DoomEvent e)
+    {
+        if (e.Type != EventType.KeyDown)
+            return true;
+
+        switch (e.Key)
         {
-            pageCount = menu.Options.GameMode == GameMode.Shareware ? 2 : 1;
-        }
-
-        public override void Open()
-        {
-            Page = pageCount - 1;
-        }
-
-        public override bool DoEvent(in DoomEvent e)
-        {
-            if (e.Type != EventType.KeyDown)
-            {
-                return true;
-            }
-
-            if (e.Key is DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl)
+            case DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl:
             {
                 Page--;
                 if (Page == -1)
-                {
                     Menu.Close();
-                }
-                Menu.StartSound(Sfx.PISTOL);
-            }
 
-            if (e.Key == DoomKey.Escape)
-            {
+                Menu.StartSound(Sfx.PISTOL);
+                break;
+            }
+            case DoomKey.Escape:
                 Menu.Close();
                 Menu.StartSound(Sfx.SWTCHX);
-            }
-
-            return true;
+                break;
         }
 
-        public int Page { get; private set; }
+        return true;
     }
 }

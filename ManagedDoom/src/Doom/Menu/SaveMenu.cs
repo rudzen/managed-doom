@@ -16,139 +16,142 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.UserInput;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class SaveMenu : MenuDef
 {
-    public sealed class SaveMenu : MenuDef
+    private readonly string[] name;
+    private readonly int[] titleX;
+    private readonly int[] titleY;
+    private readonly TextBoxMenuItem[] items;
+
+    private int index;
+    private TextBoxMenuItem choice;
+
+    private TextInput textInput;
+
+    public SaveMenu(
+        DoomMenu menu,
+        string name, int titleX, int titleY,
+        int firstChoice,
+        params TextBoxMenuItem[] items) : base(menu)
     {
-        private readonly string[] name;
-        private readonly int[] titleX;
-        private readonly int[] titleY;
-        private readonly TextBoxMenuItem[] items;
+        this.name = [name];
+        this.titleX = [titleX];
+        this.titleY = [titleY];
+        this.items = items;
 
-        private int index;
-        private TextBoxMenuItem choice;
+        index = firstChoice;
+        choice = items[index];
 
-        private TextInput textInput;
+        LastSaveSlot = -1;
+    }
 
-        public SaveMenu(
-            DoomMenu menu,
-            string name, int titleX, int titleY,
-            int firstChoice,
-            params TextBoxMenuItem[] items) : base(menu)
+    public IReadOnlyList<string> Name => name;
+    public IReadOnlyList<int> TitleX => titleX;
+    public IReadOnlyList<int> TitleY => titleY;
+    public IReadOnlyList<MenuItem> Items => items;
+    public MenuItem Choice => choice;
+    public int LastSaveSlot { get; private set; }
+
+    public override void Open()
+    {
+        if (Menu.Doom.State != DoomState.Game ||
+            Menu.Doom.Game.State != GameState.Level)
         {
-            this.name = [name];
-            this.titleX = [titleX];
-            this.titleY = [titleY];
-            this.items = items;
-
-            index = firstChoice;
-            choice = items[index];
-
-            LastSaveSlot = -1;
+            Menu.NotifySaveFailed();
+            return;
         }
 
-        public override void Open()
-        {
-            if (Menu.Doom.State != DoomState.Game ||
-                Menu.Doom.Game.State != GameState.Level)
-            {
-                Menu.NotifySaveFailed();
-                return;
-            }
+        for (var i = 0; i < items.Length; i++)
+            items[i].SetText(Menu.SaveSlots[i]);
+    }
 
-            for (var i = 0; i < items.Length; i++)
-            {
-                items[i].SetText(Menu.SaveSlots[i]);
-            }
-        }
+    private void Up()
+    {
+        index--;
+        if (index < 0)
+            index = items.Length - 1;
 
-        private void Up()
-        {
-            index--;
-            if (index < 0)
-                index = items.Length - 1;
+        choice = items[index];
+    }
 
-            choice = items[index];
-        }
+    private void Down()
+    {
+        index++;
+        if (index >= items.Length)
+            index = 0;
 
-        private void Down()
-        {
-            index++;
-            if (index >= items.Length)
-                index = 0;
+        choice = items[index];
+    }
 
-            choice = items[index];
-        }
-
-        public override bool DoEvent(in DoomEvent e)
-        {
-            if (e.Type != EventType.KeyDown)
-                return true;
-
-            if (textInput != null)
-            {
-                var result = textInput.DoEvent(e);
-
-                switch (textInput.State)
-                {
-                    case TextInputState.Canceled:
-                    case TextInputState.Finished:
-                        textInput = null;
-                        break;
-                }
-
-                if (result)
-                    return true;
-            }
-
-            switch (e.Key)
-            {
-                case DoomKey.Up:
-                    Up();
-                    Menu.StartSound(Sfx.PSTOP);
-                    break;
-                case DoomKey.Down:
-                    Down();
-                    Menu.StartSound(Sfx.PSTOP);
-                    break;
-                case DoomKey.Enter:
-                    textInput = choice.Edit(() => DoSave(index));
-                    Menu.StartSound(Sfx.PISTOL);
-                    break;
-                case DoomKey.Escape:
-                    Menu.Close();
-                    Menu.StartSound(Sfx.SWTCHX);
-                    break;
-            }
-
+    public override bool DoEvent(in DoomEvent e)
+    {
+        if (e.Type != EventType.KeyDown)
             return true;
-        }
 
-        public void DoSave(int slotNumber)
+        if (textInput != null)
         {
-            Menu.SaveSlots[slotNumber] = new string(items[slotNumber].Text.ToArray());
-            if (Menu.Doom.SaveGame(slotNumber, Menu.SaveSlots[slotNumber]))
+            var result = textInput.DoEvent(in e);
+
+            switch (textInput.State)
             {
-                Menu.Close();
-                LastSaveSlot = slotNumber;
+                case TextInputState.Canceled:
+                case TextInputState.Finished:
+                    textInput = null;
+                    break;
             }
-            else
-            {
-                Menu.NotifySaveFailed();
-            }
-            Menu.StartSound(Sfx.PISTOL);
+
+            if (result)
+                return true;
         }
 
-        public IReadOnlyList<string> Name => name;
-        public IReadOnlyList<int> TitleX => titleX;
-        public IReadOnlyList<int> TitleY => titleY;
-        public IReadOnlyList<MenuItem> Items => items;
-        public MenuItem Choice => choice;
-        public int LastSaveSlot { get; private set; }
+        switch (e.Key)
+        {
+            case DoomKey.Up:
+                Up();
+                Menu.StartSound(Sfx.PSTOP);
+                break;
+            case DoomKey.Down:
+                Down();
+                Menu.StartSound(Sfx.PSTOP);
+                break;
+            case DoomKey.Enter:
+                textInput = choice.Edit(() => DoSave(index));
+                Menu.StartSound(Sfx.PISTOL);
+                break;
+            case DoomKey.Escape:
+                Menu.Close();
+                Menu.StartSound(Sfx.SWTCHX);
+                break;
+        }
+
+        return true;
+    }
+
+    public void DoSave(int slotNumber)
+    {
+        var text = items[slotNumber].Text;
+        var s = string.Create(text.Count, text, (span, list) =>
+        {
+            for (var i = 0; i < list.Count; i++)
+                span[i] = list[i];
+        });
+        Menu.SaveSlots[slotNumber] = s;
+        if (Menu.Doom.SaveGame(slotNumber, s))
+        {
+            Menu.Close();
+            LastSaveSlot = slotNumber;
+        }
+        else
+            Menu.NotifySaveFailed();
+
+        Menu.StartSound(Sfx.PISTOL);
     }
 }

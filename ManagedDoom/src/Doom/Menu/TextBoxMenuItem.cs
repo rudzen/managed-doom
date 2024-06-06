@@ -17,56 +17,44 @@
 using System;
 using System.Collections.Generic;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class TextBoxMenuItem : MenuItem
 {
-    public class TextBoxMenuItem : MenuItem
+    private IReadOnlyList<char> text;
+    private TextInput edit;
+
+    public TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY)
+        : base(skullX, skullY, null)
     {
-        private IReadOnlyList<char> text;
-        private TextInput edit;
+        this.ItemX = itemX;
+        this.ItemY = itemY;
+    }
 
-        public TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY)
-            : base(skullX, skullY, null)
-        {
-            this.ItemX = itemX;
-            this.ItemY = itemY;
-        }
+    public IReadOnlyList<char> Text => edit == null ? text : edit.Text;
+    public int ItemX { get; }
+    public int ItemY { get; }
+    public bool Editing => edit != null;
 
-        public TextInput Edit(Action finished)
-        {
-            edit = new TextInput(
-                text ?? Array.Empty<char>(),
-                cs => { },
-                cs => { text = cs; edit = null; finished(); },
-                () => { edit = null; });
-
-            return edit;
-        }
-
-        public void SetText(string text)
-        {
-            if (text != null)
+    public TextInput Edit(Action finished)
+    {
+        edit = new TextInput(
+            text ?? Array.Empty<char>(),
+            cs => { },
+            cs =>
             {
-                this.text = text.ToCharArray();
-            }
-        }
+                text = cs;
+                edit = null;
+                finished();
+            },
+            () => { edit = null; });
 
-        public IReadOnlyList<char> Text
-        {
-            get
-            {
-                if (edit == null)
-                {
-                    return text;
-                }
+        return edit;
+    }
 
-                return edit.Text;
-            }
-        }
-
-        public int ItemX { get; }
-
-        public int ItemY { get; }
-
-        public bool Editing => edit != null;
+    public void SetText(string text)
+    {
+        if (text != null)
+            this.text = text.ToCharArray();
     }
 }

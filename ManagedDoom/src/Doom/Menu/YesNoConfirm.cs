@@ -20,40 +20,39 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.UserInput;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class YesNoConfirm : MenuDef
 {
-    public sealed class YesNoConfirm : MenuDef
+    private readonly string[] text;
+    private readonly Action action;
+
+    public YesNoConfirm(DoomMenu menu, string text, Action action) : base(menu)
     {
-        private readonly string[] text;
-        private readonly Action action;
+        this.text = text.Split('\n');
+        this.action = action;
+    }
 
-        public YesNoConfirm(DoomMenu menu, string text, Action action) : base(menu)
+    public override bool DoEvent(in DoomEvent e)
+    {
+        if (e.Type != EventType.KeyDown)
+            return true;
+
+        switch (e.Key)
         {
-            this.text = text.Split('\n');
-            this.action = action;
-        }
-
-        public override bool DoEvent(in DoomEvent e)
-        {
-            if (e.Type != EventType.KeyDown)
-                return true;
-
-            if (e.Key is DoomKey.Y or DoomKey.Enter or DoomKey.Space)
-            {
+            case DoomKey.Y or DoomKey.Enter or DoomKey.Space:
                 action();
                 Menu.Close();
                 Menu.StartSound(Sfx.PISTOL);
-            }
-
-            if (e.Key is DoomKey.N or DoomKey.Escape)
-            {
+                break;
+            case DoomKey.N or DoomKey.Escape:
                 Menu.Close();
                 Menu.StartSound(Sfx.SWTCHX);
-            }
-
-            return true;
+                break;
         }
 
-        public IReadOnlyList<string> Text => text;
+        return true;
     }
+
+    public IReadOnlyList<string> Text => text;
 }

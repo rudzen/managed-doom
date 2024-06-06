@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public enum TextInputState
 {
-    public enum TextInputState
-    {
-        Typing,
-        Finished,
-        Canceled
-    }
+    Typing,
+    Finished,
+    Canceled
 }

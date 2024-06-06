@@ -16,77 +16,67 @@
 
 using System;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public class ToggleMenuItem : MenuItem
 {
-    public class ToggleMenuItem : MenuItem
+    private readonly string[] states;
+
+    private int stateNumber;
+
+    private readonly Func<int> reset;
+    private readonly Action<int> action;
+
+    public ToggleMenuItem(
+        string name,
+        int skullX, int skullY,
+        int itemX, int itemY,
+        string state1, string state2,
+        int stateX,
+        Func<int> reset,
+        Action<int> action)
+        : base(skullX, skullY, null)
     {
-        private readonly string[] states;
+        this.Name = name;
+        this.ItemX = itemX;
+        this.ItemY = itemY;
 
-        private int stateNumber;
+        this.states = [state1, state2];
+        this.StateX = stateX;
 
-        private readonly Func<int> reset;
-        private readonly Action<int> action;
+        stateNumber = 0;
 
-        public ToggleMenuItem(
-            string name,
-            int skullX, int skullY,
-            int itemX, int itemY,
-            string state1, string state2,
-            int stateX,
-            Func<int> reset,
-            Action<int> action)
-            : base(skullX, skullY, null)
-        {
-            this.Name = name;
-            this.ItemX = itemX;
-            this.ItemY = itemY;
+        this.action = action;
+        this.reset = reset;
+    }
 
-            this.states = [state1, state2];
-            this.StateX = stateX;
+    public string Name { get; }
+    public int ItemX { get; }
+    public int ItemY { get; }
+    public string State => states[stateNumber];
+    public int StateX { get; }
 
+    public void Reset()
+    {
+        if (reset != null)
+            stateNumber = reset();
+    }
+
+    public void Up()
+    {
+        stateNumber++;
+        if (stateNumber == states.Length)
             stateNumber = 0;
 
-            this.action = action;
-            this.reset = reset;
-        }
+        action?.Invoke(stateNumber);
+    }
 
-        public void Reset()
-        {
-            if (reset != null)
-            {
-                stateNumber = reset();
-            }
-        }
+    public void Down()
+    {
+        stateNumber--;
+        if (stateNumber == -1)
+            stateNumber = states.Length - 1;
 
-        public void Up()
-        {
-            stateNumber++;
-            if (stateNumber == states.Length)
-            {
-                stateNumber = 0;
-            }
-
-            action?.Invoke(stateNumber);
-        }
-
-        public void Down()
-        {
-            stateNumber--;
-            if (stateNumber == -1)
-            {
-                stateNumber = states.Length - 1;
-            }
-
-            action?.Invoke(stateNumber);
-        }
-
-        public string Name { get; }
-
-        public int ItemX { get; }
-
-        public int ItemY { get; }
-
-        public string State => states[stateNumber];
-        public int StateX { get; }
+        action?.Invoke(stateNumber);
     }
 }

@@ -18,7 +18,7 @@ namespace ManagedDoom.Doom.Math
 {
     public static partial class Trig
     {
-        private static readonly int[] fineTangent =
+        private static int[] fineTangent =>
         [
             -170910304, -56965752, -34178904, -24413316, -18988036, -15535599, -13145455, -11392683,
             -10052327, -8994149, -8137527, -7429880, -6835455, -6329090, -5892567, -5512368,

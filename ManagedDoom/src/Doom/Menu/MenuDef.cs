@@ -16,25 +16,24 @@
 
 using ManagedDoom.Doom.Event;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public abstract class MenuDef
 {
-    public abstract class MenuDef
+    protected MenuDef(DoomMenu menu)
     {
-        public MenuDef(DoomMenu menu)
-        {
-            this.Menu = menu;
-        }
-
-        public virtual void Open()
-        {
-        }
-
-        public virtual void Update()
-        {
-        }
-
-        public abstract bool DoEvent(in DoomEvent e);
-
-        public DoomMenu Menu { get; }
+        this.Menu = menu;
     }
+
+    public DoomMenu Menu { get; }
+
+    public virtual void Open()
+    {
+    }
+
+    public virtual void Update()
+    {
+    }
+
+    public abstract bool DoEvent(in DoomEvent e);
 }

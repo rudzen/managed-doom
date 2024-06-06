@@ -16,65 +16,60 @@
 
 using System;
 
-namespace ManagedDoom.Doom.Menu
+namespace ManagedDoom.Doom.Menu;
+
+public sealed class SliderMenuItem : MenuItem
 {
-    public class SliderMenuItem : MenuItem
+    private readonly Func<int> reset;
+    private readonly Action<int> action;
+
+    public SliderMenuItem(
+        string name,
+        int skullX, int skullY,
+        int itemX, int itemY,
+        int sliderLength,
+        Func<int> reset,
+        Action<int> action)
+        : base(skullX, skullY, null)
     {
-        private readonly Func<int> reset;
-        private readonly Action<int> action;
+        this.Name = name;
+        this.ItemX = itemX;
+        this.ItemY = itemY;
 
-        public SliderMenuItem(
-            string name,
-            int skullX, int skullY,
-            int itemX, int itemY,
-            int sliderLength,
-            Func<int> reset,
-            Action<int> action)
-            : base(skullX, skullY, null)
-        {
-            this.Name = name;
-            this.ItemX = itemX;
-            this.ItemY = itemY;
+        this.SliderLength = sliderLength;
+        SliderPosition = 0;
 
-            this.SliderLength = sliderLength;
-            SliderPosition = 0;
+        this.action = action;
+        this.reset = reset;
+    }
 
-            this.action = action;
-            this.reset = reset;
-        }
+    public string Name { get; }
+    public int ItemX { get; }
+    public int ItemY { get; }
+    public int SliderX => ItemX;
+    public int SliderY => ItemY + 16;
+    public int SliderLength { get; }
+    public int SliderPosition { get; private set; }
 
-        public void Reset()
-        {
-            if (reset != null)
-                SliderPosition = reset();
-        }
+    public void Reset()
+    {
+        if (reset != null)
+            SliderPosition = reset();
+    }
 
-        public void Up()
-        {
-            if (SliderPosition < SliderLength - 1)
-                SliderPosition++;
+    public void Up()
+    {
+        if (SliderPosition < SliderLength - 1)
+            SliderPosition++;
 
-            action?.Invoke(SliderPosition);
-        }
+        action?.Invoke(SliderPosition);
+    }
 
-        public void Down()
-        {
-            if (SliderPosition > 0)
-                SliderPosition--;
+    public void Down()
+    {
+        if (SliderPosition > 0)
+            SliderPosition--;
 
-            action?.Invoke(SliderPosition);
-        }
-
-        public string Name { get; }
-
-        public int ItemX { get; }
-
-        public int ItemY { get; }
-
-        public int SliderX => ItemX;
-        public int SliderY => ItemY + 16;
-        public int SliderLength { get; }
-
-        public int SliderPosition { get; private set; }
+        action?.Invoke(SliderPosition);
     }
 }
