@@ -82,7 +82,7 @@ namespace ManagedDoom.Silk
 
             var u = (float)renderer.Height / textureWidth;
             var v = (float)renderer.Width / textureHeight;
-            var tl = new VertexColorTexture(new Vector3(0, 0, 0), Color4b.White, new Vector2(0, 0));
+            var tl = new VertexColorTexture(Vector3.Zero, Color4b.White, Vector2.Zero);
             var tr = new VertexColorTexture(new Vector3(silkWindowWidth, 0, 0), Color4b.White, new Vector2(0, v));
             var br = new VertexColorTexture(new Vector3(silkWindowWidth, silkWindowHeight, 0), Color4b.White, new Vector2(u, v));
             var bl = new VertexColorTexture(new Vector3(0, silkWindowHeight, 0), Color4b.White, new Vector2(u, 0));
