@@ -90,9 +90,7 @@ namespace ManagedDoom.Doom.Graphics
                 {
                     patchCount[x]++;
                     if (patchCount[x] == 2)
-                    {
                         compositeColumnCount++;
-                    }
 
                     columns[x] = patch.Columns[x - patch.OriginX];
                 }
@@ -104,9 +102,7 @@ namespace ManagedDoom.Doom.Graphics
             for (var x = 0; x < width; x++)
             {
                 if (patchCount[x] == 0)
-                {
                     columns[x] = [];
-                }
 
                 if (patchCount[x] >= 2)
                 {
@@ -116,9 +112,7 @@ namespace ManagedDoom.Doom.Graphics
                     {
                         var px = x - patch.OriginX;
                         if (px < 0 || px >= patch.Width)
-                        {
                             continue;
-                        }
 
                         var patchColumn = patch.Columns[px];
                         DrawColumnInCache(
@@ -140,8 +134,8 @@ namespace ManagedDoom.Doom.Graphics
         }
 
         private static void DrawColumnInCache(
-            Column[] source,
-            byte[] destination,
+            ReadOnlySpan<Column> source,
+            Span<byte> destination,
             int destinationOffset,
             int destinationY,
             int destinationHeight)
@@ -161,21 +155,12 @@ namespace ManagedDoom.Doom.Graphics
                 }
 
                 var bottomExceedance = destinationY + column.TopDelta + column.Length - destinationHeight;
+
                 if (bottomExceedance > 0)
-                {
                     length -= bottomExceedance;
-                }
 
                 if (length > 0)
-                {
-                    Array.Copy(
-                        sourceArray: column.Data,
-                        sourceIndex: sourceIndex,
-                        destinationArray: destination,
-                        destinationIndex: destinationIndex,
-                        length: length
-                    );
-                }
+                    column.Data.AsSpan(sourceIndex, length).CopyTo(destination[destinationIndex..]);
             }
         }
 
