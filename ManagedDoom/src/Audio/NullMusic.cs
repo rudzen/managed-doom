@@ -20,6 +20,14 @@ public sealed class NullMusic : IMusic
 {
     private static NullMusic instance;
 
+    public int MaxVolume => 15;
+
+    public int Volume
+    {
+        get => 0;
+        set { }
+    }
+
     public static NullMusic GetInstance()
     {
         return instance ??= new NullMusic();
@@ -27,13 +35,5 @@ public sealed class NullMusic : IMusic
 
     public void StartMusic(Bgm bgm, bool loop)
     {
-    }
-
-    public int MaxVolume => 15;
-
-    public int Volume
-    {
-        get => 0;
-        set { }
     }
 }

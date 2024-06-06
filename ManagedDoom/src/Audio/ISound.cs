@@ -20,6 +20,9 @@ namespace ManagedDoom.Audio;
 
 public interface ISound
 {
+    public int MaxVolume { get; }
+    public int Volume { get; set; }
+
     public void SetListener(Mobj listener);
     public void Update();
     public void StartSound(Sfx sfx);
@@ -29,7 +32,4 @@ public interface ISound
     public void Reset();
     public void Pause();
     public void Resume();
-
-    public int MaxVolume { get; }
-    public int Volume { get; set; }
 }

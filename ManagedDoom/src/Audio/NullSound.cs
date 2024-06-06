@@ -27,6 +27,15 @@ public sealed class NullSound : ISound
         return instance ??= new NullSound();
     }
 
+
+    public int MaxVolume => 15;
+
+    public int Volume
+    {
+        get => 0;
+        set { }
+    }
+
     public void SetListener(Mobj listener)
     {
     }
@@ -61,13 +70,5 @@ public sealed class NullSound : ISound
 
     public void Resume()
     {
-    }
-
-    public int MaxVolume => 15;
-
-    public int Volume
-    {
-        get => 0;
-        set { }
     }
 }
