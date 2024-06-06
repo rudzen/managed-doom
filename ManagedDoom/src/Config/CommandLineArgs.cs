@@ -152,25 +152,4 @@ public sealed class CommandLineArgs
                .TakeWhile(arg => arg[0] != '-')
                .ToArray();
     }
-
-    public readonly record struct Arg(bool Present);
-
-    public readonly struct Arg<T>
-    {
-        public Arg()
-        {
-            this.Present = false;
-            this.Value = default;
-        }
-
-        public Arg(T value)
-        {
-            this.Present = value is not null;
-            this.Value = value;
-        }
-
-        public bool Present { get; }
-
-        public T Value { get; }
-    }
 }

@@ -23,7 +23,9 @@ namespace ManagedDoom.Config;
 
 public sealed class Config
 {
-    public ConfigValues Values { get; set; }
+    public ConfigValues Values { get; }
+
+    public bool IsRestoredFromFile { get; }
 
     public Config(string path)
     {
@@ -64,6 +66,4 @@ public sealed class Config
             Console.WriteLine($"Unable to save settings. {e.Message}");
         }
     }
-
-    public bool IsRestoredFromFile { get; }
 }

@@ -68,18 +68,14 @@ public static class ConfigUtilities
     public static IEnumerable<string> GetWadPaths(CommandLineArgs args)
     {
         if (args.iwad.Present)
-        {
             yield return args.iwad.Value;
-        }
         else
-        {
             yield return GetDefaultIwadPath();
-        }
 
-        if (args.file.Present)
-        {
-            foreach (var path in args.file.Value)
-                yield return path;
-        }
+        if (!args.file.Present)
+            yield break;
+
+        foreach (var path in args.file.Value)
+            yield return path;
     }
 }
