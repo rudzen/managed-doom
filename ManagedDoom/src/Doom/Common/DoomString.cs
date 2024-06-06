@@ -18,55 +18,54 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ManagedDoom.Doom.Common
+namespace ManagedDoom.Doom.Common;
+
+public sealed class DoomString
 {
-    public sealed class DoomString
+    private static readonly Dictionary<string, DoomString> valueTable = new Dictionary<string, DoomString>();
+    private static readonly Dictionary<string, DoomString> nameTable = new Dictionary<string, DoomString>();
+
+    private string original;
+    private string replaced;
+
+    public DoomString(string original)
     {
-        private static readonly Dictionary<string, DoomString> valueTable = new Dictionary<string, DoomString>();
-        private static readonly Dictionary<string, DoomString> nameTable = new Dictionary<string, DoomString>();
+        this.original = original;
+        replaced = original;
 
-        private string original;
-        private string replaced;
+        ref var current = ref CollectionsMarshal.GetValueRefOrAddDefault(valueTable, original, out var exists);
+        if (!exists)
+            current = this;
+    }
 
-        public DoomString(string original)
-        {
-            this.original = original;
-            replaced = original;
+    public DoomString(string name, string original) : this(original)
+    {
+        nameTable.Add(name, this);
+    }
 
-            ref var current = ref CollectionsMarshal.GetValueRefOrAddDefault(valueTable, original, out var exists);
-            if (!exists)
-                current = this;
-        }
+    public override string ToString()
+    {
+        return replaced;
+    }
 
-        public DoomString(string name, string original) : this(original)
-        {
-            nameTable.Add(name, this);
-        }
+    public char this[int index] => replaced[index];
 
-        public override string ToString()
-        {
-            return replaced;
-        }
+    public static implicit operator string(DoomString ds)
+    {
+        return ds.replaced;
+    }
 
-        public char this[int index] => replaced[index];
+    public static void ReplaceByValue(string original, string replaced)
+    {
+        ref var ds = ref CollectionsMarshal.GetValueRefOrNullRef(valueTable, original);
+        if (!Unsafe.IsNullRef(ref ds))
+            ds.replaced = replaced;
+    }
 
-        public static implicit operator string(DoomString ds)
-        {
-            return ds.replaced;
-        }
-
-        public static void ReplaceByValue(string original, string replaced)
-        {
-            ref var ds = ref CollectionsMarshal.GetValueRefOrNullRef(valueTable, original);
-            if (!Unsafe.IsNullRef(ref ds))
-                ds.replaced = replaced;
-        }
-
-        public static void ReplaceByName(string name, string value)
-        {
-            ref var ds = ref CollectionsMarshal.GetValueRefOrNullRef(nameTable, name);
-            if (!Unsafe.IsNullRef(ref ds))
-                ds.replaced = value;
-        }
+    public static void ReplaceByName(string name, string value)
+    {
+        ref var ds = ref CollectionsMarshal.GetValueRefOrNullRef(nameTable, name);
+        if (!Unsafe.IsNullRef(ref ds))
+            ds.replaced = value;
     }
 }

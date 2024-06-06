@@ -17,36 +17,35 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ManagedDoom.Doom.Common
+namespace ManagedDoom.Doom.Common;
+
+public static class DoomInterop
 {
-    public static class DoomInterop
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ToString(byte[] data, int offset, int maxLength)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToString(byte[] data, int offset, int maxLength)
+        return ToString(data.AsSpan(offset, maxLength));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [SkipLocalsInit]
+    public static string ToString(ReadOnlySpan<byte> data)
+    {
+        const byte zero = 0;
+
+        Span<char> chars = stackalloc char[data.Length];
+        var pos = 0;
+
+        foreach (var t in data)
         {
-            return ToString(data.AsSpan(offset, maxLength));
+            var c = t;
+            if (c == zero)
+                break;
+            if (c >= 'a' && c <= 'z')
+                c -= 0x20;
+            chars[pos++] = (char)c;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [SkipLocalsInit]
-        public static string ToString(ReadOnlySpan<byte> data)
-        {
-            const byte zero = 0;
-
-            Span<char> chars = stackalloc char[data.Length];
-            var pos = 0;
-
-            foreach (var t in data)
-            {
-                var c = t;
-                if (c == zero)
-                    break;
-                if (c >= 'a' && c <= 'z')
-                    c -= 0x20;
-                chars[pos++] = (char)c;
-            }
-            
-            return new string(chars[..pos]);
-        }
+        return new string(chars[..pos]);
     }
 }
