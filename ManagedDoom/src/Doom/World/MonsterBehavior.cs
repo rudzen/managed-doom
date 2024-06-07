@@ -37,7 +37,6 @@ public sealed class MonsterBehavior
         InitBrain();
     }
 
-
     ////////////////////////////////////////////////////////////
     // Sleeping monster
     ////////////////////////////////////////////////////////////
@@ -52,29 +51,21 @@ public sealed class MonsterBehavior
         for (;; actor.LastLook = (actor.LastLook + 1) & 3)
         {
             if (!players[actor.LastLook].InGame)
-            {
                 continue;
-            }
 
+            // Done looking.
             if (count++ == 2 || actor.LastLook == stop)
-            {
-                // Done looking.
                 return false;
-            }
 
             var player = players[actor.LastLook];
 
+            // Player is dead.
             if (player.Health <= 0)
-            {
-                // Player is dead.
                 continue;
-            }
 
+            // Out of sight.
             if (!world.VisibilityCheck.CheckSight(actor, player.Mobj))
-            {
-                // Out of sight.
                 continue;
-            }
 
             if (!allAround)
             {
@@ -103,7 +94,6 @@ public sealed class MonsterBehavior
         }
     }
 
-
     public void Look(Mobj actor)
     {
         // Any shot will wake up.
@@ -118,59 +108,36 @@ public sealed class MonsterBehavior
             if ((actor.Flags & MobjFlags.Ambush) != 0)
             {
                 if (world.VisibilityCheck.CheckSight(actor, actor.Target))
-                {
                     goto seeYou;
-                }
             }
             else
-            {
                 goto seeYou;
-            }
         }
 
         if (!LookForPlayers(actor, false))
-        {
             return;
-        }
 
         // Go into chase state.
     seeYou:
         if (actor.Info.SeeSound != 0)
         {
-            int sound;
-
-            switch (actor.Info.SeeSound)
+            var seeSound = actor.Info.SeeSound;
+            var sfx = seeSound switch
             {
-                case Sfx.POSIT1:
-                case Sfx.POSIT2:
-                case Sfx.POSIT3:
-                    sound = (int)Sfx.POSIT1 + world.Random.Next() % 3;
-                    break;
+                >= Sfx.POSIT1 and <= Sfx.POSIT3 => Sfx.POSIT1 + world.Random.Next() % 3,
+                Sfx.BGSIT1 or Sfx.BGSIT2        => Sfx.BGSIT1 + world.Random.Next() % 2,
+                _                               => seeSound
+            };
 
-                case Sfx.BGSIT1:
-                case Sfx.BGSIT2:
-                    sound = (int)Sfx.BGSIT1 + world.Random.Next() % 2;
-                    break;
+            var type = actor.Type is MobjType.Spider or MobjType.Cyborg
+                ? SfxType.Diffuse // Full volume for boss monsters.
+                : SfxType.Voice;
 
-                default:
-                    sound = (int)actor.Info.SeeSound;
-                    break;
-            }
-
-            if (actor.Type is MobjType.Spider or MobjType.Cyborg)
-            {
-                // Full volume for boss monsters.
-                world.StartSound(actor, (Sfx)sound, SfxType.Diffuse);
-            }
-            else
-            {
-                world.StartSound(actor, (Sfx)sound, SfxType.Voice);
-            }
+            world.StartSound(actor, sfx, type);
         }
 
         actor.SetState(actor.Info.SeeState);
     }
-
 
     ////////////////////////////////////////////////////////////
     // Monster AI
@@ -203,14 +170,10 @@ public sealed class MonsterBehavior
     private bool Move(Mobj actor)
     {
         if (actor.MoveDir == Direction.None)
-        {
             return false;
-        }
 
-        if ((int)actor.MoveDir >= 8)
-        {
+        if (actor.MoveDir >= Direction.None)
             throw new Exception("Weird actor->movedir!");
-        }
 
         var tryX = actor.X + actor.Info.Speed * xSpeed[(int)actor.MoveDir];
         var tryY = actor.Y + actor.Info.Speed * ySpeed[(int)actor.MoveDir];
@@ -226,13 +189,9 @@ public sealed class MonsterBehavior
             {
                 // Must adjust height.
                 if (actor.Z < tm.CurrentFloorZ)
-                {
                     actor.Z += ThingMovement.FloatSpeed;
-                }
                 else
-                {
                     actor.Z -= ThingMovement.FloatSpeed;
-                }
 
                 actor.Flags |= MobjFlags.InFloat;
 
@@ -240,9 +199,7 @@ public sealed class MonsterBehavior
             }
 
             if (tm.crossedSpecialCount == 0)
-            {
                 return false;
-            }
 
             actor.MoveDir = Direction.None;
             var good = false;
@@ -252,9 +209,7 @@ public sealed class MonsterBehavior
                 // If the special is not a door that can be opened,
                 // return false.
                 if (world.MapInteraction.UseSpecialLine(actor, line, 0))
-                {
                     good = true;
-                }
             }
 
             return good;
@@ -263,9 +218,7 @@ public sealed class MonsterBehavior
         actor.Flags &= ~MobjFlags.InFloat;
 
         if ((actor.Flags & MobjFlags.Float) == 0)
-        {
             actor.Z = actor.FloorZ;
-        }
 
         return true;
     }
@@ -274,9 +227,7 @@ public sealed class MonsterBehavior
     private bool TryWalk(Mobj actor)
     {
         if (!Move(actor))
-        {
             return false;
-        }
 
         actor.MoveCount = world.Random.Next() & 15;
 
@@ -309,10 +260,8 @@ public sealed class MonsterBehavior
 
     private void NewChaseDir(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             throw new Exception("Called with no target.");
-        }
 
         var oldDir = actor.MoveDir;
         var turnAround = opposite[(int)oldDir];
@@ -321,30 +270,18 @@ public sealed class MonsterBehavior
         var deltaY = actor.Target.Y - actor.Y;
 
         if (deltaX > Fixed.FromInt(10))
-        {
             choices[1] = Direction.East;
-        }
         else if (deltaX < Fixed.FromInt(-10))
-        {
             choices[1] = Direction.West;
-        }
         else
-        {
             choices[1] = Direction.None;
-        }
 
         if (deltaY < Fixed.FromInt(-10))
-        {
             choices[2] = Direction.South;
-        }
         else if (deltaY > Fixed.FromInt(10))
-        {
             choices[2] = Direction.North;
-        }
         else
-        {
             choices[2] = Direction.None;
-        }
 
         // Try direct route.
         if (choices[1] != Direction.None && choices[2] != Direction.None)
@@ -354,26 +291,18 @@ public sealed class MonsterBehavior
             actor.MoveDir = diags[(a << 1) + b];
 
             if (actor.MoveDir != turnAround && TryWalk(actor))
-            {
                 return;
-            }
         }
 
         // Try other directions.
         if (world.Random.Next() > 200 || Fixed.Abs(deltaY) > Fixed.Abs(deltaX))
-        {
             (choices[1], choices[2]) = (choices[2], choices[1]);
-        }
 
         if (choices[1] == turnAround)
-        {
             choices[1] = Direction.None;
-        }
 
         if (choices[2] == turnAround)
-        {
             choices[2] = Direction.None;
-        }
 
         if (choices[1] != Direction.None)
         {
@@ -391,9 +320,7 @@ public sealed class MonsterBehavior
             actor.MoveDir = choices[2];
 
             if (TryWalk(actor))
-            {
                 return;
-            }
         }
 
         // There is no direct path to the player, so pick another direction.
@@ -402,103 +329,76 @@ public sealed class MonsterBehavior
             actor.MoveDir = oldDir;
 
             if (TryWalk(actor))
-            {
                 return;
-            }
         }
 
         // Randomly determine direction of search.
         if ((world.Random.Next() & 1) != 0)
         {
-            for (var dir = (int)Direction.East; dir <= (int)Direction.Southeast; dir++)
+            for (var dir = Direction.East; dir <= Direction.Southeast; dir++)
             {
-                if ((Direction)dir != turnAround)
-                {
-                    actor.MoveDir = (Direction)dir;
+                if (dir == turnAround)
+                    continue;
 
-                    if (TryWalk(actor))
-                    {
-                        return;
-                    }
-                }
+                actor.MoveDir = dir;
+
+                if (TryWalk(actor))
+                    return;
             }
         }
         else
         {
-            for (var dir = (int)Direction.Southeast; dir != ((int)Direction.East - 1); dir--)
+            for (var dir = Direction.Southeast; dir != (Direction.East - 1); dir--)
             {
-                if ((Direction)dir != turnAround)
-                {
-                    actor.MoveDir = (Direction)dir;
+                if (dir == turnAround)
+                    continue;
 
-                    if (TryWalk(actor))
-                    {
-                        return;
-                    }
-                }
+                actor.MoveDir = dir;
+
+                if (TryWalk(actor))
+                    return;
             }
         }
 
         if (turnAround != Direction.None)
         {
             actor.MoveDir = turnAround;
-
             if (TryWalk(actor))
-            {
                 return;
-            }
         }
 
         // Can not move.
         actor.MoveDir = Direction.None;
     }
 
-
     private bool CheckMeleeRange(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return false;
-        }
 
         var target = actor.Target;
 
         var dist = Geometry.AproxDistance(target.X - actor.X, target.Y - actor.Y);
 
-        if (dist >= WeaponBehavior.MeleeRange - Fixed.FromInt(20) + target.Info.Radius)
-        {
-            return false;
-        }
-
-        if (!world.VisibilityCheck.CheckSight(actor, actor.Target))
-        {
-            return false;
-        }
-
-        return true;
+        return dist < WeaponBehavior.MeleeRange - Fixed.FromInt(20) + target.Info.Radius
+               && world.VisibilityCheck.CheckSight(actor, actor.Target);
     }
-
 
     private bool CheckMissileRange(Mobj actor)
     {
         if (!world.VisibilityCheck.CheckSight(actor, actor.Target))
-        {
             return false;
-        }
 
         if ((actor.Flags & MobjFlags.JustHit) != 0)
         {
             // The target just hit the enemy, so fight back!
             actor.Flags &= ~MobjFlags.JustHit;
-
             return true;
         }
 
+        // Do not attack yet
         if (actor.ReactionTime > 0)
-        {
-            // Do not attack yet
             return false;
-        }
 
         // OPTIMIZE:
         //     Get this from a global checksight.
@@ -506,77 +406,52 @@ public sealed class MonsterBehavior
             actor.X - actor.Target.X,
             actor.Y - actor.Target.Y) - Fixed.FromInt(64);
 
+        // No melee attack, so fire more.
         if (actor.Info.MeleeState == 0)
-        {
-            // No melee attack, so fire more.
             dist -= Fixed.FromInt(128);
-        }
 
         var attackDist = dist.Data >> 16;
 
         if (actor.Type == MobjType.Vile)
         {
+            // Too far away.
             if (attackDist > 14 * 64)
-            {
-                // Too far away.
                 return false;
-            }
         }
 
         if (actor.Type == MobjType.Undead)
         {
+            // Close for fist attack.
             if (attackDist < 196)
-            {
-                // Close for fist attack.
                 return false;
-            }
 
             attackDist >>= 1;
         }
-
 
         if (actor.Type is MobjType.Cyborg or MobjType.Spider or MobjType.Skull)
-        {
             attackDist >>= 1;
-        }
 
         if (attackDist > 200)
-        {
             attackDist = 200;
-        }
 
         if (actor.Type == MobjType.Cyborg && attackDist > 160)
-        {
             attackDist = 160;
-        }
 
-        if (world.Random.Next() < attackDist)
-        {
-            return false;
-        }
-
-        return true;
+        return world.Random.Next() >= attackDist;
     }
-
 
     public void Chase(Mobj actor)
     {
         if (actor.ReactionTime > 0)
-        {
             actor.ReactionTime--;
-        }
 
         // Modify target threshold.
         if (actor.Threshold > 0)
         {
-            if (actor.Target == null || actor.Target.Health <= 0)
-            {
+            if (actor.Target is not { Health: > 0 })
                 actor.Threshold = 0;
-            }
             else
-            {
                 actor.Threshold--;
-            }
         }
 
         // Turn towards movement direction if not there yet.
@@ -587,13 +462,9 @@ public sealed class MonsterBehavior
             var delta = (int)(actor.Angle - new Angle((int)actor.MoveDir << 29)).Data;
 
             if (delta > 0)
-            {
                 actor.Angle -= new Angle(Angle.Ang90.Data / 2);
-            }
             else if (delta < 0)
-            {
                 actor.Angle += new Angle(Angle.Ang90.Data / 2);
-            }
         }
 
         if (actor.Target == null || (actor.Target.Flags & MobjFlags.Shootable) == 0)
@@ -615,11 +486,8 @@ public sealed class MonsterBehavior
         {
             actor.Flags &= ~MobjFlags.JustAttacked;
 
-            if (world.Options.Skill != GameSkill.Nightmare &&
-                !world.Options.FastMonsters)
-            {
+            if (world.Options.Skill != GameSkill.Nightmare && !world.Options.FastMonsters)
                 NewChaseDir(actor);
-            }
 
             return;
         }
@@ -628,9 +496,7 @@ public sealed class MonsterBehavior
         if (actor.Info.MeleeState != 0 && CheckMeleeRange(actor))
         {
             if (actor.Info.AttackSound != 0)
-            {
                 world.StartSound(actor, actor.Info.AttackSound, SfxType.Weapon);
-            }
 
             actor.SetState(actor.Info.MeleeState);
 
@@ -640,17 +506,11 @@ public sealed class MonsterBehavior
         // Check for missile attack.
         if (actor.Info.MissileState != 0)
         {
-            if (world.Options.Skill < GameSkill.Nightmare &&
-                !world.Options.FastMonsters &&
-                actor.MoveCount != 0)
-            {
+            if (world.Options.Skill < GameSkill.Nightmare && !world.Options.FastMonsters && actor.MoveCount != 0)
                 goto noMissile;
-            }
 
             if (!CheckMissileRange(actor))
-            {
                 goto noMissile;
-            }
 
             actor.SetState(actor.Info.MissileState);
             actor.Flags |= MobjFlags.JustAttacked;
@@ -664,26 +524,19 @@ public sealed class MonsterBehavior
             actor.Threshold == 0 &&
             !world.VisibilityCheck.CheckSight(actor, actor.Target))
         {
+            // Got a new target.
             if (LookForPlayers(actor, true))
-            {
-                // Got a new target.
                 return;
-            }
         }
 
         // Chase towards player.
         if (--actor.MoveCount < 0 || !Move(actor))
-        {
             NewChaseDir(actor);
-        }
 
         // Make active sound.
         if (actor.Info.ActiveSound != 0 && world.Random.Next() < 3)
-        {
             world.StartSound(actor, actor.Info.ActiveSound, SfxType.Voice);
-        }
     }
-
 
     ////////////////////////////////////////////////////////////
     // Monster death
@@ -691,47 +544,31 @@ public sealed class MonsterBehavior
 
     public void Pain(Mobj actor)
     {
-        if (actor.Info.PainSound != 0)
-        {
-            world.StartSound(actor, actor.Info.PainSound, SfxType.Voice);
-        }
+        if (actor.Info.PainSound == 0)
+            return;
+
+        world.StartSound(actor, actor.Info.PainSound, SfxType.Voice);
     }
 
     public void Scream(Mobj actor)
     {
-        int sound;
+        var deathSound = actor.Info.DeathSound;
+        if (deathSound == Sfx.NONE)
+            return;
 
-        switch (actor.Info.DeathSound)
+        var sound = deathSound switch
         {
-            case 0:
-                return;
-
-            case Sfx.PODTH1:
-            case Sfx.PODTH2:
-            case Sfx.PODTH3:
-                sound = (int)Sfx.PODTH1 + world.Random.Next() % 3;
-                break;
-
-            case Sfx.BGDTH1:
-            case Sfx.BGDTH2:
-                sound = (int)Sfx.BGDTH1 + world.Random.Next() % 2;
-                break;
-
-            default:
-                sound = (int)actor.Info.DeathSound;
-                break;
-        }
+            >= Sfx.PODTH1 and <= Sfx.PODTH3 => Sfx.PODTH1 + world.Random.Next() % 3,
+            Sfx.BGDTH1 or Sfx.BGDTH2        => Sfx.BGDTH1 + world.Random.Next() % 2,
+            _                               => deathSound
+        };
 
         // Check for bosses.
-        if (actor.Type is MobjType.Spider or MobjType.Cyborg)
-        {
-            // Full volume.
-            world.StartSound(actor, (Sfx)sound, SfxType.Diffuse);
-        }
-        else
-        {
-            world.StartSound(actor, (Sfx)sound, SfxType.Voice);
-        }
+        var sfxType = actor.Type is MobjType.Spider or MobjType.Cyborg
+            ? SfxType.Diffuse // Full volume.
+            : SfxType.Voice;
+
+        world.StartSound(actor, sound, sfxType);
     }
 
     public void XScream(Mobj actor)
@@ -739,12 +576,11 @@ public sealed class MonsterBehavior
         world.StartSound(actor, Sfx.SLOP, SfxType.Voice);
     }
 
-    public void Fall(Mobj actor)
+    public static void Fall(Mobj actor)
     {
         // Actor is on ground, it can be walked over.
         actor.Flags &= ~MobjFlags.Solid;
     }
-
 
     ////////////////////////////////////////////////////////////
     // Monster attack
@@ -753,12 +589,9 @@ public sealed class MonsterBehavior
     public void FaceTarget(Mobj actor)
     {
         if (actor.Target == null)
-        {
             return;
-        }
 
         actor.Flags &= ~MobjFlags.Ambush;
-
         actor.Angle = Geometry.PointToAngle(
             actor.X, actor.Y,
             actor.Target.X, actor.Target.Y);
@@ -766,18 +599,13 @@ public sealed class MonsterBehavior
         var random = world.Random;
 
         if ((actor.Target.Flags & MobjFlags.Shadow) != 0)
-        {
             actor.Angle += new Angle((random.Next() - random.Next()) << 21);
-        }
     }
-
 
     public void PosAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -793,13 +621,10 @@ public sealed class MonsterBehavior
         world.Hitscan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
     }
 
-
     public void SPosAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         world.StartSound(actor, Sfx.SHOTGN, SfxType.Weapon);
 
@@ -819,13 +644,10 @@ public sealed class MonsterBehavior
         }
     }
 
-
     public void CPosAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         world.StartSound(actor, Sfx.SHOTGN, SfxType.Weapon);
 
@@ -841,32 +663,22 @@ public sealed class MonsterBehavior
         world.Hitscan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
     }
 
-
     public void CPosRefire(Mobj actor)
     {
         // Keep firing unless target got out of sight.
         FaceTarget(actor);
 
         if (world.Random.Next() < 40)
-        {
             return;
-        }
 
-        if (actor.Target == null ||
-            actor.Target.Health <= 0 ||
-            !world.VisibilityCheck.CheckSight(actor, actor.Target))
-        {
+        if (actor.Target is not { Health: > 0 } || !world.VisibilityCheck.CheckSight(actor, actor.Target))
             actor.SetState(actor.Info.SeeState);
-        }
     }
-
 
     public void TroopAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -884,13 +696,10 @@ public sealed class MonsterBehavior
         world.ThingAllocation.SpawnMissile(actor, actor.Target, MobjType.Troopshot);
     }
 
-
     public void SargAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -901,13 +710,10 @@ public sealed class MonsterBehavior
         }
     }
 
-
     public void HeadAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -923,13 +729,10 @@ public sealed class MonsterBehavior
         world.ThingAllocation.SpawnMissile(actor, actor.Target, MobjType.Headshot);
     }
 
-
     public void BruisAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         if (CheckMeleeRange(actor))
         {
@@ -945,15 +748,12 @@ public sealed class MonsterBehavior
         world.ThingAllocation.SpawnMissile(actor, actor.Target, MobjType.Bruisershot);
     }
 
-
     private static readonly Fixed skullSpeed = Fixed.FromInt(20);
 
     public void SkullAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         var dest = actor.Target;
 
@@ -972,13 +772,10 @@ public sealed class MonsterBehavior
         var num = (dest.Z + (dest.Height >> 1) - actor.Z).Data;
         var den = dist.Data / skullSpeed.Data;
         if (den < 1)
-        {
             den = 1;
-        }
 
         actor.MomZ = new Fixed(num / den);
     }
-
 
     public void FatRaise(Mobj actor)
     {
@@ -986,7 +783,6 @@ public sealed class MonsterBehavior
 
         world.StartSound(actor, Sfx.MANATK, SfxType.Voice);
     }
-
 
     private static readonly Angle fatSpread = Angle.Ang90 / 8;
 
@@ -1031,7 +827,6 @@ public sealed class MonsterBehavior
         FaceTarget(actor);
 
         var ta = world.ThingAllocation;
-
         var target = world.SubstNullMobj(actor.Target);
 
         var missile1 = ta.SpawnMissile(actor, target, MobjType.Fatshot);
@@ -1047,13 +842,10 @@ public sealed class MonsterBehavior
         missile2.MomY = new Fixed(missile2.Info.Speed) * Trig.Sin(angle2);
     }
 
-
     public void BspiAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -1061,38 +853,26 @@ public sealed class MonsterBehavior
         world.ThingAllocation.SpawnMissile(actor, actor.Target, MobjType.Arachplaz);
     }
 
-
     public void SpidRefire(Mobj actor)
     {
         // Keep firing unless target got out of sight.
         FaceTarget(actor);
 
         if (world.Random.Next() < 10)
-        {
             return;
-        }
 
-        if (actor.Target == null ||
-            actor.Target.Health <= 0 ||
-            !world.VisibilityCheck.CheckSight(actor, actor.Target))
-        {
+        if (actor.Target is not { Health: > 0 } || !world.VisibilityCheck.CheckSight(actor, actor.Target))
             actor.SetState(actor.Info.SeeState);
-        }
     }
-
 
     public void CyberAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
-
         world.ThingAllocation.SpawnMissile(actor, actor.Target, MobjType.Rocket);
     }
-
 
     ////////////////////////////////////////////////////////////
     // Miscellaneous
@@ -1103,30 +883,23 @@ public sealed class MonsterBehavior
         world.ThingInteraction.RadiusAttack(actor, actor.Target, 128);
     }
 
-
     public void Metal(Mobj actor)
     {
         world.StartSound(actor, Sfx.METAL, SfxType.Footstep);
-
         Chase(actor);
     }
-
 
     public void BabyMetal(Mobj actor)
     {
         world.StartSound(actor, Sfx.BSPWLK, SfxType.Footstep);
-
         Chase(actor);
     }
-
 
     public void Hoof(Mobj actor)
     {
         world.StartSound(actor, Sfx.HOOF, SfxType.Footstep);
-
         Chase(actor);
     }
-
 
     ////////////////////////////////////////////////////////////
     // Arch vile
@@ -1142,35 +915,25 @@ public sealed class MonsterBehavior
         vileCheckFunc = VileCheck;
     }
 
-
     private bool VileCheck(Mobj thing)
     {
+        // Not a monster.
         if ((thing.Flags & MobjFlags.Corpse) == 0)
-        {
-            // Not a monster.
             return true;
-        }
 
+        // Not lying still yet.
         if (thing.Tics != -1)
-        {
-            // Not lying still yet.
             return true;
-        }
 
+        // Monster doesn't have a raise state.
         if (thing.Info.Raisestate == MobjState.Null)
-        {
-            // Monster doesn't have a raise state.
             return true;
-        }
 
         var maxDist = thing.Info.Radius + DoomInfo.MobjInfos[(int)MobjType.Vile].Radius;
 
-        if (Fixed.Abs(thing.X - vileTryX) > maxDist ||
-            Fixed.Abs(thing.Y - vileTryY) > maxDist)
-        {
-            // Not actually touching.
+        // Not actually touching.
+        if (Fixed.Abs(thing.X - vileTryX) > maxDist || Fixed.Abs(thing.Y - vileTryY) > maxDist)
             return true;
-        }
 
         vileTargetCorpse = thing;
         vileTargetCorpse.MomX = vileTargetCorpse.MomY = Fixed.Zero;
@@ -1183,16 +946,9 @@ public sealed class MonsterBehavior
 
         vileTargetCorpse.Height >>= 2;
 
-        if (!check)
-        {
-            // Doesn't fit here.
-            return true;
-        }
-
-        // Got one, so stop checking.
-        return false;
+        // If not check, it doesn't fit here, else we got one and stop checking
+        return !check;
     }
-
 
     public void VileChase(Mobj actor)
     {
@@ -1243,12 +999,10 @@ public sealed class MonsterBehavior
         Chase(actor);
     }
 
-
     public void VileStart(Mobj actor)
     {
         world.StartSound(actor, Sfx.VILATK, SfxType.Weapon);
     }
-
 
     public void StartFire(Mobj actor)
     {
@@ -1257,7 +1011,6 @@ public sealed class MonsterBehavior
         Fire(actor);
     }
 
-
     public void FireCrackle(Mobj actor)
     {
         world.StartSound(actor, Sfx.FLAME, SfxType.Weapon);
@@ -1265,23 +1018,18 @@ public sealed class MonsterBehavior
         Fire(actor);
     }
 
-
     public void Fire(Mobj actor)
     {
         var dest = actor.Tracer;
 
-        if (dest == null)
-        {
+        if (dest is null)
             return;
-        }
 
         var target = world.SubstNullMobj(actor.Target);
 
         // Don't move it if the vile lost sight.
         if (!world.VisibilityCheck.CheckSight(target, dest))
-        {
             return;
-        }
 
         world.ThingMovement.UnsetThingPosition(actor);
 
@@ -1293,13 +1041,10 @@ public sealed class MonsterBehavior
         world.ThingMovement.SetThingPosition(actor);
     }
 
-
     public void VileTarget(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -1315,30 +1060,23 @@ public sealed class MonsterBehavior
         Fire(fog);
     }
 
-
     public void VileAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
         if (!world.VisibilityCheck.CheckSight(actor, actor.Target))
-        {
             return;
-        }
 
         world.StartSound(actor, Sfx.BAREXP, SfxType.Weapon);
         world.ThingInteraction.DamageMobj(actor.Target, actor, actor, 20);
         actor.Target.MomZ = Fixed.FromInt(1000) / actor.Target.Info.Mass;
 
         var fire = actor.Tracer;
-        if (fire == null)
-        {
+        if (fire is null)
             return;
-        }
 
         var angle = actor.Angle;
 
@@ -1348,17 +1086,14 @@ public sealed class MonsterBehavior
         world.ThingInteraction.RadiusAttack(fire, actor, 70);
     }
 
-
     ////////////////////////////////////////////////////////////
     // Revenant
     ////////////////////////////////////////////////////////////
 
     public void SkelMissile(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
@@ -1375,15 +1110,12 @@ public sealed class MonsterBehavior
         missile.Tracer = actor.Target;
     }
 
-
-    private static readonly Angle traceAngle = new Angle(0xc000000);
+    private static readonly Angle traceAngle = new(0xc000000);
 
     public void Tracer(Mobj actor)
     {
         if ((world.GameTic & 3) != 0)
-        {
             return;
-        }
 
         // Spawn a puff of smoke behind the rocket.
         world.Hitscan.SpawnPuff(actor.X, actor.Y, actor.Z);
@@ -1397,17 +1129,13 @@ public sealed class MonsterBehavior
         smoke.MomZ = Fixed.One;
         smoke.Tics -= world.Random.Next() & 3;
         if (smoke.Tics < 1)
-        {
             smoke.Tics = 1;
-        }
 
         // Adjust direction.
         var dest = actor.Tracer;
 
-        if (dest == null || dest.Health <= 0)
-        {
+        if (dest is not { Health: > 0 })
             return;
-        }
 
         // Change angle.
         var exact = Geometry.PointToAngle(
@@ -1420,17 +1148,13 @@ public sealed class MonsterBehavior
             {
                 actor.Angle -= traceAngle;
                 if (exact - actor.Angle < Angle.Ang180)
-                {
                     actor.Angle = exact;
-                }
             }
             else
             {
                 actor.Angle += traceAngle;
                 if (exact - actor.Angle > Angle.Ang180)
-                {
                     actor.Angle = exact;
-                }
             }
         }
 
@@ -1446,53 +1170,39 @@ public sealed class MonsterBehavior
         var num = (dest.Z + Fixed.FromInt(40) - actor.Z).Data;
         var den = dist.Data / actor.Info.Speed;
         if (den < 1)
-        {
             den = 1;
-        }
 
         var slope = new Fixed(num / den);
 
         if (slope < actor.MomZ)
-        {
             actor.MomZ -= Fixed.One / 8;
-        }
         else
-        {
             actor.MomZ += Fixed.One / 8;
-        }
     }
-
 
     public void SkelWhoosh(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
-
         world.StartSound(actor, Sfx.SKESWG, SfxType.Weapon);
     }
 
-
     public void SkelFist(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
 
-        if (CheckMeleeRange(actor))
-        {
-            var damage = ((world.Random.Next() % 10) + 1) * 6;
-            world.StartSound(actor, Sfx.SKEPCH, SfxType.Weapon);
-            world.ThingInteraction.DamageMobj(actor.Target, actor, actor, damage);
-        }
-    }
+        if (!CheckMeleeRange(actor))
+            return;
 
+        var damage = ((world.Random.Next() % 10) + 1) * 6;
+        world.StartSound(actor, Sfx.SKEPCH, SfxType.Weapon);
+        world.ThingInteraction.DamageMobj(actor.Target, actor, actor, damage);
+    }
 
     ////////////////////////////////////////////////////////////
     // Pain elemental
@@ -1506,17 +1216,13 @@ public sealed class MonsterBehavior
         foreach (var thinker in world.Thinkers)
         {
             if (thinker is Mobj { Type: MobjType.Skull })
-            {
                 count++;
-            }
         }
 
         // If there are allready 20 skulls on the level,
         // don't spit another one.
         if (count > 20)
-        {
             return;
-        }
 
         // Okay, there's playe for another one.
 
@@ -1542,19 +1248,14 @@ public sealed class MonsterBehavior
         SkullAttack(skull);
     }
 
-
     public void PainAttack(Mobj actor)
     {
-        if (actor.Target == null)
-        {
+        if (actor.Target is null)
             return;
-        }
 
         FaceTarget(actor);
-
         PainShootSkull(actor, actor.Angle);
     }
-
 
     public void PainDie(Mobj actor)
     {
@@ -1564,7 +1265,6 @@ public sealed class MonsterBehavior
         PainShootSkull(actor, actor.Angle + Angle.Ang180);
         PainShootSkull(actor, actor.Angle + Angle.Ang270);
     }
-
 
     ////////////////////////////////////////////////////////////
     // Boss death
@@ -1584,14 +1284,10 @@ public sealed class MonsterBehavior
         if (options.GameMode == GameMode.Commercial)
         {
             if (options.Map != 7)
-            {
                 return;
-            }
 
-            if ((actor.Type != MobjType.Fatso) && (actor.Type != MobjType.Baby))
-            {
+            if (actor.Type != MobjType.Fatso && actor.Type != MobjType.Baby)
                 return;
-            }
         }
         else
         {
@@ -1599,40 +1295,28 @@ public sealed class MonsterBehavior
             {
                 case 1:
                     if (options.Map != 8)
-                    {
                         return;
-                    }
 
                     if (actor.Type != MobjType.Bruiser)
-                    {
                         return;
-                    }
 
                     break;
 
                 case 2:
                     if (options.Map != 8)
-                    {
                         return;
-                    }
 
                     if (actor.Type != MobjType.Cyborg)
-                    {
                         return;
-                    }
 
                     break;
 
                 case 3:
                     if (options.Map != 8)
-                    {
                         return;
-                    }
 
                     if (actor.Type != MobjType.Spider)
-                    {
                         return;
-                    }
 
                     break;
 
@@ -1641,17 +1325,13 @@ public sealed class MonsterBehavior
                     {
                         case 6:
                             if (actor.Type != MobjType.Cyborg)
-                            {
                                 return;
-                            }
 
                             break;
 
                         case 8:
                             if (actor.Type != MobjType.Spider)
-                            {
                                 return;
-                            }
 
                             break;
 
@@ -1663,44 +1343,34 @@ public sealed class MonsterBehavior
 
                 default:
                     if (options.Map != 8)
-                    {
                         return;
-                    }
 
                     break;
             }
         }
 
         // Make sure there is a player alive for victory.
-        var players = world.Options.Players;
+        var players = world.Options.Players.AsSpan();
         int i;
-        for (i = 0; i < Player.MaxPlayerCount; i++)
+        for (i = 0; i < players.Length; i++)
         {
             if (players[i].InGame && players[i].Health > 0)
-            {
                 break;
-            }
         }
 
+        // No one left alive, so do not end game.
         if (i == Player.MaxPlayerCount)
-        {
-            // No one left alive, so do not end game.
             return;
-        }
 
         // Scan the remaining thinkers to see if all bosses are dead.
         foreach (var thinker in world.Thinkers)
         {
             if (thinker is not Mobj mo2)
-            {
                 continue;
-            }
 
+            // Other boss not dead.
             if (mo2 != actor && mo2.Type == actor.Type && mo2.Health > 0)
-            {
-                // Other boss not dead.
                 return;
-            }
         }
 
         // Victory!
@@ -1753,7 +1423,6 @@ public sealed class MonsterBehavior
         world.ExitLevel();
     }
 
-
     public void KeenDie(Mobj actor)
     {
         Fall(actor);
@@ -1763,21 +1432,16 @@ public sealed class MonsterBehavior
         foreach (var thinker in world.Thinkers)
         {
             if (thinker is not Mobj mo2)
-            {
                 continue;
-            }
 
+            // other Keen not dead
             if (mo2 != actor && mo2.Type == actor.Type && mo2.Health > 0)
-            {
-                // other Keen not dead
                 return;
-            }
         }
 
         junk.Tag = 666;
         world.SectorAction.DoDoor(junk, VerticalDoorType.Open);
     }
-
 
     ////////////////////////////////////////////////////////////
     // Icon of sin
@@ -1796,7 +1460,6 @@ public sealed class MonsterBehavior
         easy = false;
     }
 
-
     public void BrainAwake(Mobj actor)
     {
         // Find all the target spots.
@@ -1805,11 +1468,9 @@ public sealed class MonsterBehavior
 
         foreach (var thinker in world.Thinkers)
         {
+            // Not a mobj.
             if (thinker is not Mobj mobj)
-            {
-                // Not a mobj.
                 continue;
-            }
 
             if (mobj.Type == MobjType.Bosstarget)
             {
@@ -1821,12 +1482,10 @@ public sealed class MonsterBehavior
         world.StartSound(actor, Sfx.BOSSIT, SfxType.Diffuse);
     }
 
-
     public void BrainPain(Mobj actor)
     {
         world.StartSound(actor, Sfx.BOSPN, SfxType.Diffuse);
     }
-
 
     public void BrainScream(Mobj actor)
     {
@@ -1850,7 +1509,6 @@ public sealed class MonsterBehavior
         world.StartSound(actor, Sfx.BOSDTH, SfxType.Diffuse);
     }
 
-
     public void BrainExplode(Mobj actor)
     {
         var random = world.Random;
@@ -1864,32 +1522,24 @@ public sealed class MonsterBehavior
         explosion.SetState(MobjState.Brainexplode1);
         explosion.Tics -= random.Next() & 7;
         if (explosion.Tics < 1)
-        {
             explosion.Tics = 1;
-        }
     }
-
 
     public void BrainDie(Mobj actor)
     {
         world.ExitLevel();
     }
 
-
     public void BrainSpit(Mobj actor)
     {
-        easy = !easy;
+        easy ^= true;
         if (world.Options.Skill <= GameSkill.Easy && (!easy))
-        {
             return;
-        }
 
         // If the game is reconstructed from a savedata, brain targets might be cleared.
         // If so, re-initialize them to avoid crash.
         if (brainTargetCount == 0)
-        {
             BrainAwake(actor);
-        }
 
         // Shoot a cube at current target.
         var target = brainTargets[currentBrainTarget];
@@ -1903,27 +1553,23 @@ public sealed class MonsterBehavior
         world.StartSound(actor, Sfx.BOSPIT, SfxType.Diffuse);
     }
 
-
     public void SpawnSound(Mobj actor)
     {
         world.StartSound(actor, Sfx.BOSCUB, SfxType.Misc);
         SpawnFly(actor);
     }
 
-
     public void SpawnFly(Mobj actor)
     {
+        // Still flying.
         if (--actor.ReactionTime > 0)
-        {
-            // Still flying.
             return;
-        }
 
         var target = actor.Target;
 
         // If the game is reconstructed from a savedata, the target might be null.
         // If so, use own position to spawn the monster.
-        if (target == null)
+        if (target is null)
         {
             target = actor;
             actor.Z = actor.Subsector.Sector.FloorHeight;
@@ -1939,57 +1585,24 @@ public sealed class MonsterBehavior
         var r = world.Random.Next();
 
         // Probability distribution (kind of :), decreasing likelihood.
-        MobjType type;
-        if (r < 50)
+        var type = r switch
         {
-            type = MobjType.Troop;
-        }
-        else if (r < 90)
-        {
-            type = MobjType.Sergeant;
-        }
-        else if (r < 120)
-        {
-            type = MobjType.Shadows;
-        }
-        else if (r < 130)
-        {
-            type = MobjType.Pain;
-        }
-        else if (r < 160)
-        {
-            type = MobjType.Head;
-        }
-        else if (r < 162)
-        {
-            type = MobjType.Vile;
-        }
-        else if (r < 172)
-        {
-            type = MobjType.Undead;
-        }
-        else if (r < 192)
-        {
-            type = MobjType.Baby;
-        }
-        else if (r < 222)
-        {
-            type = MobjType.Fatso;
-        }
-        else if (r < 246)
-        {
-            type = MobjType.Knight;
-        }
-        else
-        {
-            type = MobjType.Bruiser;
-        }
+            < 50  => MobjType.Troop,
+            < 90  => MobjType.Sergeant,
+            < 120 => MobjType.Shadows,
+            < 130 => MobjType.Pain,
+            < 160 => MobjType.Head,
+            < 162 => MobjType.Vile,
+            < 172 => MobjType.Undead,
+            < 192 => MobjType.Baby,
+            < 222 => MobjType.Fatso,
+            < 246 => MobjType.Knight,
+            _     => MobjType.Bruiser
+        };
 
         var monster = ta.SpawnMobj(target.X, target.Y, target.Z, type);
         if (LookForPlayers(monster, true))
-        {
             monster.SetState(monster.Info.SeeState);
-        }
 
         // Telefrag anything in this spot.
         world.ThingMovement.TeleportMove(monster, monster.X, monster.Y);
