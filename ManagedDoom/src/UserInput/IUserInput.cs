@@ -16,16 +16,15 @@
 
 using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom.UserInput
-{
-    public interface IUserInput
-    {
-        void BuildTicCmd(TicCmd cmd);
-        void Reset();
-        void GrabMouse();
-        void ReleaseMouse();
+namespace ManagedDoom.UserInput;
 
-        public int MaxMouseSensitivity { get; }
-        public int MouseSensitivity { get; set; }
-    }
+public interface IUserInput
+{
+    void BuildTicCmd(TicCmd cmd);
+    void Reset();
+    void GrabMouse();
+    void ReleaseMouse();
+
+    public int MaxMouseSensitivity { get; }
+    public int MouseSensitivity { get; set; }
 }

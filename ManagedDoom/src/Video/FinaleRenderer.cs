@@ -20,45 +20,41 @@ using ManagedDoom.Doom.Intermission;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Wad;
 
-namespace ManagedDoom.Video
+namespace ManagedDoom.Video;
+
+public sealed class FinaleRenderer
 {
-    public sealed class FinaleRenderer
+    private readonly PatchCache cache;
+    private readonly IFlatLookup flats;
+    private readonly int scale;
+
+    private readonly DrawScreen screen;
+    private readonly ISpriteLookup sprites;
+    private readonly Wad wad;
+
+    public FinaleRenderer(GameContent content, DrawScreen screen)
     {
-        private readonly Wad wad;
-        private readonly IFlatLookup flats;
-        private readonly ISpriteLookup sprites;
+        wad = content.Wad;
+        flats = content.Flats;
+        sprites = content.Sprites;
 
-        private readonly DrawScreen screen;
-        private readonly int scale;
+        this.screen = screen;
+        scale = screen.Width / 320;
 
-        private readonly PatchCache cache;
+        cache = new PatchCache(wad);
+    }
 
-        public FinaleRenderer(GameContent content, DrawScreen screen)
+    public void Render(Finale finale)
+    {
+        switch (finale.Stage)
         {
-            wad = content.Wad;
-            flats = content.Flats;
-            sprites = content.Sprites;
-
-            this.screen = screen;
-            scale = screen.Width / 320;
-
-            cache = new PatchCache(wad);
-        }
-
-        public void Render(Finale finale)
-        {
-            if (finale.Stage == 2)
-            {
+            case 2:
                 RenderCast(finale);
                 return;
-            }
-
-            if (finale.Stage == 0)
-            {
+            case 0:
                 RenderTextScreen(finale);
-            }
-            else
-            {
+                break;
+            default:
                 switch (finale.Options.Episode)
                 {
                     case 1:
@@ -77,142 +73,144 @@ namespace ManagedDoom.Video
                         DrawPatch("ENDPIC", 0, 0);
                         break;
                 }
-            }
+
+                break;
+        }
+    }
+
+    private void RenderTextScreen(Finale finale)
+    {
+        FillFlat(flats[finale.Flat]);
+
+        // Draw some of the text onto the screen.
+        var cx = 10 * scale;
+        var cy = 17 * scale;
+        var ch = 0;
+
+        var count = (finale.Count - 10) / Finale.TextSpeed;
+        if (count < 0)
+        {
+            count = 0;
         }
 
-        private void RenderTextScreen(Finale finale)
+        for (; count > 0; count--)
         {
-            FillFlat(flats[finale.Flat]);
-
-            // Draw some of the text onto the screen.
-            var cx = 10 * scale;
-            var cy = 17 * scale;
-            var ch = 0;
-
-            var count = (finale.Count - 10) / Finale.TextSpeed;
-            if (count < 0)
+            if (ch == finale.Text.Length)
             {
-                count = 0;
+                break;
             }
 
-            for (; count > 0; count--)
+            var c = finale.Text[ch++];
+
+            if (c == '\n')
             {
-                if (ch == finale.Text.Length)
-                {
+                cx = 10 * scale;
+                cy += 11 * scale;
+                continue;
+            }
+
+            screen.DrawChar(c, cx, cy, scale);
+
+            cx += screen.MeasureChar(c, scale);
+        }
+    }
+
+    private void BunnyScroll(Finale finale)
+    {
+        var scroll = 320 - finale.Scrolled;
+        DrawPatch("PFUB2", scroll - 320, 0);
+        DrawPatch("PFUB1", scroll, 0);
+
+        if (finale.ShowTheEnd)
+        {
+            var patch = "END0";
+            switch (finale.TheEndIndex)
+            {
+                case 1:
+                    patch = "END1";
                     break;
-                }
-
-                var c = finale.Text[ch++];
-
-                if (c == '\n')
-                {
-                    cx = 10 * scale;
-                    cy += 11 * scale;
-                    continue;
-                }
-
-                screen.DrawChar(c, cx, cy, scale);
-
-                cx += screen.MeasureChar(c, scale);
+                case 2:
+                    patch = "END2";
+                    break;
+                case 3:
+                    patch = "END3";
+                    break;
+                case 4:
+                    patch = "END4";
+                    break;
+                case 5:
+                    patch = "END5";
+                    break;
+                case 6:
+                    patch = "END6";
+                    break;
             }
+
+            DrawPatch(
+                patch,
+                (320 - 13 * 8) / 2,
+                (240 - 8 * 8) / 2);
         }
+    }
 
-        private void BunnyScroll(Finale finale)
+    private void FillFlat(Flat flat)
+    {
+        var src = flat.Data;
+        var dst = screen.Data;
+        var scale = screen.Width / 320;
+        var xFrac = Fixed.One / scale - Fixed.Epsilon;
+        var step = Fixed.One / scale;
+        for (var x = 0; x < screen.Width; x++)
         {
-            var scroll = 320 - finale.Scrolled;
-            DrawPatch("PFUB2", scroll - 320, 0);
-            DrawPatch("PFUB1", scroll, 0);
-
-            if (finale.ShowTheEnd)
+            var yFrac = Fixed.One / scale - Fixed.Epsilon;
+            var p = screen.Height * x;
+            for (var y = 0; y < screen.Height; y++)
             {
-                var patch = "END0";
-                switch (finale.TheEndIndex)
-                {
-                    case 1:
-                        patch = "END1";
-                        break;
-                    case 2:
-                        patch = "END2";
-                        break;
-                    case 3:
-                        patch = "END3";
-                        break;
-                    case 4:
-                        patch = "END4";
-                        break;
-                    case 5:
-                        patch = "END5";
-                        break;
-                    case 6:
-                        patch = "END6";
-                        break;
-                }
-
-                DrawPatch(
-                    patch,
-                    (320 - 13 * 8) / 2,
-                    (240 - 8 * 8) / 2);
+                var spotX = xFrac.ToIntFloor() & 0x3F;
+                var spotY = yFrac.ToIntFloor() & 0x3F;
+                dst[p] = src[(spotY << 6) + spotX];
+                yFrac += step;
+                p++;
             }
+
+            xFrac += step;
         }
+    }
 
-        private void FillFlat(Flat flat)
+    private void DrawPatch(string name, int x, int y)
+    {
+        var widthScaled = screen.Width / 320;
+        screen.DrawPatch(cache[name], widthScaled * x, widthScaled * y, widthScaled);
+    }
+
+    private void RenderCast(Finale finale)
+    {
+        DrawPatch("BOSSBACK", 0, 0);
+
+        var frame = finale.CastState.Frame & 0x7fff;
+        var patch = sprites[finale.CastState.Sprite].Frames[frame].Patches[0];
+        if (sprites[finale.CastState.Sprite].Frames[frame].Flip[0])
         {
-            var src = flat.Data;
-            var dst = screen.Data;
-            var scale = screen.Width / 320;
-            var xFrac = Fixed.One / scale - Fixed.Epsilon;
-            var step = Fixed.One / scale;
-            for (var x = 0; x < screen.Width; x++)
-            {
-                var yFrac = Fixed.One / scale - Fixed.Epsilon;
-                var p = screen.Height * x;
-                for (var y = 0; y < screen.Height; y++)
-                {
-                    var spotX = xFrac.ToIntFloor() & 0x3F;
-                    var spotY = yFrac.ToIntFloor() & 0x3F;
-                    dst[p] = src[(spotY << 6) + spotX];
-                    yFrac += step;
-                    p++;
-                }
-                xFrac += step;
-            }
-        }
-
-        private void DrawPatch(string name, int x, int y)
-        {
-            var widthScaled = screen.Width / 320;
-            screen.DrawPatch(cache[name], widthScaled * x, widthScaled * y, widthScaled);
-        }
-
-        private void RenderCast(Finale finale)
-        {
-            DrawPatch("BOSSBACK", 0, 0);
-
-            var frame = finale.CastState.Frame & 0x7fff;
-            var patch = sprites[finale.CastState.Sprite].Frames[frame].Patches[0];
-            if (sprites[finale.CastState.Sprite].Frames[frame].Flip[0])
-            {
-                screen.DrawPatchFlip(
-                    patch,
-                    screen.Width / 2,
-                    screen.Height - scale * 30,
-                    scale);
-            }
-            else
-            {
-                screen.DrawPatch(
-                    patch,
-                    screen.Width / 2,
-                    screen.Height - scale * 30,
-                    scale);
-            }
-
-            var width = screen.MeasureText(finale.CastName, scale);
-            screen.DrawText(
-                finale.CastName,
-                (screen.Width - width) / 2,
-                screen.Height - scale * 13,
+            screen.DrawPatchFlip(
+                patch,
+                screen.Width / 2,
+                screen.Height - scale * 30,
                 scale);
         }
+        else
+        {
+            screen.DrawPatch(
+                patch,
+                screen.Width / 2,
+                screen.Height - scale * 30,
+                scale);
+        }
+
+        var width = screen.MeasureText(finale.CastName, scale);
+        screen.DrawText(
+            finale.CastName,
+            (screen.Width - width) / 2,
+            screen.Height - scale * 13,
+            scale);
     }
 }

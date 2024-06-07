@@ -14,16 +14,15 @@
 //
 
 
-namespace ManagedDoom.UserInput
+namespace ManagedDoom.UserInput;
+
+public enum DoomMouseButton
 {
-    public enum DoomMouseButton
-    {
-        Unknown = -1,
-        Mouse1 = 0,
-        Mouse2,
-        Mouse3,
-        Mouse4,
-        Mouse5,
-        Count
-    }
+    Unknown = -1,
+    Mouse1 = 0,
+    Mouse2,
+    Mouse3,
+    Mouse4,
+    Mouse5,
+    Count
 }

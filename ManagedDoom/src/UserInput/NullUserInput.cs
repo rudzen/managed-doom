@@ -16,43 +16,40 @@
 
 using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom.UserInput
+namespace ManagedDoom.UserInput;
+
+public sealed class NullUserInput : IUserInput
 {
-    public sealed class NullUserInput : IUserInput
+    private static NullUserInput instance;
+
+    public static NullUserInput GetInstance()
     {
-        private static NullUserInput instance;
+        return instance ??= new NullUserInput();
+    }
 
-        public static NullUserInput GetInstance()
-        {
-            return instance ??= new NullUserInput();
-        }
+    public void BuildTicCmd(TicCmd cmd)
+    {
+        cmd.Clear();
+    }
 
-        public void BuildTicCmd(TicCmd cmd)
-        {
-            cmd.Clear();
-        }
+    public void Reset()
+    {
+    }
 
-        public void Reset()
-        {
-        }
+    public void GrabMouse()
+    {
+    }
 
-        public void GrabMouse()
-        {
-        }
+    public void ReleaseMouse()
+    {
+    }
 
-        public void ReleaseMouse()
-        {
-        }
+    public int MaxMouseSensitivity => 9;
 
-        public int MaxMouseSensitivity => 9;
+    public int MouseSensitivity
+    {
+        get => 3;
 
-        public int MouseSensitivity
-        {
-            get => 3;
-
-            set
-            {
-            }
-        }
+        set { }
     }
 }

@@ -19,59 +19,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace ManagedDoom.UserInput
+namespace ManagedDoom.UserInput;
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(KeyBinding))]
+public sealed class KeyBinding
 {
-    [JsonSourceGenerationOptions(WriteIndented = true)]
-    [JsonSerializable(typeof(KeyBinding))]
-    public sealed partial class KeyBinding
+    private static readonly KeyBinding empty = new([], []);
+
+    public DoomKey[] Keys { get; set; }
+    public DoomMouseButton[] MouseButtons { get; set; }
+
+    public KeyBinding(DoomKey[] keys, DoomMouseButton[] mouseButtons)
     {
-        private static readonly KeyBinding empty = new([], []);
+        Keys = keys;
+        MouseButtons = mouseButtons;
+    }
 
-        public DoomKey[] Keys { get; set; }
-        public DoomMouseButton[] MouseButtons { get; set; }
+    public override string ToString()
+    {
+        var keyValues = Keys.Select(DoomKeyEx.ToString);
+        var mouseValues = MouseButtons.Select(DoomMouseButtonEx.ToString);
+        var values = keyValues.Concat(mouseValues).ToArray();
+        return values.Length > 0 ? string.Join(", ", values) : "none";
+    }
 
-        public KeyBinding(DoomKey[] keys, DoomMouseButton[] mouseButtons)
+    public static KeyBinding Parse(string value)
+    {
+        if (value == "none")
+            return empty;
+
+        var split = value.Split(',');
+
+        var keys = new List<DoomKey>(split.Length);
+        var mouseButtons = new List<DoomMouseButton>(split.Length);
+
+        foreach (var s in split)
         {
-            Keys = keys;
-            MouseButtons = mouseButtons;
-        }
-        
-        public override string ToString()
-        {
-            var keyValues = Keys.Select(DoomKeyEx.ToString);
-            var mouseValues = MouseButtons.Select(DoomMouseButtonEx.ToString);
-            var values = keyValues.Concat(mouseValues).ToArray();
-            return values.Length > 0 ? string.Join(", ", values) : "none";
-        }
-
-        public static KeyBinding Parse(string value)
-        {
-            if (value == "none")
-                return empty;
-
-            var split = value.Split(',');
-            
-            var keys = new List<DoomKey>(split.Length);
-            var mouseButtons = new List<DoomMouseButton>(split.Length);
-
-            foreach (var s in split)
+            var span = s.AsSpan().Trim();
+            var key = DoomKeyEx.Parse(span);
+            if (key != DoomKey.Unknown)
             {
-                var span = s.AsSpan().Trim();
-                var key = DoomKeyEx.Parse(span);
-                if (key != DoomKey.Unknown)
-                {
-                    keys.Add(key);
-                    continue;
-                }
-
-                var mouseButton = DoomMouseButtonEx.Parse(span);
-                if (mouseButton != DoomMouseButton.Unknown)
-                {
-                    mouseButtons.Add(mouseButton);
-                }
+                keys.Add(key);
+                continue;
             }
 
-            return new KeyBinding(keys.ToArray(), mouseButtons.ToArray());
+            var mouseButton = DoomMouseButtonEx.Parse(span);
+            if (mouseButton != DoomMouseButton.Unknown)
+            {
+                mouseButtons.Add(mouseButton);
+            }
         }
+
+        return new KeyBinding(keys.ToArray(), mouseButtons.ToArray());
     }
 }

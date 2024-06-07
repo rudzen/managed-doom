@@ -20,6 +20,7 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
@@ -348,8 +349,8 @@ public sealed class MonsterBehavior
         // Try direct route.
         if (choices[1] != Direction.None && choices[2] != Direction.None)
         {
-            var a = (deltaY < Fixed.Zero) ? 1 : 0;
-            var b = (deltaX > Fixed.Zero) ? 1 : 0;
+            var a = (deltaY < Fixed.Zero).AsInt();
+            var b = (deltaX > Fixed.Zero).AsInt();
             actor.MoveDir = diags[(a << 1) + b];
 
             if (actor.MoveDir != turnAround && TryWalk(actor))

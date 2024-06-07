@@ -22,6 +22,7 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
@@ -1051,7 +1052,7 @@ public sealed class SectorAction
                         floor.FloorDestHeight = sector.CeilingHeight;
                     }
 
-                    floor.FloorDestHeight -= Fixed.FromInt(8) * (type == FloorMoveType.RaiseFloorCrush ? 1 : 0);
+                    floor.FloorDestHeight -= Fixed.FromInt(8) * (type == FloorMoveType.RaiseFloorCrush).AsInt();
                     break;
 
                 case FloorMoveType.RaiseFloorTurbo:

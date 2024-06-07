@@ -215,7 +215,7 @@ public static partial class SaveAndLoad
         Write(data, ptr + 20, ceiling.BottomHeight.Data);
         Write(data, ptr + 24, ceiling.TopHeight.Data);
         Write(data, ptr + 28, ceiling.Speed.Data);
-        Write(data, ptr + 32, ceiling.Crush ? 1 : 0);
+        Write(data, ptr + 32, ceiling.Crush.AsInt());
         Write(data, ptr + 36, ceiling.Direction);
         Write(data, ptr + 40, ceiling.Tag);
         Write(data, ptr + 44, ceiling.OldDirection);
@@ -243,7 +243,7 @@ public static partial class SaveAndLoad
         ptr = PadPointer(ptr);
         WriteThinkerState(data, ptr + 8, floor.ThinkerState);
         Write(data, ptr + 12, (int)floor.Type);
-        Write(data, ptr + 16, floor.Crush ? 1 : 0);
+        Write(data, ptr + 16, floor.Crush.AsInt());
         Write(data, ptr + 20, floor.Sector.Number);
         Write(data, ptr + 24, floor.Direction);
         Write(data, ptr + 28, (int)floor.NewSpecial);
@@ -266,7 +266,7 @@ public static partial class SaveAndLoad
         Write(data, ptr + 32, plat.Count);
         Write(data, ptr + 36, (int)plat.Status);
         Write(data, ptr + 40, (int)plat.OldStatus);
-        Write(data, ptr + 44, plat.Crush ? 1 : 0);
+        Write(data, ptr + 44, plat.Crush.AsInt());
         Write(data, ptr + 48, plat.Tag);
         Write(data, ptr + 52, (int)plat.Type);
         return ptr + 56;
@@ -338,7 +338,7 @@ public static partial class SaveAndLoad
         Write(data, p + 116, (int)player.PendingWeapon);
         for (var i = 0; i < player.WeaponOwned.Length; i++)
         {
-            Write(data, p + 120 + 4 * i, player.WeaponOwned[i] ? 1 : 0);
+            Write(data, p + 120 + 4 * i, player.WeaponOwned[i].AsInt());
         }
 
         for (var i = 0; i < player.Ammo.Length; i++)
@@ -351,8 +351,8 @@ public static partial class SaveAndLoad
             Write(data, p + 172 + 4 * i, player.MaxAmmo[i]);
         }
 
-        Write(data, p + 188, player.AttackDown ? 1 : 0);
-        Write(data, p + 192, player.UseDown ? 1 : 0);
+        Write(data, p + 188, player.AttackDown.AsInt());
+        Write(data, p + 192, player.UseDown.AsInt());
         Write(data, p + 196, (int)player.Cheats);
         Write(data, p + 200, player.Refire);
         Write(data, p + 204, player.KillCount);

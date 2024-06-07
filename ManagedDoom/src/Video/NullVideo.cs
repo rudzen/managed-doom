@@ -16,53 +16,52 @@
 
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Video
+namespace ManagedDoom.Video;
+
+public class NullVideo : IVideo
 {
-    public class NullVideo : IVideo
+    private static NullVideo instance;
+
+    public void Render(Doom.Doom doom, Fixed frameFrac)
     {
-        private static NullVideo instance;
+    }
 
-        public static NullVideo GetInstance()
-        {
-            return instance ??= new NullVideo();
-        }
+    public void InitializeWipe()
+    {
+    }
 
-        public void Render(Doom.Doom doom, Fixed frameFrac)
-        {
-        }
+    public bool HasFocus()
+    {
+        return true;
+    }
 
-        public void InitializeWipe()
-        {
-        }
+    public int MaxWindowSize => ThreeDRenderer.MaxScreenSize;
 
-        public bool HasFocus()
-        {
-            return true;
-        }
+    public int WindowSize
+    {
+        get => 7;
+        set { }
+    }
 
-        public int MaxWindowSize => ThreeDRenderer.MaxScreenSize;
+    public bool DisplayMessage
+    {
+        get => true;
+        set { }
+    }
 
-        public int WindowSize
-        {
-            get => 7;
-            set { }
-        }
+    public int MaxGammaCorrectionLevel => 10;
 
-        public bool DisplayMessage
-        {
-            get => true;
-            set { }
-        }
+    public int GammaCorrectionLevel
+    {
+        get => 2;
+        set { }
+    }
 
-        public int MaxGammaCorrectionLevel => 10;
+    public int WipeBandCount => 321;
+    public int WipeHeight => 200;
 
-        public int GammaCorrectionLevel
-        {
-            get => 2;
-            set { }
-        }
-
-        public int WipeBandCount => 321;
-        public int WipeHeight => 200;
+    public static NullVideo GetInstance()
+    {
+        return instance ??= new NullVideo();
     }
 }

@@ -15,68 +15,65 @@
 
 
 using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Extensions;
 
-namespace ManagedDoom.Video
+namespace ManagedDoom.Video;
+
+public sealed class WipeEffect
 {
-    public sealed class WipeEffect
+    private static readonly UpdateResult[] updateResults = [UpdateResult.None, UpdateResult.Completed];
+
+    private readonly int height;
+    private readonly DoomRandom random;
+
+    public WipeEffect(int width, int height)
     {
-        private static readonly UpdateResult[] updateResults = [UpdateResult.None, UpdateResult.Completed];
+        Y = new short[width];
+        this.height = height;
+        random = new DoomRandom(DateTime.Now.Millisecond);
+    }
 
-        private readonly int height;
-        private readonly DoomRandom random;
+    public short[] Y { get; }
 
-        public WipeEffect(int width, int height)
+    public void Start()
+    {
+        Y[0] = (short)(-(random.Next() % 16));
+        for (var i = 1; i < Y.Length; i++)
         {
-            Y = new short[width];
-            this.height = height;
-            random = new DoomRandom(DateTime.Now.Millisecond);
-        }
-
-        public void Start()
-        {
-            Y[0] = (short)(-(random.Next() % 16));
-            for (var i = 1; i < Y.Length; i++)
+            var r = random.Next() % 3 - 1;
+            var v = (short)(Y[i - 1] + r);
+            Y[i] = v switch
             {
-                var r = random.Next() % 3 - 1;
-                var v = (short)(Y[i - 1] + r);
-                Y[i] = v switch
-                {
-                    > 0 => 0,
-                    -16 => -15,
-                    _   => v
-                };
+                > 0 => 0,
+                -16 => -15,
+                _   => v
+            };
+        }
+    }
+
+    public UpdateResult Update()
+    {
+        var done = true;
+
+        for (var i = 0; i < Y.Length; i++)
+        {
+            if (Y[i] < 0)
+            {
+                Y[i]++;
+                done = false;
+            }
+            else if (Y[i] < height)
+            {
+                var dy = (Y[i] < 16) ? Y[i] + 1 : 8;
+                if (Y[i] + dy >= height)
+                    dy = height - Y[i];
+                Y[i] += (short)dy;
+                done = false;
             }
         }
 
-        public UpdateResult Update()
-        {
-            var done = true;
-
-            for (var i = 0; i < Y.Length; i++)
-            {
-                if (Y[i] < 0)
-                {
-                    Y[i]++;
-                    done = false;
-                }
-                else if (Y[i] < height)
-                {
-                    var dy = (Y[i] < 16) ? Y[i] + 1 : 8;
-                    if (Y[i] + dy >= height)
-                        dy = height - Y[i];
-                    Y[i] += (short)dy;
-                    done = false;
-                }
-            }
-
-            return updateResults[done.AsByte()];
-        }
-
-        public short[] Y { get; }
+        return updateResults[done.AsByte()];
     }
 }

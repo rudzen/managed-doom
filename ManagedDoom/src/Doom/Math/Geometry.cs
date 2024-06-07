@@ -17,155 +17,127 @@
 using System;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Extensions;
 
-namespace ManagedDoom.Doom.Math
+namespace ManagedDoom.Doom.Math;
+
+public static class Geometry
 {
-    public static class Geometry
+    private const int slopeRange = 2048;
+    private const int slopeBits = 11;
+    private const int fracToSlopeShift = Fixed.FracBits - slopeBits;
+
+    private static uint SlopeDiv(Fixed num, Fixed den)
     {
-        private const int slopeRange = 2048;
-        private const int slopeBits = 11;
-        private const int fracToSlopeShift = Fixed.FracBits - slopeBits;
-
-        private static uint SlopeDiv(Fixed num, Fixed den)
+        if ((uint)den.Data < 512)
         {
-            if ((uint)den.Data < 512)
-            {
-                return slopeRange;
-            }
-
-            var ans = ((uint)num.Data << 3) / ((uint)den.Data >> 8);
-
-            return ans <= slopeRange ? ans : slopeRange;
+            return slopeRange;
         }
 
-        /// <summary>
-        /// Calculate the distance between the two points.
-        /// </summary>
-        public static Fixed PointToDist(Fixed fromX, Fixed fromY, Fixed toX, Fixed toY)
+        var ans = ((uint)num.Data << 3) / ((uint)den.Data >> 8);
+
+        return ans <= slopeRange ? ans : slopeRange;
+    }
+
+    /// <summary>
+    /// Calculate the distance between the two points.
+    /// </summary>
+    public static Fixed PointToDist(Fixed fromX, Fixed fromY, Fixed toX, Fixed toY)
+    {
+        var dx = Fixed.Abs(toX - fromX);
+        var dy = Fixed.Abs(toY - fromY);
+
+        if (dy > dx)
+            (dx, dy) = (dy, dx);
+
+        // The code below to avoid division by zero is based on Chocolate Doom's implementation.
+        Fixed frac;
+        if (dx != Fixed.Zero)
+            frac = dy / dx;
+        else
+            frac = Fixed.Zero;
+
+        var angle = (Trig.TanToAngle((uint)frac.Data >> fracToSlopeShift) + Angle.Ang90);
+
+        // Use as cosine.
+        var dist = dx / Trig.Sin(angle);
+
+        return dist;
+    }
+
+    /// <summary>
+    /// Calculate on which side of the node the point is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front) or 1 (back).
+    /// </returns>
+    public static int PointOnSide(Fixed x, Fixed y, Node node)
+    {
+        if (node.Dx == Fixed.Zero)
         {
-            var dx = Fixed.Abs(toX - fromX);
-            var dy = Fixed.Abs(toY - fromY);
+            if (x <= node.X)
+                return (node.Dy > Fixed.Zero).AsInt();
 
-            if (dy > dx)
-                (dx, dy) = (dy, dx);
-
-            // The code below to avoid division by zero is based on Chocolate Doom's implementation.
-            Fixed frac;
-            if (dx != Fixed.Zero)
-                frac = dy / dx;
-            else
-                frac = Fixed.Zero;
-
-            var angle = (Trig.TanToAngle((uint)frac.Data >> fracToSlopeShift) + Angle.Ang90);
-
-            // Use as cosine.
-            var dist = dx / Trig.Sin(angle);
-
-            return dist;
+            return (node.Dy < Fixed.Zero).AsInt();
         }
 
-        /// <summary>
-        /// Calculate on which side of the node the point is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front) or 1 (back).
-        /// </returns>
-        public static int PointOnSide(Fixed x, Fixed y, Node node)
+        if (node.Dy == Fixed.Zero)
         {
-            if (node.Dx == Fixed.Zero)
-            {
-                if (x <= node.X)
-                    return node.Dy > Fixed.Zero ? 1 : 0;
+            if (y <= node.Y)
+                return (node.Dx < Fixed.Zero).AsInt();
 
-                return node.Dy < Fixed.Zero ? 1 : 0;
-            }
-
-            if (node.Dy == Fixed.Zero)
-            {
-                if (y <= node.Y)
-                    return node.Dx < Fixed.Zero ? 1 : 0;
-
-                return node.Dx > Fixed.Zero ? 1 : 0;
-            }
-
-            var dx = (x - node.X);
-            var dy = (y - node.Y);
-
-            // Try to quickly decide by looking at sign bits.
-            if (((node.Dy.Data ^ node.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
-            {
-                // Left is negative.
-                if (((node.Dy.Data ^ dx.Data) & 0x80000000) != 0)
-                    return 1;
-
-                return 0;
-            }
-
-            var left = new Fixed(node.Dy.Data >> Fixed.FracBits) * dx;
-            var right = dy * new Fixed(node.Dx.Data >> Fixed.FracBits);
-
-            // Front side.
-            if (right < left)
-                return 0;
-
-            // Back side.
-            return 1;
+            return (node.Dx > Fixed.Zero).AsInt();
         }
 
-        /// <summary>
-        /// Calculate the angle of the line passing through the two points.
-        /// </summary>
-        public static Angle PointToAngle(Fixed fromX, Fixed fromY, Fixed toX, Fixed toY)
+        var dx = x - node.X;
+        var dy = y - node.Y;
+
+        // Try to quickly decide by looking at sign bits.
+        if (((node.Dy.Data ^ node.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
-            var x = toX - fromX;
-            var y = toY - fromY;
+            // Left is negative.
+            if (((node.Dy.Data ^ dx.Data) & 0x80000000) != 0)
+                return 1;
 
-            if (x == Fixed.Zero && y == Fixed.Zero)
-                return Angle.Ang0;
+            return 0;
+        }
 
-            if (x >= Fixed.Zero)
-            {
-                // x >= 0
-                if (y >= Fixed.Zero)
-                {
-                    // y >= 0
-                    if (x > y)
-                    {
-                        // octant 0
-                        return Trig.TanToAngle(SlopeDiv(y, x));
-                    }
+        var left = new Fixed(node.Dy.Data >> Fixed.FracBits) * dx;
+        var right = dy * new Fixed(node.Dx.Data >> Fixed.FracBits);
 
-                    // octant 1
-                    return new Angle(Angle.Ang90.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
-                }
+        // Front side.
+        if (right < left)
+            return 0;
 
-                // y < 0
-                y = -y;
+        // Back side.
+        return 1;
+    }
 
-                if (x > y)
-                {
-                    // octant 8
-                    return -Trig.TanToAngle(SlopeDiv(y, x));
-                }
+    /// <summary>
+    /// Calculate the angle of the line passing through the two points.
+    /// </summary>
+    public static Angle PointToAngle(Fixed fromX, Fixed fromY, Fixed toX, Fixed toY)
+    {
+        var x = toX - fromX;
+        var y = toY - fromY;
 
-                // octant 7
-                return Angle.Ang270 + Trig.TanToAngle(SlopeDiv(x, y));
-            }
+        if (x == Fixed.Zero && y == Fixed.Zero)
+            return Angle.Ang0;
 
-            // x < 0
-            x = -x;
-
+        if (x >= Fixed.Zero)
+        {
+            // x >= 0
             if (y >= Fixed.Zero)
             {
                 // y >= 0
                 if (x > y)
                 {
-                    // octant 3
-                    return new Angle(Angle.Ang180.Data - 1) - Trig.TanToAngle(SlopeDiv(y, x));
+                    // octant 0
+                    return Trig.TanToAngle(SlopeDiv(y, x));
                 }
 
-                // octant 2
-                return Angle.Ang90 + Trig.TanToAngle(SlopeDiv(x, y));
+                // octant 1
+                return new Angle(Angle.Ang90.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
             }
 
             // y < 0
@@ -173,386 +145,401 @@ namespace ManagedDoom.Doom.Math
 
             if (x > y)
             {
-                // octant 4
-                return Angle.Ang180 + Trig.TanToAngle(SlopeDiv(y, x));
+                // octant 8
+                return -Trig.TanToAngle(SlopeDiv(y, x));
             }
 
-            // octant 5
-            return new Angle(Angle.Ang270.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
+            // octant 7
+            return Angle.Ang270 + Trig.TanToAngle(SlopeDiv(x, y));
         }
 
-        /// <summary>
-        /// Get the subsector which contains the point.
-        /// </summary>
-        public static Subsector PointInSubsector(Fixed x, Fixed y, Map.Map map)
+        // x < 0
+        x = -x;
+
+        if (y >= Fixed.Zero)
         {
-            // Single subsector is a special case.
-            if (map.Nodes.Length == 0)
+            // y >= 0
+            if (x > y)
             {
-                return map.Subsectors[0];
+                // octant 3
+                return new Angle(Angle.Ang180.Data - 1) - Trig.TanToAngle(SlopeDiv(y, x));
             }
 
-            var nodeNumber = map.Nodes.Length - 1;
-
-            while (!Node.IsSubsector(nodeNumber))
-            {
-                var node = map.Nodes[nodeNumber];
-                var side = PointOnSide(x, y, node);
-                nodeNumber = node.Children[side];
-            }
-
-            return map.Subsectors[Node.GetSubsector(nodeNumber)];
+            // octant 2
+            return Angle.Ang90 + Trig.TanToAngle(SlopeDiv(x, y));
         }
 
-        /// <summary>
-        /// Calculate on which side of the line the point is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front) or 1 (back).
-        /// </returns>
-        public static int PointOnSegSide(Fixed x, Fixed y, Seg line)
+        // y < 0
+        y = -y;
+
+        if (x > y)
         {
-            var lx = line.Vertex1.X;
-            var ly = line.Vertex1.Y;
-
-            var ldx = line.Vertex2.X - lx;
-            var ldy = line.Vertex2.Y - ly;
-
-            if (ldx == Fixed.Zero)
-            {
-                if (x <= lx)
-                {
-                    return ldy > Fixed.Zero ? 1 : 0;
-                }
-
-                return ldy < Fixed.Zero ? 1 : 0;
-            }
-
-            if (ldy == Fixed.Zero)
-            {
-                if (y <= ly)
-                {
-                    return ldx < Fixed.Zero ? 1 : 0;
-                }
-
-                return ldx > Fixed.Zero ? 1 : 0;
-            }
-
-            var dx = (x - lx);
-            var dy = (y - ly);
-
-            // Try to quickly decide by looking at sign bits.
-            if (((ldy.Data ^ ldx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
-            {
-                if (((ldy.Data ^ dx.Data) & 0x80000000) != 0)
-                {
-                    // Left is negative.
-                    return 1;
-                }
-
-                return 0;
-            }
-
-            var left = new Fixed(ldy.Data >> Fixed.FracBits) * dx;
-            var right = dy * new Fixed(ldx.Data >> Fixed.FracBits);
-
-            if (right < left)
-            {
-                // Front side.
-                return 0;
-            }
-
-            // Back side.
-            return 1;
+            // octant 4
+            return Angle.Ang180 + Trig.TanToAngle(SlopeDiv(y, x));
         }
 
-        /// <summary>
-        /// Calculate on which side of the line the point is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front) or 1 (back).
-        /// </returns>
-        public static int PointOnLineSide(Fixed x, Fixed y, LineDef line)
+        // octant 5
+        return new Angle(Angle.Ang270.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
+    }
+
+    /// <summary>
+    /// Get the subsector which contains the point.
+    /// </summary>
+    public static Subsector PointInSubsector(Fixed x, Fixed y, Map.Map map)
+    {
+        // Single subsector is a special case.
+        if (map.Nodes.Length == 0)
         {
-            if (line.Dx == Fixed.Zero)
-            {
-                if (x <= line.Vertex1.X)
-                {
-                    return line.Dy > Fixed.Zero ? 1 : 0;
-                }
-
-                return line.Dy < Fixed.Zero ? 1 : 0;
-            }
-
-            if (line.Dy == Fixed.Zero)
-            {
-                if (y <= line.Vertex1.Y)
-                {
-                    return line.Dx < Fixed.Zero ? 1 : 0;
-                }
-
-                return line.Dx > Fixed.Zero ? 1 : 0;
-            }
-
-            var dx = (x - line.Vertex1.X);
-            var dy = (y - line.Vertex1.Y);
-
-            var left = new Fixed(line.Dy.Data >> Fixed.FracBits) * dx;
-            var right = dy * new Fixed(line.Dx.Data >> Fixed.FracBits);
-
-            if (right < left)
-            {
-                // Front side.
-                return 0;
-            }
-
-            // Back side.
-            return 1;
+            return map.Subsectors[0];
         }
 
-        /// <summary>
-        /// Calculate on which side of the line the box is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front), 1 (back), or -1 if the box crosses the line.
-        /// </returns>
-        public static int BoxOnLineSide(Fixed[] box, LineDef line)
+        var nodeNumber = map.Nodes.Length - 1;
+
+        while (!Node.IsSubsector(nodeNumber))
         {
-            int p1;
-            int p2;
-
-            switch (line.SlopeType)
-            {
-                case SlopeType.Horizontal:
-                    p1 = box[Box.Top] > line.Vertex1.Y ? 1 : 0;
-                    p2 = box[Box.Bottom] > line.Vertex1.Y ? 1 : 0;
-                    if (line.Dx < Fixed.Zero)
-                    {
-                        p1 ^= 1;
-                        p2 ^= 1;
-                    }
-                    break;
-
-                case SlopeType.Vertical:
-                    p1 = box[Box.Right] < line.Vertex1.X ? 1 : 0;
-                    p2 = box[Box.Left] < line.Vertex1.X ? 1 : 0;
-                    if (line.Dy < Fixed.Zero)
-                    {
-                        p1 ^= 1;
-                        p2 ^= 1;
-                    }
-                    break;
-
-                case SlopeType.Positive:
-                    p1 = PointOnLineSide(box[Box.Left], box[Box.Top], line);
-                    p2 = PointOnLineSide(box[Box.Right], box[Box.Bottom], line);
-                    break;
-
-                case SlopeType.Negative:
-                    p1 = PointOnLineSide(box[Box.Right], box[Box.Top], line);
-                    p2 = PointOnLineSide(box[Box.Left], box[Box.Bottom], line);
-                    break;
-
-                default:
-                    throw new Exception("Invalid SlopeType.");
-            }
-
-            if (p1 == p2)
-            {
-                return p1;
-            }
-
-            return -1;
+            var node = map.Nodes[nodeNumber];
+            var side = PointOnSide(x, y, node);
+            nodeNumber = node.Children[side];
         }
 
-        /// <summary>
-        /// Calculate on which side of the line the point is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front) or 1 (back).
-        /// </returns>
-        public static int PointOnDivLineSide(Fixed x, Fixed y, DivLine line)
+        return map.Subsectors[Node.GetSubsector(nodeNumber)];
+    }
+
+    /// <summary>
+    /// Calculate on which side of the line the point is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front) or 1 (back).
+    /// </returns>
+    public static int PointOnSegSide(Fixed x, Fixed y, Seg line)
+    {
+        var lx = line.Vertex1.X;
+        var ly = line.Vertex1.Y;
+
+        var ldx = line.Vertex2.X - lx;
+        var ldy = line.Vertex2.Y - ly;
+
+        if (ldx == Fixed.Zero)
         {
-            if (line.Dx == Fixed.Zero)
+            if (x <= lx)
             {
-                if (x <= line.X)
-                {
-                    return line.Dy > Fixed.Zero ? 1 : 0;
-                }
-
-                return line.Dy < Fixed.Zero ? 1 : 0;
+                return (ldy > Fixed.Zero).AsInt();
             }
 
-            if (line.Dy == Fixed.Zero)
-            {
-                if (y <= line.Y)
-                {
-                    return line.Dx < Fixed.Zero ? 1 : 0;
-                }
-
-                return line.Dx > Fixed.Zero ? 1 : 0;
-            }
-
-            var dx = (x - line.X);
-            var dy = (y - line.Y);
-
-            // Try to quickly decide by looking at sign bits.
-            if (((line.Dy.Data ^ line.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
-            {
-                if (((line.Dy.Data ^ dx.Data) & 0x80000000) != 0)
-                {
-                    // Left is negative.
-                    return 1;
-                }
-
-                return 0;
-            }
-
-            var left = new Fixed(line.Dy.Data >> 8) * new Fixed(dx.Data >> 8);
-            var right = new Fixed(dy.Data >> 8) * new Fixed(line.Dx.Data >> 8);
-
-            if (right < left)
-            {
-                // Front side.
-                return 0;
-            }
-
-            // Back side.
-            return 1;
+            return (ldy < Fixed.Zero).AsInt();
         }
 
-        /// <summary>
-        /// Gives an estimation of distance (not exact).
-        /// </summary>
-        public static Fixed AproxDistance(Fixed dx, Fixed dy)
+        if (ldy == Fixed.Zero)
         {
-            dx = Fixed.Abs(dx);
-            dy = Fixed.Abs(dy);
-
-            if (dx < dy)
+            if (y <= ly)
             {
-                return dx + dy - (dx >> 1);
+                return (ldx < Fixed.Zero).AsInt();
             }
 
-            return dx + dy - (dy >> 1);
+            return (ldx > Fixed.Zero).AsInt();
         }
 
-        /// <summary>
-        /// Calculate on which side of the line the point is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front) or 1 (back), or 2 if the box crosses the line.
-        /// </returns>
-        public static int DivLineSide(Fixed x, Fixed y, DivLine line)
+        var dx = (x - lx);
+        var dy = (y - ly);
+
+        // Try to quickly decide by looking at sign bits.
+        if (((ldy.Data ^ ldx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
-            if (line.Dx == Fixed.Zero)
+            if (((ldy.Data ^ dx.Data) & 0x80000000) != 0)
             {
-                if (x == line.X)
-                {
-                    return 2;
-                }
-
-                if (x <= line.X)
-                {
-                    return line.Dy > Fixed.Zero ? 1 : 0;
-                }
-
-                return line.Dy < Fixed.Zero ? 1 : 0;
+                // Left is negative.
+                return 1;
             }
 
-            if (line.Dy == Fixed.Zero)
-            {
-                if (x == line.Y)
+            return 0;
+        }
+
+        var left = new Fixed(ldy.Data >> Fixed.FracBits) * dx;
+        var right = dy * new Fixed(ldx.Data >> Fixed.FracBits);
+
+        if (right < left)
+        {
+            // Front side.
+            return 0;
+        }
+
+        // Back side.
+        return 1;
+    }
+
+    /// <summary>
+    /// Calculate on which side of the line the point is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front) or 1 (back).
+    /// </returns>
+    public static int PointOnLineSide(Fixed x, Fixed y, LineDef line)
+    {
+        if (line.Dx == Fixed.Zero)
+        {
+            return x <= line.Vertex1.X ? (line.Dy > Fixed.Zero).AsInt() : (line.Dy < Fixed.Zero).AsInt();
+        }
+
+        if (line.Dy == Fixed.Zero)
+        {
+            return y <= line.Vertex1.Y ? (line.Dx < Fixed.Zero).AsInt() : (line.Dx > Fixed.Zero).AsInt();
+        }
+
+        var dx = x - line.Vertex1.X;
+        var dy = y - line.Vertex1.Y;
+
+        var left = new Fixed(line.Dy.Data >> Fixed.FracBits) * dx;
+        var right = dy * new Fixed(line.Dx.Data >> Fixed.FracBits);
+
+        if (right < left)
+        {
+            // Front side.
+            return 0;
+        }
+
+        // Back side.
+        return 1;
+    }
+
+    /// <summary>
+    /// Calculate on which side of the line the box is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front), 1 (back), or -1 if the box crosses the line.
+    /// </returns>
+    public static int BoxOnLineSide(Fixed[] box, LineDef line)
+    {
+        int p1;
+        int p2;
+
+        switch (line.SlopeType)
+        {
+            case SlopeType.Horizontal:
+                p1 = (box[Box.Top] > line.Vertex1.Y).AsInt();
+                p2 = (box[Box.Bottom] > line.Vertex1.Y).AsInt();
+                if (line.Dx < Fixed.Zero)
                 {
-                    return 2;
+                    p1 ^= 1;
+                    p2 ^= 1;
                 }
 
-                if (y <= line.Y)
+                break;
+
+            case SlopeType.Vertical:
+                p1 = (box[Box.Right] < line.Vertex1.X).AsInt();
+                p2 = (box[Box.Left] < line.Vertex1.X).AsInt();
+                if (line.Dy < Fixed.Zero)
                 {
-                    return line.Dx < Fixed.Zero ? 1 : 0;
+                    p1 ^= 1;
+                    p2 ^= 1;
                 }
 
-                return line.Dx > Fixed.Zero ? 1 : 0;
-            }
+                break;
 
-            var dx = (x - line.X);
-            var dy = (y - line.Y);
+            case SlopeType.Positive:
+                p1 = PointOnLineSide(box[Box.Left], box[Box.Top], line);
+                p2 = PointOnLineSide(box[Box.Right], box[Box.Bottom], line);
+                break;
 
-            var left = new Fixed((line.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
-            var right = new Fixed((dy.Data >> Fixed.FracBits) * (line.Dx.Data >> Fixed.FracBits));
+            case SlopeType.Negative:
+                p1 = PointOnLineSide(box[Box.Right], box[Box.Top], line);
+                p2 = PointOnLineSide(box[Box.Left], box[Box.Bottom], line);
+                break;
 
-            if (right < left)
+            default:
+                throw new Exception("Invalid SlopeType.");
+        }
+
+        return p1 == p2 ? p1 : -1;
+    }
+
+    /// <summary>
+    /// Calculate on which side of the line the point is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front) or 1 (back).
+    /// </returns>
+    public static int PointOnDivLineSide(Fixed x, Fixed y, DivLine line)
+    {
+        if (line.Dx == Fixed.Zero)
+        {
+            if (x <= line.X)
             {
-                // Front side.
-                return 0;
+                return (line.Dy > Fixed.Zero).AsInt();
             }
 
-            if (left == right)
+            return (line.Dy < Fixed.Zero).AsInt();
+        }
+
+        if (line.Dy == Fixed.Zero)
+        {
+            if (y <= line.Y)
+            {
+                return (line.Dx < Fixed.Zero).AsInt();
+            }
+
+            return (line.Dx > Fixed.Zero).AsInt();
+        }
+
+        var dx = x - line.X;
+        var dy = y - line.Y;
+
+        // Try to quickly decide by looking at sign bits.
+        if (((line.Dy.Data ^ line.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
+        {
+            if (((line.Dy.Data ^ dx.Data) & 0x80000000) != 0)
+            {
+                // Left is negative.
+                return 1;
+            }
+
+            return 0;
+        }
+
+        var left = new Fixed(line.Dy.Data >> 8) * new Fixed(dx.Data >> 8);
+        var right = new Fixed(dy.Data >> 8) * new Fixed(line.Dx.Data >> 8);
+
+        if (right < left)
+        {
+            // Front side.
+            return 0;
+        }
+
+        // Back side.
+        return 1;
+    }
+
+    /// <summary>
+    /// Gives an estimation of distance (not exact).
+    /// </summary>
+    public static Fixed AproxDistance(Fixed dx, Fixed dy)
+    {
+        dx = Fixed.Abs(dx);
+        dy = Fixed.Abs(dy);
+
+        if (dx < dy)
+        {
+            return dx + dy - (dx >> 1);
+        }
+
+        return dx + dy - (dy >> 1);
+    }
+
+    /// <summary>
+    /// Calculate on which side of the line the point is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front) or 1 (back), or 2 if the box crosses the line.
+    /// </returns>
+    public static int DivLineSide(Fixed x, Fixed y, DivLine line)
+    {
+        if (line.Dx == Fixed.Zero)
+        {
+            if (x == line.X)
             {
                 return 2;
             }
 
-            // Back side.
-            return 1;
+            if (x <= line.X)
+            {
+                return (line.Dy > Fixed.Zero).AsInt();
+            }
+
+            return (line.Dy < Fixed.Zero).AsInt();
         }
 
-        /// <summary>
-        /// Calculate on which side of the line the point is.
-        /// </summary>
-        /// <returns>
-        /// 0 (front) or 1 (back), or 2 if the box crosses the line.
-        /// </returns>
-        public static int DivLineSide(Fixed x, Fixed y, Node node)
+        if (line.Dy == Fixed.Zero)
         {
-            if (node.Dx == Fixed.Zero)
-            {
-                if (x == node.X)
-                {
-                    return 2;
-                }
-
-                if (x <= node.X)
-                {
-                    return node.Dy > Fixed.Zero ? 1 : 0;
-                }
-
-                return node.Dy < Fixed.Zero ? 1 : 0;
-            }
-
-            if (node.Dy == Fixed.Zero)
-            {
-                if (x == node.Y)
-                {
-                    return 2;
-                }
-
-                if (y <= node.Y)
-                {
-                    return node.Dx < Fixed.Zero ? 1 : 0;
-                }
-
-                return node.Dx > Fixed.Zero ? 1 : 0;
-            }
-
-            var dx = x - node.X;
-            var dy = y - node.Y;
-
-            var left = new Fixed((node.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
-            var right = new Fixed((dy.Data >> Fixed.FracBits) * (node.Dx.Data >> Fixed.FracBits));
-
-            if (right < left)
-            {
-                // Front side.
-                return 0;
-            }
-
-            if (left == right)
+            if (x == line.Y)
             {
                 return 2;
             }
 
-            // Back side.
-            return 1;
+            if (y <= line.Y)
+            {
+                return (line.Dx < Fixed.Zero).AsInt();
+            }
+
+            return (line.Dx > Fixed.Zero).AsInt();
         }
+
+        var dx = (x - line.X);
+        var dy = (y - line.Y);
+
+        var left = new Fixed((line.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
+        var right = new Fixed((dy.Data >> Fixed.FracBits) * (line.Dx.Data >> Fixed.FracBits));
+
+        if (right < left)
+        {
+            // Front side.
+            return 0;
+        }
+
+        if (left == right)
+        {
+            return 2;
+        }
+
+        // Back side.
+        return 1;
+    }
+
+    /// <summary>
+    /// Calculate on which side of the line the point is.
+    /// </summary>
+    /// <returns>
+    /// 0 (front) or 1 (back), or 2 if the box crosses the line.
+    /// </returns>
+    public static int DivLineSide(Fixed x, Fixed y, Node node)
+    {
+        if (node.Dx == Fixed.Zero)
+        {
+            if (x == node.X)
+            {
+                return 2;
+            }
+
+            if (x <= node.X)
+            {
+                return (node.Dy > Fixed.Zero).AsInt();
+            }
+
+            return (node.Dy < Fixed.Zero).AsInt();
+        }
+
+        if (node.Dy == Fixed.Zero)
+        {
+            if (x == node.Y)
+            {
+                return 2;
+            }
+
+            if (y <= node.Y)
+            {
+                return (node.Dx < Fixed.Zero).AsInt();
+            }
+
+            return (node.Dx > Fixed.Zero).AsInt();
+        }
+
+        var dx = x - node.X;
+        var dy = y - node.Y;
+
+        var left = new Fixed((node.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
+        var right = new Fixed((dy.Data >> Fixed.FracBits) * (node.Dx.Data >> Fixed.FracBits));
+
+        if (right < left)
+        {
+            // Front side.
+            return 0;
+        }
+
+        if (left == right)
+        {
+            return 2;
+        }
+
+        // Back side.
+        return 1;
     }
 }

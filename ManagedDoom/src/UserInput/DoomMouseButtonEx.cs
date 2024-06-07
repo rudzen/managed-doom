@@ -16,40 +16,39 @@
 
 using System;
 
-namespace ManagedDoom.UserInput
-{
-    public static class DoomMouseButtonEx
-    {
-        public static string ToString(DoomMouseButton button)
-        {
-            switch (button)
-            {
-                case DoomMouseButton.Mouse1:
-                    return "mouse1";
-                case DoomMouseButton.Mouse2:
-                    return "mouse2";
-                case DoomMouseButton.Mouse3:
-                    return "mouse3";
-                case DoomMouseButton.Mouse4:
-                    return "mouse4";
-                case DoomMouseButton.Mouse5:
-                    return "mouse5";
-                default:
-                    return "unknown";
-            }
-        }
+namespace ManagedDoom.UserInput;
 
-        public static DoomMouseButton Parse(ReadOnlySpan<char> value)
+public static class DoomMouseButtonEx
+{
+    public static string ToString(DoomMouseButton button)
+    {
+        switch (button)
         {
-            return value switch
-            {
-                "mouse1" => DoomMouseButton.Mouse1,
-                "mouse2" => DoomMouseButton.Mouse2,
-                "mouse3" => DoomMouseButton.Mouse3,
-                "mouse4" => DoomMouseButton.Mouse4,
-                "mouse5" => DoomMouseButton.Mouse5,
-                _        => DoomMouseButton.Unknown
-            };
+            case DoomMouseButton.Mouse1:
+                return "mouse1";
+            case DoomMouseButton.Mouse2:
+                return "mouse2";
+            case DoomMouseButton.Mouse3:
+                return "mouse3";
+            case DoomMouseButton.Mouse4:
+                return "mouse4";
+            case DoomMouseButton.Mouse5:
+                return "mouse5";
+            default:
+                return "unknown";
         }
+    }
+
+    public static DoomMouseButton Parse(ReadOnlySpan<char> value)
+    {
+        return value switch
+        {
+            "mouse1" => DoomMouseButton.Mouse1,
+            "mouse2" => DoomMouseButton.Mouse2,
+            "mouse3" => DoomMouseButton.Mouse3,
+            "mouse4" => DoomMouseButton.Mouse4,
+            "mouse5" => DoomMouseButton.Mouse5,
+            _        => DoomMouseButton.Unknown
+        };
     }
 }
