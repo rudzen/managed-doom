@@ -14,27 +14,26 @@
 //
 
 
-namespace ManagedDoom.Doom.Info
-{
-    public static partial class DoomInfo
-    {
-        public static class AmmoInfos
-        {
-            public static readonly int[] Max =
-            [
-                200,
-                50,
-                300,
-                50
-            ];
+namespace ManagedDoom.Doom.Info;
 
-            public static readonly int[] Clip =
-            [
-                10,
-                4,
-                20,
-                1
-            ];
-        }
+public static partial class DoomInfo
+{
+    public static class AmmoInfos
+    {
+        public static readonly int[] Max =
+        [
+            200,
+            50,
+            300,
+            50
+        ];
+
+        public static readonly int[] Clip =
+        [
+            10,
+            4,
+            20,
+            1
+        ];
     }
 }
