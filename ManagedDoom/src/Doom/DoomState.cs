@@ -14,13 +14,12 @@
 //
 
 
-namespace ManagedDoom.Doom
+namespace ManagedDoom.Doom;
+
+public enum DoomState
 {
-    public enum DoomState
-    {
-        None,
-        Opening,
-        DemoPlayback,
-        Game
-    }
+    None,
+    Opening,
+    DemoPlayback,
+    Game
 }
