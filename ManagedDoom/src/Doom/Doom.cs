@@ -106,67 +106,67 @@ public sealed class Doom
 
     private void CheckGameArgs()
     {
-        if (args.warp.Present)
+        if (args.Warp.Present)
         {
             nextState = DoomState.Game;
-            Options.Episode = args.warp.Value.Episode;
-            Options.Map = args.warp.Value.Map;
+            Options.Episode = args.Warp.Value.Episode;
+            Options.Map = args.Warp.Value.Map;
             Game.DeferedInitNew();
         }
-        else if (args.episode.Present)
+        else if (args.Episode.Present)
         {
             nextState = DoomState.Game;
-            Options.Episode = args.episode.Value;
+            Options.Episode = args.Episode.Value;
             Options.Map = 1;
             Game.DeferedInitNew();
         }
 
-        if (args.skill.Present)
+        if (args.Skill.Present)
         {
-            Options.Skill = (GameSkill)(args.skill.Value - 1);
+            Options.Skill = (GameSkill)(args.Skill.Value - 1);
         }
 
-        if (args.deathmatch.Present)
+        if (args.DeathMatch.Present)
         {
             Options.Deathmatch = 1;
         }
 
-        if (args.altdeath.Present)
+        if (args.AltDeath.Present)
         {
             Options.Deathmatch = 2;
         }
 
-        if (args.fast.Present)
+        if (args.Fast.Present)
         {
             Options.FastMonsters = true;
         }
 
-        if (args.respawn.Present)
+        if (args.Respawn.Present)
         {
             Options.RespawnMonsters = true;
         }
 
-        if (args.nomonsters.Present)
+        if (args.NoMonsters.Present)
         {
             Options.NoMonsters = true;
         }
 
-        if (args.loadgame.Present)
+        if (args.LoadGame.Present)
         {
             nextState = DoomState.Game;
-            Game.LoadGame(args.loadgame.Value);
+            Game.LoadGame(args.LoadGame.Value);
         }
 
-        if (args.playdemo.Present)
+        if (args.PlayDemo.Present)
         {
             nextState = DoomState.DemoPlayback;
-            DemoPlayback = new DemoPlayback(args, content, Options, args.playdemo.Value);
+            DemoPlayback = new DemoPlayback(args, content, Options, args.PlayDemo.Value);
         }
 
-        if (args.timedemo.Present)
+        if (args.TimeDemo.Present)
         {
             nextState = DoomState.DemoPlayback;
-            DemoPlayback = new DemoPlayback(args, content, Options, args.timedemo.Value);
+            DemoPlayback = new DemoPlayback(args, content, Options, args.TimeDemo.Value);
         }
     }
 
@@ -458,7 +458,7 @@ public sealed class Doom
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldMouseBeGrabbed()
     {
-        return video.HasFocus() && (config.video_fullscreen || State == DoomState.Game && !Menu.Active);
+        return video.HasFocus() && (config.VideoFullscreen || State == DoomState.Game && !Menu.Active);
     }
 
     private void StartWipe()

@@ -71,12 +71,12 @@ public sealed class SilkSound : ISound, IDisposable
 
             this.config = config;
 
-            config.audio_soundvolume = Math.Clamp(config.audio_soundvolume, 0, MaxVolume);
+            config.AudioSoundVolume = Math.Clamp(config.AudioSoundVolume, 0, MaxVolume);
 
             buffers = new AudioClip[DoomInfo.SfxNames.Length];
             amplitudes = new float[DoomInfo.SfxNames.Length];
 
-            if (config.audio_randompitch)
+            if (config.AudioRandomPitch)
                 random = new DoomRandom();
 
             for (var i = 0; i < DoomInfo.SfxNames.Length; i++)
@@ -107,7 +107,7 @@ public sealed class SilkSound : ISound, IDisposable
             uiChannel = new AudioChannel(device);
             uiReserved = Sfx.NONE;
 
-            masterVolumeDecay = (float)config.audio_soundvolume / MaxVolume;
+            masterVolumeDecay = (float)config.AudioSoundVolume / MaxVolume;
 
             lastUpdate = 0; //Stopwatch.GetTimestamp();// 0;// DateTime.MinValue;
 
@@ -492,11 +492,11 @@ public sealed class SilkSound : ISound, IDisposable
 
     public int Volume
     {
-        get => config.audio_soundvolume;
+        get => config.AudioSoundVolume;
         set
         {
-            config.audio_soundvolume = value;
-            masterVolumeDecay = (float)config.audio_soundvolume / MaxVolume;
+            config.AudioSoundVolume = value;
+            masterVolumeDecay = (float)config.AudioSoundVolume / MaxVolume;
         }
     }
 

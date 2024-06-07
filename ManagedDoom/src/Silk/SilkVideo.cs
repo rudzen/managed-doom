@@ -41,7 +41,7 @@ public sealed class SilkVideo : IVideo, IDisposable
 
             device = new GraphicsDevice(gl);
 
-            if (config.video_highresolution)
+            if (config.VideoHighResolution)
             {
                 textureWidth = 512;
                 textureHeight = 1024;

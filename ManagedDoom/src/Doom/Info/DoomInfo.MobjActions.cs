@@ -21,7 +21,7 @@ namespace ManagedDoom.Doom.Info;
 
 public static partial class DoomInfo
 {
-    private class MobjActions
+    private sealed class MobjActions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void BFGSpray(World.World world, Mobj actor) => world.WeaponBehavior.BFGSpray(actor);

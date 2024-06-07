@@ -64,7 +64,7 @@ public sealed class SilkMusic : IMusic, IDisposable
         if (bgm == current)
             return;
 
-        var lumpName = "D_" + DoomInfo.BgmNames[(int)bgm].ToString().ToUpper();
+        var lumpName = $"D_{DoomInfo.BgmNames[(int)bgm].ToString().ToUpper()}";
         var data = wad.ReadLump(lumpName);
         var decoder = ReadData(data, loop);
         stream.SetDecoder(decoder);
@@ -103,11 +103,11 @@ public sealed class SilkMusic : IMusic, IDisposable
 
     public int Volume
     {
-        get => config.audio_musicvolume;
-        set => config.audio_musicvolume = value;
+        get => config.AudioMusicVolume;
+        set => config.AudioMusicVolume = value;
     }
 
-    private class MusStream : IDisposable
+    private sealed class MusStream : IDisposable
     {
         private const int latency = 200;
         private const int blockLength = 2048;
@@ -130,12 +130,12 @@ public sealed class SilkMusic : IMusic, IDisposable
             this.parent = parent;
             this.config = config;
 
-            config.audio_musicvolume = Math.Clamp(config.audio_musicvolume, 0, parent.MaxVolume);
+            config.AudioMusicVolume = Math.Clamp(config.AudioMusicVolume, 0, parent.MaxVolume);
 
             var settings = new SynthesizerSettings(MusDecoder.SampleRate)
             {
                 BlockSize = MusDecoder.BlockLength,
-                EnableReverbAndChorus = config.audio_musiceffect
+                EnableReverbAndChorus = config.AudioMusicEffect
             };
 
             synthesizer = new Synthesizer(sfPath, settings);
@@ -162,7 +162,7 @@ public sealed class SilkMusic : IMusic, IDisposable
                 current = reserved;
             }
 
-            var a = 32768 * (2.0F * config.audio_musicvolume / parent.MaxVolume);
+            var a = 32768 * (2.0F * config.AudioMusicVolume / parent.MaxVolume);
 
             current.RenderWaveform(synthesizer, left, right);
 
@@ -521,12 +521,12 @@ public sealed class SilkMusic : IMusic, IDisposable
             }
         }
 
-        private class MusEvent
+        private sealed class MusEvent
         {
-            public int Type;
-            public int Channel;
-            public int Data1;
-            public int Data2;
+            public int Type { get; set; }
+            public int Channel { get; set; }
+            public int Data1 { get; set; }
+            public int Data2 { get; set; }
         }
 
         private enum ReadResult
@@ -539,7 +539,7 @@ public sealed class SilkMusic : IMusic, IDisposable
 
     private sealed class MidiDecoder : IDecoder
     {
-        public static readonly byte[] MidiHeader =
+        public static byte[] MidiHeader =>
         [
             (byte)'M',
             (byte)'T',

@@ -53,14 +53,14 @@ public sealed partial class SilkDoom
             config = SilkConfigUtilities.GetConfig();
             content = new GameContent(args);
 
-            config.Values.video_screenwidth = Math.Clamp(config.Values.video_screenwidth, 320, 3200);
-            config.Values.video_screenheight = Math.Clamp(config.Values.video_screenheight, 200, 2000);
+            config.Values.VideoScreenWidth = Math.Clamp(config.Values.VideoScreenWidth, 320, 3200);
+            config.Values.VideoScreenHeight = Math.Clamp(config.Values.VideoScreenHeight, 200, 2000);
 
             var windowOptions = WindowOptions.Default;
-            windowOptions.Size = new Vector2D<int>(config.Values.video_screenwidth, config.Values.video_screenheight);
+            windowOptions.Size = new Vector2D<int>(config.Values.VideoScreenWidth, config.Values.VideoScreenHeight);
             windowOptions.Title = ApplicationInfo.Title;
-            windowOptions.VSync = config.Values.video_vsync;
-            windowOptions.WindowState = config.Values.video_fullscreen ? WindowState.Fullscreen : WindowState.Normal;
+            windowOptions.VSync = config.Values.VideoVsync;
+            windowOptions.WindowState = config.Values.VideoFullscreen ? WindowState.Fullscreen : WindowState.Normal;
 
             window = Window.Create(windowOptions);
             window.Load += OnLoad;
@@ -93,20 +93,20 @@ public sealed partial class SilkDoom
 
         video = new SilkVideo(config.Values, content, window, gl);
 
-        if (!args.nosound.Present && !(args.nosfx.Present && args.nomusic.Present))
+        if (!args.NoSound.Present && !(args.NoSfx.Present && args.NoMusic.Present))
         {
             audioDevice = new AudioDevice();
-            if (!args.nosfx.Present)
+            if (!args.NoSfx.Present)
                 sound = new SilkSound(config.Values, content, audioDevice);
-            if (!args.nomusic.Present)
+            if (!args.NoMusic.Present)
                 music = SilkConfigUtilities.GetMusicInstance(config.Values, content, audioDevice);
         }
 
-        userInput = new SilkUserInput(config.Values, window, this, !args.nomouse.Present);
+        userInput = new SilkUserInput(config.Values, window, this, !args.NoMouse.Present);
 
         doom = new Doom.Doom(args, config.Values, content, video, sound, music, userInput);
 
-        fpsScale = args.timedemo.Present ? 1 : config.Values.video_fpsscale;
+        fpsScale = args.TimeDemo.Present ? 1 : config.Values.VideoFpsScale;
         frameCount = -1;
     }
 

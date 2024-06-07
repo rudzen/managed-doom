@@ -52,7 +52,7 @@ public sealed class DemoPlayback
         demo.Options.Sound = options.Sound;
         demo.Options.Music = options.Music;
 
-        if (args.solonet.Present)
+        if (args.SoloNet.Present)
             demo.Options.NetGame = true;
 
         ticCommands = new TicCmd[Player.MaxPlayerCount];

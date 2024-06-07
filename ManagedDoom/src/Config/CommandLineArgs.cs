@@ -24,61 +24,60 @@ public sealed record Warp(int Episode, int Map);
 
 public sealed class CommandLineArgs
 {
-    public Arg<string> iwad { get; }
-    public Arg<string[]> file { get; }
-    public Arg<string[]> deh { get; }
+    public Arg<string> Iwad { get; }
+    public Arg<string[]> File { get; }
+    public Arg<string[]> Deh { get; }
 
-    public Arg<Warp> warp { get; }
-    public Arg<int> episode { get; }
-    public Arg<int> skill { get; }
+    public Arg<Warp> Warp { get; }
+    public Arg<int> Episode { get; }
+    public Arg<int> Skill { get; }
+    public Arg DeathMatch { get; }
+    public Arg AltDeath { get; }
+    public Arg Fast { get; }
+    public Arg Respawn { get; }
+    public Arg NoMonsters { get; }
+    public Arg SoloNet { get; }
 
-    public Arg deathmatch { get; }
-    public Arg altdeath { get; }
-    public Arg fast { get; }
-    public Arg respawn { get; }
-    public Arg nomonsters { get; }
-    public Arg solonet { get; }
+    public Arg<string> PlayDemo { get; }
+    public Arg<string> TimeDemo { get; }
 
-    public Arg<string> playdemo { get; }
-    public Arg<string> timedemo { get; }
+    public Arg<int> LoadGame { get; }
 
-    public Arg<int> loadgame { get; }
+    public Arg NoMouse { get; }
+    public Arg NoSound { get; }
+    public Arg NoSfx { get; }
+    public Arg NoMusic { get; }
 
-    public Arg nomouse { get; }
-    public Arg nosound { get; }
-    public Arg nosfx { get; }
-    public Arg nomusic { get; }
-
-    public Arg nodeh { get; }
+    public Arg NoDeh { get; }
 
     public CommandLineArgs(string[] args)
     {
-        iwad = GetString(args, "-iwad");
-        file = Check(args, "-file");
-        deh = Check(args, "-deh");
+        Iwad = GetString(args, "-iwad");
+        File = Check(args, "-file");
+        Deh = Check(args, "-deh");
 
-        warp = Check_warp(args);
-        episode = GetInt(args, "-episode");
-        skill = GetInt(args, "-skill");
+        Warp = Check_warp(args);
+        Episode = GetInt(args, "-episode");
+        Skill = GetInt(args, "-skill");
 
-        deathmatch = new Arg(args.Contains("-deathmatch"));
-        altdeath = new Arg(args.Contains("-altdeath"));
-        fast = new Arg(args.Contains("-fast"));
-        respawn = new Arg(args.Contains("-respawn"));
-        nomonsters = new Arg(args.Contains("-nomonsters"));
-        solonet = new Arg(args.Contains("-solo-net"));
+        DeathMatch = new Arg(args.Contains("-deathmatch"));
+        AltDeath = new Arg(args.Contains("-altdeath"));
+        Fast = new Arg(args.Contains("-fast"));
+        Respawn = new Arg(args.Contains("-respawn"));
+        NoMonsters = new Arg(args.Contains("-nomonsters"));
+        SoloNet = new Arg(args.Contains("-solo-net"));
 
-        playdemo = GetString(args, "-playdemo");
-        timedemo = GetString(args, "-timedemo");
+        PlayDemo = GetString(args, "-playdemo");
+        TimeDemo = GetString(args, "-timedemo");
 
-        loadgame = GetInt(args, "-loadgame");
+        LoadGame = GetInt(args, "-loadgame");
 
-        nomouse = new Arg(args.Contains("-nomouse"));
-        nosound = new Arg(args.Contains("-nosound"));
-        nosfx = new Arg(args.Contains("-nosfx"));
-        nomusic = new Arg(args.Contains("-nomusic"));
+        NoMouse = new Arg(args.Contains("-nomouse"));
+        NoSound = new Arg(args.Contains("-nosound"));
+        NoSfx = new Arg(args.Contains("-nosfx"));
+        NoMusic = new Arg(args.Contains("-nomusic"));
 
-        nodeh = new Arg(args.Contains("-nodeh"));
+        NoDeh = new Arg(args.Contains("-nodeh"));
 
         // Check for drag & drop.
         if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
@@ -103,13 +102,13 @@ public sealed class CommandLineArgs
             }
 
             if (!string.IsNullOrEmpty(iwadPath))
-                iwad = new Arg<string>(iwadPath);
+                Iwad = new Arg<string>(iwadPath);
 
             if (pwadPaths.Count > 0)
-                file = new Arg<string[]>(pwadPaths.ToArray());
+                File = new Arg<string[]>(pwadPaths.ToArray());
 
             if (dehPaths.Count > 0)
-                deh = new Arg<string[]>(dehPaths.ToArray());
+                Deh = new Arg<string[]>(dehPaths.ToArray());
         }
     }
 

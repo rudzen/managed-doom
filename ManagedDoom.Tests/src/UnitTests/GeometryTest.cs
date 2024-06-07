@@ -508,7 +508,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             var backSideY = -frontSideY;
             var crossingY = radius * 1.9 * (random.NextDouble() - 0.5);
 
-            var frontBox = new Fixed[]
+            var frontBox = new[]
             {
                 Fixed.FromDouble(frontSideY + radius),
                 Fixed.FromDouble(frontSideY - radius),
@@ -516,7 +516,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 Fixed.FromDouble(pointX + radius)
             };
 
-            var backBox = new Fixed[]
+            var backBox = new[]
             {
                 Fixed.FromDouble(backSideY + radius),
                 Fixed.FromDouble(backSideY - radius),
@@ -524,7 +524,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 Fixed.FromDouble(pointX + radius)
             };
 
-            var crossingBox = new Fixed[]
+            var crossingBox = new[]
             {
                 Fixed.FromDouble(crossingY + radius),
                 Fixed.FromDouble(crossingY - radius),
@@ -562,7 +562,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             var backSideX = -frontSideX;
             var crossingX = radius * 1.9 * (random.NextDouble() - 0.5);
 
-            var frontBox = new Fixed[]
+            var frontBox = new[]
             {
                 Fixed.FromDouble(pointY + radius),
                 Fixed.FromDouble(pointY - radius),
@@ -570,7 +570,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 Fixed.FromDouble(frontSideX + radius)
             };
 
-            var backBox = new Fixed[]
+            var backBox = new[]
             {
                 Fixed.FromDouble(pointY + radius),
                 Fixed.FromDouble(pointY - radius),
@@ -578,7 +578,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 Fixed.FromDouble(backSideX + radius)
             };
 
-            var crossingBox = new Fixed[]
+            var crossingBox = new[]
             {
                 Fixed.FromDouble(pointY + radius),
                 Fixed.FromDouble(pointY - radius),
@@ -622,7 +622,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 var ox = 666 * random.NextDouble() - 333;
                 var oy = 666 * random.NextDouble() - 333;
 
-                var frontBox = new Fixed[]
+                var frontBox = new[]
                 {
                     Fixed.FromDouble(oy + pointX * Math.Sin(theta) + frontSideY * Math.Cos(theta) + radius),
                     Fixed.FromDouble(oy + pointX * Math.Sin(theta) + frontSideY * Math.Cos(theta) - radius),
@@ -630,7 +630,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                     Fixed.FromDouble(ox + pointX * Math.Cos(theta) - frontSideY * Math.Sin(theta) + radius)
                 };
 
-                var backBox = new Fixed[]
+                var backBox = new[]
                 {
                     Fixed.FromDouble(oy + pointX * Math.Sin(theta) + backSideY * Math.Cos(theta) + radius),
                     Fixed.FromDouble(oy + pointX * Math.Sin(theta) + backSideY * Math.Cos(theta) - radius),
@@ -638,7 +638,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                     Fixed.FromDouble(ox + pointX * Math.Cos(theta) - backSideY * Math.Sin(theta) + radius)
                 };
 
-                var crossingBox = new Fixed[]
+                var crossingBox = new[]
                 {
                     Fixed.FromDouble(oy + pointX * Math.Sin(theta) + crossingY * Math.Cos(theta) + radius),
                     Fixed.FromDouble(oy + pointX * Math.Sin(theta) + crossingY * Math.Cos(theta) - radius),

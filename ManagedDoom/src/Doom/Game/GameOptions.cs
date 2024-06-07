@@ -62,7 +62,7 @@ public sealed class GameOptions
 
     public GameOptions(CommandLineArgs args, GameContent content) : this()
     {
-        if (args.solonet.Present)
+        if (args.SoloNet.Present)
         {
             NetGame = true;
         }

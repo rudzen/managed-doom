@@ -39,10 +39,10 @@ public static class DeHackEd
 
     public static void Initialize(CommandLineArgs args, Wad.Wad wad)
     {
-        if (args.deh.Present)
-            ReadFiles(args.deh.Value);
+        if (args.Deh.Present)
+            ReadFiles(args.Deh.Value);
 
-        if (!args.nodeh.Present)
+        if (!args.NoDeh.Present)
             ReadDeHackEdLump(wad);
     }
 

@@ -35,6 +35,6 @@ public static partial class DoomInfo
         public static int IdkfaArmor { get; set; } = 200;
         public static int IdkfaArmorClass { get; set; } = 2;
         public static int BfgCellsPerShot { get; set; } = 40;
-        public static bool MonstersInfight { get; set; } = false;
+        public static bool MonstersInfight { get; set; }
     }
 }

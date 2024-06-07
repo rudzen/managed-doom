@@ -7,76 +7,124 @@ namespace ManagedDoom.Config;
 [JsonSerializable(typeof(ConfigValues))]
 public sealed class ConfigValues
 {
-    public KeyBinding key_forward { get; set; }
-    public KeyBinding key_backward { get; set; }
-    public KeyBinding key_strafeleft { get; set; }
-    public KeyBinding key_straferight { get; set; }
-    public KeyBinding key_turnleft { get; set; }
-    public KeyBinding key_turnright { get; set; }
-    public KeyBinding key_fire { get; set; }
-    public KeyBinding key_use { get; set; }
-    public KeyBinding key_run { get; set; }
-    public KeyBinding key_strafe { get; set; }
+    [JsonPropertyName("key_forward")]
+    public KeyBinding KeyForward { get; set; }
 
-    public int mouse_sensitivity { get; set; }
-    public bool mouse_disableyaxis { get; set; }
+    [JsonPropertyName("key_backward")]
+    public KeyBinding KeyBackward { get; set; }
 
-    public bool game_alwaysrun { get; set; }
+    [JsonPropertyName("key_strafeleft")]
+    public KeyBinding KeyStrafeLeft { get; set; }
 
-    public int video_screenwidth { get; set; }
-    public int video_screenheight { get; set; }
-    public bool video_fullscreen { get; set; }
-    public bool video_highresolution { get; set; }
-    public bool video_displaymessage { get; set; }
-    public int video_gamescreensize { get; set; }
-    public int video_gammacorrection { get; set; }
-    public int video_fpsscale { get; set; }
-    public bool video_vsync { get; set; }
+    [JsonPropertyName("key_straferight")]
+    public KeyBinding KeyStrafeRight { get; set; }
 
-    public int audio_soundvolume { get; set; }
-    public int audio_musicvolume { get; set; }
-    public bool audio_randompitch { get; set; }
-    public string audio_soundfont { get; set; }
-    public bool audio_musiceffect { get; set; }
+    [JsonPropertyName("key_turnleft")]
+    public KeyBinding KeyTurnLeft { get; set; }
 
-    public string wad_directory { get; set; }
+    [JsonPropertyName("key_turnright")]
+    public KeyBinding KeyTurnRight { get; set; }
+
+    [JsonPropertyName("key_fire")]
+    public KeyBinding KeyFire { get; set; }
+
+    [JsonPropertyName("key_use")]
+    public KeyBinding KeyUse { get; set; }
+
+    [JsonPropertyName("key_run")]
+    public KeyBinding KeyRun { get; set; }
+
+    [JsonPropertyName("key_strafe")]
+    public KeyBinding KeyStrafe { get; set; }
+
+    [JsonPropertyName("mouse_sensitivity")]
+    public int MouseSensitivity { get; set; }
+
+    [JsonPropertyName("mouse_disableyaxis")]
+    public bool MouseDisableYAxis { get; set; }
+
+    [JsonPropertyName("game_alwaysrun")]
+    public bool GameAlwaysRun { get; set; }
+
+    [JsonPropertyName("video_screenwidth")]
+    public int VideoScreenWidth { get; set; }
+
+    [JsonPropertyName("video_screenheight")]
+    public int VideoScreenHeight { get; set; }
+
+    [JsonPropertyName("video_fullscreen")]
+    public bool VideoFullscreen { get; set; }
+
+    [JsonPropertyName("video_highresolution")]
+    public bool VideoHighResolution { get; set; }
+
+    [JsonPropertyName("video_displaymessage")]
+    public bool VideoDisplayMessage { get; set; }
+
+    [JsonPropertyName("video_gamescreensize")]
+    public int VideoGameScreenSize { get; set; }
+
+    [JsonPropertyName("video_gammacorrection")]
+    public int VideoGammaCorrection { get; set; }
+
+    [JsonPropertyName("video_fpsscale")]
+    public int VideoFpsScale { get; set; }
+
+    [JsonPropertyName("video_vsync")]
+    public bool VideoVsync { get; set; }
+
+    [JsonPropertyName("audio_soundvolume")]
+    public int AudioSoundVolume { get; set; }
+
+    [JsonPropertyName("audio_musicvolume")]
+    public int AudioMusicVolume { get; set; }
+
+    [JsonPropertyName("audio_randompitch")]
+    public bool AudioRandomPitch { get; set; }
+
+    [JsonPropertyName("audio_soundfont")]
+    public string AudioSoundfont { get; set; }
+
+    [JsonPropertyName("audio_musiceffect")]
+    public bool AudioMusicEffect { get; set; }
+
+    [JsonPropertyName("wad_directory")]
+    public string WadDirectory { get; set; }
 
     public static ConfigValues CreateDefaults()
     {
         DoomMouseButton[] emptyMouseButtons = [];
 
-        var configValues = new ConfigValues
+        return new ConfigValues
         {
-            key_forward = new KeyBinding([DoomKey.Up, DoomKey.W], emptyMouseButtons),
-            key_backward = new KeyBinding([DoomKey.Down, DoomKey.S], emptyMouseButtons),
-            key_strafeleft = new KeyBinding([DoomKey.A], emptyMouseButtons),
-            key_straferight = new KeyBinding([DoomKey.D], emptyMouseButtons),
-            key_turnleft = new KeyBinding([DoomKey.Left], emptyMouseButtons),
-            key_turnright = new KeyBinding([DoomKey.Right], emptyMouseButtons),
-            key_fire = new KeyBinding([DoomKey.LControl, DoomKey.RControl], [DoomMouseButton.Mouse1]),
-            key_use = new KeyBinding([DoomKey.Space], [DoomMouseButton.Mouse2]),
-            key_run = new KeyBinding([DoomKey.LShift, DoomKey.RShift], emptyMouseButtons),
-            key_strafe = new KeyBinding([DoomKey.LAlt, DoomKey.RAlt], emptyMouseButtons),
-            mouse_sensitivity = 8,
-            mouse_disableyaxis = false,
-            game_alwaysrun = true,
-            video_screenwidth = 640,
-            video_screenheight = 400,
-            video_fullscreen = false,
-            video_highresolution = true,
-            video_gamescreensize = 7,
-            video_displaymessage = true,
-            video_gammacorrection = 2,
-            video_fpsscale = 2,
-            video_vsync = false,
-            audio_soundvolume = 8,
-            audio_musicvolume = 8,
-            audio_randompitch = true,
-            audio_soundfont = "Touhou.sf2",
-            audio_musiceffect = true,
-            wad_directory = string.Empty
+            KeyForward = new KeyBinding([DoomKey.Up, DoomKey.W], emptyMouseButtons),
+            KeyBackward = new KeyBinding([DoomKey.Down, DoomKey.S], emptyMouseButtons),
+            KeyStrafeLeft = new KeyBinding([DoomKey.A], emptyMouseButtons),
+            KeyStrafeRight = new KeyBinding([DoomKey.D], emptyMouseButtons),
+            KeyTurnLeft = new KeyBinding([DoomKey.Left], emptyMouseButtons),
+            KeyTurnRight = new KeyBinding([DoomKey.Right], emptyMouseButtons),
+            KeyFire = new KeyBinding([DoomKey.LControl, DoomKey.RControl], [DoomMouseButton.Mouse1]),
+            KeyUse = new KeyBinding([DoomKey.Space], [DoomMouseButton.Mouse2]),
+            KeyRun = new KeyBinding([DoomKey.LShift, DoomKey.RShift], emptyMouseButtons),
+            KeyStrafe = new KeyBinding([DoomKey.LAlt, DoomKey.RAlt], emptyMouseButtons),
+            MouseSensitivity = 8,
+            MouseDisableYAxis = false,
+            GameAlwaysRun = true,
+            VideoScreenWidth = 640,
+            VideoScreenHeight = 400,
+            VideoFullscreen = false,
+            VideoHighResolution = true,
+            VideoGameScreenSize = 7,
+            VideoDisplayMessage = true,
+            VideoGammaCorrection = 2,
+            VideoFpsScale = 2,
+            VideoVsync = false,
+            AudioSoundVolume = 8,
+            AudioMusicVolume = 8,
+            AudioRandomPitch = true,
+            AudioSoundfont = "Touhou.sf2",
+            AudioMusicEffect = true,
+            WadDirectory = string.Empty
         };
-
-        return configValues;
     }
 }

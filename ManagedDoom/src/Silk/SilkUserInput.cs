@@ -26,12 +26,9 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
     private readonly IMouse mouse;
     private bool mouseGrabbed;
-    private float mouseX;
-    private float mouseY;
-    private float mousePrevX;
-    private float mousePrevY;
-    private float mouseDeltaX;
-    private float mouseDeltaY;
+    private Vector2 mouseXy;
+    private Vector2 mousePrevXy;
+    private Vector2 mouseDeltaXy;
 
     public SilkUserInput(ConfigValues config, IWindow window, SilkDoom doom, bool useMouse)
     {
@@ -70,16 +67,16 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
     public void BuildTicCmd(TicCmd cmd)
     {
-        var keyForward = IsPressed(keyboard, config.key_forward);
-        var keyBackward = IsPressed(keyboard, config.key_backward);
-        var keyStrafeLeft = IsPressed(keyboard, config.key_strafeleft);
-        var keyStrafeRight = IsPressed(keyboard, config.key_straferight);
-        var keyTurnLeft = IsPressed(keyboard, config.key_turnleft);
-        var keyTurnRight = IsPressed(keyboard, config.key_turnright);
-        var keyFire = IsPressed(keyboard, config.key_fire);
-        var keyUse = IsPressed(keyboard, config.key_use);
-        var keyRun = IsPressed(keyboard, config.key_run);
-        var keyStrafe = IsPressed(keyboard, config.key_strafe);
+        var keyForward = IsPressed(keyboard, config.KeyForward);
+        var keyBackward = IsPressed(keyboard, config.KeyBackward);
+        var keyStrafeLeft = IsPressed(keyboard, config.KeyStrafeLeft);
+        var keyStrafeRight = IsPressed(keyboard, config.KeyStrafeRight);
+        var keyTurnLeft = IsPressed(keyboard, config.KeyTurnLeft);
+        var keyTurnRight = IsPressed(keyboard, config.KeyTurnRight);
+        var keyFire = IsPressed(keyboard, config.KeyFire);
+        var keyUse = IsPressed(keyboard, config.KeyUse);
+        var keyRun = IsPressed(keyboard, config.KeyRun);
+        var keyStrafe = IsPressed(keyboard, config.KeyStrafe);
 
         weaponKeys[0] = keyboard.IsKeyPressed(Key.Number1);
         weaponKeys[1] = keyboard.IsKeyPressed(Key.Number2);
@@ -91,12 +88,11 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
         cmd.Clear();
 
-        var strafe = keyStrafe;
         var speed = keyRun ? 1 : 0;
         var forward = 0;
         var side = 0;
 
-        if (config.game_alwaysrun)
+        if (config.GameAlwaysRun)
             speed = 1 - speed;
 
         if (keyTurnLeft || keyTurnRight)
@@ -108,7 +104,7 @@ public sealed class SilkUserInput : IUserInput, IDisposable
             ? 2
             : speed;
 
-        if (strafe)
+        if (keyStrafe)
         {
             if (keyTurnRight)
                 side += PlayerBehavior.SideMove[speed];
@@ -151,11 +147,11 @@ public sealed class SilkUserInput : IUserInput, IDisposable
         }
 
         UpdateMouse();
-        var ms = 0.5F * config.mouse_sensitivity;
-        var mx = (int)MathF.Round(ms * mouseDeltaX);
-        var my = (int)MathF.Round(ms * -mouseDeltaY);
+        var ms = 0.5F * config.MouseSensitivity;
+        var mx = (int)MathF.Round(ms * mouseDeltaXy.X);
+        var my = (int)MathF.Round(ms * -mouseDeltaXy.Y);
         forward += my;
-        if (strafe)
+        if (keyStrafe)
             side += mx * 2;
         else
             cmd.AngleTurn -= (short)(mx * 0x8);
@@ -187,12 +183,9 @@ public sealed class SilkUserInput : IUserInput, IDisposable
         if (mouse is null)
             return;
 
-        mouseX = mouse.Position.X;
-        mouseY = mouse.Position.Y;
-        mousePrevX = mouseX;
-        mousePrevY = mouseY;
-        mouseDeltaX = 0;
-        mouseDeltaY = 0;
+        mouseXy = mouse.Position;
+        mousePrevXy = mouseXy;
+        mouseDeltaXy = Vector2.Zero;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -206,12 +199,9 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
         mouse.Cursor.CursorMode = CursorMode.Raw;
         mouseGrabbed = true;
-        mouseX = mouse.Position.X;
-        mouseY = mouse.Position.Y;
-        mousePrevX = mouseX;
-        mousePrevY = mouseY;
-        mouseDeltaX = 0;
-        mouseDeltaY = 0;
+        mouseXy = mouse.Position;
+        mousePrevXy = mouseXy;
+        mouseDeltaXy = Vector2.Zero;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -237,15 +227,12 @@ public sealed class SilkUserInput : IUserInput, IDisposable
         if (!mouseGrabbed)
             return;
 
-        mousePrevX = mouseX;
-        mousePrevY = mouseY;
-        mouseX = mouse.Position.X;
-        mouseY = mouse.Position.Y;
-        mouseDeltaX = mouseX - mousePrevX;
-        mouseDeltaY = mouseY - mousePrevY;
+        mousePrevXy = mouseXy;
+        mouseXy = mouse.Position;
+        mouseDeltaXy = mouseXy - mousePrevXy;
 
-        if (config.mouse_disableyaxis)
-            mouseDeltaY = 0;
+        if (config.MouseDisableYAxis)
+            mouseDeltaXy.Y = 0;
     }
 
     public void Dispose()
@@ -500,7 +487,7 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
     public int MouseSensitivity
     {
-        get => config.mouse_sensitivity;
-        set => config.mouse_sensitivity = value;
+        get => config.MouseSensitivity;
+        set => config.MouseSensitivity = value;
     }
 }

@@ -19,15 +19,15 @@ public sealed partial class SilkDoom : IDisposable
 #if !WINDOWS_RELEASE
     public void Run()
     {
-        if (args.timedemo.Present)
+        if (args.TimeDemo.Present)
         {
             window.UpdatesPerSecond = 0;
             window.FramesPerSecond = 0;
         }
         else
         {
-            config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
-            var targetFps = 35 * config.Values.video_fpsscale;
+            config.Values.VideoFpsScale = Math.Clamp(config.Values.VideoFpsScale, 1, 100);
+            var targetFps = 35 * config.Values.VideoFpsScale;
             window.UpdatesPerSecond = targetFps;
             window.FramesPerSecond = targetFps;
         }

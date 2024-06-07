@@ -270,11 +270,7 @@ public sealed class StatusBarRenderer
     private void DrawNumber(NumberWidget widget, int num)
     {
         var digits = widget.Width;
-
         var w = widget.Patches[0].Width;
-        var h = widget.Patches[0].Height;
-        var x = widget.X;
-
         var neg = num < 0;
 
         if (neg)
@@ -289,12 +285,10 @@ public sealed class StatusBarRenderer
             num = -num;
         }
 
-        x = widget.X - digits * w;
-
         if (num == 1994)
             return;
 
-        x = widget.X;
+        var x = widget.X;
 
         // In the special case of 0, you draw 0.
         if (num == 0)

@@ -2041,9 +2041,7 @@ public sealed class ThreeDRenderer
         }
 
         if (y2 - y1 < 0)
-        {
             return;
-        }
 
         var height = Fixed.Abs(floorHeight - viewZ);
 
@@ -2217,25 +2215,18 @@ public sealed class ThreeDRenderer
     }
 
     private void DrawFuzzColumn(
-        Column column,
         int x,
         int y1,
         int y2)
     {
         if (y2 - y1 < 0)
-        {
             return;
-        }
 
         if (y1 == 0)
-        {
             y1 = 1;
-        }
 
         if (y2 == windowHeight - 1)
-        {
             y2 = windowHeight - 2;
-        }
 
         var pos1 = screenHeight * (windowX + x) + windowY + y1;
         var pos2 = pos1 + (y2 - y1);
@@ -2246,9 +2237,7 @@ public sealed class ThreeDRenderer
             screenData[pos] = map[screenData[pos + fuzzTable[fuzzPos]]];
 
             if (++fuzzPos == fuzzTable.Length)
-            {
                 fuzzPos = 0;
-            }
         }
     }
 
@@ -2338,16 +2327,15 @@ public sealed class ThreeDRenderer
             y2 = Math.Min(y2, lowerClip - 1);
 
             if (y1 <= y2)
-                DrawFuzzColumn(column, x, y1, y2);
+                DrawFuzzColumn(x, y1, y2);
         }
     }
-
 
     private void AddSprites(Sector sector, int validCount)
     {
         // BSP is traversed by subsector.
         // A sector might have been split into several subsectors during BSP building.
-        // Thus we check whether its already added.
+        // Thus, we check whether it's already added.
         if (sector.ValidCount == validCount)
         {
             return;
@@ -2415,7 +2403,7 @@ public sealed class ThreeDRenderer
         {
             // Choose a different rotation based on player view.
             var ang = Geometry.PointToAngle(viewX, viewY, thingX, thingY);
-            var rot = (ang.Data - thing.Angle.Data + (uint)(Angle.Ang45.Data / 2) * 9) >> 29;
+            var rot = (ang.Data - thing.Angle.Data + Angle.Ang45.Data / 2 * 9) >> 29;
             lump = spriteFrame.Patches[rot];
             flip = spriteFrame.Flip[rot];
         }

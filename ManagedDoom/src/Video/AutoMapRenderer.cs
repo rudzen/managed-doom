@@ -28,31 +28,30 @@ namespace ManagedDoom.Video;
 
 public sealed class AutoMapRenderer
 {
-    private const float tr = 16;
+    private const float Tr = 16;
 
     // For use if I do walls with outsides / insides.
-    private const int reds = (256 - 5 * 16);
-    private const int redRange = 16;
-    private const int greens = (7 * 16);
-    private const int greenRange = 16;
-    private const int grays = (6 * 16);
-    private const int grayRange = 16;
-    private const int browns = (4 * 16);
-    private const int brownRange = 16;
-    private const int yellows = (256 - 32 + 7);
-    private const int yellowRange = 1;
-    private const int black = 0;
-    private const int white = (256 - 47);
+    private const int Reds = (256 - 5 * 16);
+    private const int RedRange = 16;
+    private const int Greens = (7 * 16);
+    private const int GreenRange = 16;
+    private const int Grays = (6 * 16);
+    private const int GrayRange = 16;
+    private const int Browns = (4 * 16);
+    private const int BrownRange = 16;
+    private const int Yellows = (256 - 32 + 7);
+    private const int YellowRange = 1;
+    private const int Black = 0;
+    private const int White = (256 - 47);
 
     // Automap colors.
-    private const int background = black;
-    private const int wallColors = reds;
-    private const int wallRange = redRange;
-    private const int tsWallColors = grays;
-    private const int tsWallRange = grayRange;
-    private const int fdWallColors = browns;
-    private const int cdWallColors = yellows;
-    private const int secretWallColors = wallColors;
+    private const int Background = Black;
+    private const int WallColors = Reds;
+    private const int WallRange = RedRange;
+    private const int TsWallColors = Grays;
+    private const int FdWallColors = Browns;
+    private const int CdWallColors = Yellows;
+    private const int SecretWallColors = WallColors;
     private static readonly float pr = 8 * DoomInfo.MobjInfos[(int)MobjType.Player].Radius.ToFloat() / 7;
 
     // The vector graphics for the automap.
@@ -70,24 +69,18 @@ public sealed class AutoMapRenderer
 
     private static readonly float[] thingTriangle =
     [
-        -0.5F * tr, -0.7F * tr, tr, 0F,
-        tr, 0F, -0.5F * tr, 0.7F * tr,
-        -0.5F * tr, 0.7F * tr, -0.5F * tr,
-        -0.7F * tr
+        -0.5F * Tr, -0.7F * Tr, Tr, 0F,
+        Tr, 0F, -0.5F * Tr, 0.7F * Tr,
+        -0.5F * Tr, 0.7F * Tr, -0.5F * Tr,
+        -0.7F * Tr
     ];
-
-    private static readonly int fdWallRange = brownRange;
-    private static readonly int cdWallRange = yellowRange;
-    private static readonly int thingColors = greens;
-    private static readonly int thingRange = greenRange;
-    private static readonly int secretWallRange = wallRange;
 
     private static readonly int[] playerColors =
     [
-        greens,
-        grays,
-        browns,
-        reds
+        Greens,
+        Grays,
+        Browns,
+        Reds
     ];
 
     private readonly int amHeight;
@@ -102,16 +95,13 @@ public sealed class AutoMapRenderer
 
     private float actualViewX;
     private float actualViewY;
-    private float height;
     private float maxX;
-    private float maxY;
 
     private float minX;
     private float minY;
 
     private float renderViewX;
     private float renderViewY;
-    private float width;
     private float zoom;
 
     public AutoMapRenderer(Wad wad, DrawScreen screen)
@@ -130,17 +120,14 @@ public sealed class AutoMapRenderer
 
     public void Render(Player player)
     {
-        screen.FillRect(0, 0, amWidth, amHeight, background);
+        screen.FillRect(0, 0, amWidth, amHeight, Background);
 
         var world = player.Mobj.World;
         var am = world.AutoMap;
 
         minX = am.MinX.ToFloat();
         maxX = am.MaxX.ToFloat();
-        width = maxX - minX;
         minY = am.MinY.ToFloat();
-        maxY = am.MaxY.ToFloat();
-        height = maxY - minY;
 
         actualViewX = am.ViewX.ToFloat();
         actualViewY = am.ViewY.ToFloat();
@@ -167,34 +154,34 @@ public sealed class AutoMapRenderer
 
                 if (line.BackSector == null)
                 {
-                    screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, wallColors);
+                    screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, WallColors);
                 }
                 else
                 {
                     if (line.Special == (LineSpecial)39)
                     {
                         // Teleporters.
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, wallColors + wallRange / 2);
+                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, WallColors + WallRange / 2);
                     }
                     else if ((line.Flags & LineFlags.Secret) != 0)
                     {
                         // Secret door.
-                        var color = cheating ? secretWallColors : wallColors;
+                        var color = cheating ? SecretWallColors : WallColors;
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, color);
                     }
                     else if (line.BackSector.FloorHeight != line.FrontSector.FloorHeight)
                     {
                         // Floor level change.
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, fdWallColors);
+                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, FdWallColors);
                     }
                     else if (line.BackSector.CeilingHeight != line.FrontSector.CeilingHeight)
                     {
                         // Ceiling level change.
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, cdWallColors);
+                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, CdWallColors);
                     }
                     else if (cheating)
                     {
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, tsWallColors);
+                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, TsWallColors);
                     }
                 }
             }
@@ -202,7 +189,7 @@ public sealed class AutoMapRenderer
             {
                 if ((line.Flags & LineFlags.DontDraw) == 0)
                 {
-                    screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, grays + 3);
+                    screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, Grays + 3);
                 }
             }
         }
@@ -229,12 +216,12 @@ public sealed class AutoMapRenderer
             screen.DrawLine(
                 amWidth / 2 - 2 * scale, amHeight / 2,
                 amWidth / 2 + 2 * scale, amHeight / 2,
-                grays);
+                Grays);
 
             screen.DrawLine(
                 amWidth / 2, amHeight / 2 - 2 * scale,
                 amWidth / 2, amHeight / 2 + 2 * scale,
-                grays);
+                Grays);
         }
 
         screen.DrawText(
@@ -253,7 +240,7 @@ public sealed class AutoMapRenderer
 
         if (!options.NetGame)
         {
-            DrawCharacter(consolePlayer.Mobj, playerArrow, white);
+            DrawCharacter(consolePlayer.Mobj, playerArrow, White);
             return;
         }
 
@@ -282,7 +269,7 @@ public sealed class AutoMapRenderer
         {
             if (thinker is Mobj mobj)
             {
-                DrawCharacter(mobj, thingTriangle, greens);
+                DrawCharacter(mobj, thingTriangle, Greens);
             }
         }
     }

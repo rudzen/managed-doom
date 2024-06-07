@@ -71,15 +71,15 @@ public sealed class Renderer
 
         palette = content.Palette;
 
-        screen = config.video_highresolution
+        screen = config.VideoHighResolution
             ? new DrawScreen(content.Wad, 640, 400)
             : new DrawScreen(content.Wad, 320, 200);
 
-        config.video_gamescreensize = Math.Clamp(config.video_gamescreensize, 0, MaxWindowSize);
-        config.video_gammacorrection = Math.Clamp(config.video_gammacorrection, 0, MaxGammaCorrectionLevel);
+        config.VideoGameScreenSize = Math.Clamp(config.VideoGameScreenSize, 0, MaxWindowSize);
+        config.VideoGammaCorrection = Math.Clamp(config.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
 
         menu = new MenuRenderer(content.Wad, screen);
-        threeD = new ThreeDRenderer(content, screen, config.video_gamescreensize);
+        threeD = new ThreeDRenderer(content, screen, config.VideoGameScreenSize);
         statusBar = new StatusBarRenderer(content.Wad, screen);
         intermission = new IntermissionRenderer(content.Wad, screen);
         openingSequence = new OpeningSequenceRenderer(content.Wad, screen, this);
@@ -94,7 +94,7 @@ public sealed class Renderer
         WipeHeight = screen.Height / scale;
         wipeBuffer = new byte[screen.Data.Length];
 
-        palette.ResetColors(in gammaCorrectionParameters[config.video_gammacorrection]);
+        palette.ResetColors(in gammaCorrectionParameters[config.VideoGammaCorrection]);
     }
 
     public int Width => screen.Width;
@@ -112,26 +112,26 @@ public sealed class Renderer
 
         set
         {
-            config.video_gamescreensize = value;
+            config.VideoGameScreenSize = value;
             threeD.WindowSize = value;
         }
     }
 
     public bool DisplayMessage
     {
-        get => config.video_displaymessage;
-        set => config.video_displaymessage = value;
+        get => config.VideoDisplayMessage;
+        set => config.VideoDisplayMessage = value;
     }
 
     public int MaxGammaCorrectionLevel => gammaCorrectionParameters.Length - 1;
 
     public int GammaCorrectionLevel
     {
-        get => config.video_gammacorrection;
+        get => config.VideoGammaCorrection;
         set
         {
-            config.video_gammacorrection = value;
-            palette.ResetColors(in gammaCorrectionParameters[config.video_gammacorrection]);
+            config.VideoGammaCorrection = value;
+            palette.ResetColors(in gammaCorrectionParameters[config.VideoGammaCorrection]);
         }
     }
 
@@ -206,7 +206,7 @@ public sealed class Renderer
                     }
                 }
 
-                if (config.video_displaymessage || ReferenceEquals(consolePlayer.Message, (string)DoomInfo.Strings.MSGOFF))
+                if (config.VideoDisplayMessage || ReferenceEquals(consolePlayer.Message, (string)DoomInfo.Strings.MSGOFF))
                 {
                     if (consolePlayer.MessageTime > 0)
                     {

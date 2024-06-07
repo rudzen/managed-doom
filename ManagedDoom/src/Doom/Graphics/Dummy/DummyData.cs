@@ -42,8 +42,8 @@ public static class DummyData
         }
 
         var columns = new Column[width][];
-        var c1 = new Column[] { new Column(0, data, 0, height) };
-        var c2 = new Column[] { new Column(0, data, 32, height) };
+        var c1 = new[] { new Column(0, data, 0, height) };
+        var c2 = new[] { new Column(0, data, 32, height) };
         for (var x = 0; x < width; x++)
         {
             columns[x] = x / 32 % 2 == 0 ? c1 : c2;

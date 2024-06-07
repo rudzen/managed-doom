@@ -18,7 +18,6 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Intermission;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Video;
 
@@ -30,18 +29,16 @@ public sealed class FinaleRenderer
 
     private readonly DrawScreen screen;
     private readonly ISpriteLookup sprites;
-    private readonly Wad wad;
 
     public FinaleRenderer(GameContent content, DrawScreen screen)
     {
-        wad = content.Wad;
         flats = content.Flats;
         sprites = content.Sprites;
 
         this.screen = screen;
         scale = screen.Width / 320;
 
-        cache = new PatchCache(wad);
+        cache = new PatchCache(content.Wad);
     }
 
     public void Render(Finale finale)

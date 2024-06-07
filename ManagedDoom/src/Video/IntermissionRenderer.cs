@@ -83,9 +83,6 @@ public sealed class IntermissionRenderer
     private readonly int scale;
     private readonly DrawScreen screen;
 
-
-    private Wad wad;
-
     static IntermissionRenderer()
     {
         doomLevels = new string[4][];
@@ -103,7 +100,6 @@ public sealed class IntermissionRenderer
 
     public IntermissionRenderer(Wad wad, DrawScreen screen)
     {
-        this.wad = wad;
         this.screen = screen;
 
         cache = new PatchCache(wad);

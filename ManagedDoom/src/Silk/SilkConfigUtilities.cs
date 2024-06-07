@@ -33,8 +33,8 @@ public static class SilkConfigUtilities
         if (!config.IsRestoredFromFile)
         {
             var vm = GetDefaultVideoMode();
-            config.Values.video_screenwidth = vm.Resolution!.Value.X;
-            config.Values.video_screenheight = vm.Resolution.Value.Y;
+            config.Values.VideoScreenWidth = vm.Resolution!.Value.X;
+            config.Values.VideoScreenHeight = vm.Resolution.Value.Y;
         }
 
         return config;
@@ -70,11 +70,11 @@ public static class SilkConfigUtilities
 
     public static SilkMusic GetMusicInstance(ConfigValues config, GameContent content, AudioDevice device)
     {
-        var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.audio_soundfont);
+        var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.AudioSoundfont);
         if (File.Exists(sfPath))
             return new SilkMusic(config, content, device, sfPath);
 
-        Console.WriteLine($"SoundFont '{config.audio_soundfont}' was not found!");
+        Console.WriteLine($"SoundFont '{config.AudioSoundfont}' was not found!");
         return null;
     }
 }

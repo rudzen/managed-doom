@@ -175,30 +175,20 @@ public sealed class SpriteLookup : ISpriteLookup
 
     private sealed class SpriteInfo
     {
-        public readonly Patch[] Patches;
-        public readonly bool[] Flip;
-
-        public SpriteInfo()
-        {
-            Patches = new Patch[8];
-            Flip = new bool[8];
-        }
+        public Patch[] Patches { get; } = new Patch[8];
+        public bool[] Flip { get; } = new bool[8];
 
         public void CheckCompletion()
         {
-            if (Patches.Any(t => t == null))
+            if (Patches[0] == null || Patches[1] == null || Patches[2] == null || Patches[3] == null || Patches[4] == null || Patches[5] == null || Patches[6] == null ||
+                Patches[7] == null)
                 throw new Exception("Missing sprite!");
         }
 
         public bool HasRotation()
         {
-            for (var i = 1; i < Patches.Length; i++)
-            {
-                if (Patches[i] != Patches[0])
-                    return true;
-            }
-
-            return false;
+            var zero = Patches[0];
+            return zero != Patches[1] || zero != Patches[2] || zero != Patches[3] || zero != Patches[4] || zero != Patches[5] || zero != Patches[6] || zero != Patches[7];
         }
     }
 }
