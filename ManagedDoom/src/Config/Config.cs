@@ -58,7 +58,6 @@ public sealed class Config
         try
         {
             var configJson = JsonSerializer.Serialize(Values, ConfigValuesContext.Default.ConfigValues);
-            Console.WriteLine(configJson);
             File.WriteAllText(path, configJson);
         }
         catch (Exception e)

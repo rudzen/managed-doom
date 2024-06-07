@@ -44,7 +44,7 @@ public static partial class DoomInfo
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Fall(World.World world, Mobj actor)
         {
-            world.MonsterBehavior.Fall(actor);
+            MonsterBehavior.Fall(actor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

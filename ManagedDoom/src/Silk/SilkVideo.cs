@@ -24,7 +24,7 @@ public sealed class SilkVideo : IVideo, IDisposable
     private readonly byte[] textureData;
     private Texture2D texture;
 
-    private TextureBatcher batcher;
+    private TextureBatcher textureBatcher;
     private SimpleShaderProgram shader;
 
     private int silkWindowWidth;
@@ -32,11 +32,11 @@ public sealed class SilkVideo : IVideo, IDisposable
 
     public SilkVideo(ConfigValues config, GameContent content, IWindow window, GL gl)
     {
+        Console.Write("Initialize video: ");
+        var start = Stopwatch.GetTimestamp();
+
         try
         {
-            Console.Write("Initialize video: ");
-            var start = Stopwatch.GetTimestamp();
-
             renderer = new Renderer(config, content);
 
             device = new GraphicsDevice(gl);
@@ -56,15 +56,13 @@ public sealed class SilkVideo : IVideo, IDisposable
             texture = new Texture2D(device, (uint)textureWidth, (uint)textureHeight);
             texture.SetTextureFilters(TrippyGL.TextureMinFilter.Nearest, TrippyGL.TextureMagFilter.Nearest);
 
-            batcher = new TextureBatcher(device);
+            textureBatcher = new TextureBatcher(device);
             shader = SimpleShaderProgram.Create<VertexColorTexture>(device);
-            batcher.SetShaderProgram(shader);
+            textureBatcher.SetShaderProgram(shader);
 
             device.BlendingEnabled = false;
 
             Resize(window.Size.X, window.Size.Y);
-
-            Console.WriteLine("OK [" + Stopwatch.GetElapsedTime(start) + ']');
         }
         catch (Exception e)
         {
@@ -72,6 +70,8 @@ public sealed class SilkVideo : IVideo, IDisposable
             Dispose();
             ExceptionDispatchInfo.Throw(e);
         }
+
+        Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
     }
 
     public void Render(Doom.Doom doom, Fixed frameFrac)
@@ -87,9 +87,9 @@ public sealed class SilkVideo : IVideo, IDisposable
         var br = new VertexColorTexture(new Vector3(silkWindowWidth, silkWindowHeight, 0), Color4b.White, new Vector2(u, v));
         var bl = new VertexColorTexture(new Vector3(0, silkWindowHeight, 0), Color4b.White, new Vector2(u, 0));
 
-        batcher.Begin();
-        batcher.DrawRaw(texture, tl, tr, br, bl);
-        batcher.End();
+        textureBatcher.Begin();
+        textureBatcher.DrawRaw(texture, tl, tr, br, bl);
+        textureBatcher.End();
     }
 
     public void Resize(int width, int height)
@@ -114,25 +114,25 @@ public sealed class SilkVideo : IVideo, IDisposable
     {
         Console.WriteLine("Shutdown video.");
 
-        if (shader != null)
+        if (shader is not null)
         {
             shader.Dispose();
             shader = null;
         }
 
-        if (batcher != null)
+        if (textureBatcher is not null)
         {
-            batcher.Dispose();
-            batcher = null;
+            textureBatcher.Dispose();
+            textureBatcher = null;
         }
 
-        if (texture != null)
+        if (texture is not null)
         {
             texture.Dispose();
             texture = null;
         }
 
-        if (device != null)
+        if (device is not null)
         {
             device.Dispose();
             device = null;

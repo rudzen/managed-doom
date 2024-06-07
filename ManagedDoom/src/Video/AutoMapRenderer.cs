@@ -34,13 +34,9 @@ public sealed class AutoMapRenderer
     private const int Reds = (256 - 5 * 16);
     private const int RedRange = 16;
     private const int Greens = (7 * 16);
-    private const int GreenRange = 16;
     private const int Grays = (6 * 16);
-    private const int GrayRange = 16;
     private const int Browns = (4 * 16);
-    private const int BrownRange = 16;
     private const int Yellows = (256 - 32 + 7);
-    private const int YellowRange = 1;
     private const int Black = 0;
     private const int White = (256 - 47);
 
@@ -93,15 +89,9 @@ public sealed class AutoMapRenderer
 
     private readonly DrawScreen screen;
 
-    private float actualViewX;
-    private float actualViewY;
-    private float maxX;
+    private Vector2 actualView = Vector2.Zero;
+    private Vector2 renderView = Vector2.Zero;
 
-    private float minX;
-    private float minY;
-
-    private float renderViewX;
-    private float renderViewY;
     private float zoom;
 
     public AutoMapRenderer(Wad wad, DrawScreen screen)
@@ -125,18 +115,15 @@ public sealed class AutoMapRenderer
         var world = player.Mobj.World;
         var am = world.AutoMap;
 
-        minX = am.MinX.ToFloat();
-        maxX = am.MaxX.ToFloat();
-        minY = am.MinY.ToFloat();
-
-        actualViewX = am.ViewX.ToFloat();
-        actualViewY = am.ViewY.ToFloat();
+        actualView = new Vector2(am.ViewX.ToFloat(), am.ViewY.ToFloat());
         zoom = am.Zoom.ToFloat();
 
         // This hack aligns the view point to an integer coordinate
         // so that line shake is reduced when the view point moves.
-        renderViewX = MathF.Round(zoom * ppu * actualViewX) / (zoom * ppu);
-        renderViewY = MathF.Round(zoom * ppu * actualViewY) / (zoom * ppu);
+        renderView = new Vector2(
+            MathF.Round(zoom * ppu * actualView.X) / (zoom * ppu),
+            MathF.Round(zoom * ppu * actualView.Y) / (zoom * ppu)
+        );
 
         foreach (var line in world.Map.Lines)
         {
@@ -291,15 +278,15 @@ public sealed class AutoMapRenderer
 
     private Vector2 ToScreenPos(Fixed x, Fixed y)
     {
-        var posX = zoom * ppu * (x.ToFloat() - renderViewX) + amWidth / 2;
-        var posY = -zoom * ppu * (y.ToFloat() - renderViewY) + amHeight / 2;
+        var posX = zoom * ppu * (x.ToFloat() - renderView.X) + amWidth / 2;
+        var posY = -zoom * ppu * (y.ToFloat() - renderView.Y) + amHeight / 2;
         return new Vector2(posX, posY);
     }
 
     private Vector2 ToScreenPos(Vertex v)
     {
-        var posX = zoom * ppu * (v.X.ToFloat() - renderViewX) + amWidth / 2;
-        var posY = -zoom * ppu * (v.Y.ToFloat() - renderViewY) + amHeight / 2;
+        var posX = zoom * ppu * (v.X.ToFloat() - renderView.X) + amWidth / 2;
+        var posY = -zoom * ppu * (v.Y.ToFloat() - renderView.Y) + amHeight / 2;
         return new Vector2(posX, posY);
     }
 }

@@ -66,9 +66,7 @@ public sealed class KeyBinding
 
             var mouseButton = DoomMouseButtonEx.Parse(span);
             if (mouseButton != DoomMouseButton.Unknown)
-            {
                 mouseButtons.Add(mouseButton);
-            }
         }
 
         return new KeyBinding(keys.ToArray(), mouseButtons.ToArray());

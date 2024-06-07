@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
@@ -62,6 +63,7 @@ public sealed class SilkSound : ISound, IDisposable
 
     private long lastUpdate;
 
+    [SkipLocalsInit]
     public SilkSound(ConfigValues config, GameContent content, AudioDevice device)
     {
         try
@@ -73,15 +75,17 @@ public sealed class SilkSound : ISound, IDisposable
 
             config.AudioSoundVolume = Math.Clamp(config.AudioSoundVolume, 0, MaxVolume);
 
-            buffers = new AudioClip[DoomInfo.SfxNames.Length];
-            amplitudes = new float[DoomInfo.SfxNames.Length];
+            var sfxNames = DoomInfo.SfxNames.AsSpan();
+
+            buffers = new AudioClip[sfxNames.Length];
+            amplitudes = new float[sfxNames.Length];
 
             if (config.AudioRandomPitch)
                 random = new DoomRandom();
 
-            for (var i = 0; i < DoomInfo.SfxNames.Length; i++)
+            for (var i = 0; i < sfxNames.Length; i++)
             {
-                var name = "DS" + DoomInfo.SfxNames[i].ToString().ToUpper();
+                var name = $"DS{sfxNames[i].ToString().ToUpper()}";
                 var lump = content.Wad.GetLumpNumber(name);
 
                 if (lump == -1)
