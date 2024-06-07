@@ -14,7 +14,6 @@
 //
 
 
-
 using System;
 using System.IO;
 using Silk.NET.Maths;
@@ -23,60 +22,59 @@ using DrippyAL;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom.Silk
+namespace ManagedDoom.Silk;
+
+public static class SilkConfigUtilities
 {
-    public static class SilkConfigUtilities
+    public static Config.Config GetConfig()
     {
-        public static Config.Config GetConfig()
-        {
-            var config = new Config.Config(ConfigUtilities.GetConfigPath());
+        var config = new Config.Config(ConfigUtilities.GetConfigPath());
 
-            if (!config.IsRestoredFromFile)
+        if (!config.IsRestoredFromFile)
+        {
+            var vm = GetDefaultVideoMode();
+            config.Values.video_screenwidth = vm.Resolution!.Value.X;
+            config.Values.video_screenheight = vm.Resolution.Value.Y;
+        }
+
+        return config;
+    }
+
+    private static VideoMode GetDefaultVideoMode()
+    {
+        var monitor = Monitor.GetMainMonitor(null);
+
+        const int baseWidth = 640;
+        const int baseHeight = 400;
+
+        var currentWidth = baseWidth;
+        var currentHeight = baseHeight;
+
+        while (true)
+        {
+            var nextWidth = currentWidth + baseWidth;
+            var nextHeight = currentHeight + baseHeight;
+
+            if (nextWidth >= 0.9 * monitor.VideoMode.Resolution!.Value.X ||
+                nextHeight >= 0.9 * monitor.VideoMode.Resolution.Value.Y)
             {
-                var vm = GetDefaultVideoMode();
-                config.Values.video_screenwidth = vm.Resolution!.Value.X;
-                config.Values.video_screenheight = vm.Resolution.Value.Y;
+                break;
             }
 
-            return config;
+            currentWidth = nextWidth;
+            currentHeight = nextHeight;
         }
 
-        private static VideoMode GetDefaultVideoMode()
-        {
-            var monitor = Monitor.GetMainMonitor(null);
+        return new VideoMode(new Vector2D<int>(currentWidth, currentHeight));
+    }
 
-            const int baseWidth = 640;
-            const int baseHeight = 400;
+    public static SilkMusic GetMusicInstance(ConfigValues config, GameContent content, AudioDevice device)
+    {
+        var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.audio_soundfont);
+        if (File.Exists(sfPath))
+            return new SilkMusic(config, content, device, sfPath);
 
-            var currentWidth = baseWidth;
-            var currentHeight = baseHeight;
-
-            while (true)
-            {
-                var nextWidth = currentWidth + baseWidth;
-                var nextHeight = currentHeight + baseHeight;
-
-                if (nextWidth >= 0.9 * monitor.VideoMode.Resolution!.Value.X ||
-                    nextHeight >= 0.9 * monitor.VideoMode.Resolution.Value.Y)
-                {
-                    break;
-                }
-
-                currentWidth = nextWidth;
-                currentHeight = nextHeight;
-            }
-
-            return new VideoMode(new Vector2D<int>(currentWidth, currentHeight));
-        }
-
-        public static SilkMusic GetMusicInstance(ConfigValues config, GameContent content, AudioDevice device)
-        {
-            var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.audio_soundfont);
-            if (File.Exists(sfPath))
-                return new SilkMusic(config, content, device, sfPath);
-
-            Console.WriteLine($"SoundFont '{config.audio_soundfont}' was not found!");
-            return null;
-        }
+        Console.WriteLine($"SoundFont '{config.audio_soundfont}' was not found!");
+        return null;
     }
 }

@@ -6,36 +6,36 @@ using System.Threading;
 #endif
 using Silk.NET.Windowing;
 
-namespace ManagedDoom.Silk
+namespace ManagedDoom.Silk;
+
+public sealed partial class SilkDoom : IDisposable
 {
-    public partial class SilkDoom : IDisposable
-    {
-        // The main loop provided by Silk.NET with the IWindow.Run method uses a busy loop
-        // to control the drawing timing, which is CPU-intensive.
-        // Here, I have implemented my own main loop to reduce the CPU load, targeting only
-        // Windows, which I can test at hand.
-        // In other environments, the IWindow.Run method provided by Silk.NET is used.
+    // The main loop provided by Silk.NET with the IWindow.Run method uses a busy loop
+    // to control the drawing timing, which is CPU-intensive.
+    // Here, I have implemented my own main loop to reduce the CPU load, targeting only
+    // Windows, which I can test at hand.
+    // In other environments, the IWindow.Run method provided by Silk.NET is used.
 
 #if !WINDOWS_RELEASE
-        public void Run()
+    public void Run()
+    {
+        if (args.timedemo.Present)
         {
-            if (args.timedemo.Present)
-            {
-                window.UpdatesPerSecond = 0;
-                window.FramesPerSecond = 0;
-            }
-            else
-            {
-                config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
-                var targetFps = 35 * config.Values.video_fpsscale;
-                window.UpdatesPerSecond = targetFps;
-                window.FramesPerSecond = targetFps;
-            }
-
-            window.Run();
-
-            Quit();
+            window.UpdatesPerSecond = 0;
+            window.FramesPerSecond = 0;
         }
+        else
+        {
+            config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
+            var targetFps = 35 * config.Values.video_fpsscale;
+            window.UpdatesPerSecond = targetFps;
+            window.FramesPerSecond = targetFps;
+        }
+
+        window.Run();
+
+        Quit();
+    }
 #else
         [DllImport("winmm.dll")]
         private static extern uint timeBeginPeriod(uint uPeriod);
@@ -101,5 +101,4 @@ namespace ManagedDoom.Silk
             Quit();
         }
 #endif
-    }
 }
