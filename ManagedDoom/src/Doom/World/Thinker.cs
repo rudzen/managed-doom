@@ -14,26 +14,21 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public class Thinker
 {
-    public class Thinker
+    public Thinker Prev { get; set; }
+
+    public Thinker Next { get; set; }
+
+    public ThinkerState ThinkerState { get; set; }
+
+    public virtual void Run()
     {
-        public Thinker()
-        {
-        }
+    }
 
-        public virtual void Run()
-        {
-        }
-
-        public virtual void UpdateFrameInterpolationInfo()
-        {
-        }
-
-        public Thinker Prev { get; set; }
-
-        public Thinker Next { get; set; }
-
-        public ThinkerState ThinkerState { get; set; }
+    public virtual void UpdateFrameInterpolationInfo()
+    {
     }
 }

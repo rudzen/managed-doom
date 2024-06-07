@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.Opening
+namespace ManagedDoom.Doom.Opening;
+
+public enum OpeningSequenceState
 {
-    public enum OpeningSequenceState
-    {
-        Title,
-        Credit,
-        Demo
-    }
+    Title,
+    Credit,
+    Demo
 }

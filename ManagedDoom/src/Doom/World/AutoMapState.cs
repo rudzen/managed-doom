@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum AutoMapState
 {
-    public enum AutoMapState
-    {
-        None,
-        AllMap,
-        AllThings
-    }
+    None,
+    AllMap,
+    AllThings
 }

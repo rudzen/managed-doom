@@ -16,27 +16,22 @@
 
 using ManagedDoom.Doom.Map;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class Button
 {
-    public sealed class Button
+    public LineDef Line { get; set; }
+    public ButtonPosition Position { get; set; }
+    public int Texture { get; set; }
+    public int Timer { get; set; }
+    public Mobj SoundOrigin { get; set; }
+
+    public void Clear()
     {
-        public void Clear()
-        {
-            Line = null;
-            Position = 0;
-            Texture = 0;
-            Timer = 0;
-            SoundOrigin = null;
-        }
-
-        public LineDef Line { get; set; }
-
-        public ButtonPosition Position { get; set; }
-
-        public int Texture { get; set; }
-
-        public int Timer { get; set; }
-
-        public Mobj SoundOrigin { get; set; }
+        Line = null;
+        Position = 0;
+        Texture = 0;
+        Timer = 0;
+        SoundOrigin = null;
     }
 }

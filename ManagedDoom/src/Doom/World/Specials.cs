@@ -20,308 +20,308 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class Specials
 {
-    public class Specials
+    private const int maxButtonCount = 32;
+    private const int buttonTime = 35;
+
+    private readonly Button[] buttonList;
+
+    private readonly World world;
+    private int levelTimeCount;
+
+    private bool levelTimer;
+
+    private LineDef[] scrollLines;
+
+    public Specials(World world)
     {
-        private static readonly int maxButtonCount = 32;
-        private static readonly int buttonTime = 35;
+        this.world = world;
 
-        private readonly World world;
+        levelTimer = false;
 
-        private bool levelTimer;
-        private int levelTimeCount;
-
-        private readonly Button[] buttonList;
-
-        private LineDef[] scrollLines;
-
-        public Specials(World world)
+        buttonList = new Button[maxButtonCount];
+        for (var i = 0; i < buttonList.Length; i++)
         {
-            this.world = world;
+            buttonList[i] = new Button();
+        }
 
-            levelTimer = false;
+        TextureTranslation = new int[world.Map.Textures.Count];
+        for (var i = 0; i < TextureTranslation.Length; i++)
+        {
+            TextureTranslation[i] = i;
+        }
 
-            buttonList = new Button[maxButtonCount];
-            for (var i = 0; i < buttonList.Length; i++)
+        FlatTranslation = new int[world.Map.Flats.Count];
+        for (var i = 0; i < FlatTranslation.Length; i++)
+        {
+            FlatTranslation[i] = i;
+        }
+    }
+
+    public int[] TextureTranslation { get; }
+
+    public int[] FlatTranslation { get; }
+
+    /// <summary>
+    /// After the map has been loaded, scan for specials that spawn thinkers.
+    /// </summary>
+    public void SpawnSpecials(int levelTimeCount)
+    {
+        levelTimer = true;
+        this.levelTimeCount = levelTimeCount;
+        SpawnSpecials();
+    }
+
+    /// <summary>
+    /// After the map has been loaded, scan for specials that spawn thinkers.
+    /// </summary>
+    public void SpawnSpecials()
+    {
+        // Init special sectors.
+        var lc = world.LightingChange;
+        var sa = world.SectorAction;
+        foreach (var sector in world.Map.Sectors)
+        {
+            if (sector.Special == 0)
             {
-                buttonList[i] = new Button();
+                continue;
             }
 
-            TextureTranslation = new int[world.Map.Textures.Count];
-            for (var i = 0; i < TextureTranslation.Length; i++)
+            switch ((int)sector.Special)
             {
-                TextureTranslation[i] = i;
-            }
+                case 1:
+                    // Flickering lights.
+                    lc.SpawnLightFlash(sector);
+                    break;
 
-            FlatTranslation = new int[world.Map.Flats.Count];
-            for (var i = 0; i < FlatTranslation.Length; i++)
-            {
-                FlatTranslation[i] = i;
+                case 2:
+                    // Strobe fast.
+                    lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, false);
+                    break;
+
+                case 3:
+                    // Strobe slow.
+                    lc.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, false);
+                    break;
+
+                case 4:
+                    // Strobe fast / death slime.
+                    lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, false);
+                    sector.Special = (SectorSpecial)4;
+                    break;
+
+                case 8:
+                    // Glowing light.
+                    lc.SpawnGlowingLight(sector);
+                    break;
+                case 9:
+                    // Secret sector.
+                    world.TotalSecrets++;
+                    break;
+
+                case 10:
+                    // Door close in 30 seconds.
+                    sa.SpawnDoorCloseIn30(sector);
+                    break;
+
+                case 12:
+                    // Sync strobe slow.
+                    lc.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, true);
+                    break;
+
+                case 13:
+                    // Sync strobe fast.
+                    lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, true);
+                    break;
+
+                case 14:
+                    // Door raise in 5 minutes.
+                    sa.SpawnDoorRaiseIn5Mins(sector);
+                    break;
+
+                case 17:
+                    lc.SpawnFireFlicker(sector);
+                    break;
             }
         }
 
-        /// <summary>
-        /// After the map has been loaded, scan for specials that spawn thinkers.
-        /// </summary>
-        public void SpawnSpecials(int levelTimeCount)
+        var scrollList = new List<LineDef>();
+        foreach (var line in world.Map.Lines)
         {
-            levelTimer = true;
-            this.levelTimeCount = levelTimeCount;
-            SpawnSpecials();
+            switch ((int)line.Special)
+            {
+                case 48:
+                    // Texture scroll.
+                    scrollList.Add(line);
+                    break;
+            }
         }
 
-        /// <summary>
-        /// After the map has been loaded, scan for specials that spawn thinkers.
-        /// </summary>
-        public void SpawnSpecials()
+        scrollLines = scrollList.ToArray();
+    }
+
+    public void ChangeSwitchTexture(LineDef line, bool useAgain)
+    {
+        if (!useAgain)
         {
-            // Init special sectors.
-            var lc = world.LightingChange;
-            var sa = world.SectorAction;
-            foreach (var sector in world.Map.Sectors)
-            {
-                if (sector.Special == 0)
-                {
-                    continue;
-                }
-
-                switch ((int)sector.Special)
-                {
-                    case 1:
-                        // Flickering lights.
-                        lc.SpawnLightFlash(sector);
-                        break;
-
-                    case 2:
-                        // Strobe fast.
-                        lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, false);
-                        break;
-
-                    case 3:
-                        // Strobe slow.
-                        lc.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, false);
-                        break;
-
-                    case 4:
-                        // Strobe fast / death slime.
-                        lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, false);
-                        sector.Special = (SectorSpecial)4;
-                        break;
-
-                    case 8:
-                        // Glowing light.
-                        lc.SpawnGlowingLight(sector);
-                        break;
-                    case 9:
-                        // Secret sector.
-                        world.TotalSecrets++;
-                        break;
-
-                    case 10:
-                        // Door close in 30 seconds.
-                        sa.SpawnDoorCloseIn30(sector);
-                        break;
-
-                    case 12:
-                        // Sync strobe slow.
-                        lc.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, true);
-                        break;
-
-                    case 13:
-                        // Sync strobe fast.
-                        lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, true);
-                        break;
-
-                    case 14:
-                        // Door raise in 5 minutes.
-                        sa.SpawnDoorRaiseIn5Mins(sector);
-                        break;
-
-                    case 17:
-                        lc.SpawnFireFlicker(sector);
-                        break;
-                }
-            }
-
-            var scrollList = new List<LineDef>();
-            foreach (var line in world.Map.Lines)
-            {
-                switch ((int)line.Special)
-                {
-                    case 48:
-                        // Texture scroll.
-                        scrollList.Add(line);
-                        break;
-                }
-            }
-            scrollLines = scrollList.ToArray();
+            line.Special = 0;
         }
 
-        public void ChangeSwitchTexture(LineDef line, bool useAgain)
+        var frontSide = line.FrontSide;
+        var topTexture = frontSide.TopTexture;
+        var middleTexture = frontSide.MiddleTexture;
+        var bottomTexture = frontSide.BottomTexture;
+
+        var sound = Sfx.SWTCHN;
+
+        // Exit switch?
+        if ((int)line.Special == 11)
         {
-            if (!useAgain)
+            sound = Sfx.SWTCHX;
+        }
+
+        var switchList = world.Map.Textures.SwitchList;
+
+        for (var i = 0; i < switchList.Length; i++)
+        {
+            if (switchList[i] == topTexture)
             {
-                line.Special = 0;
-            }
+                world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
+                frontSide.TopTexture = switchList[i ^ 1];
 
-            var frontSide = line.FrontSide;
-            var topTexture = frontSide.TopTexture;
-            var middleTexture = frontSide.MiddleTexture;
-            var bottomTexture = frontSide.BottomTexture;
-
-            var sound = Sfx.SWTCHN;
-
-            // Exit switch?
-            if ((int)line.Special == 11)
-            {
-                sound = Sfx.SWTCHX;
-            }
-
-            var switchList = world.Map.Textures.SwitchList;
-
-            for (var i = 0; i < switchList.Length; i++)
-            {
-                if (switchList[i] == topTexture)
+                if (useAgain)
                 {
-                    world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
-                    frontSide.TopTexture = switchList[i ^ 1];
-
-                    if (useAgain)
-                    {
-                        StartButton(line, ButtonPosition.Top, switchList[i], buttonTime);
-                    }
-
-                    return;
+                    StartButton(line, ButtonPosition.Top, switchList[i], buttonTime);
                 }
 
-                if (switchList[i] == middleTexture)
+                return;
+            }
+
+            if (switchList[i] == middleTexture)
+            {
+                world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
+                frontSide.MiddleTexture = switchList[i ^ 1];
+
+                if (useAgain)
                 {
-                    world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
-                    frontSide.MiddleTexture = switchList[i ^ 1];
-
-                    if (useAgain)
-                    {
-                        StartButton(line, ButtonPosition.Middle, switchList[i], buttonTime);
-                    }
-
-                    return;
+                    StartButton(line, ButtonPosition.Middle, switchList[i], buttonTime);
                 }
 
-                if (switchList[i] == bottomTexture)
+                return;
+            }
+
+            if (switchList[i] == bottomTexture)
+            {
+                world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
+                frontSide.BottomTexture = switchList[i ^ 1];
+
+                if (useAgain)
                 {
-                    world.StartSound(line.SoundOrigin, sound, SfxType.Misc);
-                    frontSide.BottomTexture = switchList[i ^ 1];
+                    StartButton(line, ButtonPosition.Bottom, switchList[i], buttonTime);
+                }
 
-                    if (useAgain)
-                    {
-                        StartButton(line, ButtonPosition.Bottom, switchList[i], buttonTime);
-                    }
+                return;
+            }
+        }
+    }
 
-                    return;
+    private void StartButton(LineDef line, ButtonPosition w, int texture, int time)
+    {
+        // See if button is already pressed.
+        for (var i = 0; i < maxButtonCount; i++)
+        {
+            if (buttonList[i].Timer != 0 && buttonList[i].Line == line)
+            {
+                return;
+            }
+        }
+
+        for (var i = 0; i < maxButtonCount; i++)
+        {
+            if (buttonList[i].Timer == 0)
+            {
+                buttonList[i].Line = line;
+                buttonList[i].Position = w;
+                buttonList[i].Texture = texture;
+                buttonList[i].Timer = time;
+                buttonList[i].SoundOrigin = line.SoundOrigin;
+                return;
+            }
+        }
+
+        throw new Exception("No button slots left!");
+    }
+
+    /// <summary>
+    /// Animate planes, scroll walls, etc.
+    /// </summary>
+    public void Update()
+    {
+        // Level timer.
+        if (levelTimer)
+        {
+            levelTimeCount--;
+            if (levelTimeCount == 0)
+            {
+                world.ExitLevel();
+            }
+        }
+
+        // Animate flats and textures globally.
+        var animations = world.Map.Animation.Animations;
+        foreach (var anim in animations.AsSpan())
+        {
+            for (var i = anim.BasePic; i < anim.BasePic + anim.NumPics; i++)
+            {
+                var pic = anim.BasePic + ((world.LevelTime / anim.Speed + i) % anim.NumPics);
+                if (anim.IsTexture)
+                {
+                    TextureTranslation[i] = pic;
+                }
+                else
+                {
+                    FlatTranslation[i] = pic;
                 }
             }
         }
 
-        private void StartButton(LineDef line, ButtonPosition w, int texture, int time)
+        // Animate line specials.
+        foreach (var line in scrollLines)
         {
-            // See if button is already pressed.
-            for (var i = 0; i < maxButtonCount; i++)
-            {
-                if (buttonList[i].Timer != 0 && buttonList[i].Line == line)
-                {
-                    return;
-                }
-            }
+            line.FrontSide.TextureOffset += Fixed.One;
+        }
 
-            for (var i = 0; i < maxButtonCount; i++)
+        // Do buttons.
+        for (var i = 0; i < maxButtonCount; i++)
+        {
+            if (buttonList[i].Timer > 0)
             {
+                buttonList[i].Timer--;
+
                 if (buttonList[i].Timer == 0)
                 {
-                    buttonList[i].Line = line;
-                    buttonList[i].Position = w;
-                    buttonList[i].Texture = texture;
-                    buttonList[i].Timer = time;
-                    buttonList[i].SoundOrigin = line.SoundOrigin;
-                    return;
-                }
-            }
-
-            throw new Exception("No button slots left!");
-        }
-
-        /// <summary>
-        /// Animate planes, scroll walls, etc.
-        /// </summary>
-        public void Update()
-        {
-            // Level timer.
-            if (levelTimer)
-            {
-                levelTimeCount--;
-                if (levelTimeCount == 0)
-                {
-                    world.ExitLevel();
-                }
-            }
-
-            // Animate flats and textures globally.
-            var animations = world.Map.Animation.Animations;
-            foreach (var anim in animations.AsSpan())
-            {
-                for (var i = anim.BasePic; i < anim.BasePic + anim.NumPics; i++)
-                {
-                    var pic = anim.BasePic + ((world.LevelTime / anim.Speed + i) % anim.NumPics);
-                    if (anim.IsTexture)
+                    switch (buttonList[i].Position)
                     {
-                        TextureTranslation[i] = pic;
+                        case ButtonPosition.Top:
+                            buttonList[i].Line.FrontSide.TopTexture = buttonList[i].Texture;
+                            break;
+
+                        case ButtonPosition.Middle:
+                            buttonList[i].Line.FrontSide.MiddleTexture = buttonList[i].Texture;
+                            break;
+
+                        case ButtonPosition.Bottom:
+                            buttonList[i].Line.FrontSide.BottomTexture = buttonList[i].Texture;
+                            break;
                     }
-                    else
-                    {
-                        FlatTranslation[i] = pic;
-                    }
-                }
-            }
 
-            // Animate line specials.
-            foreach (var line in scrollLines)
-            {
-                line.FrontSide.TextureOffset += Fixed.One;
-            }
-
-            // Do buttons.
-            for (var i = 0; i < maxButtonCount; i++)
-            {
-                if (buttonList[i].Timer > 0)
-                {
-                    buttonList[i].Timer--;
-
-                    if (buttonList[i].Timer == 0)
-                    {
-                        switch (buttonList[i].Position)
-                        {
-                            case ButtonPosition.Top:
-                                buttonList[i].Line.FrontSide.TopTexture = buttonList[i].Texture;
-                                break;
-
-                            case ButtonPosition.Middle:
-                                buttonList[i].Line.FrontSide.MiddleTexture = buttonList[i].Texture;
-                                break;
-
-                            case ButtonPosition.Bottom:
-                                buttonList[i].Line.FrontSide.BottomTexture = buttonList[i].Texture;
-                                break;
-                        }
-
-                        world.StartSound(buttonList[i].SoundOrigin, Sfx.SWTCHN, SfxType.Misc, 50);
-                        buttonList[i].Clear();
-                    }
+                    world.StartSound(buttonList[i].SoundOrigin, Sfx.SWTCHN, SfxType.Misc, 50);
+                    buttonList[i].Clear();
                 }
             }
         }
-
-        public int[] TextureTranslation { get; }
-
-        public int[] FlatTranslation { get; }
     }
 }

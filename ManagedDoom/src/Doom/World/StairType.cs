@@ -14,14 +14,13 @@
 //
 
 
-namespace ManagedDoom.Doom.World
-{
-    public enum StairType
-    {
-        // Slowly build by 8.
-        Build8,
+namespace ManagedDoom.Doom.World;
 
-        // quickly build by 16.
-        Turbo16
-    }
+public enum StairType
+{
+    // Slowly build by 8.
+    Build8,
+
+    // quickly build by 16.
+    Turbo16
 }

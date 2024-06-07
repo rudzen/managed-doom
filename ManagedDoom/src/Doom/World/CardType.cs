@@ -14,17 +14,16 @@
 //
 
 
-namespace ManagedDoom.Doom.World
-{
-    public enum CardType
-    {
-        BlueCard,
-        YellowCard,
-        RedCard,
-        BlueSkull,
-        YellowSkull,
-        RedSkull,
+namespace ManagedDoom.Doom.World;
 
-        Count
-    }
+public enum CardType
+{
+    BlueCard,
+    YellowCard,
+    RedCard,
+    BlueSkull,
+    YellowSkull,
+    RedSkull,
+
+    Count
 }

@@ -18,180 +18,183 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class VerticalDoor : Thinker
 {
-	public class VerticalDoor : Thinker
-	{
-		private readonly World world;
+    private readonly World world;
 
-		// 1 = up, 0 = waiting at top, -1 = down.
+    // 1 = up, 0 = waiting at top, -1 = down.
 
-		// Tics to wait at the top.
+    // Tics to wait at the top.
 
-		// When it reaches 0, start going down
-		// (keep in case a door going down is reset).
+    // When it reaches 0, start going down
+    // (keep in case a door going down is reset).
 
-		public VerticalDoor(World world)
-		{
-			this.world = world;
-		}
+    public VerticalDoor(World world)
+    {
+        this.world = world;
+    }
 
-		public override void Run()
-		{
-			var sa = world.SectorAction;
+    public override void Run()
+    {
+        var sa = world.SectorAction;
 
-			SectorActionResult result;
+        SectorActionResult result;
 
-			switch (Direction)
-			{
-				case 0:
-					// Waiting.
-					if (--TopCountDown == 0)
-					{
-						switch (Type)
-						{
-							case VerticalDoorType.BlazeRaise:
-								// Time to go back down.
-								Direction = -1;
-								world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
-								break;
+        switch (Direction)
+        {
+            case 0:
+                // Waiting.
+                if (--TopCountDown == 0)
+                {
+                    switch (Type)
+                    {
+                        case VerticalDoorType.BlazeRaise:
+                            // Time to go back down.
+                            Direction = -1;
+                            world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
+                            break;
 
-							case VerticalDoorType.Normal:
-								// Time to go back down.
-								Direction = -1;
-								world.StartSound(Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
-								break;
+                        case VerticalDoorType.Normal:
+                            // Time to go back down.
+                            Direction = -1;
+                            world.StartSound(Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
+                            break;
 
-							case VerticalDoorType.Close30ThenOpen:
-								Direction = 1;
-								world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-								break;
+                        case VerticalDoorType.Close30ThenOpen:
+                            Direction = 1;
+                            world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+                            break;
 
-							default:
-								break;
-						}
-					}
-					break;
+                        default:
+                            break;
+                    }
+                }
 
-				case 2:
-					// Initial wait.
-					if (--TopCountDown == 0)
-					{
-						switch (Type)
-						{
-							case VerticalDoorType.RaiseIn5Mins:
-								Direction = 1;
-								Type = VerticalDoorType.Normal;
-								world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-								break;
+                break;
 
-							default:
-								break;
-						}
-					}
-					break;
+            case 2:
+                // Initial wait.
+                if (--TopCountDown == 0)
+                {
+                    switch (Type)
+                    {
+                        case VerticalDoorType.RaiseIn5Mins:
+                            Direction = 1;
+                            Type = VerticalDoorType.Normal;
+                            world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+                            break;
 
-				case -1:
-					// Down.
-					result = sa.MovePlane(
-						Sector,
-						Speed,
-						Sector.FloorHeight,
-						false, 1, Direction);
-					if (result == SectorActionResult.PastDestination)
-					{
-						switch (Type)
-						{
-							case VerticalDoorType.BlazeRaise:
-							case VerticalDoorType.BlazeClose:
-								Sector.SpecialData = null;
-								// Unlink and free.
-								world.Thinkers.Remove(this);
-								Sector.DisableFrameInterpolationForOneFrame();
-								world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
-								break;
+                        default:
+                            break;
+                    }
+                }
 
-							case VerticalDoorType.Normal:
-							case VerticalDoorType.Close:
-								Sector.SpecialData = null;
-								// Unlink and free.
-								world.Thinkers.Remove(this);
-								Sector.DisableFrameInterpolationForOneFrame();
-								break;
+                break;
 
-							case VerticalDoorType.Close30ThenOpen:
-								Direction = 0;
-								TopCountDown = 35 * 30;
-								break;
+            case -1:
+                // Down.
+                result = sa.MovePlane(
+                    Sector,
+                    Speed,
+                    Sector.FloorHeight,
+                    false, 1, Direction);
+                if (result == SectorActionResult.PastDestination)
+                {
+                    switch (Type)
+                    {
+                        case VerticalDoorType.BlazeRaise:
+                        case VerticalDoorType.BlazeClose:
+                            Sector.SpecialData = null;
+                            // Unlink and free.
+                            world.Thinkers.Remove(this);
+                            Sector.DisableFrameInterpolationForOneFrame();
+                            world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
+                            break;
 
-							default:
-								break;
-						}
-					}
-					else if (result == SectorActionResult.Crushed)
-					{
-						switch (Type)
-						{
-							case VerticalDoorType.BlazeClose:
-							case VerticalDoorType.Close: // Do not go back up!
-								break;
+                        case VerticalDoorType.Normal:
+                        case VerticalDoorType.Close:
+                            Sector.SpecialData = null;
+                            // Unlink and free.
+                            world.Thinkers.Remove(this);
+                            Sector.DisableFrameInterpolationForOneFrame();
+                            break;
 
-							default:
-								Direction = 1;
-								world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-								break;
-						}
-					}
-					break;
+                        case VerticalDoorType.Close30ThenOpen:
+                            Direction = 0;
+                            TopCountDown = 35 * 30;
+                            break;
 
-				case 1:
-					// Up.
-					result = sa.MovePlane(
-						Sector,
-						Speed,
-						TopHeight,
-						false, 1, Direction);
+                        default:
+                            break;
+                    }
+                }
+                else if (result == SectorActionResult.Crushed)
+                {
+                    switch (Type)
+                    {
+                        case VerticalDoorType.BlazeClose:
+                        case VerticalDoorType.Close: // Do not go back up!
+                            break;
 
-					if (result == SectorActionResult.PastDestination)
-					{
-						switch (Type)
-						{
-							case VerticalDoorType.BlazeRaise:
-							case VerticalDoorType.Normal:
-								// Wait at top.
-								Direction = 0;
-								TopCountDown = TopWait;
-								break;
+                        default:
+                            Direction = 1;
+                            world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+                            break;
+                    }
+                }
 
-							case VerticalDoorType.Close30ThenOpen:
-							case VerticalDoorType.BlazeOpen:
-							case VerticalDoorType.Open:
-								Sector.SpecialData = null;
-								// Unlink and free.
-								world.Thinkers.Remove(this);
-								Sector.DisableFrameInterpolationForOneFrame();
-								break;
+                break;
 
-							default:
-								break;
-						}
-					}
-					break;
-			}
-		}
+            case 1:
+                // Up.
+                result = sa.MovePlane(
+                    Sector,
+                    Speed,
+                    TopHeight,
+                    false, 1, Direction);
 
-		public VerticalDoorType Type { get; set; }
+                if (result == SectorActionResult.PastDestination)
+                {
+                    switch (Type)
+                    {
+                        case VerticalDoorType.BlazeRaise:
+                        case VerticalDoorType.Normal:
+                            // Wait at top.
+                            Direction = 0;
+                            TopCountDown = TopWait;
+                            break;
 
-		public Sector Sector { get; set; }
+                        case VerticalDoorType.Close30ThenOpen:
+                        case VerticalDoorType.BlazeOpen:
+                        case VerticalDoorType.Open:
+                            Sector.SpecialData = null;
+                            // Unlink and free.
+                            world.Thinkers.Remove(this);
+                            Sector.DisableFrameInterpolationForOneFrame();
+                            break;
 
-		public Fixed TopHeight { get; set; }
+                        default:
+                            break;
+                    }
+                }
 
-		public Fixed Speed { get; set; }
+                break;
+        }
+    }
 
-		public int Direction { get; set; }
+    public VerticalDoorType Type { get; set; }
 
-		public int TopWait { get; set; }
+    public Sector Sector { get; set; }
 
-		public int TopCountDown { get; set; }
-	}
+    public Fixed TopHeight { get; set; }
+
+    public Fixed Speed { get; set; }
+
+    public int Direction { get; set; }
+
+    public int TopWait { get; set; }
+
+    public int TopCountDown { get; set; }
 }

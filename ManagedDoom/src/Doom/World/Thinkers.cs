@@ -18,124 +18,118 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class Thinkers
 {
-    public sealed class Thinkers
+    private Thinker cap;
+
+    public Thinkers(World world)
     {
-        private World world;
+        InitThinkers();
+    }
 
-        public Thinkers(World world)
+    private void InitThinkers()
+    {
+        cap = new Thinker();
+        cap.Prev = cap.Next = cap;
+    }
+
+    public void Add(Thinker thinker)
+    {
+        cap.Prev.Next = thinker;
+        thinker.Next = cap;
+        thinker.Prev = cap.Prev;
+        cap.Prev = thinker;
+    }
+
+    public void Remove(Thinker thinker)
+    {
+        thinker.ThinkerState = ThinkerState.Removed;
+    }
+
+    public void Run()
+    {
+        var current = cap.Next;
+        while (current != cap)
         {
-            this.world = world;
-
-            InitThinkers();
-        }
-
-
-        private Thinker cap;
-
-        private void InitThinkers()
-        {
-            cap = new Thinker();
-            cap.Prev = cap.Next = cap;
-        }
-
-        public void Add(Thinker thinker)
-        {
-            cap.Prev.Next = thinker;
-            thinker.Next = cap;
-            thinker.Prev = cap.Prev;
-            cap.Prev = thinker;
-        }
-
-        public void Remove(Thinker thinker)
-        {
-            thinker.ThinkerState = ThinkerState.Removed;
-        }
-
-        public void Run()
-        {
-            var current = cap.Next;
-            while (current != cap)
+            if (current.ThinkerState == ThinkerState.Removed)
             {
-                if (current.ThinkerState == ThinkerState.Removed)
-                {
-                    // Time to remove it.
-                    current.Next.Prev = current.Prev;
-                    current.Prev.Next = current.Next;
-                }
-                else
-                {
-                    if (current.ThinkerState == ThinkerState.Active)
-                    {
-                        current.Run();
-                    }
-                }
-                current = current.Next;
+                // Time to remove it.
+                current.Next.Prev = current.Prev;
+                current.Prev.Next = current.Next;
             }
+            else
+            {
+                if (current.ThinkerState == ThinkerState.Active)
+                {
+                    current.Run();
+                }
+            }
+
+            current = current.Next;
+        }
+    }
+
+    public void UpdateFrameInterpolationInfo()
+    {
+        var current = cap.Next;
+        while (current != cap)
+        {
+            current.UpdateFrameInterpolationInfo();
+            current = current.Next;
+        }
+    }
+
+    public void Reset()
+    {
+        cap.Prev = cap.Next = cap;
+    }
+
+    public ThinkerEnumerator GetEnumerator()
+    {
+        return new ThinkerEnumerator(this);
+    }
+
+
+    public struct ThinkerEnumerator : IEnumerator<Thinker>
+    {
+        private readonly Thinkers thinkers;
+
+        public ThinkerEnumerator(Thinkers thinkers)
+        {
+            this.thinkers = thinkers;
+            Current = thinkers.cap;
         }
 
-        public void UpdateFrameInterpolationInfo()
+        public bool MoveNext()
         {
-            var current = cap.Next;
-            while (current != cap)
+            while (true)
             {
-                current.UpdateFrameInterpolationInfo();
-                current = current.Next;
+                Current = Current.Next;
+                if (Current == thinkers.cap)
+                {
+                    return false;
+                }
+
+                if (Current.ThinkerState != ThinkerState.Removed)
+                {
+                    return true;
+                }
             }
         }
 
         public void Reset()
         {
-            cap.Prev = cap.Next = cap;
+            Current = thinkers.cap;
         }
 
-        public ThinkerEnumerator GetEnumerator()
+        public void Dispose()
         {
-            return new ThinkerEnumerator(this);
         }
 
+        public Thinker Current { get; private set; }
 
-
-        public struct ThinkerEnumerator : IEnumerator<Thinker>
-        {
-            private readonly Thinkers thinkers;
-
-            public ThinkerEnumerator(Thinkers thinkers)
-            {
-                this.thinkers = thinkers;
-                Current = thinkers.cap;
-            }
-
-            public bool MoveNext()
-            {
-                while (true)
-                {
-                    Current = Current.Next;
-                    if (Current == thinkers.cap)
-                    {
-                        return false;
-                    }
-
-                    if (Current.ThinkerState != ThinkerState.Removed)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            public void Reset()
-            {
-                Current = thinkers.cap;
-            }
-
-            public void Dispose()
-            {
-            }
-
-            public Thinker Current { get; private set; }
-
-            object IEnumerator.Current => throw new NotImplementedException();
-        }
+        object IEnumerator.Current => throw new NotImplementedException();
     }
 }

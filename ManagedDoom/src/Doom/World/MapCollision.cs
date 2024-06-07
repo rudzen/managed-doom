@@ -17,56 +17,48 @@
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class MapCollision
 {
-    public sealed class MapCollision
+    public Fixed OpenTop { get; private set; }
+
+    public Fixed OpenBottom { get; private set; }
+
+    public Fixed OpenRange { get; private set; }
+
+    public Fixed LowFloor { get; private set; }
+
+    /// <summary>
+    /// Sets opentop and openbottom to the window through a two sided line.
+    /// </summary>
+    public void LineOpening(LineDef line)
     {
-        private World world;
-
-        public MapCollision(World world)
+        if (line.BackSide == null)
         {
-            this.world = world;
+            // If the line is single sided, nothing can pass through.
+            OpenRange = Fixed.Zero;
+            return;
         }
 
-        /// <summary>
-        /// Sets opentop and openbottom to the window through a two sided line.
-        /// </summary>
-        public void LineOpening(LineDef line)
+        var front = line.FrontSector;
+        var back = line.BackSector;
+
+        OpenTop = front.CeilingHeight < back.CeilingHeight
+            ? front.CeilingHeight
+            : back.CeilingHeight;
+
+        if (front.FloorHeight > back.FloorHeight)
         {
-            if (line.BackSide == null)
-            {
-                // If the line is single sided, nothing can pass through.
-                OpenRange = Fixed.Zero;
-                return;
-            }
-
-            var front = line.FrontSector;
-            var back = line.BackSector;
-
-            OpenTop = front.CeilingHeight < back.CeilingHeight
-                ? front.CeilingHeight
-                : back.CeilingHeight;
-
-            if (front.FloorHeight > back.FloorHeight)
-            {
-                OpenBottom = front.FloorHeight;
-                LowFloor = back.FloorHeight;
-            }
-            else
-            {
-                OpenBottom = back.FloorHeight;
-                LowFloor = front.FloorHeight;
-            }
-
-            OpenRange = OpenTop - OpenBottom;
+            OpenBottom = front.FloorHeight;
+            LowFloor = back.FloorHeight;
+        }
+        else
+        {
+            OpenBottom = back.FloorHeight;
+            LowFloor = front.FloorHeight;
         }
 
-        public Fixed OpenTop { get; private set; }
-
-        public Fixed OpenBottom { get; private set; }
-
-        public Fixed OpenRange { get; private set; }
-
-        public Fixed LowFloor { get; private set; }
+        OpenRange = OpenTop - OpenBottom;
     }
 }

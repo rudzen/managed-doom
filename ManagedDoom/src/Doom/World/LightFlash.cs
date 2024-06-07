@@ -14,48 +14,48 @@
 //
 
 
+using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Map;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class LightFlash : Thinker
 {
-    public sealed class LightFlash : Thinker
+    private readonly DoomRandom doomRandom;
+
+    public LightFlash(DoomRandom doomRandom)
     {
-        private readonly World world;
+        this.doomRandom = doomRandom;
+    }
 
-        public LightFlash(World world)
+    public Sector Sector { get; set; }
+
+    public int Count { get; set; }
+
+    public int MaxLight { get; set; }
+
+    public int MinLight { get; set; }
+
+    public int MaxTime { get; set; }
+
+    public int MinTime { get; set; }
+
+    public override void Run()
+    {
+        if (--Count > 0)
         {
-            this.world = world;
+            return;
         }
 
-        public override void Run()
+        if (Sector.LightLevel == MaxLight)
         {
-            if (--Count > 0)
-            {
-                return;
-            }
-
-            if (Sector.LightLevel == MaxLight)
-            {
-                Sector.LightLevel = MinLight;
-                Count = (world.Random.Next() & MinTime) + 1;
-            }
-            else
-            {
-                Sector.LightLevel = MaxLight;
-                Count = (world.Random.Next() & MaxTime) + 1;
-            }
+            Sector.LightLevel = MinLight;
+            Count = (doomRandom.Next() & MinTime) + 1;
         }
-
-        public Sector Sector { get; set; }
-
-        public int Count { get; set; }
-
-        public int MaxLight { get; set; }
-
-        public int MinLight { get; set; }
-
-        public int MaxTime { get; set; }
-
-        public int MinTime { get; set; }
+        else
+        {
+            Sector.LightLevel = MaxLight;
+            Count = (doomRandom.Next() & MaxTime) + 1;
+        }
     }
 }

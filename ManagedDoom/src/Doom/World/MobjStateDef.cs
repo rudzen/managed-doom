@@ -18,48 +18,47 @@ using System;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public class MobjStateDef
 {
-    public class MobjStateDef
+    public MobjStateDef(
+        int number,
+        Sprite sprite,
+        int frame,
+        int tics,
+        Action<World, Player, PlayerSpriteDef> playerAction,
+        Action<World, Mobj> mobjAction,
+        MobjState next,
+        int misc1,
+        int misc2)
     {
-        public MobjStateDef(
-            int number,
-            Sprite sprite,
-            int frame,
-            int tics,
-            Action<World, Player, PlayerSpriteDef> playerAction,
-            Action<World, Mobj> mobjAction,
-            MobjState next,
-            int misc1,
-            int misc2)
-        {
-            this.Number = number;
-            this.Sprite = sprite;
-            this.Frame = frame;
-            this.Tics = tics;
-            this.PlayerAction = playerAction;
-            this.MobjAction = mobjAction;
-            this.Next = next;
-            this.Misc1 = misc1;
-            this.Misc2 = misc2;
-        }
-
-        public int Number { get; set; }
-
-        public Sprite Sprite { get; set; }
-
-        public int Frame { get; set; }
-
-        public int Tics { get; set; }
-
-        public Action<World, Player, PlayerSpriteDef> PlayerAction { get; set; }
-
-        public Action<World, Mobj> MobjAction { get; set; }
-
-        public MobjState Next { get; set; }
-
-        public int Misc1 { get; set; }
-
-        public int Misc2 { get; set; }
+        this.Number = number;
+        this.Sprite = sprite;
+        this.Frame = frame;
+        this.Tics = tics;
+        this.PlayerAction = playerAction;
+        this.MobjAction = mobjAction;
+        this.Next = next;
+        this.Misc1 = misc1;
+        this.Misc2 = misc2;
     }
+
+    public int Number { get; set; }
+
+    public Sprite Sprite { get; set; }
+
+    public int Frame { get; set; }
+
+    public int Tics { get; set; }
+
+    public Action<World, Player, PlayerSpriteDef> PlayerAction { get; set; }
+
+    public Action<World, Mobj> MobjAction { get; set; }
+
+    public MobjState Next { get; set; }
+
+    public int Misc1 { get; set; }
+
+    public int Misc2 { get; set; }
 }

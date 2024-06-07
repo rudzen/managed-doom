@@ -17,22 +17,13 @@
 using System;
 using System.Buffers;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Map;
 
-// TODO (rudzen) : convert to record
-public sealed class Vertex
+public sealed record Vertex(Fixed X, Fixed Y) : IFixedCoordinates
 {
     private const int dataSize = 4;
-
-    public Vertex(Fixed x, Fixed y)
-    {
-        this.X = x;
-        this.Y = y;
-    }
-
-    public Fixed X { get; }
-    public Fixed Y { get; }
 
     private static Vertex FromData(ReadOnlySpan<byte> data)
     {

@@ -17,10 +17,11 @@
 using System;
 using System.Buffers;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Map;
 
-public sealed class Node
+public sealed class Node : IFixedCoordinates
 {
     private const int dataSize = 28;
 

@@ -14,14 +14,13 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum PlatformType
 {
-    public enum PlatformType
-    {
-        PerpetualRaise,
-        DownWaitUpStay,
-        RaiseAndChange,
-        RaiseToNearestAndChange,
-        BlazeDwus
-    }
+    PerpetualRaise,
+    DownWaitUpStay,
+    RaiseAndChange,
+    RaiseToNearestAndChange,
+    BlazeDwus
 }

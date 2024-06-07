@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
@@ -107,7 +108,7 @@ namespace ManagedDoom.Doom
 
         private static void ProcessLines(IEnumerable<string> lines)
         {
-            if (sourcePointerTable == null)
+            if (sourcePointerTable is null)
             {
                 sourcePointerTable = new SourcePointTable[DoomInfo.States.Length];
                 for (var i = 0; i < sourcePointerTable.Length; i++)
@@ -127,16 +128,12 @@ namespace ManagedDoom.Doom
                 lineNumber++;
 
                 if (line.Length > 0 && line[0] == '#')
-                {
                     continue;
-                }
 
                 var split = line.Split(' ');
                 var blockType = GetBlockType(split);
                 if (blockType == Block.None)
-                {
                     data.Add(line);
-                }
                 else
                 {
                     ProcessBlock(lastBlock, data, lastBlockLine);
@@ -371,7 +368,8 @@ namespace ManagedDoom.Doom
         {
             string name = null;
             StringBuilder sb = null;
-            foreach (var line in data.Skip(1))
+            var dataSpan = CollectionsMarshal.AsSpan(data)[1..];
+            foreach (var line in dataSpan)
             {
                 if (name == null)
                 {
@@ -395,7 +393,6 @@ namespace ManagedDoom.Doom
                 else
                 {
                     var value = line.Trim().Replace("\\n", "\n");
-                    ;
                     if (value.Last() != '\\')
                     {
                         sb!.Append(value);
@@ -404,9 +401,7 @@ namespace ManagedDoom.Doom
                         sb = null;
                     }
                     else
-                    {
                         sb!.Append(value, 0, value.Length - 1);
-                    }
                 }
             }
         }
@@ -423,20 +418,13 @@ namespace ManagedDoom.Doom
                     foreach (var value in split.Skip(1))
                     {
                         if (int.TryParse(value, out var result))
-                        {
                             parsed.Add(result);
-                        }
                         else
-                        {
                             break;
-                        }
                     }
 
-                    if (parsed.Count == 2 &&
-                        parsed[0] <= DoomInfo.ParTimes.Doom2.Count)
-                    {
+                    if (parsed.Count == 2 && parsed[0] <= DoomInfo.ParTimes.Doom2.Count)
                         DoomInfo.ParTimes.Doom2[parsed[0] - 1] = parsed[1];
-                    }
 
                     if (parsed.Count >= 3 &&
                         parsed[0] <= DoomInfo.ParTimes.Doom1.Count &&
@@ -451,86 +439,47 @@ namespace ManagedDoom.Doom
         private static Block GetBlockType(string[] split)
         {
             if (IsThingBlockStart(split))
-            {
                 return Block.Thing;
-            }
 
             if (IsFrameBlockStart(split))
-            {
                 return Block.Frame;
-            }
 
             if (IsPointerBlockStart(split))
-            {
                 return Block.Pointer;
-            }
 
             if (IsSoundBlockStart(split))
-            {
                 return Block.Sound;
-            }
 
             if (IsAmmoBlockStart(split))
-            {
                 return Block.Ammo;
-            }
 
             if (IsWeaponBlockStart(split))
-            {
                 return Block.Weapon;
-            }
 
             if (IsCheatBlockStart(split))
-            {
                 return Block.Cheat;
-            }
 
             if (IsMiscBlockStart(split))
-            {
                 return Block.Misc;
-            }
 
             if (IsTextBlockStart(split))
-            {
                 return Block.Text;
-            }
 
             if (IsSpriteBlockStart(split))
-            {
                 return Block.Sprite;
-            }
 
             if (IsBexStringsBlockStart(split))
-            {
                 return Block.BexStrings;
-            }
 
             if (IsBexParsBlockStart(split))
-            {
                 return Block.BexPars;
-            }
 
             return Block.None;
         }
 
         private static bool IsThingBlockStart(string[] split)
         {
-            if (split.Length < 2)
-            {
-                return false;
-            }
-
-            if (split[0] != "Thing")
-            {
-                return false;
-            }
-
-            if (!IsNumber(split[1]))
-            {
-                return false;
-            }
-
-            return true;
+            return split.Length >= 2 && split[0] == "Thing" && IsNumber(split[1]);
         }
 
         private static bool IsFrameBlockStart(string[] split)
@@ -715,50 +664,25 @@ namespace ManagedDoom.Doom
 
         private static bool IsBexStringsBlockStart(string[] split)
         {
-            if (split[0] == "[STRINGS]")
-            {
-                return true;
-            }
-
-            return false;
+            return split[0] == "[STRINGS]";
         }
 
         private static bool IsBexParsBlockStart(string[] split)
         {
-            if (split[0] == "[PARS]")
-            {
-                return true;
-            }
-
-            return false;
+            return split[0] == "[PARS]";
         }
 
         private static bool IsNumber(string value)
         {
-            foreach (var ch in value)
-            {
-                if (!(ch is >= '0' and <= '9'))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return value.All(ch => char.IsBetween(ch, '0', '9'));
         }
 
         private static Dictionary<string, string> GetKeyValuePairs(List<string> data)
         {
-            var dic = new Dictionary<string, string>();
-            foreach (var line in data)
-            {
-                var split = line.Split('=');
-                if (split.Length == 2)
-                {
-                    dic[split[0].Trim()] = split[1].Trim();
-                }
-            }
-
-            return dic;
+            return data
+                   .Select(line => line.Split('='))
+                   .Where(split => split.Length == 2)
+                   .ToDictionary(split => split[0].Trim(), split => split[1].Trim());
         }
 
         private static int GetInt(Dictionary<string, string> dic, string key, int defaultValue)
@@ -766,9 +690,7 @@ namespace ManagedDoom.Doom
             if (dic.TryGetValue(key, out var value))
             {
                 if (int.TryParse(value, out var intValue))
-                {
                     return intValue;
-                }
             }
 
             return defaultValue;

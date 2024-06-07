@@ -19,10 +19,11 @@ using System.Buffers;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Map;
 
-public sealed class BlockMap
+public sealed class BlockMap : IDimension
 {
     private const int IntBlockSize = 128;
     public static readonly Fixed BlockSize = Fixed.FromInt(IntBlockSize);

@@ -33,7 +33,7 @@ public sealed class TextureLookup : ITextureLookup
     {
     }
 
-    public TextureLookup(Wad.Wad wad, bool useDummy)
+    private TextureLookup(Wad.Wad wad, bool useDummy)
     {
         InitLookup(wad);
         InitSwitchList();

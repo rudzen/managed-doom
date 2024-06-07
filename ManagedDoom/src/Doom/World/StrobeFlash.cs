@@ -16,50 +16,42 @@
 
 using ManagedDoom.Doom.Map;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class StrobeFlash : Thinker
 {
-    public sealed class StrobeFlash : Thinker
+    public const int StrobeBright = 5;
+    public const int FastDark = 15;
+    public const int SlowDark = 35;
+
+    public Sector Sector { get; set; }
+
+    public int Count { get; set; }
+
+    public int MinLight { get; set; }
+
+    public int MaxLight { get; set; }
+
+    public int DarkTime { get; set; }
+
+    public int BrightTime { get; set; }
+
+    public override void Run()
     {
-        public static readonly int StrobeBright = 5;
-        public static readonly int FastDark = 15;
-        public static readonly int SlowDark = 35;
-
-        private World world;
-
-        public StrobeFlash(World world)
+        if (--Count > 0)
         {
-            this.world = world;
+            return;
         }
 
-        public override void Run()
+        if (Sector.LightLevel == MinLight)
         {
-            if (--Count > 0)
-            {
-                return;
-            }
-
-            if (Sector.LightLevel == MinLight)
-            {
-                Sector.LightLevel = MaxLight;
-                Count = BrightTime;
-            }
-            else
-            {
-                Sector.LightLevel = MinLight;
-                Count = DarkTime;
-            }
+            Sector.LightLevel = MaxLight;
+            Count = BrightTime;
         }
-
-        public Sector Sector { get; set; }
-
-        public int Count { get; set; }
-
-        public int MinLight { get; set; }
-
-        public int MaxLight { get; set; }
-
-        public int DarkTime { get; set; }
-
-        public int BrightTime { get; set; }
+        else
+        {
+            Sector.LightLevel = MinLight;
+            Count = DarkTime;
+        }
     }
 }

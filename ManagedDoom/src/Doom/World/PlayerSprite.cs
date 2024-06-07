@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum PlayerSprite
 {
-    public enum PlayerSprite
-    {
-        Weapon,
-        Flash,
-        Count
-    }
+    Weapon,
+    Flash,
+    Count
 }

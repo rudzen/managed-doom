@@ -277,7 +277,7 @@ public static partial class SaveAndLoad
 
                 case SpecialClass.Flash:
                     ptr = PadPointer(ptr);
-                    var flash = new LightFlash(world);
+                    var flash = new LightFlash(world.Random);
                     flash.ThinkerState = ReadThinkerState(data.Slice(ptr + 8));
                     flash.Sector = world.Map.Sectors[BitConverter.ToInt32(data.Slice(ptr + 12))];
                     flash.Count = BitConverter.ToInt32(data.Slice(ptr + 16));
@@ -292,7 +292,7 @@ public static partial class SaveAndLoad
 
                 case SpecialClass.Strobe:
                     ptr = PadPointer(ptr);
-                    var strobe = new StrobeFlash(world);
+                    var strobe = new StrobeFlash();
                     strobe.ThinkerState = ReadThinkerState(data.Slice(ptr + 8));
                     strobe.Sector = world.Map.Sectors[BitConverter.ToInt32(data.Slice(ptr + 12))];
                     strobe.Count = BitConverter.ToInt32(data.Slice(ptr + 16));
@@ -307,12 +307,13 @@ public static partial class SaveAndLoad
 
                 case SpecialClass.Glow:
                     ptr = PadPointer(ptr);
-                    var glow = new GlowingLight(world);
+                    var glow = new GlowingLight();
                     glow.ThinkerState = ReadThinkerState(data.Slice(ptr + 8));
                     glow.Sector = world.Map.Sectors[BitConverter.ToInt32(data.Slice(ptr + 12))];
                     glow.MinLight = BitConverter.ToInt32(data.Slice(ptr + 16));
                     glow.MaxLight = BitConverter.ToInt32(data.Slice(ptr + 20));
                     glow.Direction = BitConverter.ToInt32(data.Slice(ptr + 24));
+
                     ptr += 28;
 
                     thinkers.Add(glow);

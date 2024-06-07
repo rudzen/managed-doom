@@ -14,13 +14,12 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum PlatformState
 {
-    public enum PlatformState
-    {
-        Up,
-        Down,
-        Waiting,
-        InStasis
-    }
+    Up,
+    Down,
+    Waiting,
+    InStasis
 }

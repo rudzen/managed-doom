@@ -49,24 +49,16 @@ namespace ManagedDoom.Doom.World
             foreach (var vertex in world.Map.Vertices)
             {
                 if (vertex.X < MinX)
-                {
                     MinX = vertex.X;
-                }
 
                 if (vertex.X > MaxX)
-                {
                     MaxX = vertex.X;
-                }
 
                 if (vertex.Y < MinY)
-                {
                     MinY = vertex.Y;
-                }
 
                 if (vertex.Y > MaxY)
-                {
                     MaxY = vertex.Y;
-                }
             }
 
             ViewX = MinX + (MaxX - MinX) / 2;

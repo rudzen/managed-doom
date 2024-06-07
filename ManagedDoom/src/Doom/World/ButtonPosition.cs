@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum ButtonPosition
 {
-    public enum ButtonPosition
-    {
-        Top,
-        Middle,
-        Bottom
-    }
+    Top,
+    Middle,
+    Bottom
 }

@@ -16,25 +16,22 @@
 
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Interfaces;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class DivLine : IFixedCoordinates
 {
-    public sealed class DivLine
+    public void MakeFrom(LineDef line)
     {
-        public void MakeFrom(LineDef line)
-        {
-            X = line.Vertex1.X;
-            Y = line.Vertex1.Y;
-            Dx = line.Dx;
-            Dy = line.Dy;
-        }
-
-        public Fixed X { get; set; }
-
-        public Fixed Y { get; set; }
-
-        public Fixed Dx { get; set; }
-
-        public Fixed Dy { get; set; }
+        X = line.Vertex1.X;
+        Y = line.Vertex1.Y;
+        Dx = line.Dx;
+        Dy = line.Dy;
     }
+
+    public Fixed X { get; set; }
+    public Fixed Y { get; set; }
+    public Fixed Dx { get; set; }
+    public Fixed Dy { get; set; }
 }

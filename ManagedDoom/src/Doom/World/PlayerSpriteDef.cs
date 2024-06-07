@@ -16,24 +16,23 @@
 
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class PlayerSpriteDef
 {
-    public sealed class PlayerSpriteDef
+    public void Clear()
     {
-        public void Clear()
-        {
-            State = null;
-            Tics = 0;
-            Sx = Fixed.Zero;
-            Sy = Fixed.Zero;
-        }
-
-        public MobjStateDef State { get; set; }
-
-        public int Tics { get; set; }
-
-        public Fixed Sx { get; set; }
-
-        public Fixed Sy { get; set; }
+        State = null;
+        Tics = 0;
+        Sx = Fixed.Zero;
+        Sy = Fixed.Zero;
     }
+
+    public MobjStateDef State { get; set; }
+
+    public int Tics { get; set; }
+
+    public Fixed Sx { get; set; }
+
+    public Fixed Sy { get; set; }
 }

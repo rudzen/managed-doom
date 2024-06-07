@@ -18,82 +18,74 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class FloorMove : Thinker
 {
-	public sealed class FloorMove : Thinker
-	{
-		private readonly World world;
+    private readonly World world;
 
-		public FloorMove(World world)
-		{
-			this.world = world;
-		}
+    public FloorMove(World world)
+    {
+        this.world = world;
+    }
 
-		public override void Run()
-		{
-			SectorActionResult result;
+    public FloorMoveType Type { get; set; }
+    public bool Crush { get; set; }
+    public Sector Sector { get; set; }
+    public int Direction { get; set; }
+    public SectorSpecial NewSpecial { get; set; }
+    public int Texture { get; set; }
+    public Fixed FloorDestHeight { get; set; }
+    public Fixed Speed { get; set; }
 
-			var sa = world.SectorAction;
+    public override void Run()
+    {
+        SectorActionResult result;
 
-			result = sa.MovePlane(
-				Sector,
-				Speed,
-				FloorDestHeight,
-				Crush,
-				0,
-				Direction);
+        var sa = world.SectorAction;
 
-			if (((world.LevelTime + Sector.Number) & 7) == 0)
-			{
-				world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-			}
+        result = sa.MovePlane(
+            Sector,
+            Speed,
+            FloorDestHeight,
+            Crush,
+            0,
+            Direction);
 
-			if (result == SectorActionResult.PastDestination)
-			{
-				Sector.SpecialData = null;
+        if (((world.LevelTime + Sector.Number) & 7) == 0)
+        {
+            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+        }
 
-				if (Direction == 1)
-				{
-					switch (Type)
-					{
-						case FloorMoveType.DonutRaise:
-							Sector.Special = NewSpecial;
-							Sector.FloorFlat = Texture;
-							break;
-					}
-				}
-				else if (Direction == -1)
-				{
-					switch (Type)
-					{
-						case FloorMoveType.LowerAndChange:
-							Sector.Special = NewSpecial;
-							Sector.FloorFlat = Texture;
-							break;
-					}
-				}
+        if (result == SectorActionResult.PastDestination)
+        {
+            Sector.SpecialData = null;
 
-				world.Thinkers.Remove(this);
-				Sector.DisableFrameInterpolationForOneFrame();
+            if (Direction == 1)
+            {
+                switch (Type)
+                {
+                    case FloorMoveType.DonutRaise:
+                        Sector.Special = NewSpecial;
+                        Sector.FloorFlat = Texture;
+                        break;
+                }
+            }
+            else if (Direction == -1)
+            {
+                switch (Type)
+                {
+                    case FloorMoveType.LowerAndChange:
+                        Sector.Special = NewSpecial;
+                        Sector.FloorFlat = Texture;
+                        break;
+                }
+            }
 
-				world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-			}
-		}
+            world.Thinkers.Remove(this);
+            Sector.DisableFrameInterpolationForOneFrame();
 
-		public FloorMoveType Type { get; set; }
-
-		public bool Crush { get; set; }
-
-		public Sector Sector { get; set; }
-
-		public int Direction { get; set; }
-
-		public SectorSpecial NewSpecial { get; set; }
-
-		public int Texture { get; set; }
-
-		public Fixed FloorDestHeight { get; set; }
-
-		public Fixed Speed { get; set; }
-	}
+            world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+        }
+    }
 }

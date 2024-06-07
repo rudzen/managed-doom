@@ -14,19 +14,18 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum Direction
 {
-    public enum Direction
-    {
-        East,
-        Northeast,
-        North,
-        Northwest,
-        West,
-        Southwest,
-        South,
-        Southeast,
-        None,
-        Count
-    }
+    East,
+    Northeast,
+    North,
+    Northwest,
+    West,
+    Southwest,
+    South,
+    Southeast,
+    None,
+    Count
 }

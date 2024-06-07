@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum SectorActionResult
 {
-    public enum SectorActionResult
-    {
-        OK,
-        Crushed,
-        PastDestination
-    }
+    OK,
+    Crushed,
+    PastDestination
 }

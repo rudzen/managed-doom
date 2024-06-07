@@ -14,12 +14,11 @@
 //
 
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public enum ThinkerState
 {
-    public enum ThinkerState
-    {
-        Active,
-        InStasis,
-        Removed
-    }
+    Active,
+    InStasis,
+    Removed
 }

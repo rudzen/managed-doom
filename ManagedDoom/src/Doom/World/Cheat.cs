@@ -21,405 +21,418 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.UserInput;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class Cheat
 {
-    public sealed class Cheat
+    private static readonly CheatInfo[] list =
+    [
+        new CheatInfo("idfa", (cheat, typed) => cheat.FullAmmo(), false),
+        new CheatInfo("idkfa", (cheat, typed) => cheat.FullAmmoAndKeys(), false),
+        new CheatInfo("iddqd", (cheat, typed) => cheat.GodMode(), false),
+        new CheatInfo("idclip", (cheat, typed) => cheat.NoClip(), false),
+        new CheatInfo("idspispopd", (cheat, typed) => cheat.NoClip(), false),
+        new CheatInfo("iddt", (cheat, typed) => cheat.FullMap(), true),
+        new CheatInfo("idbehold", (cheat, typed) => cheat.ShowPowerUpList(), false),
+        new CheatInfo("idbehold?", (cheat, typed) => cheat.DoPowerUp(typed), false),
+        new CheatInfo("idchoppers", (cheat, typed) => cheat.GiveChainsaw(), false),
+        new CheatInfo("tntem", (cheat, typed) => cheat.KillMonsters(), false),
+        new CheatInfo("killem", (cheat, typed) => cheat.KillMonsters(), false),
+        new CheatInfo("fhhall", (cheat, typed) => cheat.KillMonsters(), false),
+        new CheatInfo("idclev??", (cheat, typed) => cheat.ChangeLevel(typed), true),
+        new CheatInfo("idmus??", (cheat, typed) => cheat.ChangeMusic(typed), false)
+    ];
+
+    private static readonly int maxCodeLength = list.Max(info => info.Code.Length);
+
+    private readonly World world;
+
+    private readonly char[] buffer;
+    private int p;
+
+    public Cheat(World world)
     {
-        private static readonly CheatInfo[] list =
-        [
-            new CheatInfo("idfa", (cheat, typed) => cheat.FullAmmo(), false),
-            new CheatInfo("idkfa", (cheat, typed) => cheat.FullAmmoAndKeys(), false),
-            new CheatInfo("iddqd", (cheat, typed) => cheat.GodMode(), false),
-            new CheatInfo("idclip", (cheat, typed) => cheat.NoClip(), false),
-            new CheatInfo("idspispopd", (cheat, typed) => cheat.NoClip(), false),
-            new CheatInfo("iddt", (cheat, typed) => cheat.FullMap(), true),
-            new CheatInfo("idbehold", (cheat, typed) => cheat.ShowPowerUpList(), false),
-            new CheatInfo("idbehold?", (cheat, typed) => cheat.DoPowerUp(typed), false),
-            new CheatInfo("idchoppers", (cheat, typed) => cheat.GiveChainsaw(), false),
-            new CheatInfo("tntem", (cheat, typed) => cheat.KillMonsters(), false),
-            new CheatInfo("killem", (cheat, typed) => cheat.KillMonsters(), false),
-            new CheatInfo("fhhall", (cheat, typed) => cheat.KillMonsters(), false),
-            new CheatInfo("idclev??", (cheat, typed) => cheat.ChangeLevel(typed), true),
-            new CheatInfo("idmus??", (cheat, typed) => cheat.ChangeMusic(typed), false)
-        ];
+        this.world = world;
 
-        private static readonly int maxCodeLength = list.Max(info => info.Code.Length);
+        buffer = new char[maxCodeLength];
+        p = 0;
+    }
 
-        private readonly World world;
-
-        private readonly char[] buffer;
-        private int p;
-
-        public Cheat(World world)
+    public bool DoEvent(DoomEvent e)
+    {
+        if (e.Type == EventType.KeyDown)
         {
-            this.world = world;
+            buffer[p] = e.Key.GetChar();
 
-            buffer = new char[maxCodeLength];
-            p = 0;
+            p = (p + 1) % buffer.Length;
+
+            CheckBuffer();
         }
 
-        public bool DoEvent(DoomEvent e)
+        return true;
+    }
+
+    private void CheckBuffer()
+    {
+        for (var i = 0; i < list.Length; i++)
         {
-            if (e.Type == EventType.KeyDown)
+            var code = list[i].Code.AsSpan();
+            var q = p;
+            int j;
+            for (j = 0; j < code.Length; j++)
             {
-                buffer[p] = e.Key.GetChar();
+                q--;
+                if (q == -1)
+                {
+                    q = buffer.Length - 1;
+                }
 
-                p = (p + 1) % buffer.Length;
-
-                CheckBuffer();
+                var ch = code[code.Length - j - 1];
+                if (buffer[q] != ch && ch != '?')
+                {
+                    break;
+                }
             }
 
-            return true;
-        }
-
-        private void CheckBuffer()
-        {
-            for (var i = 0; i < list.Length; i++)
+            if (j == code.Length)
             {
-                var code = list[i].Code.AsSpan();
-                var q = p;
-                int j;
+                var typed = new char[code.Length];
+                var k = code.Length;
+                q = p;
                 for (j = 0; j < code.Length; j++)
                 {
+                    k--;
                     q--;
                     if (q == -1)
                     {
                         q = buffer.Length - 1;
                     }
-                    var ch = code[code.Length - j - 1];
-                    if (buffer[q] != ch && ch != '?')
-                    {
-                        break;
-                    }
+
+                    typed[k] = buffer[q];
                 }
 
-                if (j == code.Length)
+                if (world.Options.Skill != GameSkill.Nightmare || list[i].AvailableOnNightmare)
                 {
-                    var typed = new char[code.Length];
-                    var k = code.Length;
-                    q = p;
-                    for (j = 0; j < code.Length; j++)
-                    {
-                        k--;
-                        q--;
-                        if (q == -1)
-                        {
-                            q = buffer.Length - 1;
-                        }
-                        typed[k] = buffer[q];
-                    }
-
-                    if (world.Options.Skill != GameSkill.Nightmare || list[i].AvailableOnNightmare)
-                    {
-                        list[i].Action(this, new string(typed));
-                    }
+                    list[i].Action(this, new string(typed));
                 }
             }
         }
+    }
 
-        private void GiveWeapons()
+    private void GiveWeapons()
+    {
+        var player = world.ConsolePlayer;
+        if (world.Options.GameMode == GameMode.Commercial)
         {
-            var player = world.ConsolePlayer;
-            if (world.Options.GameMode == GameMode.Commercial)
+            for (var i = 0; i < (int)WeaponType.Count; i++)
             {
-                for (var i = 0; i < (int)WeaponType.Count; i++)
-                {
-                    player.WeaponOwned[i] = true;
-                }
-            }
-            else
-            {
-                for (var i = 0; i <= (int)WeaponType.Missile; i++)
-                {
-                    player.WeaponOwned[i] = true;
-                }
-                player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
-                if (world.Options.GameMode != GameMode.Shareware)
-                {
-                    player.WeaponOwned[(int)WeaponType.Plasma] = true;
-                    player.WeaponOwned[(int)WeaponType.Bfg] = true;
-                }
-            }
-
-            player.Backpack = true;
-            for (var i = 0; i < (int)AmmoType.Count; i++)
-            {
-                player.MaxAmmo[i] = 2 * DoomInfo.AmmoInfos.Max[i];
-                player.Ammo[i] = 2 * DoomInfo.AmmoInfos.Max[i];
+                player.WeaponOwned[i] = true;
             }
         }
-
-        private void FullAmmo()
+        else
         {
-            GiveWeapons();
-            var player = world.ConsolePlayer;
-            player.ArmorType = DoomInfo.DeHackEdConst.IdfaArmorClass;
-            player.ArmorPoints = DoomInfo.DeHackEdConst.IdfaArmor;
-            player.SendMessage(DoomInfo.Strings.STSTR_FAADDED);
-        }
+            for (var i = 0; i <= (int)WeaponType.Missile; i++)
+            {
+                player.WeaponOwned[i] = true;
+            }
 
-        private void FullAmmoAndKeys()
-        {
-            GiveWeapons();
-            var player = world.ConsolePlayer;
-            player.ArmorType = DoomInfo.DeHackEdConst.IdkfaArmorClass;
-            player.ArmorPoints = DoomInfo.DeHackEdConst.IdkfaArmor;
-            for (var i = 0; i < (int)CardType.Count; i++)
-            {
-                player.Cards[i] = true;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_KFAADDED);
-        }
-
-        private void GodMode()
-        {
-            var player = world.ConsolePlayer;
-            if ((player.Cheats & CheatFlags.GodMode) != 0)
-            {
-                player.Cheats &= ~CheatFlags.GodMode;
-                player.SendMessage(DoomInfo.Strings.STSTR_DQDOFF);
-            }
-            else
-            {
-                player.Cheats |= CheatFlags.GodMode;
-                player.Health = System.Math.Max(DoomInfo.DeHackEdConst.GodModeHealth, player.Health);
-                player.Mobj.Health = player.Health;
-                player.SendMessage(DoomInfo.Strings.STSTR_DQDON);
-            }
-        }
-
-        private void NoClip()
-        {
-            var player = world.ConsolePlayer;
-            if ((player.Cheats & CheatFlags.NoClip) != 0)
-            {
-                player.Cheats &= ~CheatFlags.NoClip;
-                player.SendMessage(DoomInfo.Strings.STSTR_NCOFF);
-            }
-            else
-            {
-                player.Cheats |= CheatFlags.NoClip;
-                player.SendMessage(DoomInfo.Strings.STSTR_NCON);
-            }
-        }
-
-        private void FullMap()
-        {
-            world.AutoMap.ToggleCheat();
-        }
-
-        private void ShowPowerUpList()
-        {
-            var player = world.ConsolePlayer;
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLD);
-        }
-
-        private void DoPowerUp(string typed)
-        {
-            switch (typed.Last())
-            {
-                case 'v':
-                    ToggleInvulnerability();
-                    break;
-                case 's':
-                    ToggleStrength();
-                    break;
-                case 'i':
-                    ToggleInvisibility();
-                    break;
-                case 'r':
-                    ToggleIronFeet();
-                    break;
-                case 'a':
-                    ToggleAllMap();
-                    break;
-                case 'l':
-                    ToggleInfrared();
-                    break;
-            }
-        }
-
-        private void ToggleInvulnerability()
-        {
-            var player = world.ConsolePlayer;
-            if (player.Powers[(int)PowerType.Invulnerability] > 0)
-            {
-                player.Powers[(int)PowerType.Invulnerability] = 0;
-            }
-            else
-            {
-                player.Powers[(int)PowerType.Invulnerability] = DoomInfo.PowerDuration.Invulnerability;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
-        }
-
-        private void ToggleStrength()
-        {
-            var player = world.ConsolePlayer;
-            if (player.Powers[(int)PowerType.Strength] != 0)
-            {
-                player.Powers[(int)PowerType.Strength] = 0;
-            }
-            else
-            {
-                player.Powers[(int)PowerType.Strength] = 1;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
-        }
-
-        private void ToggleInvisibility()
-        {
-            var player = world.ConsolePlayer;
-            if (player.Powers[(int)PowerType.Invisibility] > 0)
-            {
-                player.Powers[(int)PowerType.Invisibility] = 0;
-                player.Mobj.Flags &= ~MobjFlags.Shadow;
-            }
-            else
-            {
-                player.Powers[(int)PowerType.Invisibility] = DoomInfo.PowerDuration.Invisibility;
-                player.Mobj.Flags |= MobjFlags.Shadow;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
-        }
-
-        private void ToggleIronFeet()
-        {
-            var player = world.ConsolePlayer;
-            if (player.Powers[(int)PowerType.IronFeet] > 0)
-            {
-                player.Powers[(int)PowerType.IronFeet] = 0;
-            }
-            else
-            {
-                player.Powers[(int)PowerType.IronFeet] = DoomInfo.PowerDuration.IronFeet;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
-        }
-
-        private void ToggleAllMap()
-        {
-            var player = world.ConsolePlayer;
-            if (player.Powers[(int)PowerType.AllMap] != 0)
-            {
-                player.Powers[(int)PowerType.AllMap] = 0;
-            }
-            else
-            {
-                player.Powers[(int)PowerType.AllMap] = 1;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
-        }
-
-        private void ToggleInfrared()
-        {
-            var player = world.ConsolePlayer;
-            if (player.Powers[(int)PowerType.Infrared] > 0)
-            {
-                player.Powers[(int)PowerType.Infrared] = 0;
-            }
-            else
-            {
-                player.Powers[(int)PowerType.Infrared] = DoomInfo.PowerDuration.Infrared;
-            }
-            player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
-        }
-
-        private void GiveChainsaw()
-        {
-            var player = world.ConsolePlayer;
             player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
-            player.SendMessage(DoomInfo.Strings.STSTR_CHOPPERS);
-        }
-
-        private void KillMonsters()
-        {
-            var player = world.ConsolePlayer;
-            var count = 0;
-            foreach (var thinker in world.Thinkers)
+            if (world.Options.GameMode != GameMode.Shareware)
             {
-                if (thinker is Mobj { Player: null } mobj &&
-                    ((mobj.Flags & MobjFlags.CountKill) != 0 || mobj.Type == MobjType.Skull) &&
-                    mobj.Health > 0)
-                {
-                    world.ThingInteraction.DamageMobj(mobj, null, player.Mobj, 10000);
-                    count++;
-                }
-            }
-            player.SendMessage(count + " monsters killed");
-        }
-
-        private void ChangeLevel(string typed)
-        {
-            if (world.Options.GameMode == GameMode.Commercial)
-            {
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 2), out var map))
-                {
-                    return;
-                }
-                var skill = world.Options.Skill;
-                world.Game.DeferedInitNew(skill, 1, map);
-            }
-            else
-            {
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 1), out var episode))
-                {
-                    return;
-                }
-
-                if (!int.TryParse(typed.Substring(typed.Length - 1, 1), out var map))
-                {
-                    return;
-                }
-                var skill = world.Options.Skill;
-                world.Game.DeferedInitNew(skill, episode, map);
+                player.WeaponOwned[(int)WeaponType.Plasma] = true;
+                player.WeaponOwned[(int)WeaponType.Bfg] = true;
             }
         }
 
-        private void ChangeMusic(string typed)
+        player.Backpack = true;
+        for (var i = 0; i < (int)AmmoType.Count; i++)
         {
-            var options = new GameOptions();
-            options.GameMode = world.Options.GameMode;
-            if (world.Options.GameMode == GameMode.Commercial)
-            {
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 2), out var map))
-                {
-                    return;
-                }
-                options.Map = map;
-            }
-            else
-            {
-                if (!int.TryParse(typed.Substring(typed.Length - 2, 1), out var episode))
-                {
-                    return;
-                }
+            player.MaxAmmo[i] = 2 * DoomInfo.AmmoInfos.Max[i];
+            player.Ammo[i] = 2 * DoomInfo.AmmoInfos.Max[i];
+        }
+    }
 
-                if (!int.TryParse(typed.Substring(typed.Length - 1, 1), out var map))
-                {
-                    return;
-                }
-                options.Episode = episode;
-                options.Map = map;
-            }
-            world.Options.Music.StartMusic(Map.Map.GetMapBgm(options), true);
-            world.ConsolePlayer.SendMessage(DoomInfo.Strings.STSTR_MUS);
+    private void FullAmmo()
+    {
+        GiveWeapons();
+        var player = world.ConsolePlayer;
+        player.ArmorType = DoomInfo.DeHackEdConst.IdfaArmorClass;
+        player.ArmorPoints = DoomInfo.DeHackEdConst.IdfaArmor;
+        player.SendMessage(DoomInfo.Strings.STSTR_FAADDED);
+    }
+
+    private void FullAmmoAndKeys()
+    {
+        GiveWeapons();
+        var player = world.ConsolePlayer;
+        player.ArmorType = DoomInfo.DeHackEdConst.IdkfaArmorClass;
+        player.ArmorPoints = DoomInfo.DeHackEdConst.IdkfaArmor;
+        for (var i = 0; i < (int)CardType.Count; i++)
+        {
+            player.Cards[i] = true;
         }
 
+        player.SendMessage(DoomInfo.Strings.STSTR_KFAADDED);
+    }
 
-
-        private class CheatInfo
+    private void GodMode()
+    {
+        var player = world.ConsolePlayer;
+        if ((player.Cheats & CheatFlags.GodMode) != 0)
         {
-            public readonly string Code;
-            public readonly Action<Cheat, string> Action;
-            public readonly bool AvailableOnNightmare;
+            player.Cheats &= ~CheatFlags.GodMode;
+            player.SendMessage(DoomInfo.Strings.STSTR_DQDOFF);
+        }
+        else
+        {
+            player.Cheats |= CheatFlags.GodMode;
+            player.Health = System.Math.Max(DoomInfo.DeHackEdConst.GodModeHealth, player.Health);
+            player.Mobj.Health = player.Health;
+            player.SendMessage(DoomInfo.Strings.STSTR_DQDON);
+        }
+    }
 
-            public CheatInfo(string code, Action<Cheat, string> action, bool availableOnNightmare)
+    private void NoClip()
+    {
+        var player = world.ConsolePlayer;
+        if ((player.Cheats & CheatFlags.NoClip) != 0)
+        {
+            player.Cheats &= ~CheatFlags.NoClip;
+            player.SendMessage(DoomInfo.Strings.STSTR_NCOFF);
+        }
+        else
+        {
+            player.Cheats |= CheatFlags.NoClip;
+            player.SendMessage(DoomInfo.Strings.STSTR_NCON);
+        }
+    }
+
+    private void FullMap()
+    {
+        world.AutoMap.ToggleCheat();
+    }
+
+    private void ShowPowerUpList()
+    {
+        var player = world.ConsolePlayer;
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLD);
+    }
+
+    private void DoPowerUp(string typed)
+    {
+        switch (typed.Last())
+        {
+            case 'v':
+                ToggleInvulnerability();
+                break;
+            case 's':
+                ToggleStrength();
+                break;
+            case 'i':
+                ToggleInvisibility();
+                break;
+            case 'r':
+                ToggleIronFeet();
+                break;
+            case 'a':
+                ToggleAllMap();
+                break;
+            case 'l':
+                ToggleInfrared();
+                break;
+        }
+    }
+
+    private void ToggleInvulnerability()
+    {
+        var player = world.ConsolePlayer;
+        if (player.Powers[(int)PowerType.Invulnerability] > 0)
+        {
+            player.Powers[(int)PowerType.Invulnerability] = 0;
+        }
+        else
+        {
+            player.Powers[(int)PowerType.Invulnerability] = DoomInfo.PowerDuration.Invulnerability;
+        }
+
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
+    }
+
+    private void ToggleStrength()
+    {
+        var player = world.ConsolePlayer;
+        if (player.Powers[(int)PowerType.Strength] != 0)
+        {
+            player.Powers[(int)PowerType.Strength] = 0;
+        }
+        else
+        {
+            player.Powers[(int)PowerType.Strength] = 1;
+        }
+
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
+    }
+
+    private void ToggleInvisibility()
+    {
+        var player = world.ConsolePlayer;
+        if (player.Powers[(int)PowerType.Invisibility] > 0)
+        {
+            player.Powers[(int)PowerType.Invisibility] = 0;
+            player.Mobj.Flags &= ~MobjFlags.Shadow;
+        }
+        else
+        {
+            player.Powers[(int)PowerType.Invisibility] = DoomInfo.PowerDuration.Invisibility;
+            player.Mobj.Flags |= MobjFlags.Shadow;
+        }
+
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
+    }
+
+    private void ToggleIronFeet()
+    {
+        var player = world.ConsolePlayer;
+        if (player.Powers[(int)PowerType.IronFeet] > 0)
+        {
+            player.Powers[(int)PowerType.IronFeet] = 0;
+        }
+        else
+        {
+            player.Powers[(int)PowerType.IronFeet] = DoomInfo.PowerDuration.IronFeet;
+        }
+
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
+    }
+
+    private void ToggleAllMap()
+    {
+        var player = world.ConsolePlayer;
+        if (player.Powers[(int)PowerType.AllMap] != 0)
+        {
+            player.Powers[(int)PowerType.AllMap] = 0;
+        }
+        else
+        {
+            player.Powers[(int)PowerType.AllMap] = 1;
+        }
+
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
+    }
+
+    private void ToggleInfrared()
+    {
+        var player = world.ConsolePlayer;
+        if (player.Powers[(int)PowerType.Infrared] > 0)
+        {
+            player.Powers[(int)PowerType.Infrared] = 0;
+        }
+        else
+        {
+            player.Powers[(int)PowerType.Infrared] = DoomInfo.PowerDuration.Infrared;
+        }
+
+        player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
+    }
+
+    private void GiveChainsaw()
+    {
+        var player = world.ConsolePlayer;
+        player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
+        player.SendMessage(DoomInfo.Strings.STSTR_CHOPPERS);
+    }
+
+    private void KillMonsters()
+    {
+        var player = world.ConsolePlayer;
+        var count = 0;
+        foreach (var thinker in world.Thinkers)
+        {
+            if (thinker is Mobj { Player: null } mobj &&
+                ((mobj.Flags & MobjFlags.CountKill) != 0 || mobj.Type == MobjType.Skull) &&
+                mobj.Health > 0)
             {
-                Code = code;
-                Action = action;
-                AvailableOnNightmare = availableOnNightmare;
+                world.ThingInteraction.DamageMobj(mobj, null, player.Mobj, 10000);
+                count++;
             }
+        }
+
+        player.SendMessage(count + " monsters killed");
+    }
+
+    private void ChangeLevel(string typed)
+    {
+        if (world.Options.GameMode == GameMode.Commercial)
+        {
+            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 2), out var map))
+            {
+                return;
+            }
+
+            var skill = world.Options.Skill;
+            world.Game.DeferedInitNew(skill, 1, map);
+        }
+        else
+        {
+            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 1), out var episode))
+            {
+                return;
+            }
+
+            if (!int.TryParse(typed.AsSpan(typed.Length - 1, 1), out var map))
+            {
+                return;
+            }
+
+            var skill = world.Options.Skill;
+            world.Game.DeferedInitNew(skill, episode, map);
+        }
+    }
+
+    private void ChangeMusic(string typed)
+    {
+        var options = new GameOptions();
+        options.GameMode = world.Options.GameMode;
+        if (world.Options.GameMode == GameMode.Commercial)
+        {
+            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 2), out var map))
+            {
+                return;
+            }
+
+            options.Map = map;
+        }
+        else
+        {
+            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 1), out var episode))
+            {
+                return;
+            }
+
+            if (!int.TryParse(typed.AsSpan(typed.Length - 1, 1), out var map))
+            {
+                return;
+            }
+
+            options.Episode = episode;
+            options.Map = map;
+        }
+
+        world.Options.Music.StartMusic(Map.Map.GetMapBgm(options), true);
+        world.ConsolePlayer.SendMessage(DoomInfo.Strings.STSTR_MUS);
+    }
+
+    private sealed class CheatInfo
+    {
+        public readonly string Code;
+        public readonly Action<Cheat, string> Action;
+        public readonly bool AvailableOnNightmare;
+
+        public CheatInfo(string code, Action<Cheat, string> action, bool availableOnNightmare)
+        {
+            Code = code;
+            Action = action;
+            AvailableOnNightmare = availableOnNightmare;
         }
     }
 }

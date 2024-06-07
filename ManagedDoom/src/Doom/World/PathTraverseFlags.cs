@@ -16,13 +16,12 @@
 
 using System;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+[Flags]
+public enum PathTraverseFlags
 {
-    [Flags]
-    public enum PathTraverseFlags
-    {
-        AddLines = 1,
-        AddThings = 2,
-        EarlyOut = 4
-    }
+    AddLines = 1,
+    AddThings = 2,
+    EarlyOut = 4
 }

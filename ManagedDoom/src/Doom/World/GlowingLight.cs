@@ -16,51 +16,45 @@
 
 using ManagedDoom.Doom.Map;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class GlowingLight : Thinker
 {
-    public sealed class GlowingLight : Thinker
+    private const int glowSpeed = 8;
+
+    public Sector Sector { get; set; }
+
+    public int MinLight { get; set; }
+
+    public int MaxLight { get; set; }
+
+    public int Direction { get; set; }
+
+    public override void Run()
     {
-        private static readonly int glowSpeed = 8;
-
-        private World world;
-
-        public GlowingLight(World world)
+        switch (Direction)
         {
-            this.world = world;
-        }
-
-        public override void Run()
-        {
-            switch (Direction)
-            {
-                case -1:
-                    // Down.
-                    Sector.LightLevel -= glowSpeed;
-                    if (Sector.LightLevel <= MinLight)
-                    {
-                        Sector.LightLevel += glowSpeed;
-                        Direction = 1;
-                    }
-                    break;
-
-                case 1:
-                    // Up.
+            case -1:
+                // Down.
+                Sector.LightLevel -= glowSpeed;
+                if (Sector.LightLevel <= MinLight)
+                {
                     Sector.LightLevel += glowSpeed;
-                    if (Sector.LightLevel >= MaxLight)
-                    {
-                        Sector.LightLevel -= glowSpeed;
-                        Direction = -1;
-                    }
-                    break;
-            }
+                    Direction = 1;
+                }
+
+                break;
+
+            case 1:
+                // Up.
+                Sector.LightLevel += glowSpeed;
+                if (Sector.LightLevel >= MaxLight)
+                {
+                    Sector.LightLevel -= glowSpeed;
+                    Direction = -1;
+                }
+
+                break;
         }
-
-        public Sector Sector { get; set; }
-
-        public int MinLight { get; set; }
-
-        public int MaxLight { get; set; }
-
-        public int Direction { get; set; }
     }
 }

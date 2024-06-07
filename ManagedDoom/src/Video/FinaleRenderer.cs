@@ -180,8 +180,8 @@ namespace ManagedDoom.Video
 
         private void DrawPatch(string name, int x, int y)
         {
-            var scale = screen.Width / 320;
-            screen.DrawPatch(cache[name], scale * x, scale * y, scale);
+            var widthScaled = screen.Width / 320;
+            screen.DrawPatch(cache[name], widthScaled * x, widthScaled * y, widthScaled);
         }
 
         private void RenderCast(Finale finale)

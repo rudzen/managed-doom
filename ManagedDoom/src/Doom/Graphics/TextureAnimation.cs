@@ -24,7 +24,7 @@ namespace ManagedDoom.Doom.Graphics;
 
 public sealed class TextureAnimation
 {
-    public TextureAnimation(ITextureLookup textures, IFlatLookup flats)
+    public TextureAnimation(ILookup<Texture> textures, IFlatLookup flats)
     {
         try
         {

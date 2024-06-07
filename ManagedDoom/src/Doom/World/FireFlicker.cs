@@ -16,44 +16,40 @@
 
 using ManagedDoom.Doom.Map;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class FireFlicker : Thinker
 {
-    public sealed class FireFlicker : Thinker
+    private readonly World world;
+
+    public FireFlicker(World world)
     {
-        private readonly World world;
+        this.world = world;
+    }
 
-        public FireFlicker(World world)
+    public Sector Sector { get; set; }
+    public int Count { get; set; }
+    public int MaxLight { get; set; }
+    public int MinLight { get; set; }
+
+    public override void Run()
+    {
+        if (--Count > 0)
         {
-            this.world = world;
+            return;
         }
 
-        public override void Run()
+        var amount = (world.Random.Next() & 3) * 16;
+
+        if (Sector.LightLevel - amount < MinLight)
         {
-            if (--Count > 0)
-            {
-                return;
-            }
-
-            var amount = (world.Random.Next() & 3) * 16;
-
-            if (Sector.LightLevel - amount < MinLight)
-            {
-                Sector.LightLevel = MinLight;
-            }
-            else
-            {
-                Sector.LightLevel = MaxLight - amount;
-            }
-
-            Count = 4;
+            Sector.LightLevel = MinLight;
+        }
+        else
+        {
+            Sector.LightLevel = MaxLight - amount;
         }
 
-        public Sector Sector { get; set; }
-
-        public int Count { get; set; }
-
-        public int MaxLight { get; set; }
-
-        public int MinLight { get; set; }
+        Count = 4;
     }
 }

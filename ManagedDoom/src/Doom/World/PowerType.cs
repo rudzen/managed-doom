@@ -14,17 +14,16 @@
 //
 
 
-namespace ManagedDoom.Doom.World
-{
-    public enum PowerType
-    {
-        Invulnerability,
-        Strength,
-        Invisibility,
-        IronFeet,
-        AllMap,
-        Infrared,
+namespace ManagedDoom.Doom.World;
 
-        Count
-    }
+public enum PowerType
+{
+    Invulnerability,
+    Strength,
+    Invisibility,
+    IronFeet,
+    AllMap,
+    Infrared,
+
+    Count
 }

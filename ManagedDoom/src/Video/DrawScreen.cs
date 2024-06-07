@@ -14,16 +14,17 @@
 //
 
 
-
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Wad;
+using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Video
 {
-    public sealed class DrawScreen
+    public sealed class DrawScreen : IDimension
     {
         private readonly Patch[] chars;
 
@@ -32,7 +33,7 @@ namespace ManagedDoom.Video
             this.Width = width;
             this.Height = height;
             Data = new byte[width * height];
-            
+
             chars = new Patch[128];
             for (var i = 0; i < chars.Length; i++)
             {
@@ -313,8 +314,6 @@ namespace ManagedDoom.Video
                 }
             }
         }
-
-
 
         [Flags]
         private enum OutCode

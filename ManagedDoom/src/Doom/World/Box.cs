@@ -18,35 +18,34 @@ using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public static class Box
 {
-    public static class Box
+    public const int Top = 0;
+    public const int Bottom = 1;
+    public const int Left = 2;
+    public const int Right = 3;
+
+    public static void Clear(Fixed[] box)
     {
-        public const int Top = 0;
-        public const int Bottom = 1;
-        public const int Left = 2;
-        public const int Right = 3;
+        box[Top] = box[Right] = Fixed.MinValue;
+        box[Bottom] = box[Left] = Fixed.MaxValue;
+    }
 
-        public static void Clear(Fixed[] box)
-        {
-            box[Top] = box[Right] = Fixed.MinValue;
-            box[Bottom] = box[Left] = Fixed.MaxValue;
-        }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddPoint(Fixed[] box, Vertex vertex)
+    {
+        var x = vertex.X;
+        var y = vertex.Y;
+        if (x < box[Left])
+            box[Left] = x;
+        else if (x > box[Right])
+            box[Right] = x;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AddPoint(Fixed[] box, Vertex vertex)
-        {
-            var x = vertex.X;
-            var y = vertex.Y;
-            if (x < box[Left])
-                box[Left] = x;
-            else if (x > box[Right])
-                box[Right] = x;
-
-            if (y < box[Bottom])
-                box[Bottom] = y;
-            else if (y > box[Top])
-                box[Top] = y;
-        }
+        if (y < box[Bottom])
+            box[Bottom] = y;
+        else if (y > box[Top])
+            box[Top] = y;
     }
 }

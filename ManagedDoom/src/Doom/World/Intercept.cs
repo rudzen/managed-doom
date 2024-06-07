@@ -17,28 +17,27 @@
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class Intercept
 {
-    public sealed class Intercept
+    public Fixed Frac { get; set; }
+
+    public Mobj Thing { get; private set; }
+
+    public LineDef Line { get; private set; }
+
+    public void Make(Fixed frac, Mobj thing)
     {
-        public void Make(Fixed frac, Mobj thing)
-        {
-            this.Frac = frac;
-            this.Thing = thing;
-            this.Line = null;
-        }
+        this.Frac = frac;
+        this.Thing = thing;
+        this.Line = null;
+    }
 
-        public void Make(Fixed frac, LineDef line)
-        {
-            this.Frac = frac;
-            this.Thing = null;
-            this.Line = line;
-        }
-
-        public Fixed Frac { get; set; }
-
-        public Mobj Thing { get; private set; }
-
-        public LineDef Line { get; private set; }
+    public void Make(Fixed frac, LineDef line)
+    {
+        this.Frac = frac;
+        this.Thing = null;
+        this.Line = line;
     }
 }

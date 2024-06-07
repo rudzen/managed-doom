@@ -39,7 +39,6 @@ public enum WeaponTypes : byte
 
 public readonly record struct WeaponType(WeaponTypes Value) : IMinMaxValue<WeaponType>
 {
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public WeaponType(int file) : this((WeaponTypes)file)
     {
@@ -113,7 +112,7 @@ public readonly record struct WeaponType(WeaponTypes Value) : IMinMaxValue<Weapo
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator byte(WeaponType f) => (byte)f.Value;
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int AsInt() => (int)Value;
 }
