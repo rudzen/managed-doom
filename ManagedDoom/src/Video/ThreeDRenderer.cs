@@ -188,9 +188,7 @@ public sealed class ThreeDRenderer
         {
             var i = 0;
             while (angleToX[i] > x)
-            {
                 i++;
-            }
 
             xToAngle[x] = new Angle((uint)(i << Trig.AngleToFineShift)) - Angle.Ang90;
         }

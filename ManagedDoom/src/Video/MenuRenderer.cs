@@ -32,10 +32,10 @@ public sealed class MenuRenderer
 
     private readonly DrawScreen screen;
 
-    public MenuRenderer(Wad wad, DrawScreen screen)
+    public MenuRenderer(PatchCache patchCache, DrawScreen screen)
     {
         this.screen = screen;
-        cache = new PatchCache(wad);
+        cache = patchCache;
     }
 
     public void Render(DoomMenu menu)

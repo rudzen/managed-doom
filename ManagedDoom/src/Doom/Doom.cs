@@ -408,7 +408,7 @@ public sealed class Doom
                     if (sendPause)
                     {
                         sendPause = false;
-                        cmds[Options.ConsolePlayer].Buttons |= (byte)(TicCmdButtons.Special | TicCmdButtons.Pause);
+                        cmds[Options.ConsolePlayer].Buttons |= TicCmdButtons.Special | TicCmdButtons.Pause;
                     }
 
                     if (Game.Update(cmds) == UpdateResult.NeedWipe)

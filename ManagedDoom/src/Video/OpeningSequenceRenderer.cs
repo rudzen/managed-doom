@@ -27,12 +27,12 @@ public class OpeningSequenceRenderer
     private readonly Renderer parent;
     private readonly DrawScreen screen;
 
-    public OpeningSequenceRenderer(Wad wad, DrawScreen screen, Renderer parent)
+    public OpeningSequenceRenderer(PatchCache patchCache, DrawScreen screen, Renderer parent)
     {
         this.screen = screen;
         this.parent = parent;
 
-        cache = new PatchCache(wad);
+        cache = patchCache;
     }
 
     public void Render(OpeningSequence sequence, Fixed frameFrac)

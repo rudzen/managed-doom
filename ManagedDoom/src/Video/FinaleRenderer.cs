@@ -30,15 +30,14 @@ public sealed class FinaleRenderer
     private readonly DrawScreen screen;
     private readonly ISpriteLookup sprites;
 
-    public FinaleRenderer(GameContent content, DrawScreen screen)
+    public FinaleRenderer(IFlatLookup flats, ISpriteLookup sprites, PatchCache patchCache, DrawScreen screen)
     {
-        flats = content.Flats;
-        sprites = content.Sprites;
+        this.flats = flats;
+        this.sprites = sprites;
+        cache = patchCache;
 
         this.screen = screen;
         scale = screen.Width / 320;
-
-        cache = new PatchCache(content.Wad);
     }
 
     public void Render(Finale finale)

@@ -78,13 +78,14 @@ public sealed class Renderer
         config.VideoGameScreenSize = Math.Clamp(config.VideoGameScreenSize, 0, MaxWindowSize);
         config.VideoGammaCorrection = Math.Clamp(config.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
 
-        menu = new MenuRenderer(content.Wad, screen);
+        var patchCache = new PatchCache(content.Wad);
+        menu = new MenuRenderer(patchCache, screen);
         threeD = new ThreeDRenderer(content, screen, config.VideoGameScreenSize);
         statusBar = new StatusBarRenderer(content.Wad, screen);
-        intermission = new IntermissionRenderer(content.Wad, screen);
-        openingSequence = new OpeningSequenceRenderer(content.Wad, screen, this);
+        intermission = new IntermissionRenderer(content.Wad, patchCache, screen);
+        openingSequence = new OpeningSequenceRenderer(patchCache, screen, this);
         autoMap = new AutoMapRenderer(content.Wad, screen);
-        finale = new FinaleRenderer(content, screen);
+        finale = new FinaleRenderer(content.Flats, content.Sprites, patchCache, screen);
 
         pause = Patch.FromWad(content.Wad, "M_PAUSE");
 

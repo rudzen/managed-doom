@@ -98,11 +98,11 @@ public sealed class IntermissionRenderer
             doom2Levels[m] = $"CWILV{m:00}";
     }
 
-    public IntermissionRenderer(Wad wad, DrawScreen screen)
+    public IntermissionRenderer(Wad wad, PatchCache patchCache, DrawScreen screen)
     {
         this.screen = screen;
 
-        cache = new PatchCache(wad);
+        cache = patchCache;
 
         minus = Patch.FromWad(wad, "WIMINUS");
         numbers = new Patch[10];
