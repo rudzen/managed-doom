@@ -10,12 +10,10 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wad = wadPath.GetWadPath(WadFile.Doom1);
         using var content = GameContent.CreateDummy(wad);
-        var options = new GameOptions
-        {
-            Skill = GameSkill.Hard,
-            Episode = 1,
-            Map = 1
-        };
+        var options = GameOptions.CreateDefault();
+        options.Skill = GameSkill.Hard;
+        options.Episode = 1;
+        options.Map = 1;
         options.Players[0].InGame = true;
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -44,11 +42,9 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
         using var content = GameContent.CreateDummy(wad);
-        var options = new GameOptions
-        {
-            Skill = GameSkill.Hard,
-            Map = 1
-        };
+        var options = GameOptions.CreateDefault();
+        options.Skill = GameSkill.Hard;
+        options.Map = 1;
         options.Players[0].InGame = true;
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
@@ -73,12 +69,10 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
         using var content = GameContent.CreateDummy(wad);
-        var options = new GameOptions
-        {
-            Skill = GameSkill.Medium,
-            Map = 11,
-            NoMonsters = true
-        };
+        var options = GameOptions.CreateDefault();
+        options.Skill = GameSkill.Medium;
+        options.Map = 11;
+        options.NoMonsters = true;
         options.Players[0].InGame = true;
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();

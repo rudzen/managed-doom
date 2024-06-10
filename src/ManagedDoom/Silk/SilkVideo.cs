@@ -16,21 +16,21 @@ public sealed class SilkVideo : IVideo, IDisposable
 {
     private readonly Renderer renderer;
 
-    private GraphicsDevice device;
+    private GraphicsDevice? device;
 
     private readonly int textureWidth;
     private readonly int textureHeight;
 
     private readonly byte[] textureData;
-    private Texture2D texture;
+    private Texture2D? texture;
 
-    private TextureBatcher textureBatcher;
-    private SimpleShaderProgram shader;
+    private TextureBatcher? textureBatcher;
+    private SimpleShaderProgram? shader;
 
     private int silkWindowWidth;
     private int silkWindowHeight;
 
-    public SilkVideo(ConfigValues config, GameContent content, IWindow window, GL gl)
+    public SilkVideo(ConfigValues config, IGameContent content, IWindow window, GL gl)
     {
         Console.Write("Initialize video: ");
         var start = Stopwatch.GetTimestamp();
@@ -78,7 +78,7 @@ public sealed class SilkVideo : IVideo, IDisposable
     {
         renderer.Render(doom, textureData, frameFrac);
 
-        texture.SetData<byte>(textureData, 0, 0, (uint)renderer.Height, (uint)renderer.Width);
+        texture!.SetData<byte>(textureData, 0, 0, (uint)renderer.Height, (uint)renderer.Width);
 
         var u = (float)renderer.Height / textureWidth;
         var v = (float)renderer.Width / textureHeight;
@@ -87,7 +87,7 @@ public sealed class SilkVideo : IVideo, IDisposable
         var br = new VertexColorTexture(new Vector3(silkWindowWidth, silkWindowHeight, 0), Color4b.White, new Vector2(u, v));
         var bl = new VertexColorTexture(new Vector3(0, silkWindowHeight, 0), Color4b.White, new Vector2(u, 0));
 
-        textureBatcher.Begin();
+        textureBatcher!.Begin();
         textureBatcher.DrawRaw(texture, tl, tr, br, bl);
         textureBatcher.End();
     }
@@ -96,8 +96,8 @@ public sealed class SilkVideo : IVideo, IDisposable
     {
         silkWindowWidth = width;
         silkWindowHeight = height;
-        device.SetViewport(0, 0, (uint)width, (uint)height);
-        shader.Projection = Matrix4x4.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+        device!.SetViewport(0, 0, (uint)width, (uint)height);
+        shader!.Projection = Matrix4x4.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
     }
 
     public void InitializeWipe()

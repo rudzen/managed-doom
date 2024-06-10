@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using Silk.NET.Input;
@@ -16,45 +17,47 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Silk;
 
-public sealed partial class SilkDoom
+public sealed partial class SilkDoom : ISilkDoom
 {
     private readonly Semaphore saveSemaphore = new(1, 1);
-    private readonly CommandLineArgs args;
+    private readonly ICommandLineArgs args;
 
-    private readonly Config.Config config;
-    private readonly GameContent content;
+    private readonly IConfig config;
+    private readonly ISilkConfig silkConfig;
 
-    private IWindow window;
+    private readonly IGameContent gameContent;
 
-    private GL gl;
-    private SilkVideo video;
+    private IWindow? window;
 
-    private AudioDevice audioDevice;
-    private SilkSound sound;
-    private SilkMusic music;
+    private GL? gl;
+    private SilkVideo? video;
 
-    private SilkUserInput userInput;
+    private AudioDevice? audioDevice;
+    private SilkSound? sound;
+    private SilkMusic? music;
 
-    private Doom.Doom doom;
+    private SilkUserInput? userInput;
+
+    private Doom.Doom? doom;
 
     private int fpsScale;
     private int frameCount;
 
-    public SilkDoom(CommandLineArgs args)
+    public SilkDoom(
+        ICommandLineArgs args,
+        IGameContent gameContent,
+        ISilkConfig silkConfig
+    )
     {
         try
         {
             var start = Stopwatch.GetTimestamp();
             this.args = args;
 
-            GlfwWindowing.RegisterPlatform();
-            GlfwInput.RegisterPlatform();
+            this.silkConfig = silkConfig;
+            this.config = silkConfig.Config;
 
-            config = SilkConfigUtilities.GetConfig();
-            content = new GameContent(args);
-
-            config.Values.VideoScreenWidth = Math.Clamp(config.Values.VideoScreenWidth, 320, 3200);
-            config.Values.VideoScreenHeight = Math.Clamp(config.Values.VideoScreenHeight, 200, 2000);
+            this.gameContent = gameContent;
 
             var windowOptions = WindowOptions.Default;
             windowOptions.Size = new Vector2D<int>(config.Values.VideoScreenWidth, config.Values.VideoScreenHeight);
@@ -89,22 +92,22 @@ public sealed partial class SilkDoom
         gl = window.CreateOpenGL();
         gl.ClearColor(0.15F, 0.15F, 0.15F, 1F);
         gl.Clear(ClearBufferMask.ColorBufferBit);
-        window.SwapBuffers();
+        window!.SwapBuffers();
 
-        video = new SilkVideo(config.Values, content, window, gl);
+        video = new SilkVideo(config.Values, gameContent, window!, gl);
 
         if (!args.NoSound.Present && !(args.NoSfx.Present && args.NoMusic.Present))
         {
             audioDevice = new AudioDevice();
             if (!args.NoSfx.Present)
-                sound = new SilkSound(config.Values, content, audioDevice);
+                sound = new SilkSound(config.Values, gameContent, audioDevice);
             if (!args.NoMusic.Present)
-                music = SilkConfigUtilities.GetMusicInstance(config.Values, content, audioDevice);
+                music = silkConfig.GetMusicInstance(gameContent, audioDevice);
         }
 
-        userInput = new SilkUserInput(config.Values, window, this, !args.NoMouse.Present);
+        userInput = new SilkUserInput(config.Values, window!, this, !args.NoMouse.Present);
 
-        doom = new Doom.Doom(args, config.Values, content, video, sound, music, userInput);
+        doom = new Doom.Doom(args, config, gameContent, video, sound, music, userInput);
 
         fpsScale = args.TimeDemo.Present ? 1 : config.Values.VideoFpsScale;
         frameCount = -1;
@@ -116,8 +119,8 @@ public sealed partial class SilkDoom
         {
             frameCount++;
 
-            if (frameCount % fpsScale == 0 && doom.Update() == UpdateResult.Completed)
-                window.Close();
+            if (frameCount % fpsScale == 0 && doom!.Update() == UpdateResult.Completed)
+                window!.Close();
         }
         catch (Exception e)
         {
@@ -125,7 +128,7 @@ public sealed partial class SilkDoom
         }
 
         if (Exception is not null)
-            window.Close();
+            window!.Close();
     }
 
     private void OnRender(double obj)
@@ -133,7 +136,7 @@ public sealed partial class SilkDoom
         try
         {
             var frameFrac = Fixed.FromInt(frameCount % fpsScale + 1) / fpsScale;
-            video.Render(doom, frameFrac);
+            video!.Render(doom!, frameFrac);
         }
         catch (Exception e)
         {
@@ -143,7 +146,7 @@ public sealed partial class SilkDoom
 
     private void OnResize(Vector2D<int> obj)
     {
-        video.Resize(obj.X, obj.Y);
+        video?.Resize(obj.X, obj.Y);
     }
 
     private void OnClose()
@@ -197,24 +200,24 @@ public sealed partial class SilkDoom
 
     public void KeyDown(Key key)
     {
-        doom.PostEvent(new DoomEvent(EventType.KeyDown, SilkUserInput.SilkToDoom(key)));
+        doom!.PostEvent(new DoomEvent(EventType.KeyDown, SilkUserInput.SilkToDoom(key)));
     }
 
     public void KeyUp(Key key)
     {
-        doom.PostEvent(new DoomEvent(EventType.KeyUp, SilkUserInput.SilkToDoom(key)));
+        doom!.PostEvent(new DoomEvent(EventType.KeyUp, SilkUserInput.SilkToDoom(key)));
     }
 
     public void Dispose()
     {
-        if (window != null)
-        {
-            window.Close();
-            window.Dispose();
-            window = null;
-        }
+        if (window is null)
+            return;
+
+        window.Close();
+        window.Dispose();
+        window = null;
     }
 
-    public string QuitMessage => doom.QuitMessage;
-    public Exception Exception { get; private set; }
+    public string? QuitMessage => doom.QuitMessage!;
+    public Exception? Exception { get; private set; }
 }

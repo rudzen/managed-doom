@@ -34,17 +34,16 @@ public sealed class Demo
 
         this.data = data;
 
-        Options = new GameOptions
-        {
-            Skill = (GameSkill)data[p++],
-            Episode = data[p++],
-            Map = data[p++],
-            Deathmatch = data[p++],
-            RespawnMonsters = data[p++] != 0,
-            FastMonsters = data[p++] != 0,
-            NoMonsters = data[p++] != 0,
-            ConsolePlayer = data[p++]
-        };
+        Options = GameOptions.CreateDefault();
+        Options.Skill = (GameSkill)data[p++];
+
+        Options.Episode = data[p++];
+        Options.Map = data[p++];
+        Options.Deathmatch = data[p++];
+        Options.RespawnMonsters = data[p++] != 0;
+        Options.FastMonsters = data[p++] != 0;
+        Options.NoMonsters = data[p++] != 0;
+        Options.ConsolePlayer = data[p++];
 
         Options.Players[0].InGame = data[p++] != 0;
         Options.Players[1].InGame = data[p++] != 0;
@@ -68,7 +67,7 @@ public sealed class Demo
     {
     }
 
-    public GameOptions Options { get; }
+    public IGameOptions Options { get; }
 
     public bool ReadCmd(ReadOnlySpan<TicCmd> cmds)
     {

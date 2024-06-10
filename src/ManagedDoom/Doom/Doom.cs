@@ -31,9 +31,9 @@ namespace ManagedDoom.Doom;
 
 public sealed class Doom
 {
-    private readonly CommandLineArgs args;
+    private readonly ICommandLineArgs args;
     private readonly ConfigValues config;
-    private readonly GameContent content;
+    private readonly IGameContent content;
     private readonly IVideo video;
     private readonly ISound sound;
     private readonly IUserInput userInput;
@@ -51,7 +51,7 @@ public sealed class Doom
 
     private bool mouseGrabbed;
 
-    public Doom(CommandLineArgs args, ConfigValues config, GameContent content, IVideo? video, ISound? sound, IMusic? music, IUserInput? userInput)
+    public Doom(ICommandLineArgs args, IConfig config, IGameContent content, IVideo? video, ISound? sound, IMusic? music, IUserInput? userInput)
     {
         video ??= NullVideo.GetInstance();
         sound ??= NullSound.GetInstance();
@@ -59,7 +59,7 @@ public sealed class Doom
         userInput ??= NullUserInput.GetInstance();
 
         this.args = args;
-        this.config = config;
+        this.config = config.Values;
         this.content = content;
         this.video = video;
         this.sound = sound;
@@ -524,7 +524,7 @@ public sealed class Doom
 
     public DoomState State { get; private set; }
 
-    public OpeningSequence Opening { get; }
+    public IOpeningSequence Opening { get; }
 
     public DemoPlayback DemoPlayback { get; private set; }
 

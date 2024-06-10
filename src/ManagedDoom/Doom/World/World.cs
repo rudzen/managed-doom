@@ -14,6 +14,7 @@
 //
 
 
+using System;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
@@ -35,7 +36,7 @@ public sealed class World
 
     private int validCount;
 
-    public World(GameContent resources, GameOptions options, DoomGame game)
+    public World(IGameContent resources, IGameOptions options, DoomGame? game)
     {
         this.Options = options;
         this.Game = game;
@@ -66,12 +67,8 @@ public sealed class World
         options.IntermissionInfo.TotalFrags = 0;
         options.IntermissionInfo.ParTime = 180;
 
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-        {
-            options.Players[i].KillCount = 0;
-            options.Players[i].SecretCount = 0;
-            options.Players[i].ItemCount = 0;
-        }
+        foreach (var player in options.Players)
+            player.KillCount = player.SecretCount = player.ItemCount = 0;
 
         // Initial height of view will be set by player think.
         options.Players[options.ConsolePlayer].ViewZ = Fixed.Epsilon;
@@ -85,7 +82,7 @@ public sealed class World
         // If deathmatch, randomly spawn the active players.
         if (options.Deathmatch != 0)
         {
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
+            for (var i = 0; i < options.Players.Length; i++)
             {
                 if (options.Players[i].InGame)
                 {
@@ -111,9 +108,9 @@ public sealed class World
         options.Music.StartMusic(ManagedDoom.Doom.Map.Map.GetMapBgm(options), true);
     }
 
-    public GameOptions Options { get; }
+    public IGameOptions Options { get; }
 
-    public DoomGame Game { get; }
+    public DoomGame? Game { get; }
 
     public DoomRandom Random { get; }
 
@@ -175,20 +172,20 @@ public sealed class World
 
     public UpdateResult Update()
     {
-        var players = Options.Players;
+        var players = Options.Players.AsSpan();
 
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-            if (players[i].InGame)
-                players[i].UpdateFrameInterpolationInfo();
+        foreach (var player in players)
+            if (player.InGame)
+                player.UpdateFrameInterpolationInfo();
 
         Thinkers.UpdateFrameInterpolationInfo();
 
-        foreach (var sector in Map.Sectors)
+        foreach (var sector in Map.Sectors.AsSpan())
             sector.UpdateFrameInterpolationInfo();
 
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-            if (players[i].InGame)
-                PlayerBehavior.PlayerThink(players[i]);
+        foreach (var player in players)
+            if (player.InGame)
+                PlayerBehavior.PlayerThink(player);
 
         Thinkers.Run();
         Specials.Update();
@@ -271,16 +268,13 @@ public sealed class World
 
     public int GetNewValidCount()
     {
-        validCount++;
-        return validCount;
+        return ++validCount;
     }
 
     public bool DoEvent(in DoomEvent e)
     {
         if (!Options.NetGame && !Options.DemoPlayback)
-        {
             Cheat.DoEvent(e);
-        }
 
         if (AutoMap.Visible && AutoMap.DoEvent(e)) return true;
 
@@ -305,16 +299,6 @@ public sealed class World
         }
     }
 
-    public void ChangeDisplayPlayer()
-    {
-        displayPlayer++;
-        if (displayPlayer == Player.MaxPlayerCount ||
-            !Options.Players[displayPlayer].InGame)
-        {
-            displayPlayer = 0;
-        }
-    }
-
     /// <summary>
     /// In vanilla Doom, some action functions have possibilities
     /// to access null pointers.
@@ -322,17 +306,22 @@ public sealed class World
     /// so that we can avoid crash.
     /// This safeguard is imported from Chocolate Doom.
     /// </summary>
-    public Mobj SubstNullMobj(Mobj mobj)
+    public Mobj SubstNullMobj(Mobj? mobj)
     {
-        if (mobj == null)
-        {
-            dummy.X = Fixed.Zero;
-            dummy.Y = Fixed.Zero;
-            dummy.Z = Fixed.Zero;
-            dummy.Flags = 0;
-            return dummy;
-        }
+        if (mobj is not null)
+            return mobj;
 
-        return mobj;
+        dummy.X = Fixed.Zero;
+        dummy.Y = Fixed.Zero;
+        dummy.Z = Fixed.Zero;
+        dummy.Flags = 0;
+        return dummy;
+    }
+    
+    private void ChangeDisplayPlayer()
+    {
+        displayPlayer++;
+        if (displayPlayer == Player.MaxPlayerCount || !Options.Players[displayPlayer].InGame)
+            displayPlayer = 0;
     }
 }

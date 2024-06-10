@@ -21,7 +21,7 @@ using System.Text.Json;
 
 namespace ManagedDoom.Config;
 
-public sealed class Config
+public sealed class Config : IConfig
 {
     public ConfigValues Values { get; }
 

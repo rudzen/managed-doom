@@ -10,11 +10,9 @@ public sealed class FireOnce(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
         using var content = GameContent.CreateDummy(wad);
-        var options = new GameOptions
-        {
-            Skill = GameSkill.Hard,
-            Map = 1
-        };
+        var options = GameOptions.CreateDefault();
+        options.Skill = GameSkill.Hard;
+        options.Map = 1;
         options.Players[0].InGame = true;
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();

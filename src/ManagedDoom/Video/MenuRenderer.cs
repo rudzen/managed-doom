@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Menu;
-using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Video;
 

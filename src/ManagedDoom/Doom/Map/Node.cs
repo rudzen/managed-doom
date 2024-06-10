@@ -16,6 +16,7 @@
 
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Interfaces;
 
@@ -146,11 +147,13 @@ public sealed class Node : IFixedCoordinates
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsSubsector(int node)
     {
         return (node & unchecked((int)0xFFFF8000)) != 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetSubsector(int node)
     {
         return node ^ unchecked((int)0xFFFF8000);

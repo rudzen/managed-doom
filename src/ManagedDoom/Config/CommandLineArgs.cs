@@ -22,7 +22,7 @@ namespace ManagedDoom.Config;
 
 public sealed record Warp(int Episode, int Map);
 
-public sealed class CommandLineArgs
+public sealed class CommandLineArgs : ICommandLineArgs
 {
     public Arg<string> Iwad { get; }
     public Arg<string[]> File { get; }

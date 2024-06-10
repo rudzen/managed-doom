@@ -16,7 +16,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
@@ -64,7 +63,7 @@ public sealed class SilkSound : ISound, IDisposable
     private long lastUpdate;
 
     [SkipLocalsInit]
-    public SilkSound(ConfigValues config, GameContent content, AudioDevice device)
+    public SilkSound(ConfigValues config, IGameContent content, AudioDevice device)
     {
         try
         {

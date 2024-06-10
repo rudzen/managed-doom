@@ -23,9 +23,17 @@ using ManagedDoom.Video;
 
 namespace ManagedDoom.Doom.Game;
 
-public sealed class GameOptions
+public sealed class GameOptions : IGameOptions
 {
-    public GameOptions()
+    public GameOptions(ICommandLineArgs args, IGameContent content) : this()
+    {
+        NetGame = args.SoloNet.Present;
+        GameVersion = content.Wad.GameVersion;
+        GameMode = content.Wad.GameMode;
+        MissionPack = content.Wad.MissionPack;
+    }
+
+    private GameOptions()
     {
         GameVersion = GameVersion.Version109;
         GameMode = GameMode.Commercial;
@@ -59,19 +67,11 @@ public sealed class GameOptions
         Music = NullMusic.GetInstance();
         UserInput = NullUserInput.GetInstance();
     }
-
-    public GameOptions(CommandLineArgs args, GameContent content) : this()
+    
+    public static IGameOptions CreateDefault()
     {
-        if (args.SoloNet.Present)
-        {
-            NetGame = true;
-        }
-
-        GameVersion = content.Wad.GameVersion;
-        GameMode = content.Wad.GameMode;
-        MissionPack = content.Wad.MissionPack;
+        return new GameOptions();
     }
-
 
     public GameVersion GameVersion { get; set; }
 

@@ -1,37 +1,49 @@
 ﻿using System;
 using ManagedDoom;
 using ManagedDoom.Config;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Host;
 using ManagedDoom.Silk;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Silk.NET.Input.Glfw;
+using Silk.NET.Windowing.Glfw;
 
+Console.WriteLine(ApplicationInfo.Logo());
 Console.ForegroundColor = ConsoleColor.White;
 Console.BackgroundColor = ConsoleColor.DarkGreen;
 Console.WriteLine(ApplicationInfo.Title);
 Console.ResetColor();
 
-try
-{
-    string quitMessage;
+// register early
+GlfwWindowing.RegisterPlatform();
+GlfwInput.RegisterPlatform();
 
-    using (var doom = new SilkDoom(new CommandLineArgs(args)))
-    {
-        doom.Run();
-        quitMessage = doom.QuitMessage;
-    }
+// configure host
+await Host.CreateDefaultBuilder(args)
+          .ConfigureLogging(builder => { builder.ClearProviders(); })
+          .ConfigureServices((_, services) =>
+          {
+              
+              services.AddSingleton(_ =>
+              {
+                  ICommandLineArgs commandLineArgs = new CommandLineArgs(args);
+                  return commandLineArgs;
+              });
+              
+              // configuration
+              services.AddSingleton(_ =>
+              {
+                  IConfig config = new Config(ConfigUtilities.GetConfigPath());
+                  return config;
+              });
 
-    if (!string.IsNullOrWhiteSpace(quitMessage))
-    {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(quitMessage);
-        Console.ResetColor();
-        Console.Write("Press any key to exit.");
-        Console.ReadKey();
-    }
-}
-catch (Exception e)
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine(e);
-    Console.ResetColor();
-    Console.Write("Press any key to exit.");
-    Console.ReadKey();
-}
+              services.AddSingleton<ISilkConfig, SilkConfig>();
+              
+              services.AddSingleton<IGameContent, GameContent>();
+
+              services.AddSingleton<ISilkDoom, SilkDoom>();
+              services.AddHostedService<DoomHost>();
+          })
+          .RunConsoleAsync();

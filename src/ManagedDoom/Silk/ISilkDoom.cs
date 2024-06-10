@@ -1,6 +1,7 @@
 ﻿//
 // Copyright (C) 1993-1996 Id Software, Inc.
 // Copyright (C) 2019-2020 Nobuaki Tanaka
+// Copyright (C) 2024 Rudy Alex Kohn
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,24 +15,17 @@
 //
 
 
-namespace ManagedDoom.Doom.World;
+using System;
+using System.Threading.Tasks;
+using Silk.NET.Input;
 
-public enum AmmoType
+namespace ManagedDoom.Silk;
+
+public interface ISilkDoom : IDisposable
 {
-    // Pistol / chaingun ammo.
-    Clip,
-
-    // Shotgun / double barreled shotgun.
-    Shell,
-
-    // Plasma rifle, BFG.
-    Cell,
-
-    // Missile launcher.
-    Missile,
-
-    Count,
-
-    // Unlimited for chainsaw / fist.
-    NoAmmo
+    void KeyDown(Key key);
+    void KeyUp(Key key);
+    string? QuitMessage { get; }
+    Exception? Exception { get; }
+    Task Run();
 }

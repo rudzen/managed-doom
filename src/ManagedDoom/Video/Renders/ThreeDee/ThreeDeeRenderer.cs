@@ -57,7 +57,7 @@ public sealed class ThreeDeeRenderer
     private readonly ColorTranslation colorTranslation;
     private readonly WindowBorder windowBorder;
 
-    public ThreeDeeRenderer(GameContent content, DrawScreen screen, int windowSize)
+    public ThreeDeeRenderer(IGameContent content, DrawScreen screen, int windowSize)
     {
         colorMap = content.ColorMap;
         textures = content.Textures;

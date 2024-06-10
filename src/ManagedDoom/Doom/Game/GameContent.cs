@@ -1,6 +1,7 @@
 ﻿//
 // Copyright (C) 1993-1996 Id Software, Inc.
 // Copyright (C) 2019-2020 Nobuaki Tanaka
+// Copyright (C) 2024 Rudy Alex Kohn
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,14 +15,13 @@
 //
 
 
-using System;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Graphics.Dummy;
 
 namespace ManagedDoom.Doom.Game;
 
-public sealed class GameContent : IDisposable
+public sealed class GameContent : IGameContent
 {
     private GameContent(string[] wadPaths)
     {
@@ -34,7 +34,7 @@ public sealed class GameContent : IDisposable
         Animation = new TextureAnimation(Textures, Flats);
     }
 
-    public GameContent(CommandLineArgs args)
+    public GameContent(ICommandLineArgs args)
     {
         Wad = new Wad.Wad(ConfigUtilities.GetWadPaths(args));
 
@@ -47,7 +47,6 @@ public sealed class GameContent : IDisposable
         Sprites = new SpriteLookup(Wad);
         Animation = new TextureAnimation(Textures, Flats);
     }
-
 
     public Wad.Wad Wad { get; private set; }
 

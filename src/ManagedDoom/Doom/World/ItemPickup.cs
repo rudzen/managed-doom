@@ -20,6 +20,7 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
@@ -36,6 +37,8 @@ public sealed class ItemPickup
     /// <summary>
     /// Give the player the ammo.
     /// </summary>
+    /// <param name="player">The player that picks up the item</param>
+    /// <param name="ammo">The ammo type that should be picked up</param>
     /// <param name="amount">
     /// The number of clip loads, not the individual count (0 = 1/2 clip).
     /// </param>
@@ -45,48 +48,32 @@ public sealed class ItemPickup
     public bool GiveAmmo(Player player, AmmoType ammo, int amount)
     {
         if (ammo == AmmoType.NoAmmo)
-        {
             return false;
-        }
 
         if (ammo < 0 || (int)ammo > (int)AmmoType.Count)
-        {
             throw new Exception("Bad ammo type: " + ammo);
-        }
 
         if (player.Ammo[(int)ammo] == player.MaxAmmo[(int)ammo])
-        {
             return false;
-        }
 
         if (amount != 0)
-        {
             amount *= DoomInfo.AmmoInfos.Clip[(int)ammo];
-        }
         else
-        {
             amount = DoomInfo.AmmoInfos.Clip[(int)ammo] / 2;
-        }
 
+        // Give double ammo in trainer mode, you'll need in nightmare.
         if (world.Options.Skill is GameSkill.Baby or GameSkill.Nightmare)
-        {
-            // Give double ammo in trainer mode, you'll need in nightmare.
             amount <<= 1;
-        }
 
-        var oldammo = player.Ammo[(int)ammo];
+        var oldAmmo = player.Ammo[(int)ammo];
         player.Ammo[(int)ammo] += amount;
 
         if (player.Ammo[(int)ammo] > player.MaxAmmo[(int)ammo])
-        {
             player.Ammo[(int)ammo] = player.MaxAmmo[(int)ammo];
-        }
 
-        // If non zero ammo, don't change up weapons, player was lower on purpose.
-        if (oldammo != 0)
-        {
+        // If non-zero ammo, don't change up weapons, player was lower on purpose.
+        if (oldAmmo != 0)
             return true;
-        }
 
         // We were down to zero, so select a new weapon.
         // Preferences are not user selectable.
@@ -95,14 +82,9 @@ public sealed class ItemPickup
             case AmmoType.Clip:
                 if (player.ReadyWeapon == WeaponType.Fist)
                 {
-                    if (player.WeaponOwned[WeaponType.Chaingun])
-                    {
-                        player.PendingWeapon = WeaponType.Chaingun;
-                    }
-                    else
-                    {
-                        player.PendingWeapon = WeaponType.Pistol;
-                    }
+                    player.PendingWeapon = player.WeaponOwned[WeaponType.Chaingun]
+                        ? WeaponType.Chaingun
+                        : WeaponType.Pistol;
                 }
 
                 break;
@@ -148,34 +130,26 @@ public sealed class ItemPickup
     /// <param name="dropped">
     /// True if the weapons is dropped by a monster.
     /// </param>
-    public bool GiveWeapon(Player player, WeaponType weapon, bool dropped)
+    private bool GiveWeapon(Player player, WeaponType weapon, bool dropped)
     {
         if (world.Options.NetGame && (world.Options.Deathmatch != 2) && !dropped)
         {
             // Leave placed weapons forever on net games.
             if (player.WeaponOwned[weapon])
-            {
                 return false;
-            }
 
             player.BonusCount += bonusAdd;
             player.WeaponOwned[weapon] = true;
 
             if (world.Options.Deathmatch != 0)
-            {
                 GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, 5);
-            }
             else
-            {
                 GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, 2);
-            }
 
             player.PendingWeapon = weapon;
 
             if (player == world.ConsolePlayer)
-            {
-                world.StartSound(player.Mobj, Sfx.WPNUP, SfxType.Misc);
-            }
+                world.StartSound(player.Mobj!, Sfx.WPNUP, SfxType.Misc);
 
             return false;
         }
@@ -184,25 +158,21 @@ public sealed class ItemPickup
         if (DoomInfo.WeaponInfos[weapon].Ammo != AmmoType.NoAmmo)
         {
             // Give one clip with a dropped weapon, two clips with a found weapon.
-            if (dropped)
-            {
-                gaveAmmo = GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, 1);
-            }
-            else
-            {
-                gaveAmmo = GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, 2);
-            }
+
+            // non-branching amount calculation
+            // dropped = true, int value = 1
+            // dropped = false, int value = 0
+            // flipped to false + 1 = 1
+            // flipped to true + 1 = 2
+            var amount = (!dropped).AsInt() + 1;
+            gaveAmmo = GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, amount);
         }
         else
-        {
             gaveAmmo = false;
-        }
 
         bool gaveWeapon;
         if (player.WeaponOwned[weapon])
-        {
             gaveWeapon = false;
-        }
         else
         {
             gaveWeapon = true;

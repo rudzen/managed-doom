@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 #if WINDOWS_RELEASE
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -8,7 +9,7 @@ using Silk.NET.Windowing;
 
 namespace ManagedDoom.Silk;
 
-public sealed partial class SilkDoom : IDisposable
+public sealed partial class SilkDoom
 {
     // The main loop provided by Silk.NET with the IWindow.Run method uses a busy loop
     // to control the drawing timing, which is CPU-intensive.
@@ -17,7 +18,7 @@ public sealed partial class SilkDoom : IDisposable
     // In other environments, the IWindow.Run method provided by Silk.NET is used.
 
 #if !WINDOWS_RELEASE
-    public void Run()
+    public Task Run()
     {
         if (args.TimeDemo.Present)
         {
@@ -35,6 +36,8 @@ public sealed partial class SilkDoom : IDisposable
         window.Run();
 
         Quit();
+
+        return Task.CompletedTask;
     }
 #else
         [DllImport("winmm.dll")]
@@ -50,7 +53,7 @@ public sealed partial class SilkDoom : IDisposable
             timeEndPeriod(1);
         }
 
-        public void Run()
+        public Task Run()
         {
             config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
             var targetFps = 35 * config.Values.video_fpsscale;
@@ -59,9 +62,7 @@ public sealed partial class SilkDoom : IDisposable
             window.UpdatesPerSecond = 0;
 
             if (args.timedemo.Present)
-            {
                 window.Run();
-            }
             else
             {
                 window.Initialize();

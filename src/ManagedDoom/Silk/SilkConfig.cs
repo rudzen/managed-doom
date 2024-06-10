@@ -24,21 +24,30 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Silk;
 
-public static class SilkConfigUtilities
+public sealed class SilkConfig : ISilkConfig
 {
-    public static Config.Config GetConfig()
-    {
-        var config = new Config.Config(ConfigUtilities.GetConfigPath());
+    private const int MinScreenWidth = 320;
+    private const int MaxScreenWidth = 3200;
 
-        if (!config.IsRestoredFromFile)
+    private const int MinScreenHeight = 200;
+    private const int MaxScreenHeight = 2000;
+
+    public SilkConfig(IConfig config)
+    {
+        Config = config;
+
+        if (!Config.IsRestoredFromFile)
         {
             var vm = GetDefaultVideoMode();
-            config.Values.VideoScreenWidth = vm.Resolution!.Value.X;
-            config.Values.VideoScreenHeight = vm.Resolution.Value.Y;
+            Config.Values.VideoScreenWidth = vm.Resolution!.Value.X;
+            Config.Values.VideoScreenHeight = vm.Resolution.Value.Y;
         }
 
-        return config;
+        config.Values.VideoScreenWidth = Math.Clamp(config.Values.VideoScreenWidth, MinScreenWidth, MaxScreenWidth);
+        config.Values.VideoScreenHeight = Math.Clamp(config.Values.VideoScreenHeight, MinScreenHeight, MaxScreenHeight);
     }
+
+    public IConfig Config { get; }
 
     private static VideoMode GetDefaultVideoMode()
     {
@@ -68,13 +77,13 @@ public static class SilkConfigUtilities
         return new VideoMode(new Vector2D<int>(currentWidth, currentHeight));
     }
 
-    public static SilkMusic GetMusicInstance(ConfigValues config, GameContent content, AudioDevice device)
+    public SilkMusic? GetMusicInstance(IGameContent content, AudioDevice device)
     {
-        var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, config.AudioSoundfont);
+        var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, Config.Values.AudioSoundfont);
         if (File.Exists(sfPath))
-            return new SilkMusic(config, content, device, sfPath);
+            return new SilkMusic(Config.Values, content, device, sfPath);
 
-        Console.WriteLine($"SoundFont '{config.AudioSoundfont}' was not found!");
+        Console.WriteLine($"SoundFont '{Config.Values.AudioSoundfont}' was not found!");
         return null;
     }
 }

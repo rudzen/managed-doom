@@ -66,7 +66,7 @@ public sealed class Renderer
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
 
-    public Renderer(ConfigValues config, GameContent content)
+    public Renderer(ConfigValues config, IGameContent content)
     {
         this.config = config;
 

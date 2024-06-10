@@ -7,6 +7,7 @@ using System.Runtime.ExceptionServices;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Extensions;
 using Silk.NET.Input;
 using Silk.NET.Windowing;
 using ManagedDoom.UserInput;
@@ -18,19 +19,20 @@ public sealed class SilkUserInput : IUserInput, IDisposable
     private readonly ConfigValues config;
     private readonly IWindow window;
 
-    private IInputContext input;
+    private IInputContext? input;
     private readonly IKeyboard keyboard;
 
+    // TODO (rudzen) : convert to byte and use bit flags?
     private readonly bool[] weaponKeys;
     private int turnHeld;
 
-    private readonly IMouse mouse;
+    private readonly IMouse? mouse;
     private bool mouseGrabbed;
     private Vector2 mouseXy;
     private Vector2 mousePrevXy;
     private Vector2 mouseDeltaXy;
 
-    public SilkUserInput(ConfigValues config, IWindow window, SilkDoom doom, bool useMouse)
+    public SilkUserInput(ConfigValues config, IWindow window, ISilkDoom doom, bool useMouse)
     {
         try
         {
@@ -54,6 +56,8 @@ public sealed class SilkUserInput : IUserInput, IDisposable
                 mouse = input.Mice[0];
                 mouseGrabbed = false;
             }
+            else
+                mouse = null;
 
             Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
         }
@@ -88,7 +92,7 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
         cmd.Clear();
 
-        var speed = keyRun ? 1 : 0;
+        var speed = keyRun.AsInt();
         var forward = 0;
         var side = 0;
 
@@ -171,10 +175,10 @@ public sealed class SilkUserInput : IUserInput, IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsPressed(IKeyboard keyboard, KeyBinding keyBinding)
+    private bool IsPressed(IKeyboard currentKeyboard, KeyBinding keyBinding)
     {
-        return keyBinding.Keys.Any(key => keyboard.IsKeyPressed(DoomToSilk(key))) ||
-               mouseGrabbed && keyBinding.MouseButtons.Any(mouseButton => mouse.IsButtonPressed((MouseButton)mouseButton));
+        return keyBinding.Keys.Any(key => currentKeyboard.IsKeyPressed(DoomToSilk(key))) ||
+               mouseGrabbed && keyBinding.MouseButtons.Any(mouseButton => mouse!.IsButtonPressed((MouseButton)mouseButton));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -241,6 +245,7 @@ public sealed class SilkUserInput : IUserInput, IDisposable
 
         if (input is null)
             return;
+
         input.Dispose();
         input = null;
     }
@@ -249,6 +254,12 @@ public sealed class SilkUserInput : IUserInput, IDisposable
     {
         switch (silkKey)
         {
+            // WASD most used, so in top! :)
+            case Key.W: return DoomKey.W;
+            case Key.A: return DoomKey.A;
+            case Key.S: return DoomKey.S;
+            case Key.D: return DoomKey.D;
+
             case Key.Space: return DoomKey.Space;
             // case Key.Apostrophe: return DoomKey.Apostrophe;
             case Key.Comma:   return DoomKey.Comma;
@@ -268,10 +279,8 @@ public sealed class SilkUserInput : IUserInput, IDisposable
             case Key.Number9:      return DoomKey.Num9;
             case Key.Semicolon:    return DoomKey.Semicolon;
             case Key.Equal:        return DoomKey.Equal;
-            case Key.A:            return DoomKey.A;
             case Key.B:            return DoomKey.B;
             case Key.C:            return DoomKey.C;
-            case Key.D:            return DoomKey.D;
             case Key.E:            return DoomKey.E;
             case Key.F:            return DoomKey.F;
             case Key.G:            return DoomKey.G;
@@ -286,11 +295,9 @@ public sealed class SilkUserInput : IUserInput, IDisposable
             case Key.P:            return DoomKey.P;
             case Key.Q:            return DoomKey.Q;
             case Key.R:            return DoomKey.R;
-            case Key.S:            return DoomKey.S;
             case Key.T:            return DoomKey.T;
             case Key.U:            return DoomKey.U;
             case Key.V:            return DoomKey.V;
-            case Key.W:            return DoomKey.W;
             case Key.X:            return DoomKey.X;
             case Key.Y:            return DoomKey.Y;
             case Key.Z:            return DoomKey.Z;

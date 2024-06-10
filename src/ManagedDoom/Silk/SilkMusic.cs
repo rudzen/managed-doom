@@ -36,7 +36,7 @@ public sealed class SilkMusic : IMusic, IDisposable
     private MusStream stream;
     private Bgm current;
 
-    public SilkMusic(ConfigValues config, GameContent content, AudioDevice device, string sfPath)
+    public SilkMusic(ConfigValues config, IGameContent content, AudioDevice device, string sfPath)
     {
         try
         {

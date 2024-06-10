@@ -17,11 +17,10 @@
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Opening;
-using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Video;
 
-public class OpeningSequenceRenderer
+public sealed class OpeningSequenceRenderer
 {
     private readonly PatchCache cache;
     private readonly Renderer parent;
@@ -35,7 +34,7 @@ public class OpeningSequenceRenderer
         cache = patchCache;
     }
 
-    public void Render(OpeningSequence sequence, Fixed frameFrac)
+    public void Render(IOpeningSequence sequence, Fixed frameFrac)
     {
         var scale = screen.Width / 320;
 

@@ -14,7 +14,7 @@ public sealed class MapTest(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom1);
         using var content = GameContent.CreateDummy(wadFile);
-        var options = new GameOptions();
+        var options = GameOptions.CreateDefault();
         var world = new World(content, options, null);
         var map = new Map(content, world);
 
@@ -60,7 +60,7 @@ public sealed class MapTest(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom2);
         using var content = GameContent.CreateDummy(wadFile);
-        var options = new GameOptions();
+        var options = GameOptions.CreateDefault();
         var world = new World(content, options, null);
         var map = new Map(content, world);
 

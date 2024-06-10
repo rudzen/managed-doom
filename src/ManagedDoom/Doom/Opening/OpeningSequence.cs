@@ -19,9 +19,9 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Opening;
 
-public sealed class OpeningSequence
+public sealed class OpeningSequence : IOpeningSequence
 {
-    private readonly GameContent content;
+    private readonly IGameContent content;
     private readonly GameOptions options;
 
     private int currentStage;
@@ -35,7 +35,7 @@ public sealed class OpeningSequence
 
     private bool reset;
 
-    public OpeningSequence(GameContent content, GameOptions options)
+    public OpeningSequence(IGameContent content, GameOptions options)
     {
         this.content = content;
         this.options = options;

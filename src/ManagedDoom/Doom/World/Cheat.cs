@@ -391,7 +391,7 @@ public sealed class Cheat
 
     private void ChangeMusic(string typed)
     {
-        var options = new GameOptions();
+        var options = GameOptions.CreateDefault();
         options.GameMode = world.Options.GameMode;
         if (world.Options.GameMode == GameMode.Commercial)
         {
