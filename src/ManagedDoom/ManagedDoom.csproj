@@ -33,7 +33,10 @@
 
   <ItemGroup>
     <None Remove="managed-doom.cfg" />
-    <Content Include="managed-doom.cfg">
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="managed-doom.cfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
