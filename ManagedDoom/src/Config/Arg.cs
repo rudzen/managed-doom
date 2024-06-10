@@ -6,7 +6,7 @@ public readonly struct Arg<T>
 {
     public bool Present { get; }
 
-    public T Value { get; }
+    public T? Value { get; }
 
     public Arg()
     {
@@ -14,7 +14,7 @@ public readonly struct Arg<T>
         this.Value = default;
     }
 
-    public Arg(T value)
+    public Arg(T? value)
     {
         this.Present = value is not null;
         this.Value = value;

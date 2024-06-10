@@ -15,11 +15,10 @@
 
 
 using System;
-using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class TexturePatch : IDimension
+public sealed class TexturePatch
 {
     public const int DataSize = 10;
 

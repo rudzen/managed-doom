@@ -42,20 +42,20 @@ public sealed class ThingMovement
 
     public static readonly Fixed FloatSpeed = Fixed.FromInt(4);
 
-    private static readonly int maxSpecialCrossCount = 64;
+    private const int maxSpecialCrossCount = 64;
     private static readonly Fixed maxMove = Fixed.FromInt(30);
     private static readonly Fixed gravity = Fixed.One;
 
-    private Mobj currentThing;
+    private Mobj? currentThing;
     private MobjFlags currentFlags;
     private Fixed currentX;
     private Fixed currentY;
-    private Fixed[] currentBox;
+    private Fixed[]? currentBox;
 
-    private LineDef currentCeilingLine;
+    private LineDef? currentCeilingLine;
 
     public int crossedSpecialCount;
-    public LineDef[] crossedSpecials;
+    public LineDef[]? crossedSpecials;
 
     private Func<LineDef, bool> checkLineFunc;
     private Func<Mobj, bool> checkThingFunc;

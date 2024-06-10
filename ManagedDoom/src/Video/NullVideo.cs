@@ -15,6 +15,7 @@
 
 
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Video.Renders.ThreeDee;
 
 namespace ManagedDoom.Video;
 
@@ -35,7 +36,7 @@ public class NullVideo : IVideo
         return true;
     }
 
-    public int MaxWindowSize => ThreeDRenderer.MaxScreenSize;
+    public int MaxWindowSize => ThreeDeeRenderer.MaxScreenSize;
 
     public int WindowSize
     {

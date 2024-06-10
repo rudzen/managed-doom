@@ -97,7 +97,7 @@ public static class DoomDebug
         sb.Append(mobj.MomY.Data).Append(',');
         sb.Append(mobj.MomZ.Data).Append(',');
 
-        sb.Append((int)mobj.Tics).Append(',');
+        sb.Append(mobj.Tics).Append(',');
         sb.Append((int)mobj.Flags).Append(',');
         sb.Append(mobj.Health).Append(',');
 

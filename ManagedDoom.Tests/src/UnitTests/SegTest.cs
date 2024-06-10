@@ -91,9 +91,9 @@ public sealed class SegTest(WadPath wadPath) : IClassFixture<WadPath>
         Assert.True(segments[0].Vertex2 == vertices[316]);
         Assert.Equal(ToRadian(-32768), segments[0].Angle.ToRadian(), delta);
         Assert.True(segments[0].LineDef == lines[8]);
-        Assert.True((segments[0].LineDef.Flags & LineFlags.TwoSided) != 0);
-        Assert.True(segments[0].FrontSector == segments[0].LineDef.FrontSide.Sector);
-        Assert.True(segments[0].BackSector == segments[0].LineDef.BackSide.Sector);
+        Assert.True((segments[0]!.LineDef!.Flags & LineFlags.TwoSided) != 0);
+        Assert.True(segments[0].FrontSector == segments[0]!.LineDef!.FrontSide!.Sector);
+        Assert.True(segments[0].BackSector == segments[0]!.LineDef!.BackSide!.Sector);
         Assert.Equal(0, segments[0].Offset.ToDouble(), delta);
 
         Assert.True(segments[42].Vertex1 == vertices[26]);
@@ -101,8 +101,8 @@ public sealed class SegTest(WadPath wadPath) : IClassFixture<WadPath>
         Assert.Equal(ToRadian(-22209), segments[42].Angle.ToRadian(), delta);
         Assert.True(segments[42].LineDef == lines[33]);
         Assert.True((segments[42].LineDef.Flags & LineFlags.TwoSided) != 0);
-        Assert.True(segments[42].FrontSector == segments[42].LineDef.BackSide.Sector);
-        Assert.True(segments[42].BackSector == segments[42].LineDef.FrontSide.Sector);
+        Assert.True(segments[42].FrontSector == segments[42].LineDef?.BackSide?.Sector);
+        Assert.True(segments[42].BackSector == segments[42].LineDef?.FrontSide?.Sector);
         Assert.Equal(0, segments[42].Offset.ToDouble(), delta);
 
         Assert.True(segments[103].Vertex1 == vertices[331]);
@@ -110,7 +110,7 @@ public sealed class SegTest(WadPath wadPath) : IClassFixture<WadPath>
         Assert.Equal(ToRadian(16384), segments[103].Angle.ToRadian(), delta);
         Assert.True(segments[103].LineDef == lines[347]);
         Assert.True((segments[103].LineDef.Flags & LineFlags.TwoSided) == 0);
-        Assert.True(segments[103].FrontSector == segments[103].LineDef.FrontSide.Sector);
+        Assert.True(segments[103].FrontSector == segments[103].LineDef?.FrontSide?.Sector);
         Assert.Null(segments[103].BackSector);
         Assert.Equal(64, segments[103].Offset.ToDouble(), delta);
 
@@ -119,8 +119,8 @@ public sealed class SegTest(WadPath wadPath) : IClassFixture<WadPath>
         Assert.Equal(ToRadian(-16384), segments[600].Angle.ToRadian(), delta);
         Assert.True(segments[600].LineDef == lines[271]);
         Assert.True((segments[600].LineDef.Flags & LineFlags.TwoSided) != 0);
-        Assert.True(segments[600].FrontSector == segments[600].LineDef.BackSide.Sector);
-        Assert.True(segments[600].BackSector == segments[600].LineDef.FrontSide.Sector);
+        Assert.True(segments[600].FrontSector == segments[600].LineDef?.BackSide?.Sector);
+        Assert.True(segments[600].BackSector == segments[600].LineDef?.FrontSide?.Sector);
         Assert.Equal(0, segments[600].Offset.ToDouble(), delta);
     }
 }

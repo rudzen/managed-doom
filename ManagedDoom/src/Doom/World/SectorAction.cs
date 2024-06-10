@@ -15,6 +15,7 @@
 
 
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ManagedDoom.Audio;
@@ -914,7 +915,7 @@ public sealed class SectorAction
 
 
     private const int maxPlatformCount = 60;
-    private readonly Platform[] activePlatforms = new Platform[maxPlatformCount];
+    private readonly Platform?[] activePlatforms = new Platform[maxPlatformCount];
 
     public void ActivateInStasis(int tag)
     {
@@ -964,10 +965,10 @@ public sealed class SectorAction
     {
         for (var i = 0; i < activePlatforms.Length; i++)
         {
-            if (platform == activePlatforms[i])
+            if (activePlatforms[i] is not null && platform == activePlatforms[i])
             {
-                activePlatforms[i].Sector.SpecialData = null;
-                world.Thinkers.Remove(activePlatforms[i]);
+                activePlatforms[i]!.Sector.SpecialData = null;
+                world.Thinkers.Remove(activePlatforms[i]!);
                 activePlatforms[i] = null;
                 return;
             }
@@ -1363,13 +1364,13 @@ public sealed class SectorAction
 
     private static readonly int maxCeilingCount = 30;
 
-    private readonly CeilingMove[] activeCeilings = new CeilingMove[maxCeilingCount];
+    private readonly CeilingMove?[] activeCeilings = new CeilingMove[maxCeilingCount];
 
     public void AddActiveCeiling(CeilingMove ceiling)
     {
         for (var i = 0; i < activeCeilings.Length; i++)
         {
-            if (activeCeilings[i] == null)
+            if (activeCeilings[i] is null)
             {
                 activeCeilings[i] = ceiling;
 
@@ -1378,36 +1379,23 @@ public sealed class SectorAction
         }
     }
 
-    public void RemoveActiveCeiling(CeilingMove ceiling)
+    public void RemoveActiveCeiling(CeilingMove? ceiling)
     {
         for (var i = 0; i < activeCeilings.Length; i++)
         {
-            if (activeCeilings[i] == ceiling)
+            if (activeCeilings[i] is not null && activeCeilings[i] == ceiling)
             {
-                activeCeilings[i].Sector.SpecialData = null;
-                world.Thinkers.Remove(activeCeilings[i]);
+                activeCeilings[i]!.Sector.SpecialData = null;
+                world.Thinkers.Remove(activeCeilings[i]!);
                 activeCeilings[i] = null;
                 break;
             }
         }
     }
 
-    public bool CheckActiveCeiling(CeilingMove ceiling)
+    public bool CheckActiveCeiling(CeilingMove? ceiling)
     {
-        if (ceiling == null)
-        {
-            return false;
-        }
-
-        for (var i = 0; i < activeCeilings.Length; i++)
-        {
-            if (activeCeilings[i] == ceiling)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return ceiling is not null && activeCeilings.Any(t => t == ceiling);
     }
 
     public void ActivateInStasisCeiling(LineDef line)

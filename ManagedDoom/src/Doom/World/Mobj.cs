@@ -202,7 +202,7 @@ public sealed class Mobj : Thinker
 
     public int Threshold { get; set; }
 
-    public Player Player { get; set; }
+    public Player? Player { get; set; }
 
     public int LastLook { get; set; }
 

@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Wad;
-using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Video;
 
-public sealed class DrawScreen : IDimension
+public sealed class DrawScreen
 {
     private readonly Patch[] chars;
 

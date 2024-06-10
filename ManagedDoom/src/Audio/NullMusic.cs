@@ -18,7 +18,7 @@ namespace ManagedDoom.Audio;
 
 public sealed class NullMusic : IMusic
 {
-    private static NullMusic instance;
+    private static NullMusic? instance;
 
     public int MaxVolume => 15;
 

@@ -25,10 +25,10 @@ public sealed record Seg(
     Vertex Vertex2,
     Fixed Offset,
     Angle Angle,
-    SideDef SideDef,
-    LineDef LineDef,
-    Sector FrontSector,
-    Sector BackSector)
+    SideDef? SideDef,
+    LineDef? LineDef,
+    Sector? FrontSector,
+    Sector? BackSector)
 {
     private const int dataSize = 12;
 
@@ -46,14 +46,14 @@ public sealed record Seg(
         var backSide = side == 0 ? lineDef.BackSide : lineDef.FrontSide;
 
         return new Seg(
-            vertices[vertex1Number],
-            vertices[vertex2Number],
-            Fixed.FromInt(segOffset),
-            new Angle((uint)angle << 16),
-            frontSide,
-            lineDef,
-            frontSide.Sector,
-            (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
+            Vertex1: vertices[vertex1Number],
+            Vertex2: vertices[vertex2Number],
+            Offset: Fixed.FromInt(segOffset),
+            Angle: new Angle((uint)angle << 16),
+            SideDef: frontSide,
+            LineDef: lineDef,
+            FrontSector: frontSide?.Sector,
+            BackSector: (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
     }
 
     public static Seg[] FromWad(Wad.Wad wad, int lump, Vertex[] vertices, LineDef[] lines)

@@ -31,8 +31,8 @@ public sealed class LineDef
         LineFlags flags,
         LineSpecial special,
         short tag,
-        SideDef frontSide,
-        SideDef backSide)
+        SideDef? frontSide,
+        SideDef? backSide)
     {
         this.Vertex1 = vertex1;
         this.Vertex2 = vertex2;
@@ -75,8 +75,8 @@ public sealed class LineDef
     public LineFlags Flags { get; set; }
     public LineSpecial Special { get; set; }
     public short Tag { get; set; }
-    public SideDef FrontSide { get; }
-    public SideDef BackSide { get; }
+    public SideDef? FrontSide { get; }
+    public SideDef? BackSide { get; }
     public Fixed[] BoundingBox { get; }
     public SlopeType SlopeType { get; }
     public Sector FrontSector { get; }

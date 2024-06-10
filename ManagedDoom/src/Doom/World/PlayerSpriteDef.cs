@@ -28,7 +28,7 @@ public sealed class PlayerSpriteDef
         Sy = Fixed.Zero;
     }
 
-    public MobjStateDef State { get; set; }
+    public MobjStateDef? State { get; set; }
 
     public int Tics { get; set; }
 

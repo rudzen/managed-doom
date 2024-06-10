@@ -294,7 +294,7 @@ public sealed class ItemPickup
         if (type == PowerType.Invisibility)
         {
             player.Powers[(int)type] = DoomInfo.PowerDuration.Invisibility;
-            player.Mobj.Flags |= MobjFlags.Shadow;
+            player.Mobj!.Flags |= MobjFlags.Shadow;
             return true;
         }
 
@@ -344,6 +344,9 @@ public sealed class ItemPickup
 
         var sound = Sfx.ITEMUP;
         var player = toucher.Player;
+
+        if (player is null)
+            return;
 
         // Dead thing touching.
         // Can happen with a sliding player corpse.

@@ -51,7 +51,7 @@ public sealed class Doom
 
     private bool mouseGrabbed;
 
-    public Doom(CommandLineArgs args, ConfigValues config, GameContent content, IVideo video, ISound sound, IMusic music, IUserInput userInput)
+    public Doom(CommandLineArgs args, ConfigValues config, GameContent content, IVideo? video, ISound? sound, IMusic? music, IUserInput? userInput)
     {
         video ??= NullVideo.GetInstance();
         sound ??= NullSound.GetInstance();
@@ -81,9 +81,7 @@ public sealed class Doom
 
         cmds = new TicCmd[Player.MaxPlayerCount];
         for (var i = 0; i < cmds.Length; i++)
-        {
             cmds[i] = new TicCmd();
-        }
 
         Game = new DoomGame(content, Options);
 
@@ -540,5 +538,5 @@ public sealed class Doom
 
     public bool Wiping { get; private set; }
 
-    public string QuitMessage { get; private set; }
+    public string? QuitMessage { get; private set; }
 }

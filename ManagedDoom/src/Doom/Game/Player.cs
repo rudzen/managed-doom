@@ -99,7 +99,7 @@ public sealed class Player
 
         Frags = new int[MaxPlayerCount];
 
-        WeaponOwned = new bool[(int)WeaponType.Count];
+        WeaponOwned = new bool[WeaponType.Count];
         Ammo = new int[(int)AmmoType.Count];
         MaxAmmo = new int[(int)AmmoType.Count];
 
@@ -117,7 +117,7 @@ public sealed class Player
 
     public bool InGame { get; set; }
 
-    public Mobj Mobj { get; set; }
+    public Mobj? Mobj { get; set; }
 
     public PlayerState PlayerState { get; set; }
 
@@ -169,7 +169,7 @@ public sealed class Player
 
     public int SecretCount { get; set; }
 
-    public string Message { get; set; }
+    public string? Message { get; set; }
 
     public int MessageTime { get; set; }
 
@@ -177,7 +177,7 @@ public sealed class Player
 
     public int BonusCount { get; set; }
 
-    public Mobj Attacker { get; set; }
+    public Mobj? Attacker { get; set; }
 
     public int ExtraLight { get; set; }
 
@@ -278,8 +278,8 @@ public sealed class Player
         Array.Clear(Ammo);
         Array.Clear(MaxAmmo);
 
-        WeaponOwned[(int)WeaponType.Fist] = true;
-        WeaponOwned[(int)WeaponType.Pistol] = true;
+        WeaponOwned[WeaponType.Fist] = true;
+        WeaponOwned[WeaponType.Pistol] = true;
         Ammo[(int)AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
         for (var i = 0; i < (int)AmmoType.Count; i++)
         {
@@ -324,7 +324,8 @@ public sealed class Player
         Array.Clear(Cards);
 
         // Cancel invisibility.
-        Mobj.Flags &= ~MobjFlags.Shadow;
+        if (Mobj is not null)
+            Mobj.Flags &= ~MobjFlags.Shadow;
 
         // Cancel gun flashes.
         ExtraLight = 0;
@@ -353,7 +354,7 @@ public sealed class Player
     {
         interpolate = true;
         oldViewZ = ViewZ;
-        oldAngle = Mobj.Angle;
+        oldAngle = Mobj!.Angle;
     }
 
     public void DisableFrameInterpolationForOneFrame()
@@ -364,15 +365,15 @@ public sealed class Player
     public Fixed GetInterpolatedViewZ(Fixed frameFrac)
     {
         // Without the second condition, flicker will occur on the first frame.
-        return interpolate && Mobj.World.LevelTime > 1
+        return interpolate && Mobj!.World.LevelTime > 1
             ? oldViewZ + frameFrac * (ViewZ - oldViewZ)
             : ViewZ;
     }
 
     public Angle GetInterpolatedAngle(Fixed frameFrac)
     {
-        if (!interpolate) return Mobj.Angle;
-        var delta = Mobj.Angle - oldAngle;
+        if (!interpolate) return Mobj!.Angle;
+        var delta = Mobj!.Angle - oldAngle;
 
         return delta < Angle.Ang180
             ? oldAngle + Angle.FromDegree(frameFrac.ToDouble() * delta.ToDegree())

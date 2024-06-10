@@ -17,11 +17,10 @@
 using System;
 using System.Collections.Generic;
 using ManagedDoom.Doom.Common;
-using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class Texture : IDimension
+public sealed class Texture
 {
     private readonly TexturePatch[] patches;
 

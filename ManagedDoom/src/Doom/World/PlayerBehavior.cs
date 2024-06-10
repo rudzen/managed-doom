@@ -379,7 +379,12 @@ public sealed class PlayerBehavior
                 {
                     if ((world.LevelTime & 0x1f) == 0)
                     {
-                        ti.DamageMobj(player.Mobj, null, null, 10);
+                        ti.DamageMobj(
+                            target: player.Mobj,
+                            inflictor: null,
+                            source: null,
+                            damage: 10
+                        );
                     }
                 }
 
@@ -574,13 +579,11 @@ public sealed class PlayerBehavior
 
             // Call action routine.
             // Modified handling.
-            if (stateDef.PlayerAction != null)
+            if (stateDef.PlayerAction is not null)
             {
                 stateDef.PlayerAction(world, player, psp);
-                if (psp.State == null)
-                {
+                if (psp.State is null)
                     break;
-                }
             }
 
             state = psp.State.Next;
@@ -598,7 +601,7 @@ public sealed class PlayerBehavior
             var psp = player.PlayerSprites[i];
 
             // A null state means not active.
-            if (psp.State != null)
+            if (psp.State is not null)
             {
                 // Drop tic count and possibly change state.
 

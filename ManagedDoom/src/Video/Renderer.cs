@@ -25,6 +25,7 @@ using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Opening;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Video.Renders.ThreeDee;
 
 namespace ManagedDoom.Video;
 
@@ -60,7 +61,7 @@ public sealed class Renderer
 
     private readonly DrawScreen screen;
     private readonly StatusBarRenderer statusBar;
-    private readonly ThreeDRenderer threeD;
+    private readonly ThreeDeeRenderer threeDee;
 
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
@@ -80,7 +81,7 @@ public sealed class Renderer
 
         var patchCache = new PatchCache(content.Wad);
         menu = new MenuRenderer(patchCache, screen);
-        threeD = new ThreeDRenderer(content, screen, config.VideoGameScreenSize);
+        threeDee = new ThreeDeeRenderer(content, screen, config.VideoGameScreenSize);
         statusBar = new StatusBarRenderer(content.Wad, screen);
         intermission = new IntermissionRenderer(content.Wad, patchCache, screen);
         openingSequence = new OpeningSequenceRenderer(patchCache, screen, this);
@@ -105,16 +106,16 @@ public sealed class Renderer
 
     public int WipeHeight { get; }
 
-    public int MaxWindowSize => ThreeDRenderer.MaxScreenSize;
+    public int MaxWindowSize => ThreeDeeRenderer.MaxScreenSize;
 
     public int WindowSize
     {
-        get => threeD.WindowSize;
+        get => threeDee.WindowSize;
 
         set
         {
             config.VideoGameScreenSize = value;
-            threeD.WindowSize = value;
+            threeDee.WindowSize = value;
         }
     }
 
@@ -195,13 +196,13 @@ public sealed class Renderer
                 }
                 else
                 {
-                    threeD.Render(displayPlayer, frameFrac);
-                    switch (threeD.WindowSize)
+                    threeDee.Render(displayPlayer, frameFrac);
+                    switch (threeDee.WindowSize)
                     {
                         case < 8:
                             statusBar.Render(consolePlayer, BackgroundDrawingType.Full);
                             break;
-                        case ThreeDRenderer.MaxScreenSize:
+                        case ThreeDeeRenderer.MaxScreenSize:
                             statusBar.Render(consolePlayer, BackgroundDrawingType.None);
                             break;
                     }

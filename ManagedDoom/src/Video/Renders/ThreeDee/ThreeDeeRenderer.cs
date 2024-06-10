@@ -15,17 +15,17 @@
 
 
 using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Doom.Wad;
 using ManagedDoom.Doom.World;
 
-namespace ManagedDoom.Video;
+namespace ManagedDoom.Video.Renders.ThreeDee;
 
-public sealed class ThreeDRenderer
+public sealed class ThreeDeeRenderer
 {
     public const int MaxScreenSize = 9;
 
@@ -44,7 +44,20 @@ public sealed class ThreeDRenderer
 
     private Fixed frameFrac;
 
-    public ThreeDRenderer(GameContent content, DrawScreen screen, int windowSize)
+    private readonly WindowSettings windowSettings;
+    private readonly WallRender wallRender;
+    private readonly PlaneRender planeRender;
+    private readonly SkyRender skyRender;
+    private readonly LightningRender lightningRender;
+    private readonly RenderingHistory renderingHistory;
+    private readonly SpriteRender spriteRender;
+    private readonly WeaponRender weaponRender;
+
+    private readonly FuzzEffects fuzzEffects;
+    private readonly ColorTranslation colorTranslation;
+    private readonly WindowBorder windowBorder;
+
+    public ThreeDeeRenderer(GameContent content, DrawScreen screen, int windowSize)
     {
         colorMap = content.ColorMap;
         textures = content.Textures;
@@ -59,17 +72,20 @@ public sealed class ThreeDRenderer
 
         this.windowSize = windowSize;
 
-        InitWallRendering();
-        InitPlaneRendering();
-        InitSkyRendering();
-        InitLighting();
-        InitRenderingHistory();
-        InitSpriteRendering();
-        InitWeaponRendering();
-        InitFuzzEffect();
-        InitColorTranslation();
-        InitWindowBorder(content.Wad);
+        this.wallRender = new WallRender(screenWidth);
+        this.planeRender = new PlaneRender(screenWidth, screenHeight);
+        this.skyRender = new SkyRender();
+        this.lightningRender = new LightningRender(screenWidth, colorMap);
+        this.renderingHistory = new RenderingHistory(screenWidth);
+        this.spriteRender = new SpriteRender();
+        this.weaponRender = new WeaponRender();
 
+        this.fuzzEffects = new FuzzEffects();
+        this.colorTranslation = new ColorTranslation();
+
+        this.windowBorder = new WindowBorder(content.Wad, flats);
+
+        this.windowSettings = new WindowSettings();
         SetWindowSize(windowSize);
     }
 
@@ -84,590 +100,35 @@ public sealed class ThreeDRenderer
                 var height = scale * (48 + 16 * size);
                 var x = (screenWidth - width) / 2;
                 var y = (screenHeight - StatusBarRenderer.Height * scale - height) / 2;
-                ResetWindow(x, y, width, height);
+                windowSettings.Reset(x, y, width, height);
                 break;
             }
             case 7:
             {
                 var height = screenHeight - StatusBarRenderer.Height * scale;
-                ResetWindow(0, 0, screenWidth, height);
+                windowSettings.Reset(0, 0, screenWidth, height);
                 break;
             }
             default:
             {
-                ResetWindow(0, 0, screenWidth, screenHeight);
+                windowSettings.Reset(0, 0, screenWidth, screenHeight);
                 break;
             }
         }
 
-        ResetWallRendering();
-        ResetPlaneRendering();
-        ResetSkyRendering();
-        ResetLighting();
-        ResetRenderingHistory();
-        ResetWeaponRendering();
+        wallRender.Reset(windowSettings.CenterXFrac, windowSettings.WindowWidth);
+        planeRender.Reset(windowSettings.WindowWidth, windowSettings.WindowHeight, wallRender);
+        skyRender.Reset(windowSettings.WindowWidth, screenWidth, screenHeight);
+        lightningRender.Reset(windowSettings.WindowWidth, colorMap);
+        renderingHistory.Reset(windowSettings);
+        weaponRender.Reset(windowSettings);
     }
-
-
-    ////////////////////////////////////////////////////////////
-    // Window settings
-    ////////////////////////////////////////////////////////////
-
-    private int windowX;
-    private int windowY;
-    private int windowWidth;
-    private int windowHeight;
-    private int centerX;
-    private int centerY;
-    private Fixed centerXFrac;
-    private Fixed centerYFrac;
-    private Fixed projection;
-
-    private void ResetWindow(int x, int y, int width, int height)
-    {
-        windowX = x;
-        windowY = y;
-        windowWidth = width;
-        windowHeight = height;
-        centerX = windowWidth / 2;
-        centerY = windowHeight / 2;
-        centerXFrac = Fixed.FromInt(centerX);
-        centerYFrac = Fixed.FromInt(centerY);
-        projection = centerXFrac;
-    }
-
-    ////////////////////////////////////////////////////////////
-    // Wall rendering
-    ////////////////////////////////////////////////////////////
-
-    private const int FineFov = 2048;
-
-    private int[] angleToX;
-    private Angle[] xToAngle;
-    private Angle clipAngle;
-    private Angle clipAngle2;
-
-    private void InitWallRendering()
-    {
-        angleToX = new int[Trig.FineAngleCount / 2];
-        xToAngle = new Angle[screenWidth];
-    }
-
-    private void ResetWallRendering()
-    {
-        var focalLength = centerXFrac / Trig.Tan(Trig.FineAngleCount / 4 + FineFov / 2);
-
-        for (var i = 0; i < Trig.FineAngleCount / 2; i++)
-        {
-            int t;
-
-            if (Trig.Tan(i) > Fixed.IntTwo)
-                t = -1;
-            else if (Trig.Tan(i) < Fixed.FromInt(-2))
-            {
-                t = windowWidth + 1;
-            }
-            else
-            {
-                t = (centerXFrac - Trig.Tan(i) * focalLength).ToIntCeiling();
-
-                if (t < -1)
-                {
-                    t = -1;
-                }
-                else if (t > windowWidth + 1)
-                {
-                    t = windowWidth + 1;
-                }
-            }
-
-            angleToX[i] = t;
-        }
-
-        for (var x = 0; x < windowWidth; x++)
-        {
-            var i = 0;
-            while (angleToX[i] > x)
-                i++;
-
-            xToAngle[x] = new Angle((uint)(i << Trig.AngleToFineShift)) - Angle.Ang90;
-        }
-
-        for (var i = 0; i < Trig.FineAngleCount / 2; i++)
-        {
-            if (angleToX[i] == -1)
-            {
-                angleToX[i] = 0;
-            }
-            else if (angleToX[i] == windowWidth + 1)
-            {
-                angleToX[i] = windowWidth;
-            }
-        }
-
-        clipAngle = xToAngle[0];
-        clipAngle2 = clipAngle * 2;
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Plane rendering
-    ////////////////////////////////////////////////////////////
-
-    private Fixed[] planeYSlope;
-    private Fixed[] planeDistScale;
-    private Fixed planeBaseXScale;
-    private Fixed planeBaseYScale;
-
-    private Sector ceilingPrevSector;
-    private int ceilingPrevX;
-    private int ceilingPrevY1;
-    private int ceilingPrevY2;
-    private Fixed[] ceilingXFrac;
-    private Fixed[] ceilingYFrac;
-    private Fixed[] ceilingXStep;
-    private Fixed[] ceilingYStep;
-    private byte[][] ceilingLights;
-
-    private Sector floorPrevSector;
-    private int floorPrevX;
-    private int floorPrevY1;
-    private int floorPrevY2;
-    private Fixed[] floorXFrac;
-    private Fixed[] floorYFrac;
-    private Fixed[] floorXStep;
-    private Fixed[] floorYStep;
-    private byte[][] floorLights;
-
-    private void InitPlaneRendering()
-    {
-        planeYSlope = new Fixed[screenHeight];
-        planeDistScale = new Fixed[screenWidth];
-        ceilingXFrac = new Fixed[screenHeight];
-        ceilingYFrac = new Fixed[screenHeight];
-        ceilingXStep = new Fixed[screenHeight];
-        ceilingYStep = new Fixed[screenHeight];
-        ceilingLights = new byte[screenHeight][];
-        floorXFrac = new Fixed[screenHeight];
-        floorYFrac = new Fixed[screenHeight];
-        floorXStep = new Fixed[screenHeight];
-        floorYStep = new Fixed[screenHeight];
-        floorLights = new byte[screenHeight][];
-    }
-
-    private void ResetPlaneRendering()
-    {
-        for (var i = 0; i < windowHeight; i++)
-        {
-            var dy = Fixed.FromInt(i - windowHeight / 2) + Fixed.One / 2;
-            dy = Fixed.Abs(dy);
-            planeYSlope[i] = Fixed.FromInt(windowWidth / 2) / dy;
-        }
-
-        for (var i = 0; i < windowWidth; i++)
-        {
-            var cos = Fixed.Abs(Trig.Cos(xToAngle[i]));
-            planeDistScale[i] = Fixed.One / cos;
-        }
-    }
-
-    private void ClearPlaneRendering()
-    {
-        var angle = viewAngle - Angle.Ang90;
-        planeBaseXScale = Trig.Cos(angle) / centerXFrac;
-        planeBaseYScale = -(Trig.Sin(angle) / centerXFrac);
-
-        ceilingPrevSector = null;
-        ceilingPrevX = int.MaxValue;
-
-        floorPrevSector = null;
-        floorPrevX = int.MaxValue;
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Sky rendering
-    ////////////////////////////////////////////////////////////
-
-    private const int angleToSkyShift = 22;
-    private Fixed skyTextureAlt;
-    private Fixed skyInvScale;
-
-    private void InitSkyRendering()
-    {
-        skyTextureAlt = Fixed.FromInt(100);
-    }
-
-    private void ResetSkyRendering()
-    {
-        // The code below is based on PrBoom+' sky rendering implementation.
-        var num = (long)Fixed.FracUnit * screenWidth * 200;
-        var den = windowWidth * screenHeight;
-        skyInvScale = new Fixed((int)(num / den));
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Lighting
-    ////////////////////////////////////////////////////////////
-
-    private const int lightLevelCount = 16;
-    private const int lightSegShift = 4;
-    private const int scaleLightShift = 12;
-    private const int zLightShift = 20;
-    private const int colorMapCount = 32;
-
-    private int maxScaleLight;
-    private const int maxZLight = 128;
-
-    private byte[][][] diminishingScaleLight;
-    private byte[][][] diminishingZLight;
-    private byte[][][] fixedLight;
-
-    private byte[][][] scaleLight;
-    private byte[][][] zLight;
-
-    private int extraLight;
-    private int fixedColorMap;
-
-    private void InitLighting()
-    {
-        maxScaleLight = 48 * (screenWidth / 320);
-
-        diminishingScaleLight = new byte[lightLevelCount][][];
-        diminishingZLight = new byte[lightLevelCount][][];
-        fixedLight = new byte[lightLevelCount][][];
-
-        for (var i = 0; i < lightLevelCount; i++)
-        {
-            diminishingScaleLight[i] = new byte[maxScaleLight][];
-            diminishingZLight[i] = new byte[maxZLight][];
-            fixedLight[i] = new byte[Math.Max(maxScaleLight, maxZLight)][];
-        }
-
-        const int distMap = 2;
-
-        // Calculate the light levels to use for each level / distance combination.
-        for (var i = 0; i < lightLevelCount; i++)
-        {
-            var start = ((lightLevelCount - 1 - i) * 2) * colorMapCount / lightLevelCount;
-            for (var j = 0; j < maxZLight; j++)
-            {
-                var scale = Fixed.FromInt(320 / 2) / new Fixed((j + 1) << zLightShift);
-                scale >>= scaleLightShift;
-
-                var level = start - scale.Data / distMap;
-                if (level < 0)
-                {
-                    level = 0;
-                }
-                else if (level >= colorMapCount)
-                {
-                    level = colorMapCount - 1;
-                }
-
-                diminishingZLight[i][j] = colorMap[level];
-            }
-        }
-    }
-
-    private void ResetLighting()
-    {
-        const int distMap = 2;
-
-        // Calculate the light levels to use for each level / scale combination.
-        for (var i = 0; i < lightLevelCount; i++)
-        {
-            var start = ((lightLevelCount - 1 - i) * 2) * colorMapCount / lightLevelCount;
-            for (var j = 0; j < maxScaleLight; j++)
-            {
-                var level = start - j * 320 / windowWidth / distMap;
-                if (level < 0)
-                {
-                    level = 0;
-                }
-                else if (level >= colorMapCount)
-                {
-                    level = colorMapCount - 1;
-                }
-
-                diminishingScaleLight[i][j] = colorMap[level];
-            }
-        }
-    }
-
-    private void ClearLighting()
-    {
-        if (fixedColorMap == 0)
-        {
-            scaleLight = diminishingScaleLight;
-            zLight = diminishingZLight;
-            fixedLight[0][0] = null;
-        }
-        else if (fixedLight[0][0] != colorMap[fixedColorMap])
-        {
-            for (var i = 0; i < lightLevelCount; i++)
-                Array.Fill(fixedLight[i], colorMap[fixedColorMap]);
-
-            scaleLight = fixedLight;
-            zLight = fixedLight;
-        }
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Rendering history
-    ////////////////////////////////////////////////////////////
-
-    private short[] upperClip;
-    private short[] lowerClip;
-
-    private int negOneArray;
-    private int windowHeightArray;
-
-    private int clipRangeCount;
-    private ClipRange[] clipRanges;
-
-    private int clipDataLength;
-    private short[] clipData;
-
-    private int visWallRangeCount;
-    private VisWallRange[] visWallRanges;
-
-    private void InitRenderingHistory()
-    {
-        upperClip = new short[screenWidth];
-        lowerClip = new short[screenWidth];
-
-        clipRanges = new ClipRange[256];
-        for (var i = 0; i < clipRanges.Length; i++)
-        {
-            clipRanges[i] = new ClipRange();
-        }
-
-        clipData = new short[128 * screenWidth];
-
-        visWallRanges = new VisWallRange[512];
-        for (var i = 0; i < visWallRanges.Length; i++)
-        {
-            visWallRanges[i] = new VisWallRange();
-        }
-    }
-
-    private void ResetRenderingHistory()
-    {
-        Array.Fill(clipData, (short)-1, 0, windowWidth);
-        negOneArray = 0;
-        Array.Fill(clipData, (short)windowHeight, windowWidth, windowWidth);
-        windowHeightArray = windowWidth;
-    }
-
-    private void ClearRenderingHistory()
-    {
-        Array.Fill(upperClip, (short)-1, 0, windowWidth);
-        Array.Fill(lowerClip, (short)windowHeight, 0, windowWidth);
-
-        clipRanges[0].First = -0x7fffffff;
-        clipRanges[0].Last = -1;
-        clipRanges[1].First = windowWidth;
-        clipRanges[1].Last = 0x7fffffff;
-        clipRangeCount = 2;
-
-        clipDataLength = 2 * windowWidth;
-
-        visWallRangeCount = 0;
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Sprite rendering
-    ////////////////////////////////////////////////////////////
-
-    private static readonly Fixed minZ = Fixed.FromInt(4);
-
-    private int visSpriteCount;
-    private VisSprite[] visSprites;
-
-    private VisSpriteComparer visSpriteComparer;
-
-    private void InitSpriteRendering()
-    {
-        visSprites = new VisSprite[256];
-        for (var i = 0; i < visSprites.Length; i++)
-        {
-            visSprites[i] = new VisSprite();
-        }
-
-        visSpriteComparer = new VisSpriteComparer();
-    }
-
-    private void ClearSpriteRendering()
-    {
-        visSpriteCount = 0;
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Weapon rendering
-    ////////////////////////////////////////////////////////////
-
-    private VisSprite weaponSprite;
-    private Fixed weaponScale;
-    private Fixed weaponInvScale;
-
-    private void InitWeaponRendering()
-    {
-        weaponSprite = new VisSprite();
-    }
-
-    private void ResetWeaponRendering()
-    {
-        weaponScale = new Fixed(Fixed.FracUnit * windowWidth / 320);
-        weaponInvScale = new Fixed(Fixed.FracUnit * 320 / windowWidth);
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Fuzz effect
-    ////////////////////////////////////////////////////////////
-
-    private static readonly sbyte[] fuzzTable =
-    [
-        1, -1, 1, -1, 1, 1, -1,
-        1, 1, -1, 1, 1, 1, -1,
-        1, 1, 1, -1, -1, -1, -1,
-        1, -1, -1, 1, 1, 1, 1, -1,
-        1, -1, 1, 1, -1, -1, 1,
-        1, -1, -1, -1, -1, 1, 1,
-        1, 1, -1, 1, 1, -1, 1
-    ];
-
-    private int fuzzPos;
-
-    private void InitFuzzEffect()
-    {
-        fuzzPos = 0;
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Color translation
-    ////////////////////////////////////////////////////////////
-
-    private byte[] greenToGray;
-    private byte[] greenToBrown;
-    private byte[] greenToRed;
-
-    private void InitColorTranslation()
-    {
-        greenToGray = new byte[256];
-        greenToBrown = new byte[256];
-        greenToRed = new byte[256];
-        for (var i = 0; i < 256; i++)
-        {
-            greenToGray[i] = (byte)i;
-            greenToBrown[i] = (byte)i;
-            greenToRed[i] = (byte)i;
-        }
-
-        for (var i = 112; i < 128; i++)
-        {
-            greenToGray[i] -= 16;
-            greenToBrown[i] -= 48;
-            greenToRed[i] -= 80;
-        }
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    // Window border
-    ////////////////////////////////////////////////////////////
-
-    private Patch borderTopLeft;
-    private Patch borderTopRight;
-    private Patch borderBottomLeft;
-    private Patch borderBottomRight;
-    private Patch borderTop;
-    private Patch borderBottom;
-    private Patch borderLeft;
-    private Patch borderRight;
-    private Flat backFlat;
-
-    private void InitWindowBorder(Wad wad)
-    {
-        borderTopLeft = Patch.FromWad(wad, "BRDR_TL");
-        borderTopRight = Patch.FromWad(wad, "BRDR_TR");
-        borderBottomLeft = Patch.FromWad(wad, "BRDR_BL");
-        borderBottomRight = Patch.FromWad(wad, "BRDR_BR");
-        borderTop = Patch.FromWad(wad, "BRDR_T");
-        borderBottom = Patch.FromWad(wad, "BRDR_B");
-        borderLeft = Patch.FromWad(wad, "BRDR_L");
-        borderRight = Patch.FromWad(wad, "BRDR_R");
-
-        backFlat = wad.GameMode == GameMode.Commercial
-            ? flats["GRNROCK"]
-            : flats["FLOOR7_2"];
-    }
-
-    private void FillBackScreen()
-    {
-        var fillHeight = screenHeight - drawScale * StatusBarRenderer.Height;
-        FillRect(0, 0, windowX, fillHeight);
-        FillRect(screenWidth - windowX, 0, windowX, fillHeight);
-        FillRect(windowX, 0, screenWidth - 2 * windowX, windowY);
-        FillRect(windowX, fillHeight - windowY, screenWidth - 2 * windowX, windowY);
-
-        var step = 8 * drawScale;
-
-        for (var x = windowX; x < screenWidth - windowX; x += step)
-        {
-            screen.DrawPatch(borderTop, x, windowY - step, drawScale);
-            screen.DrawPatch(borderBottom, x, fillHeight - windowY, drawScale);
-        }
-
-        for (var y = windowY; y < fillHeight - windowY; y += step)
-        {
-            screen.DrawPatch(borderLeft, windowX - step, y, drawScale);
-            screen.DrawPatch(borderRight, screenWidth - windowX, y, drawScale);
-        }
-
-        screen.DrawPatch(borderTopLeft, windowX - step, windowY - step, drawScale);
-        screen.DrawPatch(borderTopRight, screenWidth - windowX, windowY - step, drawScale);
-        screen.DrawPatch(borderBottomLeft, windowX - step, fillHeight - windowY, drawScale);
-        screen.DrawPatch(borderBottomRight, screenWidth - windowX, fillHeight - windowY, drawScale);
-    }
-
-    private void FillRect(int x, int y, int width, int height)
-    {
-        var data = backFlat.Data;
-
-        var srcX = x / drawScale;
-        var srcY = y / drawScale;
-
-        var invScale = Fixed.One / drawScale;
-        var xFrac = invScale - Fixed.Epsilon;
-
-        for (var i = 0; i < width; i++)
-        {
-            var src = ((srcX + xFrac.ToIntFloor()) & 63) << 6;
-            var dst = screenHeight * (x + i) + y;
-            var yFrac = invScale - Fixed.Epsilon;
-            for (var j = 0; j < height; j++)
-            {
-                screenData[dst + j] = data[src | ((srcY + yFrac.ToIntFloor()) & 63)];
-                yFrac += invScale;
-            }
-
-            xFrac += invScale;
-        }
-    }
-
 
     ////////////////////////////////////////////////////////////
     // Camera view
     ////////////////////////////////////////////////////////////
 
-    private World world;
+    private World? world;
 
     private Fixed viewX;
     private Fixed viewY;
@@ -679,12 +140,11 @@ public sealed class ThreeDRenderer
 
     private int validCount;
 
-
     public void Render(Player player, Fixed frameFrac)
     {
         this.frameFrac = frameFrac;
 
-        world = player.Mobj.World;
+        world = player.Mobj!.World;
 
         viewX = player.Mobj.GetInterpolatedX(frameFrac);
         viewY = player.Mobj.GetInterpolatedY(frameFrac);
@@ -696,13 +156,13 @@ public sealed class ThreeDRenderer
 
         validCount = world.GetNewValidCount();
 
-        extraLight = player.ExtraLight;
-        fixedColorMap = player.FixedColorMap;
+        lightningRender.ExtraLight = player.ExtraLight;
+        lightningRender.FixedColorMap = player.FixedColorMap;
 
-        ClearPlaneRendering();
-        ClearLighting();
-        ClearRenderingHistory();
-        ClearSpriteRendering();
+        planeRender.Clear(viewAngle, windowSettings.CenterXFrac);
+        lightningRender.Clear(colorMap);
+        renderingHistory.Clear(windowSettings);
+        spriteRender.Clear();
 
         RenderBspNode(world.Map.Nodes.Length - 1);
         RenderSprites();
@@ -710,11 +170,8 @@ public sealed class ThreeDRenderer
         DrawPlayerSprites(player);
 
         if (windowSize < 7)
-        {
-            FillBackScreen();
-        }
+            windowBorder.FillBackScreen(screenData.AsSpan(), screen, windowSettings, drawScale);
     }
-
 
     private void RenderBspNode(int node)
     {
@@ -727,7 +184,7 @@ public sealed class ThreeDRenderer
                 return;
             }
 
-            var bsp = world.Map.Nodes[node];
+            var bsp = world!.Map.Nodes[node];
 
             // Decide which side the view point is on.
             var side = Geometry.PointOnSide(viewX, viewY, bsp);
@@ -735,7 +192,7 @@ public sealed class ThreeDRenderer
             // Recursively divide front space.
             RenderBspNode(bsp.Children[side]);
 
-            // Possibly divide back space.
+            // Possibly divide backspace.
             if (IsPotentiallyVisible(bsp.BoundingBox[side ^ 1]))
             {
                 node = bsp.Children[side ^ 1];
@@ -748,16 +205,13 @@ public sealed class ThreeDRenderer
 
     private void DrawSubsector(int subSector)
     {
-        var target = world.Map.Subsectors[subSector];
+        var target = world!.Map.Subsectors[subSector];
 
         AddSprites(target.Sector, validCount);
 
         for (var i = 0; i < target.SegCount; i++)
-        {
             DrawSeg(world.Map.Segs[target.FirstSeg + i]);
-        }
     }
-
 
     private static readonly int[][] viewPosToFrustumTangent =
     [
@@ -814,35 +268,35 @@ public sealed class ThreeDRenderer
         if (span >= Angle.Ang180)
             return true;
 
-        var tSpan1 = angle1 + clipAngle;
+        var tSpan1 = angle1 + wallRender.ClipAngle;
 
-        if (tSpan1 > clipAngle2)
+        if (tSpan1 > wallRender.ClipAngle2)
         {
-            tSpan1 -= clipAngle2;
+            tSpan1 -= wallRender.ClipAngle2;
 
             // Totally off the left edge?
             if (tSpan1 >= span)
                 return false;
 
-            angle1 = clipAngle;
+            angle1 = wallRender.ClipAngle;
         }
 
-        var tSpan2 = clipAngle - angle2;
-        if (tSpan2 > clipAngle2)
+        var tSpan2 = wallRender.ClipAngle - angle2;
+        if (tSpan2 > wallRender.ClipAngle2)
         {
-            tSpan2 -= clipAngle2;
+            tSpan2 -= wallRender.ClipAngle2;
 
             // Totally off the left edge?
             if (tSpan2 >= span)
                 return false;
 
-            angle2 = -clipAngle;
+            angle2 = -wallRender.ClipAngle;
         }
 
         // Find the first clippost that touches the source post
         // (adjacent pixels are touching).
-        var sx1 = angleToX[(angle1 + Angle.Ang90).Data >> Trig.AngleToFineShift];
-        var sx2 = angleToX[(angle2 + Angle.Ang90).Data >> Trig.AngleToFineShift];
+        var sx1 = wallRender.AngleToX[(angle1 + Angle.Ang90).Data >> Trig.AngleToFineShift];
+        var sx2 = wallRender.AngleToX[(angle2 + Angle.Ang90).Data >> Trig.AngleToFineShift];
 
         // Does not cross a pixel.
         if (sx1 == sx2)
@@ -851,11 +305,11 @@ public sealed class ThreeDRenderer
         sx2--;
 
         var start = 0;
-        while (clipRanges[start].Last < sx2)
+        while (renderingHistory.ClipRanges[start].Last < sx2)
             start++;
 
         // The clippost contains the new span.
-        if (sx1 >= clipRanges[start].First && sx2 <= clipRanges[start].Last)
+        if (sx1 >= renderingHistory.ClipRanges[start].First && sx2 <= renderingHistory.ClipRanges[start].Last)
             return false;
 
         return true;
@@ -869,7 +323,7 @@ public sealed class ThreeDRenderer
         var angle2 = Geometry.PointToAngle(viewX, viewY, seg.Vertex2.X, seg.Vertex2.Y);
 
         // Clip to view edges.
-        // OPTIMIZE: make constant out of 2 * clipangle (FIELDOFVIEW).
+        // OPTIMIZE: make constant out of 2 * wallRender.ClipAngle (FIELDOFVIEW).
         var span = angle1 - angle2;
 
         // Back side? I.e. backface culling?
@@ -882,33 +336,33 @@ public sealed class ThreeDRenderer
         angle1 -= viewAngle;
         angle2 -= viewAngle;
 
-        var tSpan1 = angle1 + clipAngle;
-        if (tSpan1 > clipAngle2)
+        var tSpan1 = angle1 + wallRender.ClipAngle;
+        if (tSpan1 > wallRender.ClipAngle2)
         {
-            tSpan1 -= clipAngle2;
+            tSpan1 -= wallRender.ClipAngle2;
 
             // Totally off the left edge?
             if (tSpan1 >= span)
                 return;
 
-            angle1 = clipAngle;
+            angle1 = wallRender.ClipAngle;
         }
 
-        var tSpan2 = clipAngle - angle2;
-        if (tSpan2 > clipAngle2)
+        var tSpan2 = wallRender.ClipAngle - angle2;
+        if (tSpan2 > wallRender.ClipAngle2)
         {
-            tSpan2 -= clipAngle2;
+            tSpan2 -= wallRender.ClipAngle2;
 
             // Totally off the left edge?
             if (tSpan2 >= span)
                 return;
 
-            angle2 = -clipAngle;
+            angle2 = -wallRender.ClipAngle;
         }
 
         // The seg is in the view range, but not necessarily visible.
-        var x1 = angleToX[(angle1 + Angle.Ang90).Data >> Trig.AngleToFineShift];
-        var x2 = angleToX[(angle2 + Angle.Ang90).Data >> Trig.AngleToFineShift];
+        var x1 = wallRender.AngleToX[(angle1 + Angle.Ang90).Data >> Trig.AngleToFineShift];
+        var x2 = wallRender.AngleToX[(angle2 + Angle.Ang90).Data >> Trig.AngleToFineShift];
 
         // Does not cross a pixel?
         if (x1 == x2)
@@ -968,62 +422,62 @@ public sealed class ThreeDRenderer
 
         // Find the first range that touches the range
         // (adjacent pixels are touching).
-        while (clipRanges[start].Last < x1 - 1)
+        while (renderingHistory.ClipRanges[start].Last < x1 - 1)
             start++;
 
-        if (x1 < clipRanges[start].First)
+        if (x1 < renderingHistory.ClipRanges[start].First)
         {
-            if (x2 < clipRanges[start].First - 1)
+            if (x2 < renderingHistory.ClipRanges[start].First - 1)
             {
                 // Post is entirely visible (above start),
                 // so insert a new clippost.
                 DrawSolidWallRange(seg, rwAngle1, x1, x2);
-                next = clipRangeCount;
-                clipRangeCount++;
+                next = renderingHistory.ClipRangeCount;
+                renderingHistory.ClipRangeCount++;
 
                 while (next != start)
                 {
-                    clipRanges[next].CopyFrom(in clipRanges[next - 1]);
+                    renderingHistory.ClipRanges[next].CopyFrom(renderingHistory.ClipRanges[next - 1]);
                     next--;
                 }
 
-                clipRanges[next].First = x1;
-                clipRanges[next].Last = x2;
+                renderingHistory.ClipRanges[next].First = x1;
+                renderingHistory.ClipRanges[next].Last = x2;
                 return;
             }
 
             // There is a fragment above *start.
-            DrawSolidWallRange(seg, rwAngle1, x1, clipRanges[start].First - 1);
+            DrawSolidWallRange(seg, rwAngle1, x1, renderingHistory.ClipRanges[start].First - 1);
 
             // Now adjust the clip size.
-            clipRanges[start].First = x1;
+            renderingHistory.ClipRanges[start].First = x1;
         }
 
         // Bottom contained in start?
-        if (x2 <= clipRanges[start].Last)
+        if (x2 <= renderingHistory.ClipRanges[start].Last)
             return;
 
         next = start;
-        while (x2 >= clipRanges[next + 1].First - 1)
+        while (x2 >= renderingHistory.ClipRanges[next + 1].First - 1)
         {
             // There is a fragment between two posts.
-            DrawSolidWallRange(seg, rwAngle1, clipRanges[next].Last + 1, clipRanges[next + 1].First - 1);
+            DrawSolidWallRange(seg, rwAngle1, renderingHistory.ClipRanges[next].Last + 1, renderingHistory.ClipRanges[next + 1].First - 1);
             next++;
 
-            if (x2 <= clipRanges[next].Last)
+            if (x2 <= renderingHistory.ClipRanges[next].Last)
             {
                 // Bottom is contained in next.
                 // Adjust the clip size.
-                clipRanges[start].Last = clipRanges[next].Last;
+                renderingHistory.ClipRanges[start].Last = renderingHistory.ClipRanges[next].Last;
                 goto crunch;
             }
         }
 
         // There is a fragment after *next.
-        DrawSolidWallRange(seg, rwAngle1, clipRanges[next].Last + 1, x2);
+        DrawSolidWallRange(seg, rwAngle1, renderingHistory.ClipRanges[next].Last + 1, x2);
 
         // Adjust the clip size.
-        clipRanges[start].Last = x2;
+        renderingHistory.ClipRanges[start].Last = x2;
 
         // Remove start + 1 to next from the clip list,
         // because start now covers their area.
@@ -1034,13 +488,13 @@ public sealed class ThreeDRenderer
             return;
         }
 
-        while (next++ != clipRangeCount)
+        while (next++ != renderingHistory.ClipRangeCount)
         {
             // Remove a post.
-            clipRanges[++start].CopyFrom(in clipRanges[next]);
+            renderingHistory.ClipRanges[++start].CopyFrom(renderingHistory.ClipRanges[next]);
         }
 
-        clipRangeCount = start + 1;
+        renderingHistory.ClipRangeCount = start + 1;
     }
 
 
@@ -1049,14 +503,14 @@ public sealed class ThreeDRenderer
         // Find the first range that touches the range
         // (adjacent pixels are touching).
         var start = 0;
-        while (clipRanges[start].Last < x1 - 1)
+        while (renderingHistory.ClipRanges[start].Last < x1 - 1)
         {
             start++;
         }
 
-        if (x1 < clipRanges[start].First)
+        if (x1 < renderingHistory.ClipRanges[start].First)
         {
-            if (x2 < clipRanges[start].First - 1)
+            if (x2 < renderingHistory.ClipRanges[start].First - 1)
             {
                 // Post is entirely visible (above start).
                 DrawPassWallRange(seg, rwAngle1, x1, x2, false);
@@ -1064,35 +518,35 @@ public sealed class ThreeDRenderer
             }
 
             // There is a fragment above *start.
-            DrawPassWallRange(seg, rwAngle1, x1, clipRanges[start].First - 1, false);
+            DrawPassWallRange(seg, rwAngle1, x1, renderingHistory.ClipRanges[start].First - 1, false);
         }
 
         // Bottom contained in start?
-        if (x2 <= clipRanges[start].Last)
+        if (x2 <= renderingHistory.ClipRanges[start].Last)
         {
             return;
         }
 
-        while (x2 >= clipRanges[start + 1].First - 1)
+        while (x2 >= renderingHistory.ClipRanges[start + 1].First - 1)
         {
             // There is a fragment between two posts.
-            DrawPassWallRange(seg, rwAngle1, clipRanges[start].Last + 1, clipRanges[start + 1].First - 1, false);
+            DrawPassWallRange(seg, rwAngle1, renderingHistory.ClipRanges[start].Last + 1, renderingHistory.ClipRanges[start + 1].First - 1, false);
             start++;
 
-            if (x2 <= clipRanges[start].Last)
+            if (x2 <= renderingHistory.ClipRanges[start].Last)
             {
                 return;
             }
         }
 
         // There is a fragment after *next.
-        DrawPassWallRange(seg, rwAngle1, clipRanges[start].Last + 1, x2, false);
+        DrawPassWallRange(seg, rwAngle1, renderingHistory.ClipRanges[start].Last + 1, x2, false);
     }
 
 
     private Fixed ScaleFromGlobalAngle(Angle visAngle, Angle viewAngle, Angle rwNormal, Fixed rwDistance)
     {
-        var num = projection * Trig.Sin(Angle.Ang90 + (visAngle - rwNormal));
+        var num = windowSettings.Projection * Trig.Sin(Angle.Ang90 + (visAngle - rwNormal));
         var den = rwDistance * Trig.Sin(Angle.Ang90 + (visAngle - viewAngle));
 
         Fixed scale;
@@ -1129,7 +583,7 @@ public sealed class ThreeDRenderer
             return;
         }
 
-        if (visWallRangeCount == visWallRanges.Length)
+        if (renderingHistory.VisWallRangeCount == renderingHistory.VisWallRanges.Length)
         {
             // Too many visible walls.
             return;
@@ -1193,14 +647,14 @@ public sealed class ThreeDRenderer
 
         var rwDistance = hypotenuse * Trig.Sin(distAngle);
 
-        var rwScale = ScaleFromGlobalAngle(viewAngle + xToAngle[x1], viewAngle, rwNormalAngle, rwDistance);
+        var rwScale = ScaleFromGlobalAngle(viewAngle + wallRender.XToAngle[x1], viewAngle, rwNormalAngle, rwDistance);
 
         var scale1 = rwScale;
         Fixed scale2;
         Fixed rwScaleStep;
         if (x2 > x1)
         {
-            scale2 = ScaleFromGlobalAngle(viewAngle + xToAngle[x2], viewAngle, rwNormalAngle, rwDistance);
+            scale2 = ScaleFromGlobalAngle(viewAngle + wallRender.XToAngle[x2], viewAngle, rwNormalAngle, rwDistance);
             rwScaleStep = (scale2 - rwScale) / (x2 - x1);
         }
         else
@@ -1216,36 +670,26 @@ public sealed class ThreeDRenderer
 
         var textureOffsetAngle = rwNormalAngle - rwAngle1;
         if (textureOffsetAngle > Angle.Ang180)
-        {
             textureOffsetAngle = -textureOffsetAngle;
-        }
 
         if (textureOffsetAngle > Angle.Ang90)
-        {
             textureOffsetAngle = Angle.Ang90;
-        }
 
         var rwOffset = hypotenuse * Trig.Sin(textureOffsetAngle);
         if (rwNormalAngle - rwAngle1 < Angle.Ang180)
-        {
             rwOffset = -rwOffset;
-        }
 
         rwOffset += seg.Offset + side.TextureOffset;
 
         var rwCenterAngle = Angle.Ang90 + viewAngle - rwNormalAngle;
 
-        var wallLightLevel = (frontSector.LightLevel >> lightSegShift) + extraLight;
+        var wallLightLevel = (frontSector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
         if (seg.Vertex1.Y == seg.Vertex2.Y)
-        {
             wallLightLevel--;
-        }
         else if (seg.Vertex1.X == seg.Vertex2.X)
-        {
             wallLightLevel++;
-        }
 
-        var wallLights = scaleLight[Math.Clamp(wallLightLevel, 0, lightLevelCount - 1)];
+        var wallLights = lightningRender.scaleLight[Math.Clamp(wallLightLevel, 0, LightningRender.lightLevelCount - 1)];
 
         //
         // Determine where on the screen the wall is drawn.
@@ -1256,24 +700,23 @@ public sealed class ThreeDRenderer
         worldFrontZ2 >>= 4;
 
         // The Y positions of the top / bottom edges of the wall on the screen.
-        var wallY1Frac = (centerYFrac >> 4) - worldFrontZ1 * rwScale;
+        var wallY1Frac = (windowSettings.CenterYFrac >> 4) - worldFrontZ1 * rwScale;
         var wallY1Step = -(rwScaleStep * worldFrontZ1);
-        var wallY2Frac = (centerYFrac >> 4) - worldFrontZ2 * rwScale;
+        var wallY2Frac = (windowSettings.CenterYFrac >> 4) - worldFrontZ2 * rwScale;
         var wallY2Step = -(rwScaleStep * worldFrontZ2);
 
         //
         // Determine which color map is used for the plane according to the light level.
         //
 
-        var planeLightLevel = (frontSector.LightLevel >> lightSegShift) + extraLight;
-        var planeLights = zLight[Math.Clamp(planeLightLevel, 0, lightLevelCount - 1)];
+        var planeLightLevel = (frontSector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
+        var planeLights = lightningRender.zLight[Math.Clamp(planeLightLevel, 0, LightningRender.lightLevelCount - 1)];
 
         //
         // Prepare to record the rendering history.
         //
 
-        var visWallRange = visWallRanges[visWallRangeCount];
-        visWallRangeCount++;
+        ref var visWallRange = ref renderingHistory.GetAndIncrementVisWallRange();
 
         visWallRange.Seg = seg;
         visWallRange.X1 = x1;
@@ -1285,8 +728,8 @@ public sealed class ThreeDRenderer
         visWallRange.LowerSilHeight = Fixed.MaxValue;
         visWallRange.UpperSilHeight = Fixed.MinValue;
         visWallRange.MaskedTextureColumn = -1;
-        visWallRange.UpperClip = windowHeightArray;
-        visWallRange.LowerClip = negOneArray;
+        visWallRange.UpperClip = renderingHistory.WindowHeightArray;
+        visWallRange.LowerClip = renderingHistory.NegOneArray;
         visWallRange.FrontSectorFloorHeight = frontSectorFloorHeight;
         visWallRange.FrontSectorCeilingHeight = frontSectorCeilingHeight;
 
@@ -1308,17 +751,17 @@ public sealed class ThreeDRenderer
 
             if (drawCeiling)
             {
-                var cy1 = upperClip[x] + 1;
-                var cy2 = Math.Min(drawWallY1 - 1, lowerClip[x] - 1);
+                var cy1 = renderingHistory.UpperClip[x] + 1;
+                var cy2 = Math.Min(drawWallY1 - 1, renderingHistory.LowerClip[x] - 1);
                 DrawCeilingColumn(frontSector, ceilingFlat, planeLights, x, cy1, cy2, frontSectorCeilingHeight);
             }
 
             if (drawWall)
             {
-                var wy1 = Math.Max(drawWallY1, upperClip[x] + 1);
-                var wy2 = Math.Min(drawWallY2, lowerClip[x] - 1);
+                var wy1 = Math.Max(drawWallY1, renderingHistory.UpperClip[x] + 1);
+                var wy2 = Math.Min(drawWallY2, renderingHistory.LowerClip[x] - 1);
 
-                var angle = rwCenterAngle + xToAngle[x];
+                var angle = rwCenterAngle + wallRender.XToAngle[x];
                 angle = new Angle(angle.Data & 0x7FFFFFFF);
 
                 var textureColumn = (rwOffset - Trig.Tan(angle) * rwDistance).ToIntFloor();
@@ -1326,11 +769,9 @@ public sealed class ThreeDRenderer
 
                 if (source.Length > 0)
                 {
-                    var lightIndex = rwScale.Data >> scaleLightShift;
-                    if (lightIndex >= maxScaleLight)
-                    {
-                        lightIndex = maxScaleLight - 1;
-                    }
+                    var lightIndex = rwScale.Data >> LightningRender.scaleLightShift;
+                    if (lightIndex >= lightningRender.MaxScaleLight)
+                        lightIndex = lightningRender.MaxScaleLight - 1;
 
                     var invScale = new Fixed((int)(0xffffffffu / (uint)rwScale.Data));
                     DrawColumn(source[0], wallLights[lightIndex], x, wy1, wy2, invScale, middleTextureAlt);
@@ -1339,8 +780,8 @@ public sealed class ThreeDRenderer
 
             if (drawFloor)
             {
-                var fy1 = Math.Max(drawWallY2 + 1, upperClip[x] + 1);
-                var fy2 = lowerClip[x] - 1;
+                var fy1 = Math.Max(drawWallY2 + 1, renderingHistory.UpperClip[x] + 1);
+                var fy2 = renderingHistory.LowerClip[x] - 1;
                 DrawFloorColumn(frontSector, floorFlat, planeLights, x, fy1, fy2, frontSectorFloorHeight);
             }
 
@@ -1353,25 +794,36 @@ public sealed class ThreeDRenderer
 
     private void DrawPassWallRange(Seg seg, Angle rwAngle1, int x1, int x2, bool drawAsSolidWall)
     {
-        if (visWallRangeCount == visWallRanges.Length)
-        {
-            // Too many visible walls.
+        // Too many visible walls.
+        if (renderingHistory.VisualRangeExceeded())
             return;
-        }
 
         var range = x2 - x1 + 1;
 
-        if (clipDataLength + 3 * range >= clipData.Length)
-        {
-            // Clip info buffer is not sufficient.
+        // Clip info buffer is not sufficient.
+        if (renderingHistory.IsClipIntoBufferSufficient(range))
             return;
-        }
 
         // Make some aliases to shorten the following code.
         var line = seg.LineDef;
+
+        if (line is null)
+            return;
+
         var side = seg.SideDef;
+
+        if (side is null)
+            return;
+
         var frontSector = seg.FrontSector;
+
+        if (frontSector is null)
+            return;
+
         var backSector = seg.BackSector;
+
+        if (backSector is null)
+            return;
 
         var frontSectorFloorHeight = frontSector.GetInterpolatedFloorHeight(frameFrac);
         var frontSectorCeilingHeight = frontSector.GetInterpolatedCeilingHeight(frameFrac);
@@ -1435,9 +887,7 @@ public sealed class ThreeDRenderer
 
         // If nothing must be rendered, we can skip this seg.
         if (!drawUpperWall && !drawCeiling && !drawLowerWall && !drawFloor && !drawMaskedTexture)
-        {
             return;
-        }
 
         var segTextured = drawUpperWall || drawLowerWall || drawMaskedTexture;
 
@@ -1454,9 +904,7 @@ public sealed class ThreeDRenderer
             upperWallWidthMask = upperWallTexture.Width - 1;
 
             if ((line.Flags & LineFlags.DontPegTop) != 0)
-            {
                 uperTextureAlt = worldFrontZ1;
-            }
             else
             {
                 var vTop = backSectorCeilingHeight + Fixed.FromInt(upperWallTexture.Height);
@@ -1494,14 +942,14 @@ public sealed class ThreeDRenderer
 
         var rwDistance = hypotenuse * Trig.Sin(distAngle);
 
-        var rwScale = ScaleFromGlobalAngle(viewAngle + xToAngle[x1], viewAngle, rwNormalAngle, rwDistance);
+        var rwScale = ScaleFromGlobalAngle(viewAngle + wallRender.XToAngle[x1], viewAngle, rwNormalAngle, rwDistance);
 
         var scale1 = rwScale;
         Fixed scale2;
         Fixed rwScaleStep;
         if (x2 > x1)
         {
-            scale2 = ScaleFromGlobalAngle(viewAngle + xToAngle[x2], viewAngle, rwNormalAngle, rwDistance);
+            scale2 = ScaleFromGlobalAngle(viewAngle + wallRender.XToAngle[x2], viewAngle, rwNormalAngle, rwDistance);
             rwScaleStep = (scale2 - rwScale) / (x2 - x1);
         }
         else
@@ -1535,13 +983,13 @@ public sealed class ThreeDRenderer
 
             rwCenterAngle = Angle.Ang90 + viewAngle - rwNormalAngle;
 
-            var wallLightLevel = (frontSector.LightLevel >> lightSegShift) + extraLight;
+            var wallLightLevel = (frontSector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
             if (seg.Vertex1.Y == seg.Vertex2.Y)
                 wallLightLevel--;
             else if (seg.Vertex1.X == seg.Vertex2.X)
                 wallLightLevel++;
 
-            wallLights = scaleLight[Math.Clamp(wallLightLevel, 0, lightLevelCount - 1)];
+            wallLights = lightningRender.scaleLight[Math.Clamp(wallLightLevel, 0, LightningRender.lightLevelCount - 1)];
         }
 
         //
@@ -1555,9 +1003,9 @@ public sealed class ThreeDRenderer
         worldBackZ2 >>= 4;
 
         // The Y positions of the top / bottom edges of the wall on the screen..
-        var wallY1Frac = (centerYFrac >> 4) - worldFrontZ1 * rwScale;
+        var wallY1Frac = (windowSettings.CenterYFrac >> 4) - worldFrontZ1 * rwScale;
         var wallY1Step = -(rwScaleStep * worldFrontZ1);
-        var wallY2Frac = (centerYFrac >> 4) - worldFrontZ2 * rwScale;
+        var wallY2Frac = (windowSettings.CenterYFrac >> 4) - worldFrontZ2 * rwScale;
         var wallY2Step = -(rwScaleStep * worldFrontZ2);
 
         // The Y position of the top edge of the portal (if visible).
@@ -1567,12 +1015,12 @@ public sealed class ThreeDRenderer
         {
             if (worldBackZ1 > worldFrontZ2)
             {
-                portalY1Frac = (centerYFrac >> 4) - worldBackZ1 * rwScale;
+                portalY1Frac = (windowSettings.CenterYFrac >> 4) - worldBackZ1 * rwScale;
                 portalY1Step = -(rwScaleStep * worldBackZ1);
             }
             else
             {
-                portalY1Frac = (centerYFrac >> 4) - worldFrontZ2 * rwScale;
+                portalY1Frac = (windowSettings.CenterYFrac >> 4) - worldFrontZ2 * rwScale;
                 portalY1Step = -(rwScaleStep * worldFrontZ2);
             }
         }
@@ -1584,12 +1032,12 @@ public sealed class ThreeDRenderer
         {
             if (worldBackZ2 < worldFrontZ1)
             {
-                portalY2Frac = (centerYFrac >> 4) - worldBackZ2 * rwScale;
+                portalY2Frac = (windowSettings.CenterYFrac >> 4) - worldBackZ2 * rwScale;
                 portalY2Step = -(rwScaleStep * worldBackZ2);
             }
             else
             {
-                portalY2Frac = (centerYFrac >> 4) - worldFrontZ1 * rwScale;
+                portalY2Frac = (windowSettings.CenterYFrac >> 4) - worldFrontZ1 * rwScale;
                 portalY2Step = -(rwScaleStep * worldFrontZ1);
             }
         }
@@ -1598,15 +1046,14 @@ public sealed class ThreeDRenderer
         // Determine which color map is used for the plane according to the light level.
         //
 
-        var planeLightLevel = (frontSector.LightLevel >> lightSegShift) + extraLight;
-        var planeLights = zLight[Math.Clamp(planeLightLevel, 0, lightLevelCount - 1)];
+        var planeLightLevel = (frontSector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
+        var planeLights = lightningRender.zLight[Math.Clamp(planeLightLevel, 0, LightningRender.lightLevelCount - 1)];
 
         //
         // Prepare to record the rendering history.
         //
 
-        var visWallRange = visWallRanges[visWallRangeCount];
-        visWallRangeCount++;
+        ref var visWallRange = ref renderingHistory.GetAndIncrementVisWallRange();
 
         visWallRange.Seg = seg;
         visWallRange.X1 = x1;
@@ -1644,14 +1091,14 @@ public sealed class ThreeDRenderer
 
         if (backSectorCeilingHeight <= frontSectorFloorHeight)
         {
-            visWallRange.LowerClip = negOneArray;
+            visWallRange.LowerClip = renderingHistory.NegOneArray;
             visWallRange.LowerSilHeight = Fixed.MaxValue;
             visWallRange.Silhouette |= Silhouette.Lower;
         }
 
         if (backSectorFloorHeight >= frontSectorCeilingHeight)
         {
-            visWallRange.UpperClip = windowHeightArray;
+            visWallRange.UpperClip = renderingHistory.WindowHeightArray;
             visWallRange.UpperSilHeight = Fixed.MinValue;
             visWallRange.Silhouette |= Silhouette.Upper;
         }
@@ -1659,14 +1106,12 @@ public sealed class ThreeDRenderer
         var maskedTextureColumn = default(int);
         if (drawMaskedTexture)
         {
-            maskedTextureColumn = clipDataLength - x1;
+            maskedTextureColumn = renderingHistory.ClipDataLength - x1;
             visWallRange.MaskedTextureColumn = maskedTextureColumn;
-            clipDataLength += range;
+            renderingHistory.ClipDataLength += range;
         }
         else
-        {
             visWallRange.MaskedTextureColumn = -1;
-        }
 
         visWallRange.FrontSectorFloorHeight = frontSectorFloorHeight;
         visWallRange.FrontSectorCeilingHeight = frontSectorCeilingHeight;
@@ -1694,15 +1139,13 @@ public sealed class ThreeDRenderer
             var invScale = default(Fixed);
             if (segTextured)
             {
-                var angle = rwCenterAngle + xToAngle[x];
+                var angle = rwCenterAngle + wallRender.XToAngle[x];
                 angle = new Angle(angle.Data & 0x7FFFFFFF);
                 textureColumn = (rwOffset - Trig.Tan(angle) * rwDistance).ToIntFloor();
 
-                lightIndex = rwScale.Data >> scaleLightShift;
-                if (lightIndex >= maxScaleLight)
-                {
-                    lightIndex = maxScaleLight - 1;
-                }
+                lightIndex = rwScale.Data >> LightningRender.scaleLightShift;
+                if (lightIndex >= lightningRender.MaxScaleLight)
+                    lightIndex = lightningRender.MaxScaleLight - 1;
 
                 invScale = new Fixed((int)(0xffffffffu / (uint)rwScale.Data));
             }
@@ -1714,30 +1157,30 @@ public sealed class ThreeDRenderer
 
                 if (drawCeiling)
                 {
-                    var cy1 = upperClip[x] + 1;
-                    var cy2 = Math.Min(drawWallY1 - 1, lowerClip[x] - 1);
+                    var cy1 = renderingHistory.UpperClip[x] + 1;
+                    var cy2 = Math.Min(drawWallY1 - 1, renderingHistory.LowerClip[x] - 1);
                     DrawCeilingColumn(frontSector, ceilingFlat, planeLights, x, cy1, cy2, frontSectorCeilingHeight);
                 }
 
-                var wy1 = Math.Max(drawUpperWallY1, upperClip[x] + 1);
-                var wy2 = Math.Min(drawUpperWallY2, lowerClip[x] - 1);
+                var wy1 = Math.Max(drawUpperWallY1, renderingHistory.UpperClip[x] + 1);
+                var wy2 = Math.Min(drawUpperWallY2, renderingHistory.LowerClip[x] - 1);
                 var source = upperWallTexture!.Composite.Columns[textureColumn & upperWallWidthMask];
                 if (source.Length > 0)
                     DrawColumn(source[0], wallLights![lightIndex], x, wy1, wy2, invScale, uperTextureAlt);
 
-                if (upperClip[x] < wy2)
-                    upperClip[x] = (short)wy2;
+                if (renderingHistory.UpperClip[x] < wy2)
+                    renderingHistory.UpperClip[x] = (short)wy2;
 
                 portalY1Frac += portalY1Step;
             }
             else if (drawCeiling)
             {
-                var cy1 = upperClip[x] + 1;
-                var cy2 = Math.Min(drawWallY1 - 1, lowerClip[x] - 1);
+                var cy1 = renderingHistory.UpperClip[x] + 1;
+                var cy2 = Math.Min(drawWallY1 - 1, renderingHistory.LowerClip[x] - 1);
                 DrawCeilingColumn(frontSector, ceilingFlat, planeLights, x, cy1, cy2, frontSectorCeilingHeight);
 
-                if (upperClip[x] < cy2)
-                    upperClip[x] = (short)cy2;
+                if (renderingHistory.UpperClip[x] < cy2)
+                    renderingHistory.UpperClip[x] = (short)cy2;
             }
 
             if (drawLowerWall)
@@ -1745,41 +1188,39 @@ public sealed class ThreeDRenderer
                 var drawLowerWallY1 = (portalY2Frac.Data + heightUnit - 1) >> heightBits;
                 var drawLowerWallY2 = wallY2Frac.Data >> heightBits;
 
-                var wy1 = Math.Max(drawLowerWallY1, upperClip[x] + 1);
-                var wy2 = Math.Min(drawLowerWallY2, lowerClip[x] - 1);
+                var wy1 = Math.Max(drawLowerWallY1, renderingHistory.UpperClip[x] + 1);
+                var wy2 = Math.Min(drawLowerWallY2, renderingHistory.LowerClip[x] - 1);
                 var source = lowerWallTexture!.Composite.Columns[textureColumn & lowerWallWidthMask];
                 if (source.Length > 0)
                     DrawColumn(source[0], wallLights![lightIndex], x, wy1, wy2, invScale, lowerTextureAlt);
 
                 if (drawFloor)
                 {
-                    var fy1 = Math.Max(drawWallY2 + 1, upperClip[x] + 1);
-                    var fy2 = lowerClip[x] - 1;
+                    var fy1 = Math.Max(drawWallY2 + 1, renderingHistory.UpperClip[x] + 1);
+                    var fy2 = renderingHistory.LowerClip[x] - 1;
                     DrawFloorColumn(frontSector, floorFlat, planeLights, x, fy1, fy2, frontSectorFloorHeight);
                 }
 
-                if (lowerClip[x] > wy1)
-                {
-                    lowerClip[x] = (short)wy1;
-                }
+                if (renderingHistory.LowerClip[x] > wy1)
+                    renderingHistory.LowerClip[x] = (short)wy1;
 
                 portalY2Frac += portalY2Step;
             }
             else if (drawFloor)
             {
-                var fy1 = Math.Max(drawWallY2 + 1, upperClip[x] + 1);
-                var fy2 = lowerClip[x] - 1;
+                var fy1 = Math.Max(drawWallY2 + 1, renderingHistory.UpperClip[x] + 1);
+                var fy2 = renderingHistory.LowerClip[x] - 1;
                 DrawFloorColumn(frontSector, floorFlat, planeLights, x, fy1, fy2, frontSectorFloorHeight);
 
-                if (lowerClip[x] > drawWallY2 + 1)
+                if (renderingHistory.LowerClip[x] > drawWallY2 + 1)
                 {
-                    lowerClip[x] = (short)fy1;
+                    renderingHistory.LowerClip[x] = (short)fy1;
                 }
             }
 
             if (drawMaskedTexture)
             {
-                clipData[maskedTextureColumn + x] = (short)textureColumn;
+                renderingHistory.ClipData[maskedTextureColumn + x] = (short)textureColumn;
             }
 
             rwScale += rwScaleStep;
@@ -1794,17 +1235,17 @@ public sealed class ThreeDRenderer
         if (((visWallRange.Silhouette & Silhouette.Upper) != 0 ||
              drawMaskedTexture) && visWallRange.UpperClip == -1)
         {
-            Array.Copy(upperClip, x1, clipData, clipDataLength, range);
-            visWallRange.UpperClip = clipDataLength - x1;
-            clipDataLength += range;
+            Array.Copy(renderingHistory.UpperClip, x1, renderingHistory.ClipData, renderingHistory.ClipDataLength, range);
+            visWallRange.UpperClip = renderingHistory.ClipDataLength - x1;
+            renderingHistory.ClipDataLength += range;
         }
 
         if (((visWallRange.Silhouette & Silhouette.Lower) != 0 ||
              drawMaskedTexture) && visWallRange.LowerClip == -1)
         {
-            Array.Copy(lowerClip, x1, clipData, clipDataLength, range);
-            visWallRange.LowerClip = clipDataLength - x1;
-            clipDataLength += range;
+            Array.Copy(renderingHistory.LowerClip, x1, renderingHistory.ClipData, renderingHistory.ClipDataLength, range);
+            visWallRange.LowerClip = renderingHistory.ClipDataLength - x1;
+            renderingHistory.ClipDataLength += range;
         }
 
         if (drawMaskedTexture && (visWallRange.Silhouette & Silhouette.Upper) == 0)
@@ -1820,35 +1261,30 @@ public sealed class ThreeDRenderer
         }
     }
 
-
     private void RenderMaskedTextures()
     {
-        for (var i = visWallRangeCount - 1; i >= 0; i--)
+        var currentVisWallRanges = renderingHistory.GetCurrentVisWallRanges();
+        ref var currentVisWallRangesRef = ref MemoryMarshal.GetReference(currentVisWallRanges);
+
+        for (var i = currentVisWallRanges.Length - 1 - 1; i >= 0; i--)
         {
-            var drawSeg = visWallRanges[i];
+            ref var drawSeg = ref Unsafe.Add(ref currentVisWallRangesRef, i);
             if (drawSeg.MaskedTextureColumn != -1)
-            {
                 DrawMaskedRange(drawSeg, drawSeg.X1, drawSeg.X2);
-            }
         }
     }
-
 
     private void DrawMaskedRange(VisWallRange drawSeg, int x1, int x2)
     {
         var seg = drawSeg.Seg;
 
-        var wallLightLevel = (seg.FrontSector.LightLevel >> lightSegShift) + extraLight;
+        var wallLightLevel = (seg.FrontSector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
         if (seg.Vertex1.Y == seg.Vertex2.Y)
-        {
             wallLightLevel--;
-        }
         else if (seg.Vertex1.X == seg.Vertex2.X)
-        {
             wallLightLevel++;
-        }
 
-        var wallLights = scaleLight[Math.Clamp(wallLightLevel, 0, lightLevelCount - 1)];
+        var wallLights = lightningRender.scaleLight[Math.Clamp(wallLightLevel, 0, LightningRender.lightLevelCount - 1)];
 
         var wallTexture = textures[world.Specials.TextureTranslation[seg.SideDef.MiddleTexture]];
         var mask = wallTexture.Width - 1;
@@ -1876,16 +1312,16 @@ public sealed class ThreeDRenderer
 
         for (var x = x1; x <= x2; x++)
         {
-            var index = Math.Min(scale.Data >> scaleLightShift, maxScaleLight - 1);
+            var index = Math.Min(scale.Data >> LightningRender.scaleLightShift, lightningRender.MaxScaleLight - 1);
 
-            var col = clipData[drawSeg.MaskedTextureColumn + x];
+            var col = renderingHistory.ClipData[drawSeg.MaskedTextureColumn + x];
 
             if (col != short.MaxValue)
             {
-                var topY = centerYFrac - midTextureAlt * scale;
+                var topY = windowSettings.CenterYFrac - midTextureAlt * scale;
                 var invScale = new Fixed((int)(0xffffffffu / (uint)scale.Data));
-                var ceilClip = clipData[drawSeg.UpperClip + x];
-                var floorClip = clipData[drawSeg.LowerClip + x];
+                var ceilClip = renderingHistory.ClipData[drawSeg.UpperClip + x];
+                var floorClip = renderingHistory.ClipData[drawSeg.LowerClip + x];
                 DrawMaskedColumn(
                     wallTexture.Composite.Columns[col & mask],
                     wallLights[index],
@@ -1897,13 +1333,12 @@ public sealed class ThreeDRenderer
                     ceilClip,
                     floorClip);
 
-                clipData[drawSeg.MaskedTextureColumn + x] = short.MaxValue;
+                renderingHistory.ClipData[drawSeg.MaskedTextureColumn + x] = short.MaxValue;
             }
 
             scale += scaleStep;
         }
     }
-
 
     private void DrawCeilingColumn(
         Sector sector,
@@ -1921,36 +1356,34 @@ public sealed class ThreeDRenderer
         }
 
         if (y2 - y1 < 0)
-        {
             return;
-        }
 
         var height = Fixed.Abs(ceilingHeight - viewZ);
 
         var flatData = flat.Data;
 
-        if (sector == ceilingPrevSector && ceilingPrevX == x - 1)
+        if (sector == planeRender.CeilingPrevSector && planeRender.CeilingPrevX == x - 1)
         {
-            var p1 = Math.Max(y1, ceilingPrevY1);
-            var p2 = Math.Min(y2, ceilingPrevY2);
+            var p1 = Math.Max(y1, planeRender.CeilingPrevY1);
+            var p2 = Math.Min(y2, planeRender.CeilingPrevY2);
 
-            var pos = screenHeight * (windowX + x) + windowY + y1;
+            var pos = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
 
             for (var y = y1; y < p1; y++)
             {
-                var distance = height * planeYSlope[y];
-                ceilingXStep[y] = distance * planeBaseXScale;
-                ceilingYStep[y] = distance * planeBaseYScale;
+                var distance = height * planeRender.PlaneYSlope[y];
+                planeRender.CeilingXStep[y] = distance * planeRender.PlaneBaseXScale;
+                planeRender.CeilingYStep[y] = distance * planeRender.PlaneBaseYScale;
 
-                var length = distance * planeDistScale[x];
-                var angle = viewAngle + xToAngle[x];
+                var length = distance * planeRender.PlaneDistScale[x];
+                var angle = viewAngle + wallRender.XToAngle[x];
                 var xFrac = viewX + Trig.Cos(angle) * length;
                 var yFrac = -viewY - Trig.Sin(angle) * length;
-                ceilingXFrac[y] = xFrac;
-                ceilingYFrac[y] = yFrac;
+                planeRender.CeilingXFrac[y] = xFrac;
+                planeRender.CeilingYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> zLightShift), maxZLight - 1)];
-                ceilingLights[y] = colorMap;
+                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.CeilingLights[y] = colorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
                 screenData[pos] = colorMap[flatData[spot]];
@@ -1959,32 +1392,32 @@ public sealed class ThreeDRenderer
 
             for (var y = p1; y <= p2; y++)
             {
-                var xFrac = ceilingXFrac[y] + ceilingXStep[y];
-                var yFrac = ceilingYFrac[y] + ceilingYStep[y];
+                var xFrac = planeRender.CeilingXFrac[y] + planeRender.CeilingXStep[y];
+                var yFrac = planeRender.CeilingYFrac[y] + planeRender.CeilingYStep[y];
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = ceilingLights[y][flatData[spot]];
+                screenData[pos] = planeRender.CeilingLights[y][flatData[spot]];
                 pos++;
 
-                ceilingXFrac[y] = xFrac;
-                ceilingYFrac[y] = yFrac;
+                planeRender.CeilingXFrac[y] = xFrac;
+                planeRender.CeilingYFrac[y] = yFrac;
             }
 
             for (var y = p2 + 1; y <= y2; y++)
             {
-                var distance = height * planeYSlope[y];
-                ceilingXStep[y] = distance * planeBaseXScale;
-                ceilingYStep[y] = distance * planeBaseYScale;
+                var distance = height * planeRender.PlaneYSlope[y];
+                planeRender.CeilingXStep[y] = distance * planeRender.PlaneBaseXScale;
+                planeRender.CeilingYStep[y] = distance * planeRender.PlaneBaseYScale;
 
-                var length = distance * planeDistScale[x];
-                var angle = viewAngle + xToAngle[x];
+                var length = distance * planeRender.PlaneDistScale[x];
+                var angle = viewAngle + wallRender.XToAngle[x];
                 var xFrac = viewX + Trig.Cos(angle) * length;
                 var yFrac = -viewY - Trig.Sin(angle) * length;
-                ceilingXFrac[y] = xFrac;
-                ceilingYFrac[y] = yFrac;
+                planeRender.CeilingXFrac[y] = xFrac;
+                planeRender.CeilingYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> zLightShift), maxZLight - 1)];
-                ceilingLights[y] = colorMap;
+                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.CeilingLights[y] = colorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
                 screenData[pos] = colorMap[flatData[spot]];
@@ -1993,23 +1426,23 @@ public sealed class ThreeDRenderer
         }
         else
         {
-            var pos = screenHeight * (windowX + x) + windowY + y1;
+            var pos = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
 
             for (var y = y1; y <= y2; y++)
             {
-                var distance = height * planeYSlope[y];
-                ceilingXStep[y] = distance * planeBaseXScale;
-                ceilingYStep[y] = distance * planeBaseYScale;
+                var distance = height * planeRender.PlaneYSlope[y];
+                planeRender.CeilingXStep[y] = distance * planeRender.PlaneBaseXScale;
+                planeRender.CeilingYStep[y] = distance * planeRender.PlaneBaseYScale;
 
-                var length = distance * planeDistScale[x];
-                var angle = viewAngle + xToAngle[x];
+                var length = distance * planeRender.PlaneDistScale[x];
+                var angle = viewAngle + wallRender.XToAngle[x];
                 var xFrac = viewX + Trig.Cos(angle) * length;
                 var yFrac = -viewY - Trig.Sin(angle) * length;
-                ceilingXFrac[y] = xFrac;
-                ceilingYFrac[y] = yFrac;
+                planeRender.CeilingXFrac[y] = xFrac;
+                planeRender.CeilingYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> zLightShift), maxZLight - 1)];
-                ceilingLights[y] = colorMap;
+                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.CeilingLights[y] = colorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
                 screenData[pos] = colorMap[flatData[spot]];
@@ -2017,10 +1450,10 @@ public sealed class ThreeDRenderer
             }
         }
 
-        ceilingPrevSector = sector;
-        ceilingPrevX = x;
-        ceilingPrevY1 = y1;
-        ceilingPrevY2 = y2;
+        planeRender.CeilingPrevSector = sector;
+        planeRender.CeilingPrevX = x;
+        planeRender.CeilingPrevY1 = y1;
+        planeRender.CeilingPrevY2 = y2;
     }
 
     private void DrawFloorColumn(
@@ -2045,28 +1478,28 @@ public sealed class ThreeDRenderer
 
         var flatData = flat.Data;
 
-        if (sector == floorPrevSector && floorPrevX == x - 1)
+        if (sector == planeRender.FloorPrevSector && planeRender.FloorPrevX == x - 1)
         {
-            var p1 = Math.Max(y1, floorPrevY1);
-            var p2 = Math.Min(y2, floorPrevY2);
+            var p1 = Math.Max(y1, planeRender.FloorPrevY1);
+            var p2 = Math.Min(y2, planeRender.FloorPrevY2);
 
-            var pos = screenHeight * (windowX + x) + windowY + y1;
+            var pos = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
 
             for (var y = y1; y < p1; y++)
             {
-                var distance = height * planeYSlope[y];
-                floorXStep[y] = distance * planeBaseXScale;
-                floorYStep[y] = distance * planeBaseYScale;
+                var distance = height * planeRender.PlaneYSlope[y];
+                planeRender.FloorXStep[y] = distance * planeRender.PlaneBaseXScale;
+                planeRender.FloorYStep[y] = distance * planeRender.PlaneBaseYScale;
 
-                var length = distance * planeDistScale[x];
-                var angle = viewAngle + xToAngle[x];
+                var length = distance * planeRender.PlaneDistScale[x];
+                var angle = viewAngle + wallRender.XToAngle[x];
                 var xFrac = viewX + Trig.Cos(angle) * length;
                 var yFrac = -viewY - Trig.Sin(angle) * length;
-                floorXFrac[y] = xFrac;
-                floorYFrac[y] = yFrac;
+                planeRender.FloorXFrac[y] = xFrac;
+                planeRender.FloorYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> zLightShift), maxZLight - 1)];
-                floorLights[y] = colorMap;
+                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.FloorLights[y] = colorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
                 screenData[pos] = colorMap[flatData[spot]];
@@ -2075,32 +1508,32 @@ public sealed class ThreeDRenderer
 
             for (var y = p1; y <= p2; y++)
             {
-                var xFrac = floorXFrac[y] + floorXStep[y];
-                var yFrac = floorYFrac[y] + floorYStep[y];
+                var xFrac = planeRender.FloorXFrac[y] + planeRender.FloorXStep[y];
+                var yFrac = planeRender.FloorYFrac[y] + planeRender.FloorYStep[y];
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = floorLights[y][flatData[spot]];
+                screenData[pos] = planeRender.FloorLights[y][flatData[spot]];
                 pos++;
 
-                floorXFrac[y] = xFrac;
-                floorYFrac[y] = yFrac;
+                planeRender.FloorXFrac[y] = xFrac;
+                planeRender.FloorYFrac[y] = yFrac;
             }
 
             for (var y = p2 + 1; y <= y2; y++)
             {
-                var distance = height * planeYSlope[y];
-                floorXStep[y] = distance * planeBaseXScale;
-                floorYStep[y] = distance * planeBaseYScale;
+                var distance = height * planeRender.PlaneYSlope[y];
+                planeRender.FloorXStep[y] = distance * planeRender.PlaneBaseXScale;
+                planeRender.FloorYStep[y] = distance * planeRender.PlaneBaseYScale;
 
-                var length = distance * planeDistScale[x];
-                var angle = viewAngle + xToAngle[x];
+                var length = distance * planeRender.PlaneDistScale[x];
+                var angle = viewAngle + wallRender.XToAngle[x];
                 var xFrac = viewX + Trig.Cos(angle) * length;
                 var yFrac = -viewY - Trig.Sin(angle) * length;
-                floorXFrac[y] = xFrac;
-                floorYFrac[y] = yFrac;
+                planeRender.FloorXFrac[y] = xFrac;
+                planeRender.FloorYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> zLightShift), maxZLight - 1)];
-                floorLights[y] = colorMap;
+                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.FloorLights[y] = colorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
                 screenData[pos] = colorMap[flatData[spot]];
@@ -2109,23 +1542,23 @@ public sealed class ThreeDRenderer
         }
         else
         {
-            var pos = screenHeight * (windowX + x) + windowY + y1;
+            var pos = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
 
             for (var y = y1; y <= y2; y++)
             {
-                var distance = height * planeYSlope[y];
-                floorXStep[y] = distance * planeBaseXScale;
-                floorYStep[y] = distance * planeBaseYScale;
+                var distance = height * planeRender.PlaneYSlope[y];
+                planeRender.FloorXStep[y] = distance * planeRender.PlaneBaseXScale;
+                planeRender.FloorYStep[y] = distance * planeRender.PlaneBaseYScale;
 
-                var length = distance * planeDistScale[x];
-                var angle = viewAngle + xToAngle[x];
+                var length = distance * planeRender.PlaneDistScale[x];
+                var angle = viewAngle + wallRender.XToAngle[x];
                 var xFrac = viewX + Trig.Cos(angle) * length;
                 var yFrac = -viewY - Trig.Sin(angle) * length;
-                floorXFrac[y] = xFrac;
-                floorYFrac[y] = yFrac;
+                planeRender.FloorXFrac[y] = xFrac;
+                planeRender.FloorYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> zLightShift), maxZLight - 1)];
-                floorLights[y] = colorMap;
+                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.FloorLights[y] = colorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
                 screenData[pos] = colorMap[flatData[spot]];
@@ -2133,10 +1566,10 @@ public sealed class ThreeDRenderer
             }
         }
 
-        floorPrevSector = sector;
-        floorPrevX = x;
-        floorPrevY1 = y1;
-        floorPrevY2 = y2;
+        planeRender.FloorPrevSector = sector;
+        planeRender.FloorPrevX = x;
+        planeRender.FloorPrevY1 = y1;
+        planeRender.FloorPrevY2 = y2;
     }
 
     private void DrawColumn(
@@ -2154,12 +1587,12 @@ public sealed class ThreeDRenderer
         // Framebuffer destination address.
         // Use ylookup LUT to avoid multiply with ScreenWidth.
         // Use columnofs LUT for subwindows? 
-        var pos1 = screenHeight * (windowX + x) + windowY + y1;
+        var pos1 = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
         var pos2 = pos1 + (y2 - y1);
 
         // Determine scaling, which is the only mapping to be done.
         var fracStep = invScale;
-        var frac = textureAlt + (y1 - centerY) * fracStep;
+        var frac = textureAlt + (y1 - windowSettings.CenterY) * fracStep;
 
         // Inner loop that does the actual texture mapping,
         // e.g. a DDA-lile scaling.
@@ -2191,12 +1624,12 @@ public sealed class ThreeDRenderer
         // Framebuffer destination address.
         // Use ylookup LUT to avoid multiply with ScreenWidth.
         // Use columnofs LUT for subwindows? 
-        var pos1 = screenHeight * (windowX + x) + windowY + y1;
+        var pos1 = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
         var pos2 = pos1 + (y2 - y1);
 
         // Determine scaling, which is the only mapping to be done.
         var fracStep = invScale;
-        var frac = textureAlt + (y1 - centerY) * fracStep;
+        var frac = textureAlt + (y1 - windowSettings.CenterY) * fracStep;
 
         // Inner loop that does the actual texture mapping,
         // e.g. a DDA-lile scaling.
@@ -2223,28 +1656,27 @@ public sealed class ThreeDRenderer
         if (y1 == 0)
             y1 = 1;
 
-        if (y2 == windowHeight - 1)
-            y2 = windowHeight - 2;
+        if (y2 == windowSettings.WindowHeight - 1)
+            y2 = windowSettings.WindowHeight - 2;
 
-        var pos1 = screenHeight * (windowX + x) + windowY + y1;
+        var pos1 = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
         var pos2 = pos1 + (y2 - y1);
 
-        var map = colorMap[6];
+        var mapSpan = colorMap[6].AsSpan();
+
         for (var pos = pos1; pos <= pos2; pos++)
         {
-            screenData[pos] = map[screenData[pos + fuzzTable[fuzzPos]]];
-
-            if (++fuzzPos == fuzzTable.Length)
-                fuzzPos = 0;
+            var fuzzEffect = fuzzEffects.GetAndIncrementPosition();
+            screenData[pos] = mapSpan[screenData[pos + fuzzEffect]];
         }
     }
 
     private void DrawSkyColumn(int x, int y1, int y2)
     {
-        var angle = (viewAngle + xToAngle[x]).Data >> angleToSkyShift;
+        var angle = (viewAngle + wallRender.XToAngle[x]).Data >> SkyRender.angleToSkyShift;
         var mask = world.Map.SkyTexture.Width - 1;
         var source = world.Map.SkyTexture.Composite.Columns[angle & mask];
-        DrawColumn(source[0], colorMap[0], x, y1, y2, skyInvScale, skyTextureAlt);
+        DrawColumn(source[0], colorMap[0], x, y1, y2, skyRender.SkyInvScale, skyRender.SkyTextureAlt);
     }
 
     private void DrawMaskedColumn(
@@ -2335,30 +1767,23 @@ public sealed class ThreeDRenderer
         // A sector might have been split into several subsectors during BSP building.
         // Thus, we check whether it's already added.
         if (sector.ValidCount == validCount)
-        {
             return;
-        }
 
         // Well, now it will be done.
         sector.ValidCount = validCount;
 
-        var spriteLightLevel = (sector.LightLevel >> lightSegShift) + extraLight;
-        var spriteLights = scaleLight[Math.Clamp(spriteLightLevel, 0, lightLevelCount - 1)];
+        var spriteLightLevel = (sector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
+        var spriteLights = lightningRender.scaleLight[Math.Clamp(spriteLightLevel, 0, LightningRender.lightLevelCount - 1)];
 
         // Handle all things in sector.
         foreach (var thing in sector)
-        {
             ProjectSprite(thing, spriteLights);
-        }
     }
 
     private void ProjectSprite(Mobj thing, byte[][] spriteLights)
     {
-        if (visSpriteCount == visSprites.Length)
-        {
-            // Too many sprites.
+        if (spriteRender.HasTooManySprites())
             return;
-        }
 
         var thingX = thing.GetInterpolatedX(frameFrac);
         var thingY = thing.GetInterpolatedY(frameFrac);
@@ -2374,12 +1799,10 @@ public sealed class ThreeDRenderer
         var tz = gxt - gyt;
 
         // Thing is behind view plane?
-        if (tz < minZ)
-        {
+        if (tz < SpriteRender.minZ)
             return;
-        }
 
-        var xScale = projection / tz;
+        var xScale = windowSettings.Projection / tz;
 
         gxt = -trX * viewSin;
         gyt = trY * viewCos;
@@ -2387,9 +1810,7 @@ public sealed class ThreeDRenderer
 
         // Too far off the side?
         if (Fixed.Abs(tx) > (tz << 2))
-        {
             return;
-        }
 
         var spriteDef = sprites[thing.Sprite];
         var frameNumber = thing.Frame & 0x7F;
@@ -2414,26 +1835,22 @@ public sealed class ThreeDRenderer
 
         // Calculate edges of the shape.
         tx -= Fixed.FromInt(lump.LeftOffset);
-        var x1 = (centerXFrac + (tx * xScale)).Data >> Fixed.FracBits;
+        var x1 = (windowSettings.CenterXFrac + (tx * xScale)).Data >> Fixed.FracBits;
 
         // Off the right side?
-        if (x1 > windowWidth)
-        {
+        if (x1 > windowSettings.WindowWidth)
             return;
-        }
 
         tx += Fixed.FromInt(lump.Width);
-        var x2 = ((centerXFrac + (tx * xScale)).Data >> Fixed.FracBits) - 1;
+        var x2 = ((windowSettings.CenterXFrac + (tx * xScale)).Data >> Fixed.FracBits) - 1;
 
         // Off the left side?
         if (x2 < 0)
-        {
             return;
-        }
 
         // Store information in a vissprite.
-        var vis = visSprites[visSpriteCount];
-        visSpriteCount++;
+        var vis = spriteRender.VisSprites[spriteRender.VisSpriteCount];
+        spriteRender.VisSpriteCount++;
 
         vis.MobjFlags = thing.Flags;
         vis.Scale = xScale;
@@ -2443,7 +1860,7 @@ public sealed class ThreeDRenderer
         vis.GlobalTopZ = thingZ + Fixed.FromInt(lump.TopOffset);
         vis.TextureAlt = vis.GlobalTopZ - viewZ;
         vis.X1 = x1 < 0 ? 0 : x1;
-        vis.X2 = x2 >= windowWidth ? windowWidth - 1 : x2;
+        vis.X2 = x2 >= windowSettings.WindowWidth ? windowSettings.WindowWidth - 1 : x2;
 
         var invScale = Fixed.One / xScale;
 
@@ -2459,52 +1876,40 @@ public sealed class ThreeDRenderer
         }
 
         if (vis.X1 > x1)
-        {
             vis.StartFrac += vis.InvScale * (vis.X1 - x1);
-        }
 
         vis.Patch = lump;
 
-        if (fixedColorMap == 0)
+        if (lightningRender.FixedColorMap == 0)
         {
-            if ((thing.Frame & 0x8000) == 0)
-            {
-                vis.ColorMap = spriteLights[Math.Min(xScale.Data >> scaleLightShift, maxScaleLight - 1)];
-            }
-            else
-            {
-                vis.ColorMap = colorMap.FullBright;
-            }
+            vis.ColorMap = (thing.Frame & 0x8000) == 0
+                ? spriteLights[Math.Min(xScale.Data >> LightningRender.scaleLightShift, lightningRender.MaxScaleLight - 1)]
+                : colorMap.FullBright;
         }
         else
-        {
-            vis.ColorMap = colorMap[fixedColorMap];
-        }
+            vis.ColorMap = colorMap[lightningRender.FixedColorMap];
     }
 
     private void RenderSprites()
     {
-        Array.Sort(visSprites, 0, visSpriteCount, visSpriteComparer);
-
-        for (var i = visSpriteCount - 1; i >= 0; i--)
-        {
-            DrawSprite(visSprites[i]);
-        }
+        var visibleSprites = spriteRender.GetVisibleSprites();
+        foreach (var visibleSprite in visibleSprites)
+            DrawSprite(visibleSprite);
     }
 
     private void DrawSprite(VisSprite sprite)
     {
         for (var x = sprite.X1; x <= sprite.X2; x++)
         {
-            lowerClip[x] = -2;
-            upperClip[x] = -2;
+            renderingHistory.LowerClip[x] = -2;
+            renderingHistory.UpperClip[x] = -2;
         }
 
         // Scan drawsegs from end to start for obscuring segs.
         // The first drawseg that has a greater scale is the clip seg.
-        for (var i = visWallRangeCount - 1; i >= 0; i--)
+        for (var i = renderingHistory.VisWallRangeCount - 1; i >= 0; i--)
         {
-            var wall = visWallRanges[i];
+            var wall = renderingHistory.VisWallRanges[i];
 
             // Determine if the drawseg obscures the sprite.
             if (wall.X1 > sprite.X2 ||
@@ -2537,9 +1942,7 @@ public sealed class ThreeDRenderer
             {
                 // Masked mid texture?
                 if (wall.MaskedTextureColumn != -1)
-                {
                     DrawMaskedRange(wall, r1, r2);
-                }
 
                 // Seg is behind sprite.
                 continue;
@@ -2549,23 +1952,19 @@ public sealed class ThreeDRenderer
             var silhouette = wall.Silhouette;
 
             if (sprite.GlobalBottomZ >= wall.LowerSilHeight)
-            {
                 silhouette &= ~Silhouette.Lower;
-            }
 
             if (sprite.GlobalTopZ <= wall.UpperSilHeight)
-            {
                 silhouette &= ~Silhouette.Upper;
-            }
 
             if (silhouette == Silhouette.Lower)
             {
                 // Bottom sil.
                 for (var x = r1; x <= r2; x++)
                 {
-                    if (lowerClip[x] == -2)
+                    if (renderingHistory.LowerClip[x] == -2)
                     {
-                        lowerClip[x] = clipData[wall.LowerClip + x];
+                        renderingHistory.LowerClip[x] = renderingHistory.ClipData[wall.LowerClip + x];
                     }
                 }
             }
@@ -2574,9 +1973,9 @@ public sealed class ThreeDRenderer
                 // Top sil.
                 for (var x = r1; x <= r2; x++)
                 {
-                    if (upperClip[x] == -2)
+                    if (renderingHistory.UpperClip[x] == -2)
                     {
-                        upperClip[x] = clipData[wall.UpperClip + x];
+                        renderingHistory.UpperClip[x] = renderingHistory.ClipData[wall.UpperClip + x];
                     }
                 }
             }
@@ -2585,14 +1984,14 @@ public sealed class ThreeDRenderer
                 // Both.
                 for (var x = r1; x <= r2; x++)
                 {
-                    if (lowerClip[x] == -2)
+                    if (renderingHistory.LowerClip[x] == -2)
                     {
-                        lowerClip[x] = clipData[wall.LowerClip + x];
+                        renderingHistory.LowerClip[x] = renderingHistory.ClipData[wall.LowerClip + x];
                     }
 
-                    if (upperClip[x] == -2)
+                    if (renderingHistory.UpperClip[x] == -2)
                     {
-                        upperClip[x] = clipData[wall.UpperClip + x];
+                        renderingHistory.UpperClip[x] = renderingHistory.ClipData[wall.UpperClip + x];
                     }
                 }
             }
@@ -2603,15 +2002,11 @@ public sealed class ThreeDRenderer
         // Check for unclipped columns.
         for (var x = sprite.X1; x <= sprite.X2; x++)
         {
-            if (lowerClip[x] == -2)
-            {
-                lowerClip[x] = (short)windowHeight;
-            }
+            if (renderingHistory.LowerClip[x] == -2)
+                renderingHistory.LowerClip[x] = (short)windowSettings.WindowHeight;
 
-            if (upperClip[x] == -2)
-            {
-                upperClip[x] = -1;
-            }
+            if (renderingHistory.UpperClip[x] == -2)
+                renderingHistory.UpperClip[x] = -1;
         }
 
         if ((sprite.MobjFlags & MobjFlags.Shadow) != 0)
@@ -2623,29 +2018,16 @@ public sealed class ThreeDRenderer
                 DrawMaskedFuzzColumn(
                     sprite.Patch.Columns[textureColumn],
                     x,
-                    centerYFrac - (sprite.TextureAlt * sprite.Scale),
+                    windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
                     sprite.Scale,
-                    upperClip[x],
-                    lowerClip[x]);
+                    renderingHistory.UpperClip[x],
+                    renderingHistory.LowerClip[x]);
                 frac += sprite.InvScale;
             }
         }
         else if (((int)(sprite.MobjFlags & MobjFlags.Translation) >> (int)MobjFlags.TransShift) != 0)
         {
-            Span<byte> translation;
-            switch (((int)(sprite.MobjFlags & MobjFlags.Translation) >> (int)MobjFlags.TransShift))
-            {
-                case 1:
-                    translation = greenToGray.AsSpan();
-                    break;
-                case 2:
-                    translation = greenToBrown.AsSpan();
-                    break;
-                default:
-                    translation = greenToRed.AsSpan();
-                    break;
-            }
-
+            var translation = colorTranslation.GetTranslation(sprite.MobjFlags);
             var frac = sprite.StartFrac;
             for (var x = sprite.X1; x <= sprite.X2; x++)
             {
@@ -2655,12 +2037,12 @@ public sealed class ThreeDRenderer
                     translation,
                     sprite.ColorMap,
                     x,
-                    centerYFrac - (sprite.TextureAlt * sprite.Scale),
+                    windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
                     sprite.Scale,
                     Fixed.Abs(sprite.InvScale),
                     sprite.TextureAlt,
-                    upperClip[x],
-                    lowerClip[x]);
+                    renderingHistory.UpperClip[x],
+                    renderingHistory.LowerClip[x]);
                 frac += sprite.InvScale;
             }
         }
@@ -2674,17 +2056,16 @@ public sealed class ThreeDRenderer
                     sprite.Patch.Columns[textureColumn],
                     sprite.ColorMap,
                     x,
-                    centerYFrac - (sprite.TextureAlt * sprite.Scale),
+                    windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
                     sprite.Scale,
                     Fixed.Abs(sprite.InvScale),
                     sprite.TextureAlt,
-                    upperClip[x],
-                    lowerClip[x]);
+                    renderingHistory.UpperClip[x],
+                    renderingHistory.LowerClip[x]);
                 frac += sprite.InvScale;
             }
         }
     }
-
 
     private void DrawPlayerSprite(PlayerSpriteDef psp, byte[][] spriteLights, bool fuzz)
     {
@@ -2699,36 +2080,36 @@ public sealed class ThreeDRenderer
         // Calculate edges of the shape.
         var tx = psp.Sx - Fixed.FromInt(160);
         tx -= Fixed.FromInt(lump.LeftOffset);
-        var x1 = (centerXFrac + tx * weaponScale).Data >> Fixed.FracBits;
+        var x1 = (windowSettings.CenterXFrac + tx * weaponRender.WeaponScale).Data >> Fixed.FracBits;
 
         // Off the right side?
-        if (x1 > windowWidth)
+        if (x1 > windowSettings.WindowWidth)
             return;
 
         tx += Fixed.FromInt(lump.Width);
-        var x2 = ((centerXFrac + tx * weaponScale).Data >> Fixed.FracBits) - 1;
+        var x2 = ((windowSettings.CenterXFrac + tx * weaponRender.WeaponScale).Data >> Fixed.FracBits) - 1;
 
         // Off the left side?
         if (x2 < 0)
             return;
 
         // Store information in a vissprite.
-        var vis = weaponSprite;
+        var vis = weaponRender.WeaponSprite;
         vis.MobjFlags = 0;
         // The code below is based on Crispy Doom's weapon rendering code.
         vis.TextureAlt = Fixed.FromInt(100) + Fixed.One / 4 - (psp.Sy - Fixed.FromInt(lump.TopOffset));
         vis.X1 = x1 < 0 ? 0 : x1;
-        vis.X2 = x2 >= windowWidth ? windowWidth - 1 : x2;
-        vis.Scale = weaponScale;
+        vis.X2 = x2 >= windowSettings.WindowWidth ? windowSettings.WindowWidth - 1 : x2;
+        vis.Scale = weaponRender.WeaponScale;
 
         if (flip)
         {
-            vis.InvScale = -weaponInvScale;
+            vis.InvScale = -weaponRender.WeaponInvScale;
             vis.StartFrac = Fixed.FromInt(lump.Width) - new Fixed(1);
         }
         else
         {
-            vis.InvScale = weaponInvScale;
+            vis.InvScale = weaponRender.WeaponInvScale;
             vis.StartFrac = Fixed.Zero;
         }
 
@@ -2737,12 +2118,12 @@ public sealed class ThreeDRenderer
 
         vis.Patch = lump;
 
-        if (fixedColorMap == 0)
+        if (lightningRender.FixedColorMap == 0)
             vis.ColorMap = (psp.State.Frame & 0x8000) == 0
-                ? spriteLights[maxScaleLight - 1]
+                ? spriteLights[lightningRender.MaxScaleLight - 1]
                 : colorMap.FullBright;
         else
-            vis.ColorMap = colorMap[fixedColorMap];
+            vis.ColorMap = colorMap[lightningRender.FixedColorMap];
 
         if (fuzz)
         {
@@ -2753,10 +2134,10 @@ public sealed class ThreeDRenderer
                 DrawMaskedFuzzColumn(
                     vis.Patch.Columns[textureColumn],
                     x,
-                    centerYFrac - (vis.TextureAlt * vis.Scale),
+                    windowSettings.CenterYFrac - (vis.TextureAlt * vis.Scale),
                     vis.Scale,
                     -1,
-                    windowHeight);
+                    windowSettings.WindowHeight);
                 frac += vis.InvScale;
             }
         }
@@ -2765,17 +2146,17 @@ public sealed class ThreeDRenderer
             var frac = vis.StartFrac;
             for (var x = vis.X1; x <= vis.X2; x++)
             {
-                var texturecolumn = frac.Data >> Fixed.FracBits;
+                var textureColumn = frac.Data >> Fixed.FracBits;
                 DrawMaskedColumn(
-                    vis.Patch.Columns[texturecolumn],
+                    vis.Patch.Columns[textureColumn],
                     vis.ColorMap,
                     x,
-                    centerYFrac - (vis.TextureAlt * vis.Scale),
+                    windowSettings.CenterYFrac - (vis.TextureAlt * vis.Scale),
                     vis.Scale,
                     Fixed.Abs(vis.InvScale),
                     vis.TextureAlt,
                     -1,
-                    windowHeight);
+                    windowSettings.WindowHeight);
                 frac += vis.InvScale;
             }
         }
@@ -2784,131 +2165,38 @@ public sealed class ThreeDRenderer
     private void DrawPlayerSprites(Player player)
     {
         // Get light level.
-        var spriteLightLevel = (player.Mobj.Subsector.Sector.LightLevel >> lightSegShift) + extraLight;
+        var spriteLightLevel = (player.Mobj!.Subsector.Sector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
 
         var spriteLights = spriteLightLevel switch
         {
-            < 0                => scaleLight[0],
-            >= lightLevelCount => scaleLight[lightLevelCount - 1],
-            _                  => scaleLight[spriteLightLevel]
+            < 0                                => lightningRender.scaleLight[0],
+            >= LightningRender.lightLevelCount => lightningRender.scaleLight[LightningRender.lightLevelCount - 1],
+            _                                  => lightningRender.scaleLight[spriteLightLevel]
         };
 
-        bool fuzz;
-        if (player.Powers[(int)PowerType.Invisibility] > 4 * 32 ||
-            (player.Powers[(int)PowerType.Invisibility] & 8) != 0)
-        {
-            // Shadow draw.
-            fuzz = true;
-        }
-        else
-        {
-            fuzz = false;
-        }
+        // Shadow draw.
+        var fuzz = player.Powers[(int)PowerType.Invisibility] > 4 * 32 ||
+                   (player.Powers[(int)PowerType.Invisibility] & 8) != 0;
 
         // Add all active psprites.
         foreach (var psp in player.PlayerSprites.AsSpan())
         {
             if (psp.State != null)
-            {
                 DrawPlayerSprite(psp, spriteLights, fuzz);
-            }
         }
     }
-
 
     public int WindowSize
     {
         get => windowSize;
-
         set
         {
-            windowSize = value;
-            SetWindowSize(windowSize);
-        }
-    }
-
-
-    private struct ClipRange
-    {
-        public int First;
-        public int Last;
-
-        public void CopyFrom(in ClipRange range)
-        {
-            First = range.First;
-            Last = range.Last;
-        }
-    }
-
-    private sealed class VisWallRange
-    {
-        public Seg Seg;
-
-        public int X1;
-        public int X2;
-
-        public Fixed Scale1;
-        public Fixed Scale2;
-        public Fixed ScaleStep;
-
-        public Silhouette Silhouette;
-        public Fixed UpperSilHeight;
-        public Fixed LowerSilHeight;
-
-        public int UpperClip;
-        public int LowerClip;
-        public int MaskedTextureColumn;
-
-        public Fixed FrontSectorFloorHeight;
-        public Fixed FrontSectorCeilingHeight;
-        public Fixed BackSectorFloorHeight;
-        public Fixed BackSectorCeilingHeight;
-    }
-
-    [Flags]
-    private enum Silhouette
-    {
-        None = 0,
-        Upper = 1,
-        Lower = 2,
-        Both = 3
-    }
-
-    private sealed class VisSprite
-    {
-        public int X1;
-        public int X2;
-
-        // For line side calculation.
-        public Fixed GlobalX;
-        public Fixed GlobalY;
-
-        // Global bottom / top for silhouette clipping.
-        public Fixed GlobalBottomZ;
-        public Fixed GlobalTopZ;
-
-        // Horizontal position of x1.
-        public Fixed StartFrac;
-
-        public Fixed Scale;
-
-        // Negative if flipped.
-        public Fixed InvScale;
-
-        public Fixed TextureAlt;
-        public Patch Patch;
-
-        // For color translation and shadow draw.
-        public byte[] ColorMap;
-
-        public MobjFlags MobjFlags;
-    }
-
-    private sealed class VisSpriteComparer : IComparer<VisSprite>
-    {
-        public int Compare(VisSprite x, VisSprite y)
-        {
-            return y!.Scale.Data - x!.Scale.Data;
+            var changed = windowSize != value;
+            if (changed)
+            {
+                windowSize = value;
+                SetWindowSize(windowSize);
+            }
         }
     }
 }

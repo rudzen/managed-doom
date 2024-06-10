@@ -44,7 +44,7 @@ public sealed class ThingInteraction
     /// <summary>
     /// Called when the target is killed.
     /// </summary>
-    private void KillMobj(Mobj source, Mobj target)
+    private void KillMobj(Mobj? source, Mobj target)
     {
         target.Flags &= ~(MobjFlags.Shootable | MobjFlags.Float | MobjFlags.SkullFly);
 
@@ -149,7 +149,7 @@ public sealed class ThingInteraction
     /// Source can be null for slime, barrel explosions and other
     /// environmental stuff.
     /// </summary>
-    public void DamageMobj(Mobj target, Mobj inflictor, Mobj source, int damage)
+    public void DamageMobj(Mobj target, Mobj? inflictor, Mobj? source, int damage)
     {
         if ((target.Flags & MobjFlags.Shootable) == 0)
         {
@@ -177,8 +177,7 @@ public sealed class ThingInteraction
         // Some close combat weapons should not inflict thrust and
         // push the victim out of reach, thus kick away unless using the chainsaw.
         var notChainsawAttack =
-            source == null ||
-            source.Player == null ||
+            source is not { Player: not null } ||
             source.Player.ReadyWeapon != WeaponType.Chainsaw;
 
         if (inflictor != null && (target.Flags & MobjFlags.NoClip) == 0 && notChainsawAttack)

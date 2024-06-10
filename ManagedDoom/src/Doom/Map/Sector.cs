@@ -79,12 +79,12 @@ public sealed class Sector
     public SectorSpecial Special { get; set; }
     public int Tag { get; set; }
     public int SoundTraversed { get; set; }
-    public Mobj SoundTarget { get; set; }
+    public Mobj? SoundTarget { get; set; }
     public int[] BlockBox { get; set; }
     public Mobj SoundOrigin { get; set; }
     public int ValidCount { get; set; }
     public Mobj ThingList { get; set; }
-    public Thinker SpecialData { get; set; }
+    public Thinker? SpecialData { get; set; }
     public LineDef[] Lines { get; set; }
 
     private static Sector FromData(ReadOnlySpan<byte> data, int number, IFlatLookup flats)

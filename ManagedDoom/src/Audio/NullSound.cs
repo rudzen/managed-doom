@@ -20,13 +20,12 @@ namespace ManagedDoom.Audio;
 
 public sealed class NullSound : ISound
 {
-    private static NullSound instance;
+    private static NullSound? instance;
 
     public static NullSound GetInstance()
     {
         return instance ??= new NullSound();
     }
-
 
     public int MaxVolume => 15;
 

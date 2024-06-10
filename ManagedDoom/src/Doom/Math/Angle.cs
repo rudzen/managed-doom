@@ -151,7 +151,7 @@ public readonly struct Angle
         return a.Data >= b.Data;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         throw new NotSupportedException();
     }

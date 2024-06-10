@@ -27,8 +27,8 @@ public class MobjStateDef
         Sprite sprite,
         int frame,
         int tics,
-        Action<World, Player, PlayerSpriteDef> playerAction,
-        Action<World, Mobj> mobjAction,
+        Action<World, Player, PlayerSpriteDef>? playerAction,
+        Action<World, Mobj>? mobjAction,
         MobjState next,
         int misc1,
         int misc2)
@@ -52,9 +52,9 @@ public class MobjStateDef
 
     public int Tics { get; set; }
 
-    public Action<World, Player, PlayerSpriteDef> PlayerAction { get; set; }
+    public Action<World, Player, PlayerSpriteDef>? PlayerAction { get; set; }
 
-    public Action<World, Mobj> MobjAction { get; set; }
+    public Action<World, Mobj>? MobjAction { get; set; }
 
     public MobjState Next { get; set; }
 

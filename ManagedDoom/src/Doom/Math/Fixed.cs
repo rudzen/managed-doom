@@ -250,7 +250,7 @@ public readonly struct Fixed
         return (Data + FracUnit - 1) >> FracBits;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         throw new NotSupportedException();
     }

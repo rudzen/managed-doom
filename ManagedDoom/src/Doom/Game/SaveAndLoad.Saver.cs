@@ -42,7 +42,7 @@ public static partial class SaveAndLoad
 
         data[ptr++] = (byte)(game.World.LevelTime >> 16);
         data[ptr++] = (byte)(game.World.LevelTime >> 8);
-        data[ptr++] = (byte)(game.World.LevelTime);
+        data[ptr++] = (byte)game.World.LevelTime;
 
         ptr = ArchivePlayers(game.World.Options.Players, data, ptr);
         ptr = ArchiveWorld(game.World, data, ptr);
@@ -71,18 +71,14 @@ public static partial class SaveAndLoad
     private static int ArchiveWorld(World.World world, Span<byte> data, int ptr)
     {
         // Do sectors.
-        var sectors = world.Map.Sectors;
-        for (var i = 0; i < sectors.Length; i++)
-        {
-            ptr = ArchiveSector(sectors[i], data, ptr);
-        }
+        var sectors = world.Map.Sectors.AsSpan();
+        foreach (var sector in sectors)
+            ptr = ArchiveSector(sector, data, ptr);
 
         // Do lines.
-        var lines = world.Map.Lines;
-        for (var i = 0; i < lines.Length; i++)
-        {
-            ptr = ArchiveLine(lines[i], data, ptr);
-        }
+        var lines = world.Map.Lines.AsSpan();
+        foreach (var line in lines)
+            ptr = ArchiveLine(line, data, ptr);
 
         return ptr;
     }
@@ -363,13 +359,15 @@ public static partial class SaveAndLoad
         Write(data, p + 232, player.ExtraLight);
         Write(data, p + 236, player.FixedColorMap);
         Write(data, p + 240, player.ColorMap);
-        for (var i = 0; i < player.PlayerSprites.Length; i++)
+        var playerSprites = player.PlayerSprites.AsSpan();
+        for (var i = 0; i < playerSprites.Length; i++)
         {
-            var spriteState = player.PlayerSprites[i].State is null ? 0 : player.PlayerSprites[i].State.Number;
+            var sprite = playerSprites[i];
+            var spriteState = sprite.State is null ? 0 : sprite.State!.Number;
             Write(data, p + 244 + 16 * i, spriteState);
-            Write(data, p + 244 + 16 * i + 4, player.PlayerSprites[i].Tics);
-            Write(data, p + 244 + 16 * i + 8, player.PlayerSprites[i].Sx.Data);
-            Write(data, p + 244 + 16 * i + 12, player.PlayerSprites[i].Sy.Data);
+            Write(data, p + 244 + 16 * i + 4, sprite.Tics);
+            Write(data, p + 244 + 16 * i + 8, sprite.Sx.Data);
+            Write(data, p + 244 + 16 * i + 12, sprite.Sy.Data);
         }
 
         Write(data, p + 276, player.DidSecret.AsByte());
@@ -379,8 +377,8 @@ public static partial class SaveAndLoad
 
     private static int ArchiveSector(Sector sector, Span<byte> data, int p)
     {
-        Write(data, p, (short)(sector.FloorHeight.ToIntFloor()));
-        Write(data, p + 2, (short)(sector.CeilingHeight.ToIntFloor()));
+        Write(data, p, (short)sector.FloorHeight.ToIntFloor());
+        Write(data, p + 2, (short)sector.CeilingHeight.ToIntFloor());
         Write(data, p + 4, (short)sector.FloorFlat);
         Write(data, p + 6, (short)sector.CeilingFlat);
         Write(data, p + 8, (short)sector.LightLevel);
@@ -393,7 +391,7 @@ public static partial class SaveAndLoad
     {
         Write(data, p, (short)line.Flags);
         Write(data, p + 2, (short)line.Special);
-        Write(data, p + 4, (short)line.Tag);
+        Write(data, p + 4, line.Tag);
         p += 6;
 
         if (line.FrontSide is not null)

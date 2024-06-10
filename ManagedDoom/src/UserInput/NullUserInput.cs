@@ -20,7 +20,7 @@ namespace ManagedDoom.UserInput;
 
 public sealed class NullUserInput : IUserInput
 {
-    private static NullUserInput instance;
+    private static NullUserInput? instance;
 
     public static NullUserInput GetInstance()
     {

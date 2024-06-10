@@ -3,39 +3,37 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Config;
 
-[JsonSourceGenerationOptions(WriteIndented = true)]
-[JsonSerializable(typeof(ConfigValues))]
 public sealed class ConfigValues
 {
     [JsonPropertyName("key_forward")]
-    public KeyBinding KeyForward { get; set; }
+    public KeyBinding KeyForward { get; set; } = null!;
 
     [JsonPropertyName("key_backward")]
-    public KeyBinding KeyBackward { get; set; }
+    public KeyBinding KeyBackward { get; set; } = null!;
 
     [JsonPropertyName("key_strafeleft")]
-    public KeyBinding KeyStrafeLeft { get; set; }
+    public KeyBinding KeyStrafeLeft { get; set; } = null!;
 
     [JsonPropertyName("key_straferight")]
-    public KeyBinding KeyStrafeRight { get; set; }
+    public KeyBinding KeyStrafeRight { get; set; } = null!;
 
     [JsonPropertyName("key_turnleft")]
-    public KeyBinding KeyTurnLeft { get; set; }
+    public KeyBinding KeyTurnLeft { get; set; } = null!;
 
     [JsonPropertyName("key_turnright")]
-    public KeyBinding KeyTurnRight { get; set; }
+    public KeyBinding KeyTurnRight { get; set; } = null!;
 
     [JsonPropertyName("key_fire")]
-    public KeyBinding KeyFire { get; set; }
+    public KeyBinding KeyFire { get; set; } = null!;
 
     [JsonPropertyName("key_use")]
-    public KeyBinding KeyUse { get; set; }
+    public KeyBinding KeyUse { get; set; } = null!;
 
     [JsonPropertyName("key_run")]
-    public KeyBinding KeyRun { get; set; }
+    public KeyBinding KeyRun { get; set; } = null!;
 
     [JsonPropertyName("key_strafe")]
-    public KeyBinding KeyStrafe { get; set; }
+    public KeyBinding KeyStrafe { get; set; } = null!;
 
     [JsonPropertyName("mouse_sensitivity")]
     public int MouseSensitivity { get; set; }
@@ -83,13 +81,13 @@ public sealed class ConfigValues
     public bool AudioRandomPitch { get; set; }
 
     [JsonPropertyName("audio_soundfont")]
-    public string AudioSoundfont { get; set; }
+    public string AudioSoundfont { get; set; } = null!;
 
     [JsonPropertyName("audio_musiceffect")]
     public bool AudioMusicEffect { get; set; }
 
     [JsonPropertyName("wad_directory")]
-    public string WadDirectory { get; set; }
+    public string WadDirectory { get; set; } = null!;
 
     public static ConfigValues CreateDefaults()
     {
