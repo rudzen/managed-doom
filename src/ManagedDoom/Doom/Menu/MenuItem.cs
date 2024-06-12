@@ -29,5 +29,5 @@ public abstract class MenuItem
 
     public int SkullY { get; }
 
-    public MenuDef Next { get; }
+    public MenuDef? Next { get; }
 }

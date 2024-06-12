@@ -19,6 +19,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DefineConstants Condition="'$(RuntimeIdentifier)' == 'win-x64'">$(DefineConstants);WINDOWS_RELEASE</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <DefineConstants>WINDOWS_RELEASE</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="DrippyAL" Version="2.1.2" />
     <PackageReference Include="MeltySynth" Version="2.4.1" />

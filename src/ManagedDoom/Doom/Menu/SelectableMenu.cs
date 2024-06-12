@@ -30,7 +30,7 @@ public sealed class SelectableMenu : MenuDef
 
     private int index;
 
-    private TextInput textInput;
+    private TextInput? textInput;
 
     public SelectableMenu(
         DoomMenu menu,
@@ -73,11 +73,15 @@ public sealed class SelectableMenu : MenuDef
     {
         foreach (var item in items)
         {
-            var toggle = item as ToggleMenuItem;
-            toggle?.Reset();
-
-            var slider = item as SliderMenuItem;
-            slider?.Reset();
+            switch (item)
+            {
+                case ToggleMenuItem toggle:
+                    toggle.Reset();
+                    break;
+                case SliderMenuItem slider:
+                    slider.Reset();
+                    break;
+            }
         }
     }
 
@@ -104,21 +108,8 @@ public sealed class SelectableMenu : MenuDef
         if (e.Type != EventType.KeyDown)
             return true;
 
-        if (textInput != null)
-        {
-            var result = textInput.DoEvent(in e);
-
-            switch (textInput.State)
-            {
-                case TextInputState.Canceled:
-                case TextInputState.Finished:
-                    textInput = null;
-                    break;
-            }
-
-            if (result)
-                return true;
-        }
+        if (textInput is not null && HandleTextInputEvent(in e))
+            return true;
 
         switch (e.Key)
         {
@@ -175,7 +166,7 @@ public sealed class SelectableMenu : MenuDef
                         if (simple.Selectable)
                         {
                             simple.Action?.Invoke();
-                            if (simple.Next != null)
+                            if (simple.Next is not null)
                                 Menu.SetCurrent(simple.Next);
                             else
                                 Menu.Close();
@@ -186,7 +177,7 @@ public sealed class SelectableMenu : MenuDef
                     }
                 }
 
-                if (Choice.Next != null)
+                if (Choice.Next is not null)
                 {
                     Menu.SetCurrent(Choice.Next);
                     Menu.StartSound(Sfx.PISTOL);
@@ -201,5 +192,18 @@ public sealed class SelectableMenu : MenuDef
         }
 
         return true;
+    }
+
+    private bool HandleTextInputEvent(in DoomEvent e)
+    {
+        var result = textInput!.DoEvent(in e);
+
+        textInput = textInput.State switch
+        {
+            TextInputState.Canceled or TextInputState.Finished => null,
+            _                                                  => textInput
+        };
+
+        return result;
     }
 }

@@ -43,7 +43,7 @@ public sealed class Hitscan
         shootTraverseFunc = ShootTraverse;
     }
 
-    public Mobj LineTarget { get; private set; }
+    public Mobj? LineTarget { get; private set; }
 
     public Fixed BottomSlope { get; private set; }
 
@@ -358,12 +358,7 @@ public sealed class Hitscan
             PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
             aimTraverseFunc);
 
-        if (LineTarget != null)
-        {
-            return currentAimSlope;
-        }
-
-        return Fixed.Zero;
+        return LineTarget is not null ? currentAimSlope : Fixed.Zero;
     }
 
     /// <summary>
@@ -402,15 +397,11 @@ public sealed class Hitscan
         thing.Tics -= random.Next() & 3;
 
         if (thing.Tics < 1)
-        {
             thing.Tics = 1;
-        }
 
         // Don't make punches spark on the wall.
         if (currentRange == WeaponBehavior.MeleeRange)
-        {
             thing.SetState(MobjState.Puff3);
-        }
     }
 
     /// <summary>
@@ -427,17 +418,11 @@ public sealed class Hitscan
         thing.Tics -= random.Next() & 3;
 
         if (thing.Tics < 1)
-        {
             thing.Tics = 1;
-        }
 
         if (damage is <= 12 and >= 9)
-        {
             thing.SetState(MobjState.Blood2);
-        }
         else if (damage < 9)
-        {
             thing.SetState(MobjState.Blood3);
-        }
     }
 }

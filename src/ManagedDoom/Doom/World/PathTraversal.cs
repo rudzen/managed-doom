@@ -76,11 +76,9 @@ public sealed class PathTraversal
             s2 = Geometry.PointOnLineSide(Trace.X + Trace.Dx, Trace.Y + Trace.Dy, line);
         }
 
+        // Line isn't crossed.
         if (s1 == s2)
-        {
-            // Line isn't crossed.
             return true;
-        }
 
         // Hit the line.
         target.MakeFrom(line);
@@ -193,7 +191,7 @@ public sealed class PathTraversal
     {
         var count = interceptCount;
 
-        Intercept intercept = null;
+        Intercept? intercept = null;
 
         while (count-- > 0)
         {

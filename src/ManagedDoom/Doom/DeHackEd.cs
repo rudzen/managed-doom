@@ -369,8 +369,8 @@ public static class DeHackEd
 
     private static void ProcessBexStringsBlock(List<string> data)
     {
-        string name = null;
-        StringBuilder sb = null;
+        string? name = null;
+        StringBuilder? sb = null;
         var dataSpan = CollectionsMarshal.AsSpan(data)[1..];
         foreach (var line in dataSpan)
         {
@@ -415,26 +415,25 @@ public static class DeHackEd
         {
             var split = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            if (split.Length >= 3 && split[0] == "par")
+            if (split is not ["par", _, _, ..])
+                continue;
+
+            var parsed = new List<int>();
+            foreach (var value in split.Skip(1))
             {
-                var parsed = new List<int>();
-                foreach (var value in split.Skip(1))
-                {
-                    if (int.TryParse(value, out var result))
-                        parsed.Add(result);
-                    else
-                        break;
-                }
+                if (int.TryParse(value, out var result))
+                    parsed.Add(result);
+                else
+                    break;
+            }
 
-                if (parsed.Count == 2 && parsed[0] <= DoomInfo.ParTimes.Doom2.Count)
-                    DoomInfo.ParTimes.Doom2[parsed[0] - 1] = parsed[1];
-
-                if (parsed.Count >= 3 &&
-                    parsed[0] <= DoomInfo.ParTimes.Doom1.Count &&
-                    parsed[1] <= DoomInfo.ParTimes.Doom1[parsed[0] - 1].Count)
-                {
-                    DoomInfo.ParTimes.Doom1[parsed[0] - 1][parsed[1] - 1] = parsed[2];
-                }
+            if (parsed.Count == 2 && parsed[0] <= DoomInfo.ParTimes.Doom2.Count)
+                DoomInfo.ParTimes.Doom2[parsed[0] - 1] = parsed[1];
+            else if (parsed.Count >= 3 && parsed[0] <= DoomInfo.ParTimes.Doom1.Count)
+            {
+                var v = parsed[0] - 1;
+                if (parsed[1] <= DoomInfo.ParTimes.Doom1[v].Count)
+                    DoomInfo.ParTimes.Doom1[v][parsed[1] - 1] = parsed[2];
             }
         }
     }
@@ -482,187 +481,52 @@ public static class DeHackEd
 
     private static bool IsThingBlockStart(string[] split)
     {
-        return split.Length >= 2 && split[0] == "Thing" && IsNumber(split[1]);
+        return split is ["Thing", _, ..] && IsNumber(split[1]);
     }
 
     private static bool IsFrameBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Frame")
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[1]))
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Frame", _, ..] && IsNumber(split[1]);
     }
 
     private static bool IsPointerBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Pointer")
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Pointer", _, ..];
     }
 
     private static bool IsSoundBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Sound")
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[1]))
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Sound", _, ..] && IsNumber(split[1]);
     }
 
     private static bool IsAmmoBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Ammo")
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[1]))
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Ammo", _, ..] && IsNumber(split[1]);
     }
 
     private static bool IsWeaponBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Weapon")
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[1]))
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Weapon", _, ..] && IsNumber(split[1]);
     }
 
     private static bool IsCheatBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Cheat")
-        {
-            return false;
-        }
-
-        if (split[1] != "0")
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Cheat", "0", ..];
     }
 
     private static bool IsMiscBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Misc")
-        {
-            return false;
-        }
-
-        if (split[1] != "0")
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Misc", "0", ..];
     }
 
     private static bool IsTextBlockStart(string[] split)
     {
-        if (split.Length < 3)
-        {
-            return false;
-        }
-
-        if (split[0] != "Text")
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[1]))
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[2]))
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Text", _, _, ..] && IsNumber(split[1]) && IsNumber(split[2]);
     }
 
     private static bool IsSpriteBlockStart(string[] split)
     {
-        if (split.Length < 2)
-        {
-            return false;
-        }
-
-        if (split[0] != "Sprite")
-        {
-            return false;
-        }
-
-        if (!IsNumber(split[1]))
-        {
-            return false;
-        }
-
-        return true;
+        return split is ["Sprite", _, ..] && IsNumber(split[1]);
     }
 
     private static bool IsBexStringsBlockStart(string[] split)
@@ -690,15 +554,11 @@ public static class DeHackEd
 
     private static int GetInt(Dictionary<string, string> dic, string key, int defaultValue)
     {
-        if (dic.TryGetValue(key, out var value))
-        {
-            if (int.TryParse(value, out var intValue))
-                return intValue;
-        }
+        if (!dic.TryGetValue(key, out var value))
+            return defaultValue;
 
-        return defaultValue;
+        return int.TryParse(value, out var intValue) ? intValue : defaultValue;
     }
-
 
     private enum Block
     {

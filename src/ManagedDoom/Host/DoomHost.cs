@@ -40,7 +40,7 @@ public sealed class DoomHost(ISilkDoom silkDoom, IHostApplicationLifetime lifeti
             Console.ResetColor();
             Console.WriteLine();
         }
-        
+
         if (!string.IsNullOrWhiteSpace(silkDoom.QuitMessage))
         {
             Console.ForegroundColor = ConsoleColor.Green;

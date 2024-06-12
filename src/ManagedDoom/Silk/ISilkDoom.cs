@@ -21,7 +21,7 @@ using Silk.NET.Input;
 
 namespace ManagedDoom.Silk;
 
-public interface ISilkDoom : IDisposable
+public interface ISilkDoom
 {
     void KeyDown(Key key);
     void KeyUp(Key key);

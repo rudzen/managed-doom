@@ -14,11 +14,12 @@
 //
 
 
+using System;
 using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.UserInput;
 
-public interface IUserInput
+public interface IUserInput : IDisposable
 {
     void BuildTicCmd(TicCmd cmd);
     void Reset();

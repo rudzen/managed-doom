@@ -14,7 +14,7 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Silk;
 
-public sealed class SilkUserInput : IUserInput, IDisposable
+public sealed class SilkUserInput : IUserInput
 {
     private readonly ConfigValues config;
     private readonly IWindow window;
@@ -32,7 +32,7 @@ public sealed class SilkUserInput : IUserInput, IDisposable
     private Vector2 mousePrevXy;
     private Vector2 mouseDeltaXy;
 
-    public SilkUserInput(ConfigValues config, IWindow window, ISilkDoom doom, bool useMouse)
+    public SilkUserInput(ConfigValues config, IWindow window, ISilkDoom silkDoom, ICommandLineArgs args)
     {
         try
         {
@@ -45,13 +45,13 @@ public sealed class SilkUserInput : IUserInput, IDisposable
             input = window.CreateInput();
 
             keyboard = input.Keyboards[0];
-            keyboard.KeyDown += (_, key, _) => doom.KeyDown(key);
-            keyboard.KeyUp += (_, key, _) => doom.KeyUp(key);
+            keyboard.KeyDown += (_, key, _) => silkDoom.KeyDown(key);
+            keyboard.KeyUp += (_, key, _) => silkDoom.KeyUp(key);
 
             weaponKeys = new bool[7];
             turnHeld = 0;
 
-            if (useMouse)
+            if (!args.NoMouse.Present)
             {
                 mouse = input.Mice[0];
                 mouseGrabbed = false;

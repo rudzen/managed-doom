@@ -162,7 +162,7 @@ public sealed class World
 
     public int LevelTime { get; set; }
 
-    public int GameTic => Game.GameTic;
+    public int GameTic => Game!.GameTic;
 
     public bool SecretExit { get; private set; }
 
@@ -276,7 +276,8 @@ public sealed class World
         if (!Options.NetGame && !Options.DemoPlayback)
             Cheat.DoEvent(e);
 
-        if (AutoMap.Visible && AutoMap.DoEvent(e)) return true;
+        if (AutoMap.Visible && AutoMap.DoEvent(e))
+            return true;
 
         switch (e)
         {

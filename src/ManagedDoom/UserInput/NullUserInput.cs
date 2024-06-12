@@ -20,11 +20,11 @@ namespace ManagedDoom.UserInput;
 
 public sealed class NullUserInput : IUserInput
 {
-    private static NullUserInput? instance;
+    private static NullUserInput? _instance;
 
     public static NullUserInput GetInstance()
     {
-        return instance ??= new NullUserInput();
+        return _instance ??= new NullUserInput();
     }
 
     public void BuildTicCmd(TicCmd cmd)
@@ -51,5 +51,10 @@ public sealed class NullUserInput : IUserInput
         get => 3;
 
         set { }
+    }
+
+    public void Dispose()
+    {
+        // TODO release managed resources here
     }
 }

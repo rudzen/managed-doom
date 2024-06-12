@@ -80,7 +80,7 @@ public sealed class LineDef
     public Fixed[] BoundingBox { get; }
     public SlopeType SlopeType { get; }
     public Sector FrontSector { get; }
-    public Sector BackSector { get; }
+    public Sector? BackSector { get; }
     public int ValidCount { get; set; }
     public Thinker SpecialData { get; set; }
     public Mobj SoundOrigin { get; set; }

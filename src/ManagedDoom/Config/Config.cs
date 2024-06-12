@@ -23,7 +23,7 @@ namespace ManagedDoom.Config;
 
 public sealed class Config : IConfig
 {
-    public ConfigValues Values { get; }
+    public ConfigValues? Values { get; }
 
     public bool IsRestoredFromFile { get; }
 

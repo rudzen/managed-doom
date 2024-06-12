@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 #if WINDOWS_RELEASE
 using System.Diagnostics;
@@ -40,66 +41,68 @@ public sealed partial class SilkDoom
         return Task.CompletedTask;
     }
 #else
-        [DllImport("winmm.dll")]
-        private static extern uint timeBeginPeriod(uint uPeriod);
+    [LibraryImport("winmm.dll")]
+    private static partial uint timeBeginPeriod(uint uPeriod);
 
-        [DllImport("winmm.dll")]
-        private static extern uint timeEndPeriod(uint uPeriod);
+    [LibraryImport("winmm.dll")]
+    private static partial uint timeEndPeriod(uint uPeriod);
 
-        private void Sleep(int ms)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void Sleep(int ms)
+    {
+        timeBeginPeriod(1);
+        Thread.Sleep(ms);
+        timeEndPeriod(1);
+    }
+
+    public Task Run()
+    {
+        config.Values.VideoFpsScale = Math.Clamp(config.Values.VideoFpsScale, 1, 100);
+        var targetFps = 35 * config.Values.VideoFpsScale;
+
+        window.FramesPerSecond = 0;
+        window.UpdatesPerSecond = 0;
+
+        if (args.TimeDemo.Present)
+            window.Run();
+        else
         {
-            timeBeginPeriod(1);
-            Thread.Sleep(ms);
-            timeEndPeriod(1);
-        }
+            window.Initialize();
 
-        public Task Run()
-        {
-            config.Values.video_fpsscale = Math.Clamp(config.Values.video_fpsscale, 1, 100);
-            var targetFps = 35 * config.Values.video_fpsscale;
+            var gameTime = TimeSpan.Zero;
+            var gameTimeStep = TimeSpan.FromSeconds(1.0 / targetFps);
+            var startTime = Stopwatch.GetTimestamp();
 
-            window.FramesPerSecond = 0;
-            window.UpdatesPerSecond = 0;
-
-            if (args.timedemo.Present)
-                window.Run();
-            else
+            while (true)
             {
-                window.Initialize();
+                window.DoEvents();
 
-                var gameTime = TimeSpan.Zero;
-                var gameTimeStep = TimeSpan.FromSeconds(1.0 / targetFps);
-                var startTime = Stopwatch.GetTimestamp();
-
-                while (true)
+                if (!window.IsClosing)
                 {
-                    window.DoEvents();
-
-                    if (!window.IsClosing)
-                    {
-                        window.DoUpdate();
-                        gameTime += gameTimeStep;
-                    }
-
-                    if (!window.IsClosing)
-                    {
-                        var elap = Stopwatch.GetElapsedTime(startTime);
-                        if (elap >= gameTime) continue;
-                        window.DoRender();
-                        var sleepTime = gameTime - elap;
-                        var ms = (int)sleepTime.TotalMilliseconds;
-                        if (ms > 0)
-                            Sleep(ms);
-                    }
-                    else
-                        break;
+                    window.DoUpdate();
+                    gameTime += gameTimeStep;
                 }
 
-                window.DoEvents();
-                window.Reset();
+                if (!window.IsClosing)
+                {
+                    var elapsed = Stopwatch.GetElapsedTime(startTime);
+                    if (elapsed >= gameTime) continue;
+                    window.DoRender();
+                    var sleepTime = gameTime - elapsed;
+                    if (sleepTime > TimeSpan.Zero)
+                        Sleep((int)sleepTime.TotalMilliseconds);
+                }
+                else
+                    break;
             }
 
-            Quit();
+            window.DoEvents();
+            window.Reset();
         }
+
+        Quit();
+
+        return Task.CompletedTask;
+    }
 #endif
 }

@@ -24,7 +24,7 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class WeaponBehavior
+public sealed class WeaponBehavior(World world)
 {
     public static readonly Fixed MeleeRange = Fixed.FromInt(64);
     public static readonly Fixed MissileRange = Fixed.FromInt(32 * 64);
@@ -35,14 +35,7 @@ public sealed class WeaponBehavior
     private static readonly Fixed RaiseSpeed = Fixed.FromInt(6);
     private static readonly Fixed LowerSpeed = Fixed.FromInt(6);
 
-    private readonly World world;
-
     private Fixed currentBulletSlope;
-
-    public WeaponBehavior(World world)
-    {
-        this.world = world;
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Light0(Player player)
@@ -74,7 +67,7 @@ public sealed class WeaponBehavior
         {
             // Change weapon.
             // Pending weapon should allready be validated.
-            var newState = DoomInfo.WeaponInfos[(int)player.ReadyWeapon].DownState;
+            var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].DownState;
             pb.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
             return;
         }
@@ -126,24 +119,24 @@ public sealed class WeaponBehavior
         // Preferences are set here.
         do
         {
-            if (player.WeaponOwned[(int)WeaponType.Plasma] &&
+            if (player.WeaponOwned[WeaponType.Plasma] &&
                 player.Ammo[(int)AmmoType.Cell] > 0 &&
                 world.Options.GameMode != GameMode.Shareware)
             {
                 player.PendingWeapon = WeaponType.Plasma;
             }
-            else if (player.WeaponOwned[(int)WeaponType.SuperShotgun] &&
+            else if (player.WeaponOwned[WeaponType.SuperShotgun] &&
                      player.Ammo[(int)AmmoType.Shell] > 2 &&
                      world.Options.GameMode == GameMode.Commercial)
             {
                 player.PendingWeapon = WeaponType.SuperShotgun;
             }
-            else if (player.WeaponOwned[(int)WeaponType.Chaingun] &&
+            else if (player.WeaponOwned[WeaponType.Chaingun] &&
                      player.Ammo[(int)AmmoType.Clip] > 0)
             {
                 player.PendingWeapon = WeaponType.Chaingun;
             }
-            else if (player.WeaponOwned[(int)WeaponType.Shotgun] &&
+            else if (player.WeaponOwned[WeaponType.Shotgun] &&
                      player.Ammo[(int)AmmoType.Shell] > 0)
             {
                 player.PendingWeapon = WeaponType.Shotgun;
@@ -152,16 +145,16 @@ public sealed class WeaponBehavior
             {
                 player.PendingWeapon = WeaponType.Pistol;
             }
-            else if (player.WeaponOwned[(int)WeaponType.Chainsaw])
+            else if (player.WeaponOwned[WeaponType.Chainsaw])
             {
                 player.PendingWeapon = WeaponType.Chainsaw;
             }
-            else if (player.WeaponOwned[(int)WeaponType.Missile] &&
+            else if (player.WeaponOwned[WeaponType.Missile] &&
                      player.Ammo[(int)AmmoType.Missile] > 0)
             {
                 player.PendingWeapon = WeaponType.Missile;
             }
-            else if (player.WeaponOwned[(int)WeaponType.Bfg] &&
+            else if (player.WeaponOwned[WeaponType.Bfg] &&
                      player.Ammo[(int)AmmoType.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
                      world.Options.GameMode != GameMode.Shareware)
             {
@@ -178,7 +171,7 @@ public sealed class WeaponBehavior
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Weapon,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].DownState);
+            DoomInfo.WeaponInfos[player.ReadyWeapon].DownState);
 
         return false;
     }
@@ -240,7 +233,7 @@ public sealed class WeaponBehavior
 
         player.Mobj.SetState(MobjState.PlayAtk1);
 
-        var newState = DoomInfo.WeaponInfos[(int)player.ReadyWeapon].AttackState;
+        var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].AttackState;
         world.PlayerBehavior.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
 
         NoiseAlert(player.Mobj, player.Mobj);
@@ -291,7 +284,7 @@ public sealed class WeaponBehavior
         psp.Sy = WeaponTop;
 
         // The weapon has been raised all the way, so change to the ready state.
-        var newState = DoomInfo.WeaponInfos[(int)player.ReadyWeapon].ReadyState;
+        var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].ReadyState;
 
         world.PlayerBehavior.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
     }
@@ -435,12 +428,12 @@ public sealed class WeaponBehavior
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState);
+            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
 
         BulletSlope(player.Mobj);
 
@@ -460,12 +453,12 @@ public sealed class WeaponBehavior
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState);
+            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
 
         BulletSlope(player.Mobj);
 
@@ -486,17 +479,17 @@ public sealed class WeaponBehavior
     {
         world.StartSound(player.Mobj, Sfx.PISTOL, SfxType.Weapon);
 
-        if (player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo] == 0)
+        if (player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] == 0)
             return;
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState +
+            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState +
             psp.State.Number - DoomInfo.States[(int)MobjState.Chain1].Number);
 
         BulletSlope(player.Mobj);
@@ -511,12 +504,12 @@ public sealed class WeaponBehavior
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo] -= 2;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= 2;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState);
+            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
 
         BulletSlope(player.Mobj);
 
@@ -570,13 +563,13 @@ public sealed class WeaponBehavior
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState);
+            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireMissile(Player player)
     {
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Rocket);
     }
@@ -584,12 +577,12 @@ public sealed class WeaponBehavior
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FirePlasma(Player player)
     {
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo]--;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[(int)player.ReadyWeapon].FlashState + (world.Random.Next() & 1));
+            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState + (world.Random.Next() & 1));
 
         world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Plasma);
     }
@@ -603,7 +596,7 @@ public sealed class WeaponBehavior
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireBFG(Player player)
     {
-        player.Ammo[(int)DoomInfo.WeaponInfos[(int)player.ReadyWeapon].Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
+        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
 
         world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Bfg);
     }

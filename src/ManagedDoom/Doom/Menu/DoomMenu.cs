@@ -294,18 +294,17 @@ public sealed class DoomMenu
             return true;
         }
 
-        if (e.Type == EventType.KeyDown && Doom.State == DoomState.Opening)
+        var menuSelected = e.Type == EventType.KeyDown
+                           && Doom.State == DoomState.Opening
+                           && e.Key is DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl or DoomKey.Escape;
+        if (menuSelected)
         {
-            if (e.Key is DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl or DoomKey.Escape)
-            {
-                SetCurrent(main);
-                Open();
-                StartSound(Sfx.SWTCHN);
-                return true;
-            }
+            SetCurrent(main);
+            Open();
+            StartSound(Sfx.SWTCHN);
         }
 
-        return false;
+        return menuSelected;
     }
 
     public void Update()
