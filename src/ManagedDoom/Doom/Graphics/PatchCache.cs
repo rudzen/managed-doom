@@ -16,19 +16,14 @@
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class PatchCache
+public sealed class PatchCache(IGameContent content) : IPatchCache
 {
-    private readonly Wad.Wad wad;
-    private readonly Dictionary<string, Patch> cache;
-
-    public PatchCache(Wad.Wad wad)
-    {
-        this.wad = wad;
-        cache = new Dictionary<string, Patch>(32);
-    }
+    private readonly Wad.Wad wad = content.Wad;
+    private readonly Dictionary<string, Patch> cache = new(32);
 
     public Patch this[string name]
     {

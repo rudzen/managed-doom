@@ -20,24 +20,9 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video;
 
-public sealed class FinaleRenderer
+public sealed class FinaleRenderer(IFlatLookup flats, ISpriteLookup sprites, IPatchCache patchCache, IDrawScreen screen)
 {
-    private readonly PatchCache cache;
-    private readonly IFlatLookup flats;
-    private readonly int scale;
-
-    private readonly DrawScreen screen;
-    private readonly ISpriteLookup sprites;
-
-    public FinaleRenderer(IFlatLookup flats, ISpriteLookup sprites, PatchCache patchCache, DrawScreen screen)
-    {
-        this.flats = flats;
-        this.sprites = sprites;
-        cache = patchCache;
-
-        this.screen = screen;
-        scale = screen.Width / 320;
-    }
+    private readonly int scale = screen.Width / 320;
 
     public void Render(Finale finale)
     {
@@ -175,7 +160,7 @@ public sealed class FinaleRenderer
     private void DrawPatch(string name, int x, int y)
     {
         var widthScaled = screen.Width / 320;
-        screen.DrawPatch(cache[name], widthScaled * x, widthScaled * y, widthScaled);
+        screen.DrawPatch(patchCache[name], widthScaled * x, widthScaled * y, widthScaled);
     }
 
     private void RenderCast(Finale finale)

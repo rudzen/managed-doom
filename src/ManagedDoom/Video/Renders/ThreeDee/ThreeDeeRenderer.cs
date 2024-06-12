@@ -34,7 +34,7 @@ public sealed class ThreeDeeRenderer
     private readonly IFlatLookup flats;
     private readonly ISpriteLookup sprites;
 
-    private readonly DrawScreen screen;
+    private readonly IDrawScreen screen;
     private readonly int screenWidth;
     private readonly int screenHeight;
     private readonly byte[] screenData;
@@ -57,7 +57,7 @@ public sealed class ThreeDeeRenderer
     private readonly ColorTranslation colorTranslation;
     private readonly WindowBorder windowBorder;
 
-    public ThreeDeeRenderer(IGameContent content, DrawScreen screen, int windowSize)
+    public ThreeDeeRenderer(IGameContent content, IDrawScreen screen, int windowSize)
     {
         colorMap = content.ColorMap;
         textures = content.Textures;

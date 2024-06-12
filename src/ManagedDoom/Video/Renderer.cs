@@ -53,35 +53,38 @@ public sealed class Renderer : IRenderer
     private readonly FinaleRenderer finale;
     private readonly IntermissionRenderer intermission;
 
-    private readonly MenuRenderer menu;
+    private readonly IMenuRenderer menu;
     private readonly OpeningSequenceRenderer openingSequence;
 
     private readonly Palette palette;
 
     private readonly Patch pause;
 
-    private readonly DrawScreen screen;
+    private readonly IDrawScreen screen;
     private readonly StatusBarRenderer statusBar;
     private readonly ThreeDeeRenderer threeDee;
 
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
 
-    public Renderer(ISilkConfig silkConfig, IGameContent content)
+    public Renderer(
+        ISilkConfig silkConfig,
+        IGameContent content,
+        IPatchCache patchCache,
+        IDrawScreen drawScreen,
+        IMenuRenderer menuRenderer
+        )
     {
         this.config = silkConfig.Config.Values;
 
         palette = content.Palette;
 
-        screen = config.VideoHighResolution
-            ? new DrawScreen(content.Wad, 640, 400)
-            : new DrawScreen(content.Wad, 320, 200);
+        screen = drawScreen;
 
         config.VideoGameScreenSize = Math.Clamp(config.VideoGameScreenSize, 0, MaxWindowSize);
         config.VideoGammaCorrection = Math.Clamp(config.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
 
-        var patchCache = new PatchCache(content.Wad);
-        menu = new MenuRenderer(patchCache, screen);
+        menu = menuRenderer;
         threeDee = new ThreeDeeRenderer(content, screen, config.VideoGameScreenSize);
         statusBar = new StatusBarRenderer(content.Wad, screen);
         intermission = new IntermissionRenderer(content.Wad, patchCache, screen);

@@ -16,23 +16,27 @@
 
 using System;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Doom.Wad;
+using ManagedDoom.Silk;
 
 namespace ManagedDoom.Video;
 
-public sealed class DrawScreen
+public sealed class DrawScreen : IDrawScreen
 {
     private readonly Patch?[] chars;
 
-    public DrawScreen(Wad wad, int width, int height)
+    public DrawScreen(IGameContent gameContent, ISilkConfig silkConfig)
     {
+        var (width, height) = silkConfig.Config.Values.VideoHighResolution ? (640, 400) : (320, 200);
+
         this.Width = width;
         this.Height = height;
         Data = new byte[width * height];
 
         chars = new Patch[128];
+        var wad = gameContent.Wad;
         for (var i = 0; i < chars.Length; i++)
         {
             var name = $"STCFN{i:000}";

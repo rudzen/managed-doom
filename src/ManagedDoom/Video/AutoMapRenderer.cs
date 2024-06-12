@@ -87,14 +87,14 @@ public sealed class AutoMapRenderer
 
     private readonly int scale;
 
-    private readonly DrawScreen screen;
+    private readonly IDrawScreen screen;
 
     private Vector2 actualView = Vector2.Zero;
     private Vector2 renderView = Vector2.Zero;
 
     private float zoom;
 
-    public AutoMapRenderer(Wad wad, DrawScreen screen)
+    public AutoMapRenderer(Wad wad, IDrawScreen screen)
     {
         this.screen = screen;
 

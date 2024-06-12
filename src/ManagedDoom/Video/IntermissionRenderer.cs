@@ -73,7 +73,7 @@ public sealed class IntermissionRenderer
     private static readonly string[][] doomLevels;
     private static readonly string[] doom2Levels;
 
-    private readonly PatchCache cache;
+    private readonly IPatchCache cache;
     private readonly Patch colon;
 
     private readonly Patch minus;
@@ -81,7 +81,7 @@ public sealed class IntermissionRenderer
     private readonly Patch percent;
 
     private readonly int scale;
-    private readonly DrawScreen screen;
+    private readonly IDrawScreen screen;
 
     static IntermissionRenderer()
     {
@@ -98,7 +98,7 @@ public sealed class IntermissionRenderer
             doom2Levels[m] = $"CWILV{m:00}";
     }
 
-    public IntermissionRenderer(Wad wad, PatchCache patchCache, DrawScreen screen)
+    public IntermissionRenderer(Wad wad, IPatchCache patchCache, IDrawScreen screen)
     {
         this.screen = screen;
 

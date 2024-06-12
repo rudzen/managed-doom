@@ -21,21 +21,11 @@ using ManagedDoom.Doom.Menu;
 
 namespace ManagedDoom.Video;
 
-public sealed class MenuRenderer
+public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : IMenuRenderer
 {
     private static readonly char[]? cursor = ['_'];
 
-    private readonly PatchCache cache;
-
     private readonly char[]? emptyText = "EMPTY SLOT".ToCharArray();
-
-    private readonly DrawScreen screen;
-
-    public MenuRenderer(PatchCache patchCache, DrawScreen screen)
-    {
-        this.screen = screen;
-        cache = patchCache;
-    }
 
     public void Render(DoomMenu menu)
     {
@@ -141,7 +131,7 @@ public sealed class MenuRenderer
     private void DrawMenuPatch(string name, int x, int y)
     {
         var scale = screen.Width / 320;
-        screen.DrawPatch(cache[name], scale * x, scale * y, scale);
+        screen.DrawPatch(patchCache[name], scale * x, scale * y, scale);
     }
 
     private void DrawMenuText(IReadOnlyList<char>? text, int x, int y)

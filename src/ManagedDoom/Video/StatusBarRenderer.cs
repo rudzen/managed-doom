@@ -115,11 +115,11 @@ public sealed class StatusBarRenderer
 
     private readonly int scale;
 
-    private readonly DrawScreen screen;
+    private readonly IDrawScreen screen;
 
     private readonly MultIconWidget[] weapons;
 
-    public StatusBarRenderer(Wad wad, DrawScreen screen)
+    public StatusBarRenderer(Wad wad, IDrawScreen screen)
     {
         this.screen = screen;
 

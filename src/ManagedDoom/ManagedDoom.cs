@@ -2,6 +2,7 @@
 using ManagedDoom;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Host;
 using ManagedDoom.Silk;
 using ManagedDoom.Video;
@@ -52,8 +53,11 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<IAudioFactory, AudioFactory>();
 
                 // game content
+              services.AddSingleton<IDrawScreen, DrawScreen>();
               services.AddSingleton<IRenderer, Renderer>();
+              services.AddSingleton<IMenuRenderer, MenuRenderer>();
               services.AddSingleton<IGameContent, GameContent>();
+              services.AddSingleton<IPatchCache, PatchCache>();
 
               services.AddHostedService<DoomHost>();
           })

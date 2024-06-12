@@ -20,20 +20,8 @@ using ManagedDoom.Doom.Opening;
 
 namespace ManagedDoom.Video;
 
-public sealed class OpeningSequenceRenderer
+public sealed class OpeningSequenceRenderer(IPatchCache patchCache, IDrawScreen screen, Renderer parent)
 {
-    private readonly PatchCache cache;
-    private readonly Renderer parent;
-    private readonly DrawScreen screen;
-
-    public OpeningSequenceRenderer(PatchCache patchCache, DrawScreen screen, Renderer parent)
-    {
-        this.screen = screen;
-        this.parent = parent;
-
-        cache = patchCache;
-    }
-
     public void Render(IOpeningSequence sequence, Fixed frameFrac)
     {
         var scale = screen.Width / 320;
@@ -41,7 +29,7 @@ public sealed class OpeningSequenceRenderer
         switch (sequence.State)
         {
             case OpeningSequenceState.Title:
-                screen.DrawPatch(cache["TITLEPIC"], 0, 0, scale);
+                screen.DrawPatch(patchCache["TITLEPIC"], 0, 0, scale);
                 break;
 
             case OpeningSequenceState.Demo:
@@ -49,7 +37,7 @@ public sealed class OpeningSequenceRenderer
                 break;
 
             case OpeningSequenceState.Credit:
-                screen.DrawPatch(cache["CREDIT"], 0, 0, scale);
+                screen.DrawPatch(patchCache["CREDIT"], 0, 0, scale);
                 break;
         }
     }
