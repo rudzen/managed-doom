@@ -22,10 +22,11 @@ using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Silk;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
 
-public sealed class ThreeDeeRenderer
+public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 {
     public const int MaxScreenSize = 9;
 
@@ -57,7 +58,7 @@ public sealed class ThreeDeeRenderer
     private readonly ColorTranslation colorTranslation;
     private readonly WindowBorder windowBorder;
 
-    public ThreeDeeRenderer(IGameContent content, IDrawScreen screen, int windowSize)
+    public ThreeDeeRenderer(IGameContent content, IDrawScreen screen, ISilkConfig silkConfig)
     {
         colorMap = content.ColorMap;
         textures = content.Textures;
@@ -70,7 +71,7 @@ public sealed class ThreeDeeRenderer
         screenData = screen.Data;
         drawScale = screenWidth / 320;
 
-        this.windowSize = windowSize;
+        this.windowSize = silkConfig.Config.Values.VideoGameScreenSize;
 
         this.wallRender = new WallRender(screenWidth);
         this.planeRender = new PlaneRender(screenWidth, screenHeight);
@@ -1924,10 +1925,10 @@ public sealed class ThreeDeeRenderer
 
             var lowScale = wall.Scale2;
             var scale = wall.Scale1;
-            
+
             if (scale > lowScale)
                 (lowScale, scale) = (scale, lowScale);
-            
+
             if (scale < sprite.Scale ||
                 (lowScale < sprite.Scale &&
                  Geometry.PointOnSegSide(sprite.GlobalX, sprite.GlobalY, wall.Seg) == 0))

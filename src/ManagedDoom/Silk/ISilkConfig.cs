@@ -1,6 +1,4 @@
-﻿using DrippyAL;
-using ManagedDoom.Config;
-using ManagedDoom.Doom.Game;
+﻿using ManagedDoom.Config;
 
 namespace ManagedDoom.Silk;
 

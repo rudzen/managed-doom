@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
 using ManagedDoom.Config;
-using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Math;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;

@@ -15,12 +15,9 @@
 
 
 using System;
-using System.IO;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
-using DrippyAL;
 using ManagedDoom.Config;
-using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Silk;
 
@@ -31,6 +28,9 @@ public sealed class SilkConfig : ISilkConfig
 
     private const int MinScreenHeight = 200;
     private const int MaxScreenHeight = 2000;
+
+    private const int MaxScreenSize = 9;
+    private const int MaxGammaCorrectionLevel = 11;
 
     public SilkConfig(IConfig config)
     {
@@ -45,6 +45,9 @@ public sealed class SilkConfig : ISilkConfig
 
         config.Values.VideoScreenWidth = Math.Clamp(config.Values.VideoScreenWidth, MinScreenWidth, MaxScreenWidth);
         config.Values.VideoScreenHeight = Math.Clamp(config.Values.VideoScreenHeight, MinScreenHeight, MaxScreenHeight);
+
+        config.Values.VideoGameScreenSize = Math.Clamp(config.Values.VideoGameScreenSize, 0, MaxScreenSize);
+        config.Values.VideoGammaCorrection = Math.Clamp(config.Values.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
     }
 
     public IConfig Config { get; }

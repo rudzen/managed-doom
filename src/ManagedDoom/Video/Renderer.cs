@@ -47,22 +47,22 @@ public sealed class Renderer : IRenderer
         0.50
     ];
 
-    private readonly AutoMapRenderer autoMap;
+    private readonly IAutoMapRenderer autoMapRenderer;
 
     private readonly ConfigValues config;
-    private readonly FinaleRenderer finale;
-    private readonly IntermissionRenderer intermission;
+    private readonly IFinaleRenderer finaleRenderer;
+    private readonly IIntermissionRenderer intermissionRenderer;
 
-    private readonly IMenuRenderer menu;
-    private readonly OpeningSequenceRenderer openingSequence;
+    private readonly IMenuRenderer menuRenderer;
+    private readonly IOpeningSequenceRenderer openingSequenceRenderer;
 
     private readonly Palette palette;
 
     private readonly Patch pause;
 
     private readonly IDrawScreen screen;
-    private readonly StatusBarRenderer statusBar;
-    private readonly ThreeDeeRenderer threeDee;
+    private readonly IStatusBarRenderer statusBarRenderer;
+    private readonly IThreeDeeRenderer threeDeeRenderer;
 
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
@@ -70,29 +70,30 @@ public sealed class Renderer : IRenderer
     public Renderer(
         ISilkConfig silkConfig,
         IGameContent content,
-        IPatchCache patchCache,
         IDrawScreen drawScreen,
-        IMenuRenderer menuRenderer
-        )
+        IMenuRenderer menuRenderer,
+        IThreeDeeRenderer threeDeeRenderer,
+        IStatusBarRenderer statusBarRenderer,
+        IIntermissionRenderer intermissionRenderer,
+        IOpeningSequenceRenderer openingSequenceRenderer,
+        IAutoMapRenderer autoMapRenderer,
+        IFinaleRenderer finaleRenderer)
     {
         this.config = silkConfig.Config.Values;
 
-        palette = content.Palette;
+        this.palette = content.Palette;
 
-        screen = drawScreen;
+        this.screen = drawScreen;
 
-        config.VideoGameScreenSize = Math.Clamp(config.VideoGameScreenSize, 0, MaxWindowSize);
-        config.VideoGammaCorrection = Math.Clamp(config.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
+        this.menuRenderer = menuRenderer;
+        this.threeDeeRenderer = threeDeeRenderer;
+        this.statusBarRenderer = statusBarRenderer;
+        this.intermissionRenderer = intermissionRenderer;
+        this.openingSequenceRenderer = openingSequenceRenderer;
+        this.autoMapRenderer = autoMapRenderer;
+        this.finaleRenderer = finaleRenderer;
 
-        menu = menuRenderer;
-        threeDee = new ThreeDeeRenderer(content, screen, config.VideoGameScreenSize);
-        statusBar = new StatusBarRenderer(content.Wad, screen);
-        intermission = new IntermissionRenderer(content.Wad, patchCache, screen);
-        openingSequence = new OpeningSequenceRenderer(patchCache, screen, this);
-        autoMap = new AutoMapRenderer(content.Wad, screen);
-        finale = new FinaleRenderer(content.Flats, content.Sprites, patchCache, screen);
-
-        pause = Patch.FromWad(content.Wad, "M_PAUSE");
+        this.pause = Patch.FromWad(content.Wad, "M_PAUSE");
 
         var scale = screen.Width / 320;
         wipeBandWidth = 2 * scale;
@@ -114,18 +115,22 @@ public sealed class Renderer : IRenderer
 
     public int WindowSize
     {
-        get => threeDee.WindowSize;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => threeDeeRenderer.WindowSize;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
             config.VideoGameScreenSize = value;
-            threeDee.WindowSize = value;
+            threeDeeRenderer.WindowSize = value;
         }
     }
 
     public bool DisplayMessage
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => config.VideoDisplayMessage;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set => config.VideoDisplayMessage = value;
     }
 
@@ -133,7 +138,9 @@ public sealed class Renderer : IRenderer
 
     public int GammaCorrectionLevel
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => config.VideoGammaCorrection;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
             config.VideoGammaCorrection = value;
@@ -141,6 +148,7 @@ public sealed class Renderer : IRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RenderDoom(Doom.Doom doom, Fixed frameFrac)
     {
         switch (doom.State)
@@ -149,10 +157,11 @@ public sealed class Renderer : IRenderer
                 RenderGame(doom.Game, frameFrac);
                 break;
             case DoomState.Opening:
-                openingSequence.Render(doom.Opening, frameFrac);
+                if (!openingSequenceRenderer.Render(doom.Opening))
+                    RenderGame(doom.Opening.DemoGame!, frameFrac);
                 break;
             case DoomState.DemoPlayback:
-                RenderGame(doom.DemoPlayback.Game, frameFrac);
+                RenderGame(doom.DemoPlayback!.Game, frameFrac);
                 break;
         }
 
@@ -170,12 +179,7 @@ public sealed class Renderer : IRenderer
         }
     }
 
-    private void RenderMenu(Doom.Doom doom)
-    {
-        if (doom.Menu.Active)
-            menu.Render(doom.Menu);
-    }
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderGame(DoomGame game, Fixed frameFrac)
     {
         if (game.Paused)
@@ -190,19 +194,19 @@ public sealed class Renderer : IRenderer
 
                 if (game.World.AutoMap.Visible)
                 {
-                    autoMap.Render(consolePlayer);
-                    statusBar.Render(consolePlayer, BackgroundDrawingType.Full);
+                    autoMapRenderer.Render(consolePlayer);
+                    statusBarRenderer.Render(consolePlayer, BackgroundDrawingType.Full);
                 }
                 else
                 {
-                    threeDee.Render(displayPlayer, frameFrac);
-                    switch (threeDee.WindowSize)
+                    threeDeeRenderer.Render(displayPlayer, frameFrac);
+                    switch (threeDeeRenderer.WindowSize)
                     {
                         case < 8:
-                            statusBar.Render(consolePlayer, BackgroundDrawingType.Full);
+                            statusBarRenderer.Render(consolePlayer, BackgroundDrawingType.Full);
                             break;
                         case ThreeDeeRenderer.MaxScreenSize:
-                            statusBar.Render(consolePlayer, BackgroundDrawingType.None);
+                            statusBarRenderer.Render(consolePlayer, BackgroundDrawingType.None);
                             break;
                     }
                 }
@@ -219,14 +223,15 @@ public sealed class Renderer : IRenderer
                 break;
             }
             case GameState.Intermission:
-                intermission.Render(game.Intermission);
+                intermissionRenderer.Render(game.Intermission);
                 break;
             case GameState.Finale:
-                finale.Render(game.Finale);
+                finaleRenderer.Render(game.Finale);
                 break;
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Doom.Doom doom, Span<byte> destination, Fixed frameFrac)
     {
         if (doom.Wiping)
@@ -236,7 +241,7 @@ public sealed class Renderer : IRenderer
         }
 
         RenderDoom(doom, frameFrac);
-        RenderMenu(doom);
+        menuRenderer.Render(doom.Menu);
 
         uint[] colors;
 
@@ -252,6 +257,7 @@ public sealed class Renderer : IRenderer
         WriteData(colors, destination);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RenderWipe(Doom.Doom doom, Span<byte> destination)
     {
         RenderDoom(doom, Fixed.One);
@@ -279,11 +285,12 @@ public sealed class Renderer : IRenderer
             }
         }
 
-        RenderMenu(doom);
+        menuRenderer.Render(doom.Menu);
 
         WriteData(palette[0], destination);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void InitializeWipe()
     {
         Array.Copy(screen.Data, wipeBuffer, screen.Data.Length);

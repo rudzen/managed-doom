@@ -15,14 +15,13 @@
 
 
 using ManagedDoom.Doom.Graphics;
-using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Opening;
 
 namespace ManagedDoom.Video;
 
-public sealed class OpeningSequenceRenderer(IPatchCache patchCache, IDrawScreen screen, Renderer parent)
+public sealed class OpeningSequenceRenderer(IPatchCache patchCache, IDrawScreen screen) : IOpeningSequenceRenderer
 {
-    public void Render(IOpeningSequence sequence, Fixed frameFrac)
+    public bool Render(IOpeningSequence sequence)
     {
         var scale = screen.Width / 320;
 
@@ -30,15 +29,16 @@ public sealed class OpeningSequenceRenderer(IPatchCache patchCache, IDrawScreen 
         {
             case OpeningSequenceState.Title:
                 screen.DrawPatch(patchCache["TITLEPIC"], 0, 0, scale);
-                break;
+                return true;
 
             case OpeningSequenceState.Demo:
-                parent.RenderGame(sequence.DemoGame, frameFrac);
-                break;
+                return false;
 
             case OpeningSequenceState.Credit:
                 screen.DrawPatch(patchCache["CREDIT"], 0, 0, scale);
-                break;
+                return true;
+            default:
+                return true;
         }
     }
 }

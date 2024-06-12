@@ -29,6 +29,9 @@ public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : I
 
     public void Render(DoomMenu menu)
     {
+        if (!menu.Active)
+            return;
+        
         switch (menu.Current)
         {
             case SelectableMenu selectable:

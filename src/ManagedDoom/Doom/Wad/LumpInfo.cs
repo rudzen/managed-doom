@@ -14,8 +14,6 @@
 //
 
 
-using System.IO;
-
 namespace ManagedDoom.Doom.Wad;
 
 public sealed record LumpInfo(string Name, byte[]? Data)

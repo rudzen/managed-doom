@@ -6,12 +6,11 @@ using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Host;
 using ManagedDoom.Silk;
 using ManagedDoom.Video;
+using ManagedDoom.Video.Renders.ThreeDee;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Input.Glfw;
-using Silk.NET.Maths;
-using Silk.NET.Windowing;
 using Silk.NET.Windowing.Glfw;
 
 Console.WriteLine(ApplicationInfo.Logo());
@@ -56,6 +55,12 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<IDrawScreen, DrawScreen>();
               services.AddSingleton<IRenderer, Renderer>();
               services.AddSingleton<IMenuRenderer, MenuRenderer>();
+              services.AddSingleton<IThreeDeeRenderer, ThreeDeeRenderer>();
+              services.AddSingleton<IStatusBarRenderer, StatusBarRenderer>();
+              services.AddSingleton<IIntermissionRenderer, IntermissionRenderer>();
+              services.AddSingleton<IOpeningSequenceRenderer, OpeningSequenceRenderer>();
+              services.AddSingleton<IAutoMapRenderer, AutoMapRenderer>();
+              services.AddSingleton<IFinaleRenderer, FinaleRenderer>();
               services.AddSingleton<IGameContent, GameContent>();
               services.AddSingleton<IPatchCache, PatchCache>();
 

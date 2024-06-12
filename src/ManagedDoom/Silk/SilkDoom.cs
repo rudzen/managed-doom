@@ -5,7 +5,6 @@ using System.Threading;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
-using DrippyAL;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;

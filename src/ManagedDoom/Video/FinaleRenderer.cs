@@ -14,15 +14,18 @@
 //
 
 
+using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Intermission;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video;
 
-public sealed class FinaleRenderer(IFlatLookup flats, ISpriteLookup sprites, IPatchCache patchCache, IDrawScreen screen)
+public sealed class FinaleRenderer(IGameContent gameContent, IPatchCache patchCache, IDrawScreen screen) : IFinaleRenderer
 {
     private readonly int scale = screen.Width / 320;
+    private readonly IFlatLookup flats = gameContent.Flats;
+    private readonly ISpriteLookup sprites = gameContent.Sprites;
 
     public void Render(Finale finale)
     {

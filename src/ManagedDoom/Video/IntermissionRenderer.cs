@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Intermission;
-using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Video;
 
-public sealed class IntermissionRenderer
+public sealed class IntermissionRenderer : IIntermissionRenderer
 {
     // GLOBAL LOCATIONS
     private const int titleY = 2;
@@ -98,23 +97,20 @@ public sealed class IntermissionRenderer
             doom2Levels[m] = $"CWILV{m:00}";
     }
 
-    public IntermissionRenderer(Wad wad, IPatchCache patchCache, IDrawScreen screen)
+    public IntermissionRenderer(IGameContent gameContent, IPatchCache patchCache, IDrawScreen screen)
     {
         this.screen = screen;
-
-        cache = patchCache;
-
-        minus = Patch.FromWad(wad, "WIMINUS");
-        numbers = new Patch[10];
+        this.cache = patchCache;
+        var wad = gameContent.Wad;
+        this.minus = Patch.FromWad(wad, "WIMINUS");
+        this.numbers = new Patch[10];
         for (var i = 0; i < 10; i++)
             numbers[i] = Patch.FromWad(wad, $"WINUM{i}");
 
-        percent = Patch.FromWad(wad, "WIPCNT");
-        colon = Patch.FromWad(wad, "WICOLON");
-
-        scale = screen.Width / 320;
+        this.percent = Patch.FromWad(wad, "WIPCNT");
+        this.colon = Patch.FromWad(wad, "WICOLON");
+        this.scale = screen.Width / 320;
     }
-
 
     private void DrawPatch(Patch patch, int x, int y)
     {

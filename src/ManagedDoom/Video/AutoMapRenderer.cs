@@ -21,12 +21,11 @@ using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Doom.Wad;
 using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Video;
 
-public sealed class AutoMapRenderer
+public sealed class AutoMapRenderer : IAutoMapRenderer
 {
     private const float Tr = 16;
 
@@ -94,7 +93,7 @@ public sealed class AutoMapRenderer
 
     private float zoom;
 
-    public AutoMapRenderer(Wad wad, IDrawScreen screen)
+    public AutoMapRenderer(IGameContent gameContent, IDrawScreen screen)
     {
         this.screen = screen;
 
@@ -103,6 +102,7 @@ public sealed class AutoMapRenderer
         amHeight = screen.Height - scale * StatusBarRenderer.Height;
         ppu = (float)scale / 16;
 
+        var wad = gameContent.Wad;
         markNumbers = new Patch[10];
         for (var i = 0; i < markNumbers.Length; i++)
             markNumbers[i] = Patch.FromWad(wad, $"AMMNUM{i}");
@@ -112,7 +112,7 @@ public sealed class AutoMapRenderer
     {
         screen.FillRect(0, 0, amWidth, amHeight, Background);
 
-        var world = player.Mobj.World;
+        var world = player.Mobj!.World;
         var am = world.AutoMap;
 
         actualView = new Vector2(am.ViewX.ToFloat(), am.ViewY.ToFloat());

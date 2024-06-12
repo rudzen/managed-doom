@@ -25,7 +25,7 @@ using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Video;
 
-public sealed class StatusBarRenderer
+public sealed class StatusBarRenderer : IStatusBarRenderer
 {
     public const int Height = 32;
 
@@ -119,11 +119,11 @@ public sealed class StatusBarRenderer
 
     private readonly MultIconWidget[] weapons;
 
-    public StatusBarRenderer(Wad wad, IDrawScreen screen)
+    public StatusBarRenderer(IGameContent gameContent, IDrawScreen screen)
     {
         this.screen = screen;
 
-        patches = new Patches(wad);
+        patches = new Patches(gameContent.Wad);
 
         scale = screen.Width / 320;
 
