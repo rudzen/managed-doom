@@ -60,7 +60,7 @@ public sealed class DemoPlayback
             ticCommands[i] = new TicCmd();
 
         Game = new DoomGame(content, demo.Options);
-        Game.DeferedInitNew();
+        Game.DeferInitNew();
 
         stopwatch = new Stopwatch();
     }

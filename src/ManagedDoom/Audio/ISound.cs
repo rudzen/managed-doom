@@ -14,11 +14,12 @@
 //
 
 
+using System;
 using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Audio;
 
-public interface ISound
+public interface ISound : IDisposable
 {
     public int MaxVolume { get; }
     public int Volume { get; set; }

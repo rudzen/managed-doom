@@ -14,7 +14,7 @@ namespace ManagedDoom.Silk;
 
 public sealed class SilkVideo : IVideo, IDisposable
 {
-    private readonly Renderer renderer;
+    private readonly IRenderer renderer;
 
     private GraphicsDevice? device;
 
@@ -30,14 +30,14 @@ public sealed class SilkVideo : IVideo, IDisposable
     private int silkWindowWidth;
     private int silkWindowHeight;
 
-    public SilkVideo(ConfigValues config, IGameContent content, IWindow window, GL gl)
+    public SilkVideo(ConfigValues config, IRenderer renderer, IWindow window, GL gl)
     {
         Console.Write("Initialize video: ");
         var start = Stopwatch.GetTimestamp();
 
         try
         {
-            renderer = new Renderer(config, content);
+            this.renderer = renderer;
 
             device = new GraphicsDevice(gl);
 
@@ -156,7 +156,7 @@ public sealed class SilkVideo : IVideo, IDisposable
         set => renderer.DisplayMessage = value;
     }
 
-    public int MaxGammaCorrectionLevel => renderer.MaxGammaCorrectionLevel;
+    public int MaxGammaCorrectionLevel => Renderer.MaxGammaCorrectionLevel;
 
     public int GammaCorrectionLevel
     {

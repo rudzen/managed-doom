@@ -18,7 +18,7 @@ namespace ManagedDoom.Doom.Menu;
 
 public abstract class MenuItem
 {
-    protected MenuItem(int skullX, int skullY, MenuDef next)
+    protected MenuItem(int skullX, int skullY, MenuDef? next)
     {
         this.SkullX = skullX;
         this.SkullY = skullY;

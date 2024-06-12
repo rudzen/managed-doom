@@ -21,8 +21,8 @@ namespace ManagedDoom.Doom.Menu;
 
 public sealed class TextBoxMenuItem : MenuItem
 {
-    private IReadOnlyList<char> text;
-    private TextInput edit;
+    private IReadOnlyList<char>? text;
+    private TextInput? edit;
 
     public TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY)
         : base(skullX, skullY, null)
@@ -31,7 +31,7 @@ public sealed class TextBoxMenuItem : MenuItem
         this.ItemY = itemY;
     }
 
-    public IReadOnlyList<char> Text => edit == null ? text : edit.Text;
+    public IReadOnlyList<char>? Text => edit?.Text ?? text;
     public int ItemX { get; }
     public int ItemY { get; }
     public bool Editing => edit != null;
@@ -39,7 +39,7 @@ public sealed class TextBoxMenuItem : MenuItem
     public TextInput Edit(Action finished)
     {
         edit = new TextInput(
-            text ?? Array.Empty<char>(),
+            text ?? [],
             cs => { },
             cs =>
             {
@@ -52,9 +52,9 @@ public sealed class TextBoxMenuItem : MenuItem
         return edit;
     }
 
-    public void SetText(string text)
+    public void SetText(string? inputText)
     {
-        if (text != null)
-            this.text = text.ToCharArray();
+        if (inputText != null)
+            this.text = inputText.ToCharArray();
     }
 }

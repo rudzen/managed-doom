@@ -370,7 +370,7 @@ public sealed class Cheat
             }
 
             var skill = world.Options.Skill;
-            world.Game.DeferedInitNew(skill, 1, map);
+            world.Game.DeferInitNew(skill, 1, map);
         }
         else
         {
@@ -385,7 +385,7 @@ public sealed class Cheat
             }
 
             var skill = world.Options.Skill;
-            world.Game.DeferedInitNew(skill, episode, map);
+            world.Game.DeferInitNew(skill, episode, map);
         }
     }
 

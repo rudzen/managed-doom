@@ -6,10 +6,12 @@ using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
 using DrippyAL;
+using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Video;
 using Silk.NET.OpenGL;
 
 namespace ManagedDoom.Silk;
@@ -23,15 +25,15 @@ public sealed partial class SilkDoom : ISilkDoom
     private readonly ISilkConfig silkConfig;
 
     private readonly IGameContent gameContent;
+    private readonly IRenderer renderer;
 
     private readonly IWindow window;
     private GL openGl;
 
     private SilkVideo? video;
 
-    private AudioDevice? audioDevice;
-    private SilkSound? sound;
-    private SilkMusic? music;
+    private ISound? sound;
+    private IMusic? music;
 
     private SilkUserInput? userInput;
 
@@ -44,18 +46,24 @@ public sealed partial class SilkDoom : ISilkDoom
         ICommandLineArgs args,
         IGameContent gameContent,
         ISilkConfig silkConfig,
-        IWindow window
+        IWindowFactory windowFactory,
+        IRenderer renderer,
+        IAudioFactory audioFactory
     )
     {
         try
         {
             var start = Stopwatch.GetTimestamp();
             this.args = args;
-            this.window = window;
+            this.window = windowFactory.GetWindow();
 
             this.silkConfig = silkConfig;
             this.config = silkConfig.Config;
             this.gameContent = gameContent;
+            this.renderer = renderer;
+
+            this.sound = audioFactory.GetSound();
+            this.music = audioFactory.GetMusic();
 
             window.Load += OnLoad;
             window.Update += OnUpdate;
@@ -93,19 +101,8 @@ public sealed partial class SilkDoom : ISilkDoom
         InitializeOpenGl();
         window.SwapBuffers();
 
-        video = new SilkVideo(config.Values, gameContent, window, openGl);
-
-        if (!args.NoSound.Present && !(args.NoSfx.Present && args.NoMusic.Present))
-        {
-            audioDevice = new AudioDevice();
-            if (!args.NoSfx.Present)
-                sound = new SilkSound(config.Values, gameContent, audioDevice);
-            if (!args.NoMusic.Present)
-                music = silkConfig.GetMusicInstance(gameContent, audioDevice);
-        }
-
+        video = new SilkVideo(config.Values, renderer, window, openGl);
         userInput = new SilkUserInput(config.Values, window, this, args);
-
         doom = new Doom.Doom(args, config, gameContent, video, sound, music, userInput);
 
         fpsScale = args.TimeDemo.Present ? 1 : config.Values.VideoFpsScale;
@@ -154,24 +151,6 @@ public sealed partial class SilkDoom : ISilkDoom
         {
             userInput.Dispose();
             userInput = null;
-        }
-
-        if (music is not null)
-        {
-            music.Dispose();
-            music = null;
-        }
-
-        if (sound is not null)
-        {
-            sound.Dispose();
-            sound = null;
-        }
-
-        if (audioDevice is not null)
-        {
-            audioDevice.Dispose();
-            audioDevice = null;
         }
 
         if (video is not null)

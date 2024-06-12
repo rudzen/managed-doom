@@ -70,4 +70,8 @@ public sealed class NullSound : ISound
     public void Resume()
     {
     }
+
+    public void Dispose()
+    {
+    }
 }

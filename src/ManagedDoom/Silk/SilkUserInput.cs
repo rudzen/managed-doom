@@ -22,8 +22,6 @@ public sealed class SilkUserInput : IUserInput
     private IInputContext? input;
     private readonly IKeyboard keyboard;
 
-    // TODO (rudzen) : convert to byte and use bit flags?
-    private readonly bool[] weaponKeys;
     private int turnHeld;
 
     private readonly IMouse? mouse;
@@ -48,7 +46,6 @@ public sealed class SilkUserInput : IUserInput
             keyboard.KeyDown += (_, key, _) => silkDoom.KeyDown(key);
             keyboard.KeyUp += (_, key, _) => silkDoom.KeyUp(key);
 
-            weaponKeys = new bool[7];
             turnHeld = 0;
 
             if (!args.NoMouse.Present)
@@ -69,6 +66,7 @@ public sealed class SilkUserInput : IUserInput
         }
     }
 
+    [SkipLocalsInit]
     public void BuildTicCmd(TicCmd cmd)
     {
         var keyForward = IsPressed(keyboard, config.KeyForward);
@@ -82,13 +80,16 @@ public sealed class SilkUserInput : IUserInput
         var keyRun = IsPressed(keyboard, config.KeyRun);
         var keyStrafe = IsPressed(keyboard, config.KeyStrafe);
 
-        weaponKeys[0] = keyboard.IsKeyPressed(Key.Number1);
-        weaponKeys[1] = keyboard.IsKeyPressed(Key.Number2);
-        weaponKeys[2] = keyboard.IsKeyPressed(Key.Number3);
-        weaponKeys[3] = keyboard.IsKeyPressed(Key.Number4);
-        weaponKeys[4] = keyboard.IsKeyPressed(Key.Number5);
-        weaponKeys[5] = keyboard.IsKeyPressed(Key.Number6);
-        weaponKeys[6] = keyboard.IsKeyPressed(Key.Number7);
+        Span<bool> weaponKeys = stackalloc bool[7]
+        {
+            keyboard.IsKeyPressed(Key.Number1),
+            keyboard.IsKeyPressed(Key.Number2),
+            keyboard.IsKeyPressed(Key.Number3),
+            keyboard.IsKeyPressed(Key.Number4),
+            keyboard.IsKeyPressed(Key.Number5),
+            keyboard.IsKeyPressed(Key.Number6),
+            keyboard.IsKeyPressed(Key.Number7)
+        };
 
         cmd.Clear();
 

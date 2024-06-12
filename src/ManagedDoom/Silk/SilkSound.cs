@@ -32,7 +32,7 @@ using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Silk;
 
-public sealed class SilkSound : ISound, IDisposable
+public sealed class SilkSound : ISound
 {
     private const int channelCount = 8;
 
@@ -45,15 +45,15 @@ public sealed class SilkSound : ISound, IDisposable
 
     private readonly ConfigValues config;
 
-    private AudioClip[] buffers;
+    private AudioClip?[]? buffers;
     private readonly float[] amplitudes;
 
-    private readonly DoomRandom random;
+    private readonly DoomRandom? random;
 
-    private AudioChannel[] channels;
+    private AudioChannel?[]? channels;
     private readonly ChannelInfo[] infos;
 
-    private AudioChannel uiChannel;
+    private AudioChannel? uiChannel;
     private Sfx uiReserved;
 
     private Mobj listener;
@@ -79,8 +79,7 @@ public sealed class SilkSound : ISound, IDisposable
             buffers = new AudioClip[sfxNames.Length];
             amplitudes = new float[sfxNames.Length];
 
-            if (config.AudioRandomPitch)
-                random = new DoomRandom();
+            random = config.AudioRandomPitch ? new DoomRandom() : null;
 
             for (var i = 0; i < sfxNames.Length; i++)
             {
@@ -112,7 +111,7 @@ public sealed class SilkSound : ISound, IDisposable
 
             masterVolumeDecay = (float)config.AudioSoundVolume / MaxVolume;
 
-            lastUpdate = 0; //Stopwatch.GetTimestamp();// 0;// DateTime.MinValue;
+            lastUpdate = 0;
 
             Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
         }
@@ -462,8 +461,8 @@ public sealed class SilkSound : ISound, IDisposable
                 if (channels[i] is null)
                     continue;
 
-                channels[i].Stop();
-                channels[i].Dispose();
+                channels[i]!.Stop();
+                channels[i]!.Dispose();
                 channels[i] = null;
             }
 
@@ -477,7 +476,7 @@ public sealed class SilkSound : ISound, IDisposable
                 if (buffers[i] is null)
                     continue;
 
-                buffers[i].Dispose();
+                buffers[i]!.Dispose();
                 buffers[i] = null;
             }
 
@@ -509,7 +508,7 @@ public sealed class SilkSound : ISound, IDisposable
         public Sfx Playing { get; set; }
         public float Priority { get; set; }
 
-        public Mobj Source { get; set; }
+        public Mobj? Source { get; set; }
         public SfxType Type { get; set; }
         public int Volume { get; set; }
         public Fixed LastX { get; set; }

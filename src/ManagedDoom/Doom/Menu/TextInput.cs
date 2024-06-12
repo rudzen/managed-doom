@@ -25,13 +25,13 @@ namespace ManagedDoom.Doom.Menu;
 public sealed class TextInput
 {
     private readonly Action<IReadOnlyList<char>> typed;
-    private readonly Action<IReadOnlyList<char>> finished;
+    private readonly Action<IReadOnlyList<char>?> finished;
     private readonly Action canceled;
 
     public TextInput(
         IReadOnlyList<char> initialText,
         Action<IReadOnlyList<char>> typed,
-        Action<IReadOnlyList<char>> finished,
+        Action<IReadOnlyList<char>?> finished,
         Action canceled)
     {
         this.Text = initialText.ToList();
@@ -42,7 +42,7 @@ public sealed class TextInput
         State = TextInputState.Typing;
     }
 
-    public List<char> Text { get; }
+    public List<char>? Text { get; }
     public TextInputState State { get; private set; }
 
     public bool DoEvent(in DoomEvent e)

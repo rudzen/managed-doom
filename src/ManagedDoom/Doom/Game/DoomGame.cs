@@ -77,7 +77,7 @@ public sealed class DoomGame
     /// Start a new game.
     /// Can be called by the startup code or the menu task.
     /// </summary>
-    public void DeferedInitNew()
+    public void DeferInitNew()
     {
         gameAction = GameAction.NewGame;
     }
@@ -86,7 +86,7 @@ public sealed class DoomGame
     /// Start a new game.
     /// Can be called by the startup code or the menu task.
     /// </summary>
-    public void DeferedInitNew(GameSkill skill, int episode, int map)
+    public void DeferInitNew(GameSkill skill, int episode, int map)
     {
         Options.Skill = skill;
         Options.Episode = episode;

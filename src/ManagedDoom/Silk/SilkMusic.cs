@@ -28,12 +28,12 @@ using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Silk;
 
-public sealed class SilkMusic : IMusic, IDisposable
+public sealed class SilkMusic : IMusic
 {
     private readonly ConfigValues config;
     private readonly Wad wad;
 
-    private MusStream stream;
+    private MusStream? stream;
     private Bgm current;
 
     public SilkMusic(ConfigValues config, IGameContent content, AudioDevice device, string sfPath)
@@ -67,7 +67,7 @@ public sealed class SilkMusic : IMusic, IDisposable
         var lumpName = $"D_{DoomInfo.BgmNames[(int)bgm].ToString().ToUpper()}";
         var data = wad.ReadLump(lumpName);
         var decoder = ReadData(data, loop);
-        stream.SetDecoder(decoder);
+        stream!.SetDecoder(decoder);
 
         current = bgm;
     }
@@ -117,7 +117,7 @@ public sealed class SilkMusic : IMusic, IDisposable
 
         private readonly Synthesizer synthesizer;
 
-        private AudioStream audioStream;
+        private AudioStream? audioStream;
 
         private readonly float[] left;
         private readonly float[] right;
@@ -150,7 +150,7 @@ public sealed class SilkMusic : IMusic, IDisposable
         {
             reserved = decoder;
 
-            if (audioStream.State == PlaybackState.Stopped)
+            if (audioStream!.State == PlaybackState.Stopped)
                 audioStream.Play(OnGetData);
         }
 
@@ -548,7 +548,7 @@ public sealed class SilkMusic : IMusic, IDisposable
         ];
 
         private readonly MidiFile midi;
-        private MidiFileSequencer sequencer;
+        private MidiFileSequencer? sequencer;
 
         private readonly bool loop;
 

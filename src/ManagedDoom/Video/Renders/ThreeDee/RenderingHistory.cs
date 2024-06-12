@@ -55,6 +55,7 @@ public sealed class RenderingHistory
         ClipRanges[0].Last = -1;
         ClipRanges[1].First = windowSettings.WindowWidth;
         ClipRanges[1].Last = 0x7fffffff;
+
         ClipRangeCount = 2;
 
         ClipDataLength = 2 * windowSettings.WindowWidth;

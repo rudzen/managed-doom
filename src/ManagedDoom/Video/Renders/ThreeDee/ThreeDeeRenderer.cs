@@ -414,7 +414,6 @@ public sealed class ThreeDeeRenderer
         DrawPassWall(seg, rwAngle1, x1, x2 - 1);
     }
 
-
     private void DrawSolidWall(Seg seg, Angle rwAngle1, int x1, int x2)
     {
         int next;
@@ -496,7 +495,6 @@ public sealed class ThreeDeeRenderer
 
         renderingHistory.ClipRangeCount = start + 1;
     }
-
 
     private void DrawPassWall(Seg seg, Angle rwAngle1, int x1, int x2)
     {
@@ -1907,7 +1905,8 @@ public sealed class ThreeDeeRenderer
 
         // Scan drawsegs from end to start for obscuring segs.
         // The first drawseg that has a greater scale is the clip seg.
-        for (var i = renderingHistory.VisWallRangeCount - 1; i >= 0; i--)
+        var currentVisualWallRanges = renderingHistory.GetCurrentVisWallRanges();
+        for (var i = currentVisualWallRanges.Length - 1; i >= 0; i--)
         {
             var wall = renderingHistory.VisWallRanges[i];
 
@@ -1923,19 +1922,12 @@ public sealed class ThreeDeeRenderer
             var r1 = wall.X1 < sprite.X1 ? sprite.X1 : wall.X1;
             var r2 = wall.X2 > sprite.X2 ? sprite.X2 : wall.X2;
 
-            Fixed lowScale;
-            Fixed scale;
-            if (wall.Scale1 > wall.Scale2)
-            {
-                lowScale = wall.Scale2;
-                scale = wall.Scale1;
-            }
-            else
-            {
-                lowScale = wall.Scale1;
-                scale = wall.Scale2;
-            }
-
+            var lowScale = wall.Scale2;
+            var scale = wall.Scale1;
+            
+            if (scale > lowScale)
+                (lowScale, scale) = (scale, lowScale);
+            
             if (scale < sprite.Scale ||
                 (lowScale < sprite.Scale &&
                  Geometry.PointOnSegSide(sprite.GlobalX, sprite.GlobalY, wall.Seg) == 0))
@@ -1963,9 +1955,7 @@ public sealed class ThreeDeeRenderer
                 for (var x = r1; x <= r2; x++)
                 {
                     if (renderingHistory.LowerClip[x] == -2)
-                    {
                         renderingHistory.LowerClip[x] = renderingHistory.ClipData[wall.LowerClip + x];
-                    }
                 }
             }
             else if (silhouette == Silhouette.Upper)
@@ -1974,9 +1964,7 @@ public sealed class ThreeDeeRenderer
                 for (var x = r1; x <= r2; x++)
                 {
                     if (renderingHistory.UpperClip[x] == -2)
-                    {
                         renderingHistory.UpperClip[x] = renderingHistory.ClipData[wall.UpperClip + x];
-                    }
                 }
             }
             else if (silhouette == Silhouette.Both)
@@ -1985,14 +1973,10 @@ public sealed class ThreeDeeRenderer
                 for (var x = r1; x <= r2; x++)
                 {
                     if (renderingHistory.LowerClip[x] == -2)
-                    {
                         renderingHistory.LowerClip[x] = renderingHistory.ClipData[wall.LowerClip + x];
-                    }
 
                     if (renderingHistory.UpperClip[x] == -2)
-                    {
                         renderingHistory.UpperClip[x] = renderingHistory.ClipData[wall.UpperClip + x];
-                    }
                 }
             }
         }

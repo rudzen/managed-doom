@@ -29,7 +29,6 @@ public sealed class SaveSlots
 
     private string[] slots = [];
 
-
     public string this[int number]
     {
         get

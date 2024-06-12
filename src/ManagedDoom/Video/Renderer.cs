@@ -25,11 +25,12 @@ using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.Opening;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Silk;
 using ManagedDoom.Video.Renders.ThreeDee;
 
 namespace ManagedDoom.Video;
 
-public sealed class Renderer
+public sealed class Renderer : IRenderer
 {
     private static readonly double[] gammaCorrectionParameters =
     [
@@ -66,9 +67,9 @@ public sealed class Renderer
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
 
-    public Renderer(ConfigValues config, IGameContent content)
+    public Renderer(ISilkConfig silkConfig, IGameContent content)
     {
-        this.config = config;
+        this.config = silkConfig.Config.Values;
 
         palette = content.Palette;
 
@@ -125,7 +126,7 @@ public sealed class Renderer
         set => config.VideoDisplayMessage = value;
     }
 
-    public int MaxGammaCorrectionLevel => gammaCorrectionParameters.Length - 1;
+    public static int MaxGammaCorrectionLevel => gammaCorrectionParameters.Length - 1;
 
     public int GammaCorrectionLevel
     {
@@ -152,11 +153,10 @@ public sealed class Renderer
                 break;
         }
 
-        if (doom.Menu.Active) return;
+        if (doom.Menu.Active)
+            return;
 
-        if (doom.State == DoomState.Game &&
-            doom.Game.State == GameState.Level &&
-            doom.Game.Paused)
+        if (doom is { State: DoomState.Game, Game: { State: GameState.Level, Paused: true } })
         {
             var scale = screen.Width / 320;
             screen.DrawPatch(
@@ -170,17 +170,13 @@ public sealed class Renderer
     private void RenderMenu(Doom.Doom doom)
     {
         if (doom.Menu.Active)
-        {
             menu.Render(doom.Menu);
-        }
     }
 
     public void RenderGame(DoomGame game, Fixed frameFrac)
     {
         if (game.Paused)
-        {
             frameFrac = Fixed.One;
-        }
 
         switch (game.State)
         {
@@ -213,7 +209,7 @@ public sealed class Renderer
                     if (consolePlayer.MessageTime > 0)
                     {
                         var scale = screen.Width / 320;
-                        screen.DrawText(consolePlayer.Message, 0, 7 * scale, scale);
+                        screen.DrawText(consolePlayer.Message!, 0, 7 * scale, scale);
                     }
                 }
 
@@ -239,23 +235,16 @@ public sealed class Renderer
         RenderDoom(doom, frameFrac);
         RenderMenu(doom);
 
-        var colors = palette[0];
-        if (doom.State == DoomState.Game &&
-            doom.Game.State == GameState.Level)
-        {
+        uint[] colors;
+
+        if (doom is { State: DoomState.Game, Game.State: GameState.Level })
             colors = palette[GetPaletteNumber(doom.Game.World.ConsolePlayer)];
-        }
-        else if (doom.State == DoomState.Opening &&
-                 doom.Opening.State == OpeningSequenceState.Demo &&
-                 doom.Opening.DemoGame.State == GameState.Level)
-        {
+        else if (doom is { State: DoomState.Opening, Opening: { State: OpeningSequenceState.Demo, DemoGame.State: GameState.Level } })
             colors = palette[GetPaletteNumber(doom.Opening.DemoGame.World.ConsolePlayer)];
-        }
-        else if (doom.State == DoomState.DemoPlayback &&
-                 doom.DemoPlayback.Game.State == GameState.Level)
-        {
+        else if (doom.State == DoomState.DemoPlayback && doom.DemoPlayback!.Game.State == GameState.Level)
             colors = palette[GetPaletteNumber(doom.DemoPlayback.Game.World.ConsolePlayer)];
-        }
+        else
+            colors = palette[0];
 
         WriteData(colors, destination);
     }
@@ -277,12 +266,13 @@ public sealed class Renderer
             {
                 var y = (int)MathF.Round(y1 + dy * ((x - x1) / 2 * 2));
                 var copyLength = screen.Height - y;
-                if (copyLength > 0)
-                {
-                    var srcPos = screen.Height * x;
-                    var dstPos = screen.Height * x + y;
-                    Array.Copy(wipeBuffer, srcPos, screen.Data, dstPos, copyLength);
-                }
+
+                if (copyLength <= 0)
+                    continue;
+
+                var srcPos = screen.Height * x;
+                var dstPos = screen.Height * x + y;
+                Array.Copy(wipeBuffer, srcPos, screen.Data, dstPos, copyLength);
             }
         }
 
@@ -307,17 +297,7 @@ public sealed class Renderer
 
     private static int GetPaletteNumber(Player player)
     {
-        var count = player.DamageCount;
-
-        if (player.Powers[(int)PowerType.Strength] != 0)
-        {
-            // Slowly fade the berzerk out.
-            var bzc = 12 - (player.Powers[(int)PowerType.Strength] >> 6);
-            if (bzc > count)
-            {
-                count = bzc;
-            }
-        }
+        var count = GetPaletteNumberCount(player);
 
         int palette;
 
@@ -326,9 +306,7 @@ public sealed class Renderer
             palette = (count + 7) >> 3;
 
             if (palette >= Palette.DamageCount)
-            {
                 palette = Palette.DamageCount - 1;
-            }
 
             palette += Palette.DamageStart;
         }
@@ -337,22 +315,30 @@ public sealed class Renderer
             palette = (player.BonusCount + 7) >> 3;
 
             if (palette >= Palette.BonusCount)
-            {
                 palette = Palette.BonusCount - 1;
-            }
 
             palette += Palette.BonusStart;
         }
-        else if (player.Powers[(int)PowerType.IronFeet] > 4 * 32 ||
-                 (player.Powers[(int)PowerType.IronFeet] & 8) != 0)
-        {
+        else if (player.Powers[(int)PowerType.IronFeet] > 4 * 32 || (player.Powers[(int)PowerType.IronFeet] & 8) != 0)
             palette = Palette.IronFeet;
-        }
         else
-        {
             palette = 0;
-        }
 
         return palette;
+    }
+
+    private static int GetPaletteNumberCount(Player player)
+    {
+        var count = player.DamageCount;
+
+        if (player.Powers[(int)PowerType.Strength] == 0)
+            return count;
+
+        // Slowly fade the berzerk out.
+        var bzc = 12 - (player.Powers[(int)PowerType.Strength] >> 6);
+        if (bzc > count)
+            count = bzc;
+
+        return count;
     }
 }

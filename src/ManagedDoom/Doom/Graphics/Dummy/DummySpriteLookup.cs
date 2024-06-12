@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ManagedDoom.Doom.Info;
 
 namespace ManagedDoom.Doom.Graphics.Dummy;
@@ -28,11 +29,7 @@ public sealed class DummySpriteLookup : ISpriteLookup
     {
         var temp = new Dictionary<string, List<SpriteInfo>>();
         for (var i = 0; i < (int)Sprite.Count; i++)
-        {
-            temp.Add(DoomInfo.SpriteNames[i], new List<SpriteInfo>());
-        }
-
-        var cache = new Dictionary<int, Patch>();
+            temp.Add(DoomInfo.SpriteNames[i], []);
 
         foreach (var lump in EnumerateSprites(wad))
         {
@@ -46,15 +43,13 @@ public sealed class DummySpriteLookup : ISpriteLookup
                 var rotation = wad.LumpInfos[lump].Name[5] - '0';
 
                 while (list.Count < frame + 1)
-                {
                     list.Add(new SpriteInfo());
-                }
 
                 if (rotation == 0)
                 {
-                    for (var i = 0; i < 8; i++)
+                    for (var i = 0; i < list[frame].Patches.Length; i++)
                     {
-                        if (list[frame].Patches[i] == null)
+                        if (list[frame].Patches[i] is null)
                         {
                             list[frame].Patches[i] = DummyData.GetPatch();
                             list[frame].Flip[i] = false;
@@ -63,7 +58,7 @@ public sealed class DummySpriteLookup : ISpriteLookup
                 }
                 else
                 {
-                    if (list[frame].Patches[rotation - 1] == null)
+                    if (list[frame].Patches[rotation - 1] is null)
                     {
                         list[frame].Patches[rotation - 1] = DummyData.GetPatch();
                         list[frame].Flip[rotation - 1] = false;
@@ -75,17 +70,15 @@ public sealed class DummySpriteLookup : ISpriteLookup
             {
                 var frame = wad.LumpInfos[lump].Name[6] - 'A';
                 var rotation = wad.LumpInfos[lump].Name[7] - '0';
-
+                
                 while (list.Count < frame + 1)
-                {
                     list.Add(new SpriteInfo());
-                }
 
                 if (rotation == 0)
                 {
                     for (var i = 0; i < 8; i++)
                     {
-                        if (list[frame].Patches[i] == null)
+                        if (list[frame].Patches[i] is null)
                         {
                             list[frame].Patches[i] = DummyData.GetPatch();
                             list[frame].Flip[i] = true;
@@ -94,7 +87,7 @@ public sealed class DummySpriteLookup : ISpriteLookup
                 }
                 else
                 {
-                    if (list[frame].Patches[rotation - 1] == null)
+                    if (list[frame].Patches[rotation - 1] is null)
                     {
                         list[frame].Patches[rotation - 1] = DummyData.GetPatch();
                         list[frame].Flip[rotation - 1] = true;
@@ -125,9 +118,9 @@ public sealed class DummySpriteLookup : ISpriteLookup
     {
         var spriteSection = false;
 
-        for (var lump = wad.LumpInfos.Count - 1; lump >= 0; lump--)
+        for (var lumpNumber = wad.LumpInfos.Count - 1; lumpNumber >= 0; lumpNumber--)
         {
-            var name = wad.LumpInfos[lump].Name;
+            var name = wad.LumpInfos[lumpNumber].Name;
 
             if (name.StartsWith('S'))
             {
@@ -146,10 +139,9 @@ public sealed class DummySpriteLookup : ISpriteLookup
 
             if (spriteSection)
             {
-                if (wad.LumpInfos[lump].Size > 0)
-                {
-                    yield return lump;
-                }
+                var length = wad.LumpInfos[lumpNumber].Data?.Length ?? -1;
+                if (length > 0)
+                    yield return lumpNumber;
             }
         }
     }
@@ -158,7 +150,7 @@ public sealed class DummySpriteLookup : ISpriteLookup
 
     private sealed class SpriteInfo
     {
-        public readonly Patch[] Patches;
+        public readonly Patch?[] Patches;
         public readonly bool[] Flip;
 
         public SpriteInfo()
@@ -169,26 +161,14 @@ public sealed class DummySpriteLookup : ISpriteLookup
 
         public void CheckCompletion()
         {
-            for (var i = 0; i < Patches.Length; i++)
-            {
-                if (Patches[i] == null)
-                {
-                    throw new Exception("Missing sprite!");
-                }
-            }
+            if (Patches.Any(patch => patch == null))
+                throw new Exception("Missing sprite!");
         }
 
         public bool HasRotation()
         {
-            for (var i = 1; i < Patches.Length; i++)
-            {
-                if (Patches[i] != Patches[0])
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            var front = Patches[0];
+            return Patches.Any(patch => patch != front);
         }
     }
 }

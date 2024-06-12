@@ -24,7 +24,7 @@ public class ToggleMenuItem : MenuItem
 
     private int stateNumber;
 
-    private readonly Func<int> reset;
+    private readonly Func<int>? reset;
     private readonly Action<int> action;
 
     public ToggleMenuItem(

@@ -4,7 +4,7 @@ using ManagedDoom.Config;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Host;
 using ManagedDoom.Silk;
-using ManagedDoom.UserInput;
+using ManagedDoom.Video;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -28,18 +28,11 @@ await Host.CreateDefaultBuilder(args)
           .ConfigureLogging(builder => { builder.ClearProviders(); })
           .ConfigureServices((_, services) =>
           {
-              services.AddSingleton(provider =>
-              {
-                  var silkConfig = provider.GetRequiredService<ISilkConfig>();
-                  var configValues = silkConfig.Config.Values;
-                  var windowOptions = WindowOptions.Default;
-                  windowOptions.Size = new Vector2D<int>(configValues.VideoScreenWidth, configValues.VideoScreenHeight);
-                  windowOptions.Title = ApplicationInfo.Title;
-                  windowOptions.VSync = configValues.VideoVsync;
-                  windowOptions.WindowState = configValues.VideoFullscreen ? WindowState.Fullscreen : WindowState.Normal;
-                  return Window.Create(windowOptions);
-              });
+              // related to Silk.NET etc
+              services.AddSingleton<IWindowFactory, WindowFactory>();
+              services.AddSingleton<IOpenGlFactory, OpenGlFactory>();
 
+              // command line args
               services.AddSingleton(_ =>
               {
                   ICommandLineArgs commandLineArgs = new CommandLineArgs(args);
@@ -53,11 +46,15 @@ await Host.CreateDefaultBuilder(args)
                   return config;
               });
 
+              // game fundamentals
               services.AddSingleton<ISilkConfig, SilkConfig>();
+              services.AddSingleton<ISilkDoom, SilkDoom>();
+              services.AddSingleton<IAudioFactory, AudioFactory>();
 
+                // game content
+              services.AddSingleton<IRenderer, Renderer>();
               services.AddSingleton<IGameContent, GameContent>();
 
-              services.AddSingleton<ISilkDoom, SilkDoom>();
               services.AddHostedService<DoomHost>();
           })
           .RunConsoleAsync();

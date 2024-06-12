@@ -14,9 +14,11 @@
 //
 
 
+using System;
+
 namespace ManagedDoom.Audio;
 
-public interface IMusic
+public interface IMusic : IDisposable
 {
     public int MaxVolume { get; }
     public int Volume { get; set; }

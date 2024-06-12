@@ -31,7 +31,7 @@ public sealed class OpeningSequence : IOpeningSequence
     private int timer;
 
     private readonly TicCmd[] cmds;
-    private Demo demo;
+    private Demo? demo;
 
     private bool reset;
 
@@ -42,9 +42,7 @@ public sealed class OpeningSequence : IOpeningSequence
 
         cmds = new TicCmd[Player.MaxPlayerCount];
         for (var i = 0; i < Player.MaxPlayerCount; i++)
-        {
             cmds[i] = new TicCmd();
-        }
 
         currentStage = 0;
         nextStage = 0;
@@ -55,7 +53,7 @@ public sealed class OpeningSequence : IOpeningSequence
     }
 
     public OpeningSequenceState State { get; private set; }
-    public DoomGame DemoGame { get; private set; }
+    public DoomGame? DemoGame { get; private set; }
 
     public void Reset()
     {
@@ -224,6 +222,6 @@ public sealed class OpeningSequence : IOpeningSequence
         };
 
         DemoGame = new DoomGame(content, demo.Options);
-        DemoGame.DeferedInitNew();
+        DemoGame.DeferInitNew();
     }
 }

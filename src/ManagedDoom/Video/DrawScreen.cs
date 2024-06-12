@@ -148,7 +148,7 @@ public sealed class DrawScreen
         }
     }
 
-    public void DrawText(IReadOnlyList<char> text, int x, int y, int scale)
+    public void DrawText(IReadOnlyList<char>? text, int x, int y, int scale)
     {
         var drawX = x;
         var drawY = y - 7 * scale;
@@ -246,7 +246,7 @@ public sealed class DrawScreen
         return scale * patch.Width;
     }
 
-    public int MeasureText(IReadOnlyList<char> text, int scale)
+    public int MeasureText(IReadOnlyList<char>? text, int scale)
     {
         var width = 0;
 

@@ -36,4 +36,8 @@ public sealed class NullMusic : IMusic
     public void StartMusic(Bgm bgm, bool loop)
     {
     }
+
+    public void Dispose()
+    {
+    }
 }

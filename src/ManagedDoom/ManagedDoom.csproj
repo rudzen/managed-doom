@@ -20,9 +20,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants Condition="'$(RuntimeIdentifier)' == 'win-x64'">$(DefineConstants);WINDOWS_RELEASE</DefineConstants>
+    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <DefineConstants>WINDOWS_RELEASE</DefineConstants>
   </PropertyGroup>

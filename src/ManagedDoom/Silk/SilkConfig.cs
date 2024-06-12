@@ -76,14 +76,4 @@ public sealed class SilkConfig : ISilkConfig
 
         return new VideoMode(new Vector2D<int>(currentWidth, currentHeight));
     }
-
-    public SilkMusic? GetMusicInstance(IGameContent content, AudioDevice device)
-    {
-        var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, Config.Values.AudioSoundfont);
-        if (File.Exists(sfPath))
-            return new SilkMusic(Config.Values, content, device, sfPath);
-
-        Console.WriteLine($"SoundFont '{Config.Values.AudioSoundfont}' was not found!");
-        return null;
-    }
 }

@@ -95,12 +95,22 @@ public sealed class Wad : IDisposable
                 for (var i = 0; i < wadHeader.LumpCount; i++)
                 {
                     var offset = LumpInfo.DataSize * i;
-                    var lumpInfo = new LumpInfo(
-                        DoomInterop.ToString(slice.Slice(offset + 8, 8)),
-                        stream,
-                        BitConverter.ToInt32(slice.Slice(offset, 4)),
-                        BitConverter.ToInt32(slice.Slice(offset + 4, 4)));
-                    lumpInfos.Add(lumpInfo);
+                    var name = DoomInterop.ToString(slice.Slice(offset + 8, 8));
+                    var position = BitConverter.ToInt32(slice.Slice(offset, 4));
+                    var s = BitConverter.ToInt32(slice.Slice(offset + 4, 4));
+
+                    if (s == -1)
+                        lumpInfos.Add(new LumpInfo(name, null));
+                    else
+                    {
+                        var buffer = new byte[s];
+                        stream.Seek(position, SeekOrigin.Begin);
+                        read = stream.Read(buffer);
+                        if (read != s)
+                            throw new Exception("Failed to read the WAD file.");
+
+                        lumpInfos.Add(new LumpInfo(name, buffer));
+                    }
                 }
             }
             finally
@@ -151,7 +161,7 @@ public sealed class Wad : IDisposable
         for (var i = lumpSpan.Length - 1; i >= 0; i--)
         {
             if (lumpSpan[i].Name == name)
-                return (i, lumpSpan[i].Size);
+                return (i, lumpSpan[i].Data?.Length ?? -1);
         }
 
         return (-1, -1);
@@ -160,30 +170,32 @@ public sealed class Wad : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetLumpSize(int number)
     {
-        return lumpInfos[number].Size;
+        return lumpInfos[number].Data?.Length ?? -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte[] ReadLump(int number)
     {
         var lumpInfo = lumpInfos[number];
-        var data = new byte[lumpInfo.Size];
-
-        lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
-        var read = lumpInfo.Stream.Read(data, 0, lumpInfo.Size);
-        if (read != lumpInfo.Size)
-            throw new Exception($"Failed to read the lump {number}.");
-
-        return data;
+        return lumpInfos[number].Data!;
+        // var data = new byte[lumpInfo.Size];
+        //
+        // lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
+        // var read = lumpInfo.Stream.Read(data, 0, lumpInfo.Size);
+        // if (read != lumpInfo.Size)
+        //     throw new Exception($"Failed to read the lump {number}.");
+        //
+        // return data;
     }
 
     public void ReadLump(int number, Span<byte> buffer)
     {
         var lumpInfo = lumpInfos[number];
-        lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
-        var read = lumpInfo.Stream.Read(buffer);
-        if (read != lumpInfo.Size)
-            throw new Exception($"Failed to read the lump {number}.");
+        lumpInfo.Data.CopyTo(buffer);
+        // lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
+        // var read = lumpInfo.Stream.Read(buffer);
+        // if (read != lumpInfo.Size)
+        //     throw new Exception($"Failed to read the lump {number}.");
     }
 
     public byte[] ReadLump(string name)

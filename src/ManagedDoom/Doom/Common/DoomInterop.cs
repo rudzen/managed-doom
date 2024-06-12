@@ -22,12 +22,6 @@ namespace ManagedDoom.Doom.Common;
 public static class DoomInterop
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ToString(byte[] data, int offset, int maxLength)
-    {
-        return ToString(data.AsSpan(offset, maxLength));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SkipLocalsInit]
     public static string ToString(ReadOnlySpan<byte> data)
     {

@@ -14,6 +14,8 @@
 //
 
 using System;
+using System.Globalization;
+using System.Reflection;
 
 namespace ManagedDoom;
 
@@ -22,20 +24,32 @@ public static class ApplicationInfo
     public static string Logo()
     {
         const string doom = """
-                             ▓█████▄  ▒█████   ▒█████   ███▄ ▄███▓      ███▄    █ ▓█████▄▄▄█████▓
-                             ▒██▀ ██▌▒██▒  ██▒▒██▒  ██▒▓██▒▀█▀ ██▒      ██ ▀█   █ ▓█   ▀▓  ██▒ ▓▒
-                             ░██   █▌▒██░  ██▒▒██░  ██▒▓██    ▓██░     ▓██  ▀█ ██▒▒███  ▒ ▓██░ ▒░
-                             ░▓█▄   ▌▒██   ██░▒██   ██░▒██    ▒██      ▓██▒  ▐▌██▒▒▓█  ▄░ ▓██▓ ░
-                             ░▒████▓ ░ ████▓▒░░ ████▓▒░▒██▒   ░██▒ ██▓ ▒██░   ▓██░░▒████▒ ▒██▒ ░
-                              ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░▒░▒░ ░ ▒░   ░  ░ ▒▓▒ ░ ▒░   ▒ ▒ ░░ ▒░ ░ ▒ ░░
-                              ░ ▒  ▒   ░ ▒ ▒░   ░ ▒ ▒░ ░  ░      ░ ░▒  ░ ░░   ░ ▒░ ░ ░  ░   ░
-                              ░ ░  ░ ░ ░ ░ ▒  ░ ░ ░ ▒  ░      ░    ░      ░   ░ ░    ░    ░
-                                ░        ░ ░      ░ ░         ░     ░           ░    ░  ░
-                              ░                                     ░                  [$version]
-                             """;
+                            ▓█████▄  ▒█████   ▒█████   ███▄ ▄███▓      ███▄    █ ▓█████▄▄▄█████▓
+                            ▒██▀ ██▌▒██▒  ██▒▒██▒  ██▒▓██▒▀█▀ ██▒      ██ ▀█   █ ▓█   ▀▓  ██▒ ▓▒
+                            ░██   █▌▒██░  ██▒▒██░  ██▒▓██    ▓██░     ▓██  ▀█ ██▒▒███  ▒ ▓██░ ▒░
+                            ░▓█▄   ▌▒██   ██░▒██   ██░▒██    ▒██      ▓██▒  ▐▌██▒▒▓█  ▄░ ▓██▓ ░
+                            ░▒████▓ ░ ████▓▒░░ ████▓▒░▒██▒   ░██▒ ██▓ ▒██░   ▓██░░▒████▒ ▒██▒ ░
+                             ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░▒░▒░ ░ ▒░   ░  ░ ▒▓▒ ░ ▒░   ▒ ▒ ░░ ▒░ ░ ▒ ░░
+                             ░ ▒  ▒   ░ ▒ ▒░   ░ ▒ ▒░ ░  ░      ░ ░▒  ░ ░░   ░ ▒░ ░ ░  ░   ░
+                             ░ ░  ░ ░ ░ ░ ▒  ░ ░ ░ ▒  ░      ░    ░      ░   ░ ░    ░    ░
+                               ░        ░ ░      ░ ░         ░     ░           ░    ░  ░
+                             ░                                     ░
+                            """;
 
-        return doom;
+        return $"{doom}\nBuild at [{GetLinkerTime(Assembly.GetEntryAssembly()!):O}]\n.NET {Environment.Version}";
     }
-    
+
     public static readonly string Title = $"Managed Doom v2.1a : {Environment.Version}";
+
+    private static DateTime GetLinkerTime(Assembly assembly)
+    {
+        const string buildVersionMetadataPrefix = "+build";
+        var attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+        if (attribute?.InformationalVersion == null) return default;
+        var value = attribute.InformationalVersion;
+        var index = value.IndexOf(buildVersionMetadataPrefix, StringComparison.OrdinalIgnoreCase);
+        if (index <= 0) return default;
+        value = value[(index + buildVersionMetadataPrefix.Length)..];
+        return DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss:fffZ", CultureInfo.InvariantCulture);
+    }
 }

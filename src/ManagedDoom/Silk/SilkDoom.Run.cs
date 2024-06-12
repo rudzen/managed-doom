@@ -50,9 +50,9 @@ public sealed partial class SilkDoom
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void Sleep(int ms)
     {
-        timeBeginPeriod(1);
+        _ = timeBeginPeriod(1);
         Thread.Sleep(ms);
-        timeEndPeriod(1);
+        _ = timeEndPeriod(1);
     }
 
     public Task Run()

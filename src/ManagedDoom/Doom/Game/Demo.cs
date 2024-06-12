@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 
 namespace ManagedDoom.Doom.Game;
 
@@ -52,15 +53,8 @@ public sealed class Demo
 
         Options.DemoPlayback = true;
 
-        playerCount = 0;
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-        {
-            if (Options.Players[i].InGame)
-                playerCount++;
-        }
-
-        if (playerCount >= 2)
-            Options.NetGame = true;
+        playerCount = Options.Players.Count(x => x.InGame);
+        Options.NetGame = playerCount >= 2;
     }
 
     public Demo(string fileName) : this(File.ReadAllBytes(fileName))
@@ -80,17 +74,17 @@ public sealed class Demo
         if (p + 4 * playerCount > data.Length)
             return false;
 
-        var players = Options.Players;
+        var players = Options.Players.AsSpan();
         for (var i = 0; i < Player.MaxPlayerCount; i++)
         {
-            if (players[i].InGame)
-            {
-                var cmd = cmds[i];
-                cmd.ForwardMove = (sbyte)data[p++];
-                cmd.SideMove = (sbyte)data[p++];
-                cmd.AngleTurn = (short)(data[p++] << 8);
-                cmd.Buttons = data[p++];
-            }
+            if (!players[i].InGame)
+                continue;
+
+            var cmd = cmds[i];
+            cmd.ForwardMove = (sbyte)data[p++];
+            cmd.SideMove = (sbyte)data[p++];
+            cmd.AngleTurn = (short)(data[p++] << 8);
+            cmd.Buttons = data[p++];
         }
 
         return true;

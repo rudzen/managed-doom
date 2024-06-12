@@ -19,7 +19,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         };
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         int lastMobjHash;
         var aggMobjHash = 0;
@@ -55,7 +55,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         demo.Options.Players[0].PlayerState = PlayerState.Reborn;
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         int lastMobjHash;
         var aggMobjHash = 0;
@@ -90,7 +90,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         int lastMobjHash;
         var aggMobjHash = 0;
@@ -125,7 +125,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastMobjHash = 0;
         var aggMobjHash = 0;
@@ -159,7 +159,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastMobjHash = 0;
         var aggMobjHash = 0;
@@ -193,7 +193,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastMobjHash = 0;
         var aggMobjHash = 0;
@@ -227,7 +227,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastMobjHash = 0;
         var aggMobjHash = 0;
@@ -261,7 +261,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastMobjHash = 0;
         var aggMobjHash = 0;
@@ -295,7 +295,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastMobjHash = 0;
         var aggMobjHash = 0;

@@ -1,5 +1,6 @@
 ﻿namespace ManagedDoom.Tests;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class WadPath
 {
     public static readonly string DemoPath = Path.Combine("demos");

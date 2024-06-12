@@ -21,7 +21,7 @@ namespace ManagedDoom.Video;
 
 public class NullVideo : IVideo
 {
-    private static NullVideo instance;
+    private static NullVideo? instance;
 
     public void Render(Doom.Doom doom, Fixed frameFrac)
     {

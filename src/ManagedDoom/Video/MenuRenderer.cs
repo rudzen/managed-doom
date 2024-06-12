@@ -23,11 +23,11 @@ namespace ManagedDoom.Video;
 
 public sealed class MenuRenderer
 {
-    private static readonly char[] cursor = ['_'];
+    private static readonly char[]? cursor = ['_'];
 
     private readonly PatchCache cache;
 
-    private readonly char[] emptyText = "EMPTY SLOT".ToCharArray();
+    private readonly char[]? emptyText = "EMPTY SLOT".ToCharArray();
 
     private readonly DrawScreen screen;
 
@@ -144,7 +144,7 @@ public sealed class MenuRenderer
         screen.DrawPatch(cache[name], scale * x, scale * y, scale);
     }
 
-    private void DrawMenuText(IReadOnlyList<char> text, int x, int y)
+    private void DrawMenuText(IReadOnlyList<char>? text, int x, int y)
     {
         var scale = screen.Width / 320;
         screen.DrawText(text, scale * x, scale * y, scale);

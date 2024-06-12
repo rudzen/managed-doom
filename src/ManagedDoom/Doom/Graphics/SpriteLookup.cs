@@ -156,7 +156,7 @@ public sealed class SpriteLookup : ISpriteLookup
 
             if (spriteSection)
             {
-                if (wad.LumpInfos[lump].Size > 0)
+                if (wad.LumpInfos[lump].Data.Length > 0)
                     yield return lump;
             }
         }

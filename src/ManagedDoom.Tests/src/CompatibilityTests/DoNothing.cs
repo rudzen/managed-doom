@@ -18,7 +18,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         const int tics = 350;
 
@@ -49,7 +49,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         const int tics = 350;
 
@@ -77,7 +77,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
 
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         const int tics = 350;
 

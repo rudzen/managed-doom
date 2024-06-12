@@ -31,7 +31,7 @@ public sealed class VisSprite : IComparer<VisSprite>, IComparable<VisSprite>
     public Patch Patch { get; set; }
 
     // For color translation and shadow draw.
-    public byte[] ColorMap { get; set; }
+    public byte[] ColorMap { get; set; } = [];
 
     public MobjFlags MobjFlags { get; set; }
 

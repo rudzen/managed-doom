@@ -109,14 +109,14 @@ public sealed class Doom
             nextState = DoomState.Game;
             Options.Episode = args.Warp.Value!.Episode;
             Options.Map = args.Warp.Value.Map;
-            Game.DeferedInitNew();
+            Game.DeferInitNew();
         }
         else if (args.Episode.Present)
         {
             nextState = DoomState.Game;
             Options.Episode = args.Episode.Value;
             Options.Map = 1;
-            Game.DeferedInitNew();
+            Game.DeferInitNew();
         }
 
         if (args.Skill.Present)
@@ -153,7 +153,7 @@ public sealed class Doom
 
     public void NewGame(GameSkill skill, int episode, int map)
     {
-        Game.DeferedInitNew(skill, episode, map);
+        Game.DeferInitNew(skill, episode, map);
         nextState = DoomState.Game;
     }
 
@@ -186,10 +186,7 @@ public sealed class Doom
                     continue;
                 }
 
-                if (Game.DoEvent(in e))
-                {
-                    continue;
-                }
+                _ = Game.DoEvent(in e);
             }
             else if (State == DoomState.DemoPlayback && DemoPlayback is not null)
                 DemoPlayback.DoEvent(in e);
@@ -444,13 +441,13 @@ public sealed class Doom
         quit = true;
     }
 
-    public void Quit(string message)
+    private void Quit(string message)
     {
         quit = true;
         QuitMessage = message;
     }
 
-    public void PostEvent(DoomEvent e)
+    public void PostEvent(in DoomEvent e)
     {
         if (events.Count < 64)
             events.Add(e);

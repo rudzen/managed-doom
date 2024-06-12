@@ -14,7 +14,7 @@ public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastHash = 0;
         var aggHash = 0;
@@ -42,7 +42,7 @@ public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastHash = 0;
         var aggHash = 0;
@@ -70,7 +70,7 @@ public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
-        game.DeferedInitNew();
+        game.DeferInitNew();
 
         var lastHash = 0;
         var aggHash = 0;

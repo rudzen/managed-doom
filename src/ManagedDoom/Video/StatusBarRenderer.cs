@@ -220,7 +220,7 @@ public sealed class StatusBarRenderer
             DrawNumber(maxAmmo[i], player.MaxAmmo[i]);
         }
 
-        if (player.Mobj.World.Options.Deathmatch == 0)
+        if (player.Mobj!.World.Options.Deathmatch == 0)
         {
             if (backgroundDrawing == BackgroundDrawingType.Full)
             {
@@ -376,13 +376,11 @@ public sealed class StatusBarRenderer
 
             Keys = new Patch[(int)CardType.Count];
             for (var i = 0; i < Keys.Length; i++)
-            {
                 Keys[i] = Patch.FromWad(wad, $"STKEYS{i}");
-            }
 
             ArmsBackground = Patch.FromWad(wad, "STARMS");
             Arms = new Patch[6][];
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < Arms.Length; i++)
             {
                 var num = i + 2;
                 Arms[i] = new Patch[2];
@@ -409,7 +407,7 @@ public sealed class StatusBarRenderer
             }
 
             Faces[faceCount++] = Patch.FromWad(wad, "STFGOD0");
-            Faces[faceCount++] = Patch.FromWad(wad, "STFDEAD0");
+            Faces[faceCount] = Patch.FromWad(wad, "STFDEAD0");
         }
 
         public Patch Background { get; }

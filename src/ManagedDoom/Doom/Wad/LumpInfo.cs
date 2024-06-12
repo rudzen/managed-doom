@@ -18,7 +18,7 @@ using System.IO;
 
 namespace ManagedDoom.Doom.Wad;
 
-public sealed record LumpInfo(string Name, Stream Stream, int Position, int Size)
+public sealed record LumpInfo(string Name, byte[]? Data)
 {
     public const int DataSize = 16;
 }
