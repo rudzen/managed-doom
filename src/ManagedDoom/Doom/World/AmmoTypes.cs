@@ -14,9 +14,11 @@
 //
 
 
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom.Doom.World;
 
-public enum AmmoType
+public enum AmmoTypes : byte
 {
     // Pistol / chaingun ammo.
     Clip,
@@ -34,4 +36,26 @@ public enum AmmoType
 
     // Unlimited for chainsaw / fist.
     NoAmmo
+}
+
+public readonly record struct AmmoType(AmmoTypes Value)
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public AmmoType(int t) : this((AmmoTypes)t)
+    {
+    }
+
+    public const int Count = (int)AmmoTypes.Count;
+
+    public static AmmoType Clip => new(AmmoTypes.Clip);
+    public static AmmoType Shell => new(AmmoTypes.Shell);
+    public static AmmoType Cell => new(AmmoTypes.Cell);
+    public static AmmoType Missile => new(AmmoTypes.Missile);
+    public static AmmoType NoAmmo => new(AmmoTypes.NoAmmo);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator AmmoType(byte f) => new((AmmoTypes)f);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator byte(AmmoType f) => (byte)f.Value;
 }

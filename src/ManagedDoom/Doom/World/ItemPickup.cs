@@ -24,15 +24,9 @@ using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class ItemPickup
+public sealed class ItemPickup(World world)
 {
     private const int bonusAdd = 6;
-    private readonly World world;
-
-    public ItemPickup(World world)
-    {
-        this.world = world;
-    }
 
     /// <summary>
     /// Give the player the ammo.
@@ -50,26 +44,26 @@ public sealed class ItemPickup
         if (ammo == AmmoType.NoAmmo)
             return false;
 
-        if (ammo < 0 || (int)ammo > (int)AmmoType.Count)
+        if (!((uint)ammo.Value < (uint)AmmoTypes.Count))
             throw new Exception("Bad ammo type: " + ammo);
 
-        if (player.Ammo[(int)ammo] == player.MaxAmmo[(int)ammo])
+        if (player.Ammo[ammo] == player.MaxAmmo[ammo])
             return false;
 
         if (amount != 0)
-            amount *= DoomInfo.AmmoInfos.Clip[(int)ammo];
+            amount *= DoomInfo.AmmoInfos.Clip[ammo];
         else
-            amount = DoomInfo.AmmoInfos.Clip[(int)ammo] / 2;
+            amount = DoomInfo.AmmoInfos.Clip[ammo] / 2;
 
         // Give double ammo in trainer mode, you'll need in nightmare.
         if (world.Options.Skill is GameSkill.Baby or GameSkill.Nightmare)
             amount <<= 1;
 
-        var oldAmmo = player.Ammo[(int)ammo];
-        player.Ammo[(int)ammo] += amount;
+        var oldAmmo = player.Ammo[ammo];
+        player.Ammo[ammo] += amount;
 
-        if (player.Ammo[(int)ammo] > player.MaxAmmo[(int)ammo])
-            player.Ammo[(int)ammo] = player.MaxAmmo[(int)ammo];
+        if (player.Ammo[ammo] > player.MaxAmmo[ammo])
+            player.Ammo[ammo] = player.MaxAmmo[ammo];
 
         // If non-zero ammo, don't change up weapons, player was lower on purpose.
         if (oldAmmo != 0)
@@ -77,48 +71,38 @@ public sealed class ItemPickup
 
         // We were down to zero, so select a new weapon.
         // Preferences are not user selectable.
-        switch (ammo)
+        if (ammo == AmmoType.Clip)
         {
-            case AmmoType.Clip:
-                if (player.ReadyWeapon == WeaponType.Fist)
-                {
-                    player.PendingWeapon = player.WeaponOwned[WeaponType.Chaingun]
-                        ? WeaponType.Chaingun
-                        : WeaponType.Pistol;
-                }
-
-                break;
-
-            case AmmoType.Shell:
-                if (player.ReadyWeapon == WeaponType.Fist || player.ReadyWeapon == WeaponType.Pistol)
-                {
-                    if (player.WeaponOwned[WeaponType.Shotgun])
-                        player.PendingWeapon = WeaponType.Shotgun;
-                }
-
-                break;
-
-            case AmmoType.Cell:
-
-                if (player.ReadyWeapon == WeaponType.Fist || player.ReadyWeapon == WeaponType.Pistol)
-                {
-                    if (player.WeaponOwned[WeaponType.Plasma])
-                        player.PendingWeapon = WeaponType.Plasma;
-                }
-
-                break;
-
-            case AmmoType.Missile:
-                if (player.ReadyWeapon == WeaponType.Fist)
-                {
-                    if (player.WeaponOwned[WeaponType.Missile])
-                        player.PendingWeapon = WeaponType.Missile;
-                }
-
-                break;
-
-            default:
-                break;
+            if (player.ReadyWeapon == WeaponType.Fist)
+            {
+                player.PendingWeapon = player.WeaponOwned[WeaponType.Chaingun]
+                    ? WeaponType.Chaingun
+                    : WeaponType.Pistol;
+            }
+        }
+        else if (ammo == AmmoType.Shell)
+        {
+            if (player.ReadyWeapon == WeaponType.Fist || player.ReadyWeapon == WeaponType.Pistol)
+            {
+                if (player.WeaponOwned[WeaponType.Shotgun])
+                    player.PendingWeapon = WeaponType.Shotgun;
+            }
+        }
+        else if (ammo == AmmoType.Cell)
+        {
+            if (player.ReadyWeapon == WeaponType.Fist || player.ReadyWeapon == WeaponType.Pistol)
+            {
+                if (player.WeaponOwned[WeaponType.Plasma])
+                    player.PendingWeapon = WeaponType.Plasma;
+            }
+        }
+        else if (ammo == AmmoType.Missile)
+        {
+            if (player.ReadyWeapon == WeaponType.Fist)
+            {
+                if (player.WeaponOwned[WeaponType.Missile])
+                    player.PendingWeapon = WeaponType.Missile;
+            }
         }
 
         return true;
@@ -141,10 +125,8 @@ public sealed class ItemPickup
             player.BonusCount += bonusAdd;
             player.WeaponOwned[weapon] = true;
 
-            if (world.Options.Deathmatch != 0)
-                GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, 5);
-            else
-                GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, 2);
+            var amountToGive = world.Options.Deathmatch != 0 ? 5 : 2;
+            GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, amountToGive);
 
             player.PendingWeapon = weapon;
 
@@ -180,7 +162,7 @@ public sealed class ItemPickup
             player.PendingWeapon = weapon;
         }
 
-        return (gaveWeapon || gaveAmmo);
+        return gaveWeapon || gaveAmmo;
     }
 
 
@@ -190,24 +172,19 @@ public sealed class ItemPickup
     /// <returns>
     /// False if the health point isn't needed at all.
     /// </returns>
-    private bool GiveHealth(Player player, int amount)
+    private static bool GiveHealth(Player player, int amount)
     {
         if (player.Health >= DoomInfo.DeHackEdConst.InitialHealth)
-        {
             return false;
-        }
 
         player.Health += amount;
         if (player.Health > DoomInfo.DeHackEdConst.InitialHealth)
-        {
             player.Health = DoomInfo.DeHackEdConst.InitialHealth;
-        }
 
-        player.Mobj.Health = player.Health;
+        player.Mobj!.Health = player.Health;
 
         return true;
     }
-
 
     /// <summary>
     /// Give the armor to the player.
@@ -215,15 +192,13 @@ public sealed class ItemPickup
     /// <returns>
     /// Returns false if the armor is worse than the current armor.
     /// </returns>
-    private bool GiveArmor(Player player, int type)
+    private static bool GiveArmor(Player player, int type)
     {
         var hits = type * 100;
 
+        // Don't pick up.
         if (player.ArmorPoints >= hits)
-        {
-            // Don't pick up.
             return false;
-        }
 
         player.ArmorType = type;
         player.ArmorPoints = hits;
@@ -231,21 +206,17 @@ public sealed class ItemPickup
         return true;
     }
 
-
     /// <summary>
     /// Give the card to the player.
     /// </summary>
-    private void GiveCard(Player player, CardType card)
+    private static void GiveCard(Player player, CardType card)
     {
         if (player.Cards[(int)card])
-        {
             return;
-        }
 
         player.BonusCount = bonusAdd;
         player.Cards[(int)card] = true;
     }
-
 
     /// <summary>
     /// Give the power up to the player.
@@ -253,7 +224,7 @@ public sealed class ItemPickup
     /// <returns>
     /// False if the power up is not necessary.
     /// </returns>
-    private bool GivePower(Player player, PowerType type)
+    private static bool GivePower(Player player, PowerType type)
     {
         if (type == PowerType.Invulnerability)
         {
@@ -287,17 +258,14 @@ public sealed class ItemPickup
             return true;
         }
 
+        // Already got it.
         if (player.Powers[(int)type] != 0)
-        {
-            // Already got it.
             return false;
-        }
 
         player.Powers[(int)type] = 1;
 
         return true;
     }
-
 
     /// <summary>
     /// Check for item pickup.
@@ -306,11 +274,9 @@ public sealed class ItemPickup
     {
         var delta = special.Z - toucher.Z;
 
+        // Out of reach.
         if (delta > toucher.Height || delta < Fixed.FromInt(-8))
-        {
-            // Out of reach.
             return;
-        }
 
         var sound = Sfx.ITEMUP;
         var player = toucher.Player;
@@ -321,9 +287,7 @@ public sealed class ItemPickup
         // Dead thing touching.
         // Can happen with a sliding player corpse.
         if (toucher.Health <= 0)
-        {
             return;
-        }
 
         // Identify by sprite.
         switch (special.Sprite)
@@ -331,18 +295,14 @@ public sealed class ItemPickup
             // Armor.
             case Sprite.ARM1:
                 if (!GiveArmor(player, DoomInfo.DeHackEdConst.GreenArmorClass))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTARMOR);
                 break;
 
             case Sprite.ARM2:
                 if (!GiveArmor(player, DoomInfo.DeHackEdConst.BlueArmorClass))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTMEGA);
                 break;
@@ -352,11 +312,9 @@ public sealed class ItemPickup
                 // Can go over 100%.
                 player.Health++;
                 if (player.Health > DoomInfo.DeHackEdConst.MaxHealth)
-                {
                     player.Health = DoomInfo.DeHackEdConst.MaxHealth;
-                }
 
-                player.Mobj.Health = player.Health;
+                player.Mobj!.Health = player.Health;
                 player.SendMessage(DoomInfo.Strings.GOTHTHBONUS);
                 break;
 
@@ -364,14 +322,10 @@ public sealed class ItemPickup
                 // Can go over 100%.
                 player.ArmorPoints++;
                 if (player.ArmorPoints > DoomInfo.DeHackEdConst.MaxArmor)
-                {
                     player.ArmorPoints = DoomInfo.DeHackEdConst.MaxArmor;
-                }
 
                 if (player.ArmorType == 0)
-                {
                     player.ArmorType = DoomInfo.DeHackEdConst.GreenArmorClass;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTARMBONUS);
                 break;
@@ -379,9 +333,7 @@ public sealed class ItemPickup
             case Sprite.SOUL:
                 player.Health += DoomInfo.DeHackEdConst.SoulsphereHealth;
                 if (player.Health > DoomInfo.DeHackEdConst.MaxSoulsphere)
-                {
                     player.Health = DoomInfo.DeHackEdConst.MaxSoulsphere;
-                }
 
                 player.Mobj.Health = player.Health;
                 player.SendMessage(DoomInfo.Strings.GOTSUPER);
@@ -390,12 +342,10 @@ public sealed class ItemPickup
 
             case Sprite.MEGA:
                 if (world.Options.GameMode != GameMode.Commercial)
-                {
                     return;
-                }
 
                 player.Health = DoomInfo.DeHackEdConst.MegasphereHealth;
-                player.Mobj.Health = player.Health;
+                player.Mobj!.Health = player.Health;
                 GiveArmor(player, DoomInfo.DeHackEdConst.BlueArmorClass);
                 player.SendMessage(DoomInfo.Strings.GOTMSPHERE);
                 sound = Sfx.GETPOW;
@@ -405,122 +355,87 @@ public sealed class ItemPickup
             // Leave cards for everyone.
             case Sprite.BKEY:
                 if (!player.Cards[(int)CardType.BlueCard])
-                {
                     player.SendMessage(DoomInfo.Strings.GOTBLUECARD);
-                }
 
                 GiveCard(player, CardType.BlueCard);
                 if (!world.Options.NetGame)
-                {
                     break;
-                }
 
                 return;
 
             case Sprite.YKEY:
                 if (!player.Cards[(int)CardType.YellowCard])
-                {
                     player.SendMessage(DoomInfo.Strings.GOTYELWCARD);
-                }
 
                 GiveCard(player, CardType.YellowCard);
                 if (!world.Options.NetGame)
-                {
                     break;
-                }
 
                 return;
 
             case Sprite.RKEY:
                 if (!player.Cards[(int)CardType.RedCard])
-                {
                     player.SendMessage(DoomInfo.Strings.GOTREDCARD);
-                }
 
                 GiveCard(player, CardType.RedCard);
                 if (!world.Options.NetGame)
-                {
                     break;
-                }
 
                 return;
 
             case Sprite.BSKU:
                 if (!player.Cards[(int)CardType.BlueSkull])
-                {
                     player.SendMessage(DoomInfo.Strings.GOTBLUESKUL);
-                }
 
                 GiveCard(player, CardType.BlueSkull);
                 if (!world.Options.NetGame)
-                {
                     break;
-                }
 
                 return;
 
             case Sprite.YSKU:
                 if (!player.Cards[(int)CardType.YellowSkull])
-                {
                     player.SendMessage(DoomInfo.Strings.GOTYELWSKUL);
-                }
 
                 GiveCard(player, CardType.YellowSkull);
                 if (!world.Options.NetGame)
-                {
                     break;
-                }
 
                 return;
 
             case Sprite.RSKU:
                 if (!player.Cards[(int)CardType.RedSkull])
-                {
                     player.SendMessage(DoomInfo.Strings.GOTREDSKULL);
-                }
 
                 GiveCard(player, CardType.RedSkull);
                 if (!world.Options.NetGame)
-                {
                     break;
-                }
 
                 return;
 
             // Medikits, heals.
             case Sprite.STIM:
                 if (!GiveHealth(player, 10))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTSTIM);
                 break;
 
             case Sprite.MEDI:
                 if (!GiveHealth(player, 25))
-                {
                     return;
-                }
 
-                if (player.Health < 25)
-                {
-                    player.SendMessage(DoomInfo.Strings.GOTMEDINEED);
-                }
-                else
-                {
-                    player.SendMessage(DoomInfo.Strings.GOTMEDIKIT);
-                }
+                var msg = player.Health < 25
+                    ? DoomInfo.Strings.GOTMEDINEED
+                    : DoomInfo.Strings.GOTMEDIKIT;
 
+                player.SendMessage(msg);
                 break;
-
 
             // Power ups.
             case Sprite.PINV:
                 if (!GivePower(player, PowerType.Invulnerability))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTINVUL);
                 sound = Sfx.GETPOW;
@@ -528,24 +443,18 @@ public sealed class ItemPickup
 
             case Sprite.PSTR:
                 if (!GivePower(player, PowerType.Strength))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTBERSERK);
                 if (player.ReadyWeapon != WeaponType.Fist)
-                {
                     player.PendingWeapon = WeaponType.Fist;
-                }
 
                 sound = Sfx.GETPOW;
                 break;
 
             case Sprite.PINS:
                 if (!GivePower(player, PowerType.Invisibility))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTINVIS);
                 sound = Sfx.GETPOW;
@@ -553,9 +462,7 @@ public sealed class ItemPickup
 
             case Sprite.SUIT:
                 if (!GivePower(player, PowerType.IronFeet))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTSUIT);
                 sound = Sfx.GETPOW;
@@ -563,9 +470,7 @@ public sealed class ItemPickup
 
             case Sprite.PMAP:
                 if (!GivePower(player, PowerType.AllMap))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTMAP);
                 sound = Sfx.GETPOW;
@@ -573,9 +478,7 @@ public sealed class ItemPickup
 
             case Sprite.PVIS:
                 if (!GivePower(player, PowerType.Infrared))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTVISOR);
                 sound = Sfx.GETPOW;
@@ -586,16 +489,12 @@ public sealed class ItemPickup
                 if ((special.Flags & MobjFlags.Dropped) != 0)
                 {
                     if (!GiveAmmo(player, AmmoType.Clip, 0))
-                    {
                         return;
-                    }
                 }
                 else
                 {
                     if (!GiveAmmo(player, AmmoType.Clip, 1))
-                    {
                         return;
-                    }
                 }
 
                 player.SendMessage(DoomInfo.Strings.GOTCLIP);
@@ -603,63 +502,49 @@ public sealed class ItemPickup
 
             case Sprite.AMMO:
                 if (!GiveAmmo(player, AmmoType.Clip, 5))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTCLIPBOX);
                 break;
 
             case Sprite.ROCK:
                 if (!GiveAmmo(player, AmmoType.Missile, 1))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTROCKET);
                 break;
 
             case Sprite.BROK:
                 if (!GiveAmmo(player, AmmoType.Missile, 5))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTROCKBOX);
                 break;
 
             case Sprite.CELL:
                 if (!GiveAmmo(player, AmmoType.Cell, 1))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTCELL);
                 break;
 
             case Sprite.CELP:
                 if (!GiveAmmo(player, AmmoType.Cell, 5))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTCELLBOX);
                 break;
 
             case Sprite.SHEL:
                 if (!GiveAmmo(player, AmmoType.Shell, 1))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTSHELLS);
                 break;
 
             case Sprite.SBOX:
                 if (!GiveAmmo(player, AmmoType.Shell, 5))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTSHELLBOX);
                 break;
@@ -667,18 +552,14 @@ public sealed class ItemPickup
             case Sprite.BPAK:
                 if (!player.Backpack)
                 {
-                    for (var i = 0; i < (int)AmmoType.Count; i++)
-                    {
+                    for (var i = 0; i < AmmoType.Count; i++)
                         player.MaxAmmo[i] *= 2;
-                    }
 
                     player.Backpack = true;
                 }
 
-                for (var i = 0; i < (int)AmmoType.Count; i++)
-                {
-                    GiveAmmo(player, (AmmoType)i, 1);
-                }
+                for (var i = AmmoTypes.Clip; i < AmmoTypes.Count; i++)
+                    GiveAmmo(player, new AmmoType(i), 1);
 
                 player.SendMessage(DoomInfo.Strings.GOTBACKPACK);
                 break;
@@ -686,9 +567,7 @@ public sealed class ItemPickup
             // Weapons.
             case Sprite.BFUG:
                 if (!GiveWeapon(player, WeaponType.Bfg, false))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTBFG9000);
                 sound = Sfx.WPNUP;
@@ -696,9 +575,7 @@ public sealed class ItemPickup
 
             case Sprite.MGUN:
                 if (!GiveWeapon(player, WeaponType.Chaingun, (special.Flags & MobjFlags.Dropped) != 0))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTCHAINGUN);
                 sound = Sfx.WPNUP;
@@ -706,9 +583,7 @@ public sealed class ItemPickup
 
             case Sprite.CSAW:
                 if (!GiveWeapon(player, WeaponType.Chainsaw, false))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTCHAINSAW);
                 sound = Sfx.WPNUP;
@@ -716,9 +591,7 @@ public sealed class ItemPickup
 
             case Sprite.LAUN:
                 if (!GiveWeapon(player, WeaponType.Missile, false))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTLAUNCHER);
                 sound = Sfx.WPNUP;
@@ -726,9 +599,7 @@ public sealed class ItemPickup
 
             case Sprite.PLAS:
                 if (!GiveWeapon(player, WeaponType.Plasma, false))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTPLASMA);
                 sound = Sfx.WPNUP;
@@ -736,9 +607,7 @@ public sealed class ItemPickup
 
             case Sprite.SHOT:
                 if (!GiveWeapon(player, WeaponType.Shotgun, (special.Flags & MobjFlags.Dropped) != 0))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTSHOTGUN);
                 sound = Sfx.WPNUP;
@@ -746,9 +615,7 @@ public sealed class ItemPickup
 
             case Sprite.SGN2:
                 if (!GiveWeapon(player, WeaponType.SuperShotgun, (special.Flags & MobjFlags.Dropped) != 0))
-                {
                     return;
-                }
 
                 player.SendMessage(DoomInfo.Strings.GOTSHOTGUN2);
                 sound = Sfx.WPNUP;
@@ -759,17 +626,13 @@ public sealed class ItemPickup
         }
 
         if ((special.Flags & MobjFlags.CountItem) != 0)
-        {
             player.ItemCount++;
-        }
 
         world.ThingAllocation.RemoveMobj(special);
 
         player.BonusCount += bonusAdd;
 
         if (player == world.ConsolePlayer)
-        {
-            world.StartSound(player.Mobj, sound, SfxType.Misc);
-        }
+            world.StartSound(player.Mobj!, sound, SfxType.Misc);
     }
 }

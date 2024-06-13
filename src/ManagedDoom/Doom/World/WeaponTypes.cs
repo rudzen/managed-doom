@@ -40,7 +40,7 @@ public enum WeaponTypes : byte
 public readonly record struct WeaponType(WeaponTypes Value) : IMinMaxValue<WeaponType>
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public WeaponType(int file) : this((WeaponTypes)file)
+    public WeaponType(int wt) : this((WeaponTypes)wt)
     {
     }
 

@@ -364,10 +364,10 @@ public static partial class SaveAndLoad
         for (var i = 0; i < WeaponType.Count; i++)
             player.WeaponOwned[i] = BitConverter.ToInt32(data[(p + 120 + 4 * i)..]) != 0;
 
-        for (var i = 0; i < (int)AmmoType.Count; i++)
+        for (var i = 0; i < AmmoType.Count; i++)
             player.Ammo[i] = BitConverter.ToInt32(data[(p + 156 + 4 * i)..]);
 
-        for (var i = 0; i < (int)AmmoType.Count; i++)
+        for (var i = 0; i < AmmoType.Count; i++)
             player.MaxAmmo[i] = BitConverter.ToInt32(data[(p + 172 + 4 * i)..]);
 
         player.AttackDown = BitConverter.ToInt32(data[(p + 188)..]) != 0;

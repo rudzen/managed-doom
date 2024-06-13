@@ -120,28 +120,28 @@ public sealed class WeaponBehavior(World world)
         do
         {
             if (player.WeaponOwned[WeaponType.Plasma] &&
-                player.Ammo[(int)AmmoType.Cell] > 0 &&
+                player.Ammo[(int)AmmoTypes.Cell] > 0 &&
                 world.Options.GameMode != GameMode.Shareware)
             {
                 player.PendingWeapon = WeaponType.Plasma;
             }
             else if (player.WeaponOwned[WeaponType.SuperShotgun] &&
-                     player.Ammo[(int)AmmoType.Shell] > 2 &&
+                     player.Ammo[(int)AmmoTypes.Shell] > 2 &&
                      world.Options.GameMode == GameMode.Commercial)
             {
                 player.PendingWeapon = WeaponType.SuperShotgun;
             }
             else if (player.WeaponOwned[WeaponType.Chaingun] &&
-                     player.Ammo[(int)AmmoType.Clip] > 0)
+                     player.Ammo[(int)AmmoTypes.Clip] > 0)
             {
                 player.PendingWeapon = WeaponType.Chaingun;
             }
             else if (player.WeaponOwned[WeaponType.Shotgun] &&
-                     player.Ammo[(int)AmmoType.Shell] > 0)
+                     player.Ammo[(int)AmmoTypes.Shell] > 0)
             {
                 player.PendingWeapon = WeaponType.Shotgun;
             }
-            else if (player.Ammo[(int)AmmoType.Clip] > 0)
+            else if (player.Ammo[(int)AmmoTypes.Clip] > 0)
             {
                 player.PendingWeapon = WeaponType.Pistol;
             }
@@ -150,12 +150,12 @@ public sealed class WeaponBehavior(World world)
                 player.PendingWeapon = WeaponType.Chainsaw;
             }
             else if (player.WeaponOwned[WeaponType.Missile] &&
-                     player.Ammo[(int)AmmoType.Missile] > 0)
+                     player.Ammo[(int)AmmoTypes.Missile] > 0)
             {
                 player.PendingWeapon = WeaponType.Missile;
             }
             else if (player.WeaponOwned[WeaponType.Bfg] &&
-                     player.Ammo[(int)AmmoType.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
+                     player.Ammo[(int)AmmoTypes.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
                      world.Options.GameMode != GameMode.Shareware)
             {
                 player.PendingWeapon = WeaponType.Bfg;

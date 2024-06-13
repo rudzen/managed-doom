@@ -285,7 +285,7 @@ public static class DeHackEd
         var info = DoomInfo.WeaponInfos[weaponNumber];
         var dic = GetKeyValuePairs(data);
 
-        info.Ammo = (AmmoType)GetInt(dic, "Ammo type", (int)info.Ammo);
+        info.Ammo = new AmmoType(GetInt(dic, "Ammo type", (int)info.Ammo.Value));
         info.UpState = (MobjState)GetInt(dic, "Deselect frame", (int)info.UpState);
         info.DownState = (MobjState)GetInt(dic, "Select frame", (int)info.DownState);
         info.ReadyState = (MobjState)GetInt(dic, "Bobbing frame", (int)info.ReadyState);

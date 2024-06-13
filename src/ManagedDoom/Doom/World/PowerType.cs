@@ -16,6 +16,7 @@
 
 namespace ManagedDoom.Doom.World;
 
+// TODO (rudzen) : to flag?
 public enum PowerType
 {
     Invulnerability,

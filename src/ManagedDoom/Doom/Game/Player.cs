@@ -100,16 +100,13 @@ public sealed class Player
         Frags = new int[MaxPlayerCount];
 
         WeaponOwned = new bool[WeaponType.Count];
-        Ammo = new int[(int)AmmoType.Count];
-        MaxAmmo = new int[(int)AmmoType.Count];
+        Ammo = new int[AmmoType.Count];
+        MaxAmmo = new int[AmmoType.Count];
 
         PlayerSprites = new PlayerSpriteDef[(int)PlayerSprite.Count];
         for (var i = 0; i < PlayerSprites.Length; i++)
-        {
             PlayerSprites[i] = new PlayerSpriteDef();
-        }
     }
-
 
     public int Number { get; }
 
@@ -280,11 +277,9 @@ public sealed class Player
 
         WeaponOwned[WeaponType.Fist] = true;
         WeaponOwned[WeaponType.Pistol] = true;
-        Ammo[(int)AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
-        for (var i = 0; i < (int)AmmoType.Count; i++)
-        {
+        Ammo[AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
+        for (var i = 0; i < AmmoType.Count; i++)
             MaxAmmo[i] = DoomInfo.AmmoInfos.Max[i];
-        }
 
         // Don't do anything immediately.
         UseDown = true;

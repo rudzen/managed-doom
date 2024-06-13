@@ -145,10 +145,11 @@ public sealed class Cheat
         }
 
         player.Backpack = true;
-        for (var i = 0; i < (int)AmmoType.Count; i++)
+        for (var i = 0; i < AmmoType.Count; i++)
         {
-            player.MaxAmmo[i] = 2 * DoomInfo.AmmoInfos.Max[i];
-            player.Ammo[i] = 2 * DoomInfo.AmmoInfos.Max[i];
+            var max = 2 * DoomInfo.AmmoInfos.Max[i];
+            player.MaxAmmo[i] = max;
+            player.Ammo[i] = max;
         }
     }
 

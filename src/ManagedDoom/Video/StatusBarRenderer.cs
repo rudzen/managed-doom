@@ -214,7 +214,7 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
         DrawPercent(health, player.Health);
         DrawPercent(armor, player.ArmorPoints);
 
-        for (var i = 0; i < (int)AmmoType.Count; i++)
+        for (var i = 0; i < (int)AmmoTypes.Count; i++)
         {
             DrawNumber(ammo[i], player.Ammo[i]);
             DrawNumber(maxAmmo[i], player.MaxAmmo[i]);
