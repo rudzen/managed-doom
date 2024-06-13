@@ -1,6 +1,7 @@
 ﻿//
 // Copyright (C) 1993-1996 Id Software, Inc.
 // Copyright (C) 2019-2020 Nobuaki Tanaka
+// Copyright (C)      2024 Rudy Alex Kohn
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -372,7 +373,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         var frontSector = seg.FrontSector;
         var backSector = seg.BackSector;
 
-        var frontSectorFloorHeight = frontSector.GetInterpolatedFloorHeight(frameFrac);
+        var frontSectorFloorHeight = frontSector!.GetInterpolatedFloorHeight(frameFrac);
         var frontSectorCeilingHeight = frontSector.GetInterpolatedCeilingHeight(frameFrac);
 
         // Single sided line?
@@ -386,16 +387,14 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         var backSectorCeilingHeight = backSector.GetInterpolatedCeilingHeight(frameFrac);
 
         // Closed door.
-        if (backSectorCeilingHeight <= frontSectorFloorHeight ||
-            backSectorFloorHeight >= frontSectorCeilingHeight)
+        if (backSectorCeilingHeight <= frontSectorFloorHeight || backSectorFloorHeight >= frontSectorCeilingHeight)
         {
             DrawSolidWall(seg, rwAngle1, x1, x2 - 1);
             return;
         }
 
         // Window.
-        if (backSectorCeilingHeight != frontSectorCeilingHeight ||
-            backSectorFloorHeight != frontSectorFloorHeight)
+        if (backSectorCeilingHeight != frontSectorCeilingHeight || backSectorFloorHeight != frontSectorFloorHeight)
         {
             DrawPassWall(seg, rwAngle1, x1, x2 - 1);
             return;
@@ -419,80 +418,76 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     {
         int next;
         var start = 0;
+        var clipRanges = renderingHistory.ClipRanges.AsSpan();
 
         // Find the first range that touches the range
         // (adjacent pixels are touching).
-        while (renderingHistory.ClipRanges[start].Last < x1 - 1)
+        while (clipRanges[start].Last < x1 - 1)
             start++;
 
-        if (x1 < renderingHistory.ClipRanges[start].First)
+        if (x1 < clipRanges[start].First)
         {
             if (x2 < renderingHistory.ClipRanges[start].First - 1)
             {
                 // Post is entirely visible (above start),
                 // so insert a new clippost.
                 DrawSolidWallRange(seg, rwAngle1, x1, x2);
-                next = renderingHistory.ClipRangeCount;
-                renderingHistory.ClipRangeCount++;
+                next = renderingHistory.ClipRangeCount++;
 
                 while (next != start)
                 {
-                    renderingHistory.ClipRanges[next].CopyFrom(renderingHistory.ClipRanges[next - 1]);
+                    clipRanges[next].CopyFrom(clipRanges[next - 1]);
                     next--;
                 }
 
-                renderingHistory.ClipRanges[next].First = x1;
-                renderingHistory.ClipRanges[next].Last = x2;
+                clipRanges[next].First = x1;
+                clipRanges[next].Last = x2;
                 return;
             }
 
             // There is a fragment above *start.
-            DrawSolidWallRange(seg, rwAngle1, x1, renderingHistory.ClipRanges[start].First - 1);
+            DrawSolidWallRange(seg, rwAngle1, x1, clipRanges[start].First - 1);
 
             // Now adjust the clip size.
-            renderingHistory.ClipRanges[start].First = x1;
+            clipRanges[start].First = x1;
         }
 
         // Bottom contained in start?
-        if (x2 <= renderingHistory.ClipRanges[start].Last)
+        if (x2 <= clipRanges[start].Last)
             return;
 
         next = start;
-        while (x2 >= renderingHistory.ClipRanges[next + 1].First - 1)
+        while (x2 >= clipRanges[next + 1].First - 1)
         {
             // There is a fragment between two posts.
-            DrawSolidWallRange(seg, rwAngle1, renderingHistory.ClipRanges[next].Last + 1, renderingHistory.ClipRanges[next + 1].First - 1);
+            DrawSolidWallRange(seg, rwAngle1, clipRanges[next].Last + 1, clipRanges[next + 1].First - 1);
             next++;
 
-            if (x2 <= renderingHistory.ClipRanges[next].Last)
+            if (x2 <= clipRanges[next].Last)
             {
                 // Bottom is contained in next.
                 // Adjust the clip size.
-                renderingHistory.ClipRanges[start].Last = renderingHistory.ClipRanges[next].Last;
+                clipRanges[start].Last = clipRanges[next].Last;
                 goto crunch;
             }
         }
 
         // There is a fragment after *next.
-        DrawSolidWallRange(seg, rwAngle1, renderingHistory.ClipRanges[next].Last + 1, x2);
+        DrawSolidWallRange(seg, rwAngle1, clipRanges[next].Last + 1, x2);
 
         // Adjust the clip size.
-        renderingHistory.ClipRanges[start].Last = x2;
+        clipRanges[start].Last = x2;
 
         // Remove start + 1 to next from the clip list,
         // because start now covers their area.
     crunch:
+        // Post just extended past the bottom of one post.
         if (next == start)
-        {
-            // Post just extended past the bottom of one post.
             return;
-        }
 
+        // Remove a post.
         while (next++ != renderingHistory.ClipRangeCount)
-        {
-            // Remove a post.
-            renderingHistory.ClipRanges[++start].CopyFrom(renderingHistory.ClipRanges[next]);
-        }
+            clipRanges[++start].CopyFrom(clipRanges[next]);
 
         renderingHistory.ClipRangeCount = start + 1;
     }
@@ -502,14 +497,14 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         // Find the first range that touches the range
         // (adjacent pixels are touching).
         var start = 0;
-        while (renderingHistory.ClipRanges[start].Last < x1 - 1)
-        {
-            start++;
-        }
+        var clipRanges = renderingHistory.ClipRanges.AsSpan();
 
-        if (x1 < renderingHistory.ClipRanges[start].First)
+        while (clipRanges[start].Last < x1 - 1)
+            start++;
+
+        if (x1 < clipRanges[start].First)
         {
-            if (x2 < renderingHistory.ClipRanges[start].First - 1)
+            if (x2 < clipRanges[start].First - 1)
             {
                 // Post is entirely visible (above start).
                 DrawPassWallRange(seg, rwAngle1, x1, x2, false);
@@ -517,94 +512,75 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             }
 
             // There is a fragment above *start.
-            DrawPassWallRange(seg, rwAngle1, x1, renderingHistory.ClipRanges[start].First - 1, false);
+            DrawPassWallRange(seg, rwAngle1, x1, clipRanges[start].First - 1, false);
         }
 
         // Bottom contained in start?
-        if (x2 <= renderingHistory.ClipRanges[start].Last)
-        {
+        if (x2 <= clipRanges[start].Last)
             return;
-        }
 
-        while (x2 >= renderingHistory.ClipRanges[start + 1].First - 1)
+        while (x2 >= clipRanges[start + 1].First - 1)
         {
             // There is a fragment between two posts.
-            DrawPassWallRange(seg, rwAngle1, renderingHistory.ClipRanges[start].Last + 1, renderingHistory.ClipRanges[start + 1].First - 1, false);
+            DrawPassWallRange(seg, rwAngle1, clipRanges[start].Last + 1, clipRanges[start + 1].First - 1, false);
             start++;
 
-            if (x2 <= renderingHistory.ClipRanges[start].Last)
-            {
+            if (x2 <= clipRanges[start].Last)
                 return;
-            }
         }
 
         // There is a fragment after *next.
-        DrawPassWallRange(seg, rwAngle1, renderingHistory.ClipRanges[start].Last + 1, x2, false);
+        DrawPassWallRange(seg, rwAngle1, clipRanges[start].Last + 1, x2, false);
     }
-
 
     private Fixed ScaleFromGlobalAngle(Angle visAngle, Angle viewAngle, Angle rwNormal, Fixed rwDistance)
     {
         var num = windowSettings.Projection * Trig.Sin(Angle.Ang90 + (visAngle - rwNormal));
         var den = rwDistance * Trig.Sin(Angle.Ang90 + (visAngle - viewAngle));
 
-        Fixed scale;
-        if (den.Data > num.Data >> 16)
-        {
-            scale = num / den;
+        if (den.Data <= num.Data >> 16)
+            return Fixed.FromInt(64);
 
-            if (scale > Fixed.FromInt(64))
-            {
-                scale = Fixed.FromInt(64);
-            }
-            else if (scale.Data < 256)
-            {
-                scale = new Fixed(256);
-            }
-        }
-        else
-        {
-            scale = Fixed.FromInt(64);
-        }
+        var scale = num / den;
 
-        return scale;
+        if (scale > Fixed.FromInt(64))
+            return Fixed.FromInt(64);
+
+        return scale.Data < 256 ? new Fixed(256) : scale;
     }
-
 
     private const int heightBits = 12;
     private const int heightUnit = 1 << heightBits;
 
     private void DrawSolidWallRange(Seg seg, Angle rwAngle1, int x1, int x2)
     {
-        if (seg.BackSector != null)
+        if (seg.BackSector is not null)
         {
             DrawPassWallRange(seg, rwAngle1, x1, x2, true);
             return;
         }
 
+        // Too many visible walls.
         if (renderingHistory.VisWallRangeCount == renderingHistory.VisWallRanges.Length)
-        {
-            // Too many visible walls.
             return;
-        }
 
         // Make some aliases to shorten the following code.
         var line = seg.LineDef;
         var side = seg.SideDef;
         var frontSector = seg.FrontSector;
 
-        var frontSectorFloorHeight = frontSector.GetInterpolatedFloorHeight(frameFrac);
+        var frontSectorFloorHeight = frontSector!.GetInterpolatedFloorHeight(frameFrac);
         var frontSectorCeilingHeight = frontSector.GetInterpolatedCeilingHeight(frameFrac);
 
         // Mark the segment as visible for auto map.
-        line.Flags |= LineFlags.Mapped;
+        line!.Flags |= LineFlags.Mapped;
 
         // Calculate the relative plane heights of front and back sector.
         var worldFrontZ1 = frontSectorCeilingHeight - viewZ;
         var worldFrontZ2 = frontSectorFloorHeight - viewZ;
 
         // Check which parts must be rendered.
-        var drawWall = side.MiddleTexture != 0;
+        var drawWall = side!.MiddleTexture != 0;
         var drawCeiling = worldFrontZ1 > Fixed.Zero || frontSector.CeilingFlat == flats.SkyFlatNumber;
         var drawFloor = worldFrontZ2 < Fixed.Zero;
 
@@ -622,9 +598,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             middleTextureAlt = vTop - viewZ;
         }
         else
-        {
             middleTextureAlt = worldFrontZ1;
-        }
 
         middleTextureAlt += side.RowOffset;
 
@@ -636,9 +610,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         var offsetAngle = Angle.Abs(rwNormalAngle - rwAngle1);
         if (offsetAngle > Angle.Ang90)
-        {
             offsetAngle = Angle.Ang90;
-        }
 
         var distAngle = Angle.Ang90 - offsetAngle;
 
@@ -840,11 +812,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         var worldBackZ2 = backSectorFloorHeight - viewZ;
 
         // The hack below enables ceiling height change in outdoor area without showing the upper wall.
-        if (frontSector.CeilingFlat == flats.SkyFlatNumber &&
-            backSector.CeilingFlat == flats.SkyFlatNumber)
-        {
+        if (frontSector.CeilingFlat == flats.SkyFlatNumber && backSector.CeilingFlat == flats.SkyFlatNumber)
             worldFrontZ1 = worldBackZ1;
-        }
 
         //
         // Check which parts must be rendered.
@@ -896,21 +865,21 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         var upperWallTexture = default(Texture);
         var upperWallWidthMask = default(int);
-        var uperTextureAlt = default(Fixed);
+        var upperTextureAlt = default(Fixed);
         if (drawUpperWall)
         {
-            upperWallTexture = textures[world.Specials.TextureTranslation[side.TopTexture]];
+            upperWallTexture = textures[world!.Specials.TextureTranslation[side.TopTexture]];
             upperWallWidthMask = upperWallTexture.Width - 1;
 
             if ((line.Flags & LineFlags.DontPegTop) != 0)
-                uperTextureAlt = worldFrontZ1;
+                upperTextureAlt = worldFrontZ1;
             else
             {
                 var vTop = backSectorCeilingHeight + Fixed.FromInt(upperWallTexture.Height);
-                uperTextureAlt = vTop - viewZ;
+                upperTextureAlt = vTop - viewZ;
             }
 
-            uperTextureAlt += side.RowOffset;
+            upperTextureAlt += side.RowOffset;
         }
 
         var lowerWallTexture = default(Texture);
@@ -918,7 +887,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         var lowerTextureAlt = default(Fixed);
         if (drawLowerWall)
         {
-            lowerWallTexture = textures[world.Specials.TextureTranslation[side.BottomTexture]];
+            lowerWallTexture = textures[world!.Specials.TextureTranslation[side.BottomTexture]];
             lowerWallWidthMask = lowerWallTexture.Width - 1;
             lowerTextureAlt = (line.Flags & LineFlags.DontPegBottom) != 0
                 ? worldFrontZ1 + side.RowOffset
@@ -988,7 +957,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             else if (seg.Vertex1.X == seg.Vertex2.X)
                 wallLightLevel++;
 
-            wallLights = lightningRender.scaleLight[Math.Clamp(wallLightLevel, 0, LightningRender.lightLevelCount - 1)];
+            var scaleLightIndex = Math.Clamp(wallLightLevel, 0, LightningRender.lightLevelCount - 1);
+            wallLights = lightningRender.scaleLight[scaleLightIndex];
         }
 
         //
@@ -1165,7 +1135,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 var wy2 = Math.Min(drawUpperWallY2, renderingHistory.LowerClip[x] - 1);
                 var source = upperWallTexture!.Composite.Columns[textureColumn & upperWallWidthMask];
                 if (source.Length > 0)
-                    DrawColumn(source[0], wallLights![lightIndex], x, wy1, wy2, invScale, uperTextureAlt);
+                    DrawColumn(source[0], wallLights![lightIndex], x, wy1, wy2, invScale, upperTextureAlt);
 
                 if (renderingHistory.UpperClip[x] < wy2)
                     renderingHistory.UpperClip[x] = (short)wy2;
@@ -1212,15 +1182,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 DrawFloorColumn(frontSector, floorFlat, planeLights, x, fy1, fy2, frontSectorFloorHeight);
 
                 if (renderingHistory.LowerClip[x] > drawWallY2 + 1)
-                {
                     renderingHistory.LowerClip[x] = (short)fy1;
-                }
             }
 
             if (drawMaskedTexture)
-            {
                 renderingHistory.ClipData[maskedTextureColumn + x] = (short)textureColumn;
-            }
 
             rwScale += rwScaleStep;
             wallY1Frac += wallY1Step;
@@ -1247,16 +1213,19 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             renderingHistory.ClipDataLength += range;
         }
 
-        if (drawMaskedTexture && (visWallRange.Silhouette & Silhouette.Upper) == 0)
+        if (drawMaskedTexture)
         {
-            visWallRange.Silhouette |= Silhouette.Upper;
-            visWallRange.UpperSilHeight = Fixed.MinValue;
-        }
+            if ((visWallRange.Silhouette & Silhouette.Upper) == 0)
+            {
+                visWallRange.Silhouette |= Silhouette.Upper;
+                visWallRange.UpperSilHeight = Fixed.MinValue;
+            }
 
-        if (drawMaskedTexture && (visWallRange.Silhouette & Silhouette.Lower) == 0)
-        {
-            visWallRange.Silhouette |= Silhouette.Lower;
-            visWallRange.LowerSilHeight = Fixed.MaxValue;
+            if ((visWallRange.Silhouette & Silhouette.Lower) == 0)
+            {
+                visWallRange.Silhouette |= Silhouette.Lower;
+                visWallRange.LowerSilHeight = Fixed.MaxValue;
+            }
         }
     }
 
@@ -1277,7 +1246,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     {
         var seg = drawSeg.Seg;
 
-        var wallLightLevel = (seg.FrontSector.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
+        var wallLightLevel = (seg.FrontSector!.LightLevel >> LightningRender.lightSegShift) + lightningRender.ExtraLight;
         if (seg.Vertex1.Y == seg.Vertex2.Y)
             wallLightLevel--;
         else if (seg.Vertex1.X == seg.Vertex2.X)
@@ -1285,26 +1254,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         var wallLights = lightningRender.scaleLight[Math.Clamp(wallLightLevel, 0, LightningRender.lightLevelCount - 1)];
 
-        var wallTexture = textures[world.Specials.TextureTranslation[seg.SideDef.MiddleTexture]];
+        var wallTexture = textures[world!.Specials.TextureTranslation[seg.SideDef!.MiddleTexture]];
         var mask = wallTexture.Width - 1;
 
-        Fixed midTextureAlt;
-        if ((seg.LineDef.Flags & LineFlags.DontPegBottom) != 0)
-        {
-            midTextureAlt = drawSeg.FrontSectorFloorHeight > drawSeg.BackSectorFloorHeight
-                ? drawSeg.FrontSectorFloorHeight
-                : drawSeg.BackSectorFloorHeight;
-            midTextureAlt = midTextureAlt + Fixed.FromInt(wallTexture.Height) - viewZ;
-        }
-        else
-        {
-            midTextureAlt = drawSeg.FrontSectorCeilingHeight < drawSeg.BackSectorCeilingHeight
-                ? drawSeg.FrontSectorCeilingHeight
-                : drawSeg.BackSectorCeilingHeight;
-            midTextureAlt -= viewZ;
-        }
-
-        midTextureAlt += seg.SideDef.RowOffset;
+        var midTextureAlt = GetMidTextureAlt(seg, drawSeg, wallTexture, viewZ)
+                            + seg.SideDef.RowOffset;
 
         var scaleStep = drawSeg.ScaleStep;
         var scale = drawSeg.Scale1 + (x1 - drawSeg.X1) * scaleStep;
@@ -1336,6 +1290,26 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             }
 
             scale += scaleStep;
+        }
+
+        return;
+
+        static Fixed GetMidTextureAlt(Seg seg, VisWallRange drawSeg, Texture wallTexture, Fixed viewZ)
+        {
+            if ((seg.LineDef!.Flags & LineFlags.DontPegBottom) != 0)
+            {
+                var midTextureAlt = drawSeg.FrontSectorFloorHeight > drawSeg.BackSectorFloorHeight
+                    ? drawSeg.FrontSectorFloorHeight
+                    : drawSeg.BackSectorFloorHeight;
+                return midTextureAlt + Fixed.FromInt(wallTexture.Height) - viewZ;
+            }
+            else
+            {
+                var midTextureAlt = drawSeg.FrontSectorCeilingHeight < drawSeg.BackSectorCeilingHeight
+                    ? drawSeg.FrontSectorCeilingHeight
+                    : drawSeg.BackSectorCeilingHeight;
+                return midTextureAlt - viewZ;
+            }
         }
     }
 
@@ -1381,11 +1355,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.CeilingXFrac[y] = xFrac;
                 planeRender.CeilingYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
-                planeRender.CeilingLights[y] = colorMap;
+                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.CeilingLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = colorMap[flatData[spot]];
+                screenData[pos] = planeColorMap[flatData[spot]];
                 pos++;
             }
 
@@ -1415,11 +1389,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.CeilingXFrac[y] = xFrac;
                 planeRender.CeilingYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
-                planeRender.CeilingLights[y] = colorMap;
+                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.CeilingLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = colorMap[flatData[spot]];
+                screenData[pos] = planeColorMap[flatData[spot]];
                 pos++;
             }
         }
@@ -1440,11 +1414,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.CeilingXFrac[y] = xFrac;
                 planeRender.CeilingYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
-                planeRender.CeilingLights[y] = colorMap;
+                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.CeilingLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = colorMap[flatData[spot]];
+                screenData[pos] = planeColorMap[flatData[spot]];
                 pos++;
             }
         }
@@ -1556,11 +1530,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.FloorXFrac[y] = xFrac;
                 planeRender.FloorYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
-                planeRender.FloorLights[y] = colorMap;
+                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.FloorLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = colorMap[flatData[spot]];
+                screenData[pos] = planeColorMap[flatData[spot]];
                 pos++;
             }
         }
@@ -1708,7 +1682,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     }
 
     private void DrawMaskedColumnTranslation(
-        Column[] columns,
+        ReadOnlySpan<Column> columns,
         ReadOnlySpan<byte> translation,
         ReadOnlySpan<byte> map,
         int x,
@@ -1898,40 +1872,34 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
     private void DrawSprite(VisSprite sprite)
     {
+        var lowerClips = renderingHistory.LowerClip.AsSpan();
+        var upperClips = renderingHistory.UpperClip.AsSpan();
+
         for (var x = sprite.X1; x <= sprite.X2; x++)
         {
-            renderingHistory.LowerClip[x] = -2;
-            renderingHistory.UpperClip[x] = -2;
+            lowerClips[x] = -2;
+            upperClips[x] = -2;
         }
+
+        var clipDate = renderingHistory.ClipData.AsSpan();
 
         // Scan drawsegs from end to start for obscuring segs.
         // The first drawseg that has a greater scale is the clip seg.
         var currentVisualWallRanges = renderingHistory.GetCurrentVisWallRanges();
         for (var i = currentVisualWallRanges.Length - 1; i >= 0; i--)
         {
-            var wall = renderingHistory.VisWallRanges[i];
+            var wall = currentVisualWallRanges[i];
 
             // Determine if the drawseg obscures the sprite.
-            if (wall.X1 > sprite.X2 ||
-                wall.X2 < sprite.X1 ||
-                (wall.Silhouette == 0 && wall.MaskedTextureColumn == -1))
-            {
-                // Does not cover sprite.
+            if (wall.X1 > sprite.X2 || wall.X2 < sprite.X1 || wall is { Silhouette: 0, MaskedTextureColumn: -1 })
                 continue;
-            }
 
             var r1 = wall.X1 < sprite.X1 ? sprite.X1 : wall.X1;
             var r2 = wall.X2 > sprite.X2 ? sprite.X2 : wall.X2;
 
-            var lowScale = wall.Scale2;
-            var scale = wall.Scale1;
+            var (lowScale, scale) = GetScales(wall);
 
-            if (scale > lowScale)
-                (lowScale, scale) = (scale, lowScale);
-
-            if (scale < sprite.Scale ||
-                (lowScale < sprite.Scale &&
-                 Geometry.PointOnSegSide(sprite.GlobalX, sprite.GlobalY, wall.Seg) == 0))
+            if (scale < sprite.Scale || (lowScale < sprite.Scale && Geometry.PointOnSegSide(sprite.GlobalX, sprite.GlobalY, wall.Seg) == 0))
             {
                 // Masked mid texture?
                 if (wall.MaskedTextureColumn != -1)
@@ -1955,8 +1923,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 // Bottom sil.
                 for (var x = r1; x <= r2; x++)
                 {
-                    if (renderingHistory.LowerClip[x] == -2)
-                        renderingHistory.LowerClip[x] = renderingHistory.ClipData[wall.LowerClip + x];
+                    if (lowerClips[x] == -2)
+                        lowerClips[x] = clipDate[wall.LowerClip + x];
                 }
             }
             else if (silhouette == Silhouette.Upper)
@@ -1964,8 +1932,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 // Top sil.
                 for (var x = r1; x <= r2; x++)
                 {
-                    if (renderingHistory.UpperClip[x] == -2)
-                        renderingHistory.UpperClip[x] = renderingHistory.ClipData[wall.UpperClip + x];
+                    if (upperClips[x] == -2)
+                        upperClips[x] = clipDate[wall.UpperClip + x];
                 }
             }
             else if (silhouette == Silhouette.Both)
@@ -1973,11 +1941,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 // Both.
                 for (var x = r1; x <= r2; x++)
                 {
-                    if (renderingHistory.LowerClip[x] == -2)
-                        renderingHistory.LowerClip[x] = renderingHistory.ClipData[wall.LowerClip + x];
+                    if (lowerClips[x] == -2)
+                        lowerClips[x] = clipDate[wall.LowerClip + x];
 
-                    if (renderingHistory.UpperClip[x] == -2)
-                        renderingHistory.UpperClip[x] = renderingHistory.ClipData[wall.UpperClip + x];
+                    if (upperClips[x] == -2)
+                        upperClips[x] = clipDate[wall.UpperClip + x];
                 }
             }
         }
@@ -1987,11 +1955,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         // Check for unclipped columns.
         for (var x = sprite.X1; x <= sprite.X2; x++)
         {
-            if (renderingHistory.LowerClip[x] == -2)
-                renderingHistory.LowerClip[x] = (short)windowSettings.WindowHeight;
+            if (lowerClips[x] == -2)
+                lowerClips[x] = (short)windowSettings.WindowHeight;
 
-            if (renderingHistory.UpperClip[x] == -2)
-                renderingHistory.UpperClip[x] = -1;
+            if (upperClips[x] == -2)
+                upperClips[x] = -1;
         }
 
         if ((sprite.MobjFlags & MobjFlags.Shadow) != 0)
@@ -2005,12 +1973,12 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                     x,
                     windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
                     sprite.Scale,
-                    renderingHistory.UpperClip[x],
-                    renderingHistory.LowerClip[x]);
+                    upperClips[x],
+                    lowerClips[x]);
                 frac += sprite.InvScale;
             }
         }
-        else if (((int)(sprite.MobjFlags & MobjFlags.Translation) >> (int)MobjFlags.TransShift) != 0)
+        else if ((int)(sprite.MobjFlags & MobjFlags.Translation) >> (int)MobjFlags.TransShift != 0)
         {
             var translation = colorTranslation.GetTranslation(sprite.MobjFlags);
             var frac = sprite.StartFrac;
@@ -2026,8 +1994,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                     sprite.Scale,
                     Fixed.Abs(sprite.InvScale),
                     sprite.TextureAlt,
-                    renderingHistory.UpperClip[x],
-                    renderingHistory.LowerClip[x]);
+                    upperClips[x],
+                    lowerClips[x]);
                 frac += sprite.InvScale;
             }
         }
@@ -2045,14 +2013,21 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                     sprite.Scale,
                     Fixed.Abs(sprite.InvScale),
                     sprite.TextureAlt,
-                    renderingHistory.UpperClip[x],
-                    renderingHistory.LowerClip[x]);
+                    upperClips[x],
+                    lowerClips[x]);
                 frac += sprite.InvScale;
             }
         }
+
+        return;
+
+        static (Fixed, Fixed) GetScales(VisWallRange wall)
+        {
+            return wall.Scale1 > wall.Scale2 ? (wall.Scale2, wall.Scale1) : (wall.Scale1, wall.Scale2);
+        }
     }
 
-    private void DrawPlayerSprite(PlayerSpriteDef psp, byte[][] spriteLights, bool fuzz)
+    private void DrawPlayerSprite(PlayerSpriteDef psp, ReadOnlySpan<byte[]> spriteLights, bool fuzz)
     {
         // Decide which patch to use.
         var spriteDef = sprites[psp.State.Sprite];
