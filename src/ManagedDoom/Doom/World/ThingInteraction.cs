@@ -49,9 +49,7 @@ public sealed class ThingInteraction
         target.Flags &= ~(MobjFlags.Shootable | MobjFlags.Float | MobjFlags.SkullFly);
 
         if (target.Type != MobjType.Skull)
-        {
             target.Flags &= ~MobjFlags.NoGravity;
-        }
 
         target.Flags |= MobjFlags.Corpse | MobjFlags.DropOff;
         target.Height = new Fixed(target.Height.Data >> 2);
@@ -60,28 +58,20 @@ public sealed class ThingInteraction
         {
             // Count for intermission.
             if ((target.Flags & MobjFlags.CountKill) != 0)
-            {
                 source.Player.KillCount++;
-            }
 
             if (target.Player != null)
-            {
                 source.Player.Frags[target.Player.Number]++;
-            }
         }
+        // Count all monster deaths, even those caused by other monsters.
         else if (!world.Options.NetGame && (target.Flags & MobjFlags.CountKill) != 0)
-        {
-            // Count all monster deaths, even those caused by other monsters.
             world.Options.Players[0].KillCount++;
-        }
 
         if (target.Player != null)
         {
             // Count environment kills against you.
             if (source == null)
-            {
                 target.Player.Frags[target.Player.Number]++;
-            }
 
             target.Flags &= ~MobjFlags.Solid;
             target.Player.PlayerState = PlayerState.Dead;
@@ -89,27 +79,19 @@ public sealed class ThingInteraction
 
             var am = world.AutoMap;
 
+            // Don't die in auto map, switch view prior to dying.
             if (target.Player.Number == world.Options.ConsolePlayer && am.Visible)
-            {
-                // Don't die in auto map, switch view prior to dying.
                 am.Close();
-            }
         }
 
         if (target.Health < -target.Info.SpawnHealth && target.Info.XdeathState != 0)
-        {
             target.SetState(target.Info.XdeathState);
-        }
         else
-        {
             target.SetState(target.Info.DeathState);
-        }
 
         target.Tics -= world.Random.Next() & 3;
         if (target.Tics < 1)
-        {
             target.Tics = 1;
-        }
 
         // Drop stuff.
         // This determines the kind of object spawned during the death frame of a thing.
@@ -151,28 +133,20 @@ public sealed class ThingInteraction
     /// </summary>
     public void DamageMobj(Mobj target, Mobj? inflictor, Mobj? source, int damage)
     {
+        // Shouldn't happen...
         if ((target.Flags & MobjFlags.Shootable) == 0)
-        {
-            // Shouldn't happen...
             return;
-        }
 
         if (target.Health <= 0)
-        {
             return;
-        }
 
         if ((target.Flags & MobjFlags.SkullFly) != 0)
-        {
             target.MomX = target.MomY = target.MomZ = Fixed.Zero;
-        }
 
         var player = target.Player;
+        // Take half damage in trainer mode.
         if (player != null && world.Options.Skill == GameSkill.Baby)
-        {
-            // Take half damage in trainer mode.
             damage >>= 1;
-        }
 
         // Some close combat weapons should not inflict thrust and
         // push the victim out of reach, thus kick away unless using the chainsaw.
@@ -209,28 +183,19 @@ public sealed class ThingInteraction
         {
             // End of game hell hack.
             if (target.Subsector.Sector.Special == (SectorSpecial)11 && damage >= target.Health)
-            {
                 damage = target.Health - 1;
-            }
 
             // Below certain threshold, ignore damage in GOD mode, or with INVUL power.
-            if (damage < 1000 && ((player.Cheats & CheatFlags.GodMode) != 0 ||
-                                  player.Powers[(int)PowerType.Invulnerability] > 0))
-            {
+            if (damage < 1000 && ((player.Cheats & CheatFlags.GodMode) != 0 || player.Powers[(int)PowerType.Invulnerability] > 0))
                 return;
-            }
 
             if (player.ArmorType != 0)
             {
                 int saved;
                 if (player.ArmorType == 1)
-                {
                     saved = damage / 3;
-                }
                 else
-                {
                     saved = damage / 2;
-                }
 
                 if (player.ArmorPoints <= saved)
                 {
@@ -246,20 +211,16 @@ public sealed class ThingInteraction
             // Mirror mobj health here for Dave.
             player.Health -= damage;
             if (player.Health < 0)
-            {
                 player.Health = 0;
-            }
 
             player.Attacker = source;
 
             // Add damage after armor / invuln.
             player.DamageCount += damage;
 
+            // Teleport stomp does 10k points...
             if (player.DamageCount > 100)
-            {
-                // Teleport stomp does 10k points...
                 player.DamageCount = 100;
-            }
         }
 
         // Do the damage.
@@ -275,7 +236,6 @@ public sealed class ThingInteraction
         {
             // Fight back!
             target.Flags |= MobjFlags.JustHit;
-
             target.SetState(target.Info.PainState);
         }
 
@@ -290,11 +250,8 @@ public sealed class ThingInteraction
             // If not intent on another player, chase after this one.
             target.Target = source;
             target.Threshold = baseThreshold;
-            if (target.State == DoomInfo.States[(int)target.Info.SpawnState] &&
-                target.Info.SeeState != MobjState.Null)
-            {
+            if (target.State == DoomInfo.States[(int)target.Info.SpawnState] && target.Info.SeeState != MobjState.Null)
                 target.SetState(target.Info.SeeState);
-            }
         }
     }
 
@@ -311,16 +268,12 @@ public sealed class ThingInteraction
         thing.Tics -= world.Random.Next() & 3;
 
         if (thing.Tics < 1)
-        {
             thing.Tics = 1;
-        }
 
         thing.Flags &= ~MobjFlags.Missile;
 
         if (thing.Info.DeathSound != 0)
-        {
             world.StartSound(thing, thing.Info.DeathSound, SfxType.Misc);
-        }
     }
 
     private void InitRadiusAttack()
@@ -334,15 +287,11 @@ public sealed class ThingInteraction
     private bool DoRadiusAttack(Mobj thing)
     {
         if ((thing.Flags & MobjFlags.Shootable) == 0)
-        {
             return true;
-        }
 
         // Boss spider and cyborg take no damage from concussion.
         if (thing.Type is MobjType.Cyborg or MobjType.Spider)
-        {
             return true;
-        }
 
         var dx = Fixed.Abs(thing.X - bombSpot.X);
         var dy = Fixed.Abs(thing.Y - bombSpot.Y);
@@ -351,21 +300,15 @@ public sealed class ThingInteraction
         dist = new Fixed((dist - thing.Radius).Data >> Fixed.FracBits);
 
         if (dist < Fixed.Zero)
-        {
             dist = Fixed.Zero;
-        }
 
+        // Out of range.
         if (dist.Data >= bombDamage)
-        {
-            // Out of range.
             return true;
-        }
 
+        // Must be in direct path.
         if (world.VisibilityCheck.CheckSight(thing, bombSpot))
-        {
-            // Must be in direct path.
             DamageMobj(thing, bombSpot, bombSource, bombDamage - dist.Data);
-        }
 
         return true;
     }

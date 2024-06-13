@@ -83,7 +83,7 @@ public sealed class Sector
     public int[] BlockBox { get; set; }
     public Mobj SoundOrigin { get; set; }
     public int ValidCount { get; set; }
-    public Mobj ThingList { get; set; }
+    public Mobj? ThingList { get; set; }
     public Thinker? SpecialData { get; set; }
     public LineDef[] Lines { get; set; }
 

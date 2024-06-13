@@ -164,18 +164,14 @@ public sealed class MapInteraction
             case 7:
                 // Build stairs.
                 if (sa.BuildStairs(line, StairType.Build8))
-                {
                     specials.ChangeSwitchTexture(line, false);
-                }
 
                 break;
 
             case 9:
                 // Change donut.
                 if (sa.DoDonut(line))
-                {
                     specials.ChangeSwitchTexture(line, false);
-                }
 
                 break;
 
@@ -442,36 +438,28 @@ public sealed class MapInteraction
             case 61:
                 // Open door.
                 if (sa.DoDoor(line, VerticalDoorType.Open))
-                {
                     specials.ChangeSwitchTexture(line, true);
-                }
 
                 break;
 
             case 62:
                 // Platform down, wait, up and stay.
                 if (sa.DoPlatform(line, PlatformType.DownWaitUpStay, 1))
-                {
                     specials.ChangeSwitchTexture(line, true);
-                }
 
                 break;
 
             case 63:
                 // Raise door.
                 if (sa.DoDoor(line, VerticalDoorType.Normal))
-                {
                     specials.ChangeSwitchTexture(line, true);
-                }
 
                 break;
 
             case 64:
                 // Raise floor to ceiling.
                 if (sa.DoFloor(line, FloorMoveType.RaiseFloor))
-                {
                     specials.ChangeSwitchTexture(line, true);
-                }
 
                 break;
 
@@ -1079,19 +1067,15 @@ public sealed class MapInteraction
         //	Impacts that other things can activate.
         if (thing.Player == null)
         {
-            var ok = false;
-            switch ((int)line.Special)
+            var ok = (int)line.Special switch
             {
-                case 46:
-                    // Open door impact.
-                    ok = true;
-                    break;
-            }
+                // Open door impact.                
+                46 => true,
+                _  => false
+            };
 
             if (!ok)
-            {
                 return;
-            }
         }
 
         var sa = world.SectorAction;

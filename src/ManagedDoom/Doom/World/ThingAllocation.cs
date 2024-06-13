@@ -60,9 +60,7 @@ public sealed class ThingAllocation
         if (mt.Type == 11)
         {
             if (deathmatchStarts.Count < 10)
-            {
                 deathmatchStarts.Add(mt);
-            }
 
             return;
         }
@@ -75,80 +73,53 @@ public sealed class ThingAllocation
             // This check is neccesary in Plutonia MAP12,
             // which contains an unknown thing with type 0.
             if (playerNumber < 0)
-            {
                 return;
-            }
 
             // Save spots for respawning in network games.
             playerStarts[playerNumber] = mt;
 
             if (world.Options.Deathmatch == 0)
-            {
                 SpawnPlayer(mt);
-            }
 
             return;
         }
 
         if (mt.Type is 11 or <= 4)
-        {
             return;
-        }
 
         // Check for apropriate skill level.
         if (!world.Options.NetGame && ((int)mt.Flags & 16) != 0)
-        {
             return;
-        }
 
         int bit;
         if (world.Options.Skill == GameSkill.Baby)
-        {
             bit = 1;
-        }
         else if (world.Options.Skill == GameSkill.Nightmare)
-        {
             bit = 4;
-        }
         else
-        {
             bit = 1 << ((int)world.Options.Skill - 1);
-        }
 
         if (((int)mt.Flags & bit) == 0)
-        {
             return;
-        }
 
         // Find which type to spawn.
         int i;
         for (i = 0; i < DoomInfo.MobjInfos.Length; i++)
         {
             if (mt.Type == DoomInfo.MobjInfos[i].DoomEdNum)
-            {
                 break;
-            }
         }
 
         if (i == DoomInfo.MobjInfos.Length)
-        {
             throw new Exception("Unknown type!");
-        }
 
         // Don't spawn keycards and players in deathmatch.
-        if (world.Options.Deathmatch != 0 &&
-            (DoomInfo.MobjInfos[i].Flags & MobjFlags.NotDeathmatch) != 0)
-        {
+        if (world.Options.Deathmatch != 0 && (DoomInfo.MobjInfos[i].Flags & MobjFlags.NotDeathmatch) != 0)
             return;
-        }
 
         // Don't spawn any monsters if -nomonsters.
-        if (world.Options.NoMonsters &&
-            (i == (int)MobjType.Skull ||
-             (DoomInfo.MobjInfos[i].Flags & MobjFlags.CountKill) != 0))
-        {
+        if (world.Options.NoMonsters && (i == (int)MobjType.Skull || (DoomInfo.MobjInfos[i].Flags & MobjFlags.CountKill) != 0))
             return;
-        }
 
         // Spawn it.
         var x = mt.X;
@@ -162,26 +133,18 @@ public sealed class ThingAllocation
         mobj.SpawnPoint = mt;
 
         if (mobj.Tics > 0)
-        {
             mobj.Tics = 1 + (world.Random.Next() % mobj.Tics);
-        }
 
         if ((mobj.Flags & MobjFlags.CountKill) != 0)
-        {
             world.TotalKills++;
-        }
 
         if ((mobj.Flags & MobjFlags.CountItem) != 0)
-        {
             world.TotalItems++;
-        }
 
         mobj.Angle = mt.Angle;
 
         if ((mt.Flags & ThingFlags.Ambush) != 0)
-        {
             mobj.Flags |= MobjFlags.Ambush;
-        }
     }
 
     /// <summary>
@@ -195,16 +158,12 @@ public sealed class ThingAllocation
 
         // Not playing?
         if (!players[playerNumber].InGame)
-        {
             return;
-        }
 
         var player = players[playerNumber];
 
         if (player.PlayerState == PlayerState.Reborn)
-        {
             players[playerNumber].Reborn();
-        }
 
         var x = mt.X;
         var y = mt.Y;
@@ -244,10 +203,8 @@ public sealed class ThingAllocation
         // Give all cards in death match mode.
         if (world.Options.Deathmatch != 0)
         {
-            for (var i = 0; i < (int)CardType.Count; i++)
-            {
+            for (var i = 0; i < player.Cards.Length; i++)
                 player.Cards[i] = true;
-            }
         }
     }
 
@@ -278,9 +235,7 @@ public sealed class ThingAllocation
         mobj.Health = info.SpawnHealth;
 
         if (world.Options.Skill != GameSkill.Nightmare)
-        {
             mobj.ReactionTime = info.ReactionTime;
-        }
 
         mobj.LastLook = world.Random.Next() % Player.MaxPlayerCount;
 
@@ -300,17 +255,11 @@ public sealed class ThingAllocation
         mobj.CeilingZ = mobj.Subsector.Sector.CeilingHeight;
 
         if (z == Mobj.OnFloorZ)
-        {
             mobj.Z = mobj.FloorZ;
-        }
         else if (z == Mobj.OnCeilingZ)
-        {
             mobj.Z = mobj.CeilingZ - mobj.Info.Height;
-        }
         else
-        {
             mobj.Z = z;
-        }
 
         world.Thinkers.Add(mobj);
 
@@ -335,9 +284,7 @@ public sealed class ThingAllocation
 
             // Lose one off the end?
             if (itemQueHead == itemQueTail)
-            {
                 itemQueTail = (itemQueTail + 1) & (itemQueSize - 1);
-            }
         }
 
         // Unlink from sector and block lists.
@@ -379,9 +326,7 @@ public sealed class ThingAllocation
     {
         missile.Tics -= world.Random.Next() & 3;
         if (missile.Tics < 1)
-        {
             missile.Tics = 1;
-        }
 
         // Move a little forward so an angle can be computed if it immediately explodes.
         missile.X += (missile.MomX >> 1);
@@ -389,9 +334,7 @@ public sealed class ThingAllocation
         missile.Z += (missile.MomZ >> 1);
 
         if (!world.ThingMovement.TryMove(missile, missile.X, missile.Y))
-        {
             world.ThingInteraction.ExplodeMissile(missile);
-        }
     }
 
     /// <summary>
@@ -406,9 +349,7 @@ public sealed class ThingAllocation
             source.Z + Fixed.FromInt(32), type);
 
         if (missile.Info.SeeSound != 0)
-        {
             world.StartSound(missile, missile.Info.SeeSound, SfxType.Misc);
-        }
 
         // Where it came from?
         missile.Target = source;
@@ -437,9 +378,7 @@ public sealed class ThingAllocation
         var num = (dest.Z - source.Z).Data;
         var den = (dist / speed).Data;
         if (den < 1)
-        {
             den = 1;
-        }
 
         missile.MomZ = new Fixed(num / den);
 
@@ -485,9 +424,7 @@ public sealed class ThingAllocation
         var missile = SpawnMobj(x, y, z, type);
 
         if (missile.Info.SeeSound != 0)
-        {
             world.StartSound(missile, missile.Info.SeeSound, SfxType.Misc);
-        }
 
         missile.Target = source;
         missile.Angle = angle;
@@ -503,7 +440,7 @@ public sealed class ThingAllocation
     // Multi-player related functions
     ////////////////////////////////////////////////////////////
 
-    private static readonly int bodyQueSize = 32;
+    private const int bodyQueSize = 32;
     private int bodyQueSlot;
     private Mobj[] bodyQue;
 
@@ -517,46 +454,41 @@ public sealed class ThingAllocation
     /// Returns false if the player cannot be respawned at the given
     /// mapthing spot because something is occupying it.
     /// </summary>
-    public bool CheckSpot(int playernum, MapThing mthing)
+    public bool CheckSpot(int playerNum, MapThing mapThing)
     {
         var players = world.Options.Players;
 
-        if (players[playernum].Mobj == null)
+        if (players[playerNum].Mobj == null)
         {
             // First spawn of level, before corpses.
-            for (var i = 0; i < playernum; i++)
+            for (var i = 0; i < playerNum; i++)
             {
-                if (players[i].Mobj.X == mthing.X && players[i].Mobj.Y == mthing.Y)
-                {
+                var playerMobj = players[i].Mobj;
+                if (playerMobj!.X == mapThing.X && playerMobj.Y == mapThing.Y)
                     return false;
-                }
             }
 
             return true;
         }
 
-        var x = mthing.X;
-        var y = mthing.Y;
+        var x = mapThing.X;
+        var y = mapThing.Y;
 
-        if (!world.ThingMovement.CheckPosition(players[playernum].Mobj, x, y))
-        {
+        if (!world.ThingMovement.CheckPosition(players[playerNum].Mobj, x, y))
             return false;
-        }
 
         // Flush an old corpse if needed.
         if (bodyQueSlot >= bodyQueSize)
-        {
             RemoveMobj(bodyQue[bodyQueSlot % bodyQueSize]);
-        }
 
-        bodyQue[bodyQueSlot % bodyQueSize] = players[playernum].Mobj;
+        bodyQue[bodyQueSlot % bodyQueSize] = players[playerNum].Mobj;
         bodyQueSlot++;
 
         // Spawn a teleport fog.
-        var subsector = Geometry.PointInSubsector(x, y, world.Map);
+        var subSector = Geometry.PointInSubsector(x, y, world.Map);
 
         var angle = (Angle.Ang45.Data >> Trig.AngleToFineShift) *
-                    ((int)System.Math.Round(mthing.Angle.ToDegree()) / 45);
+                    ((int)System.Math.Round(mapThing.Angle.ToDegree()) / 45);
 
         //
         // The code below to reproduce respawn fog bug in deathmath
@@ -596,7 +528,7 @@ public sealed class ThingAllocation
 
         var mo = SpawnMobj(
             x + 20 * xa, y + 20 * ya,
-            subsector.Sector.FloorHeight,
+            subSector.Sector.FloorHeight,
             MobjType.Tfog);
 
         if (!world.FirstTicIsNotYetDone)
@@ -616,20 +548,18 @@ public sealed class ThingAllocation
     {
         var selections = deathmatchStarts.Count;
         if (selections < 4)
-        {
-            throw new Exception("Only " + selections + " deathmatch spots, 4 required");
-        }
+            throw new Exception($"Only {selections} deathmatch spots, 4 required");
 
         var random = world.Random;
         for (var j = 0; j < 20; j++)
         {
             var i = random.Next() % selections;
-            if (CheckSpot(playerNumber, deathmatchStarts[i]))
-            {
-                deathmatchStarts[i].Type = playerNumber + 1;
-                SpawnPlayer(deathmatchStarts[i]);
-                return;
-            }
+            if (!CheckSpot(playerNumber, deathmatchStarts[i]))
+                continue;
+
+            deathmatchStarts[i].Type = playerNumber + 1;
+            SpawnPlayer(deathmatchStarts[i]);
+            return;
         }
 
         // No good spot, so the player will probably get stuck .
@@ -641,7 +571,7 @@ public sealed class ThingAllocation
     // Item respawn
     ////////////////////////////////////////////////////////////
 
-    private static readonly int itemQueSize = 128;
+    private const int itemQueSize = 128;
     private MapThing[] itemRespawnQue;
     private int[] itemRespawnTime;
     private int itemQueHead;
@@ -662,26 +592,20 @@ public sealed class ThingAllocation
     {
         // Only respawn items in deathmatch.
         if (world.Options.Deathmatch != 2)
-        {
             return;
-        }
 
         // Nothing left to respawn?
         if (itemQueHead == itemQueTail)
-        {
             return;
-        }
 
         // Wait at least 30 seconds.
         if (world.LevelTime - itemRespawnTime[itemQueTail] < 30 * 35)
-        {
             return;
-        }
 
-        var mthing = itemRespawnQue[itemQueTail];
+        var mapThing = itemRespawnQue[itemQueTail];
 
-        var x = mthing.X;
-        var y = mthing.Y;
+        var x = mapThing.X;
+        var y = mapThing.Y;
 
         // Spawn a teleport fog at the new spot.
         var ss = Geometry.PointInSubsector(x, y, world.Map);
@@ -692,10 +616,8 @@ public sealed class ThingAllocation
         // Find which type to spawn.
         for (i = 0; i < DoomInfo.MobjInfos.Length; i++)
         {
-            if (mthing.Type == DoomInfo.MobjInfos[i].DoomEdNum)
-            {
+            if (mapThing.Type == DoomInfo.MobjInfos[i].DoomEdNum)
                 break;
-            }
         }
 
         // Spawn it.
@@ -704,8 +626,8 @@ public sealed class ThingAllocation
             : Mobj.OnFloorZ;
 
         mo = SpawnMobj(x, y, z, (MobjType)i);
-        mo.SpawnPoint = mthing;
-        mo.Angle = mthing.Angle;
+        mo.SpawnPoint = mapThing;
+        mo.Angle = mapThing.Angle;
 
         // Pull it from the que.
         itemQueTail = (itemQueTail + 1) & (itemQueSize - 1);

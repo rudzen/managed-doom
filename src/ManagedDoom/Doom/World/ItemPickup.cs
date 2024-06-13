@@ -39,13 +39,13 @@ public sealed class ItemPickup(World world)
     /// <returns>
     /// False if the ammo can't be picked up at all.
     /// </returns>
-    public bool GiveAmmo(Player player, AmmoType ammo, int amount)
+    private bool GiveAmmo(Player player, AmmoType ammo, int amount)
     {
         if (ammo == AmmoType.NoAmmo)
             return false;
 
         if (!((uint)ammo.Value < (uint)AmmoTypes.Count))
-            throw new Exception("Bad ammo type: " + ammo);
+            throw new Exception($"Bad ammo type: {ammo}");
 
         if (player.Ammo[ammo] == player.MaxAmmo[ammo])
             return false;
@@ -111,12 +111,12 @@ public sealed class ItemPickup(World world)
     /// <summary>
     /// Give the weapon to the player.
     /// </summary>
-    /// <param name="dropped">
-    /// True if the weapons is dropped by a monster.
-    /// </param>
+    /// <param name="player">The player for which to give weapon to</param>
+    /// <param name="weapon">The weapon to give to the player</param>
+    /// <param name="dropped">True if the weapons is dropped by a monster/// </param>
     private bool GiveWeapon(Player player, WeaponType weapon, bool dropped)
     {
-        if (world.Options.NetGame && (world.Options.Deathmatch != 2) && !dropped)
+        if (world.Options.NetGame && world.Options.Deathmatch != 2 && !dropped)
         {
             // Leave placed weapons forever on net games.
             if (player.WeaponOwned[weapon])

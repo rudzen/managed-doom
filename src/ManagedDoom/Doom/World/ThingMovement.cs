@@ -77,22 +77,20 @@ public sealed class ThingMovement
     {
         var map = world.Map;
 
-        var subsector = Geometry.PointInSubsector(thing.X, thing.Y, map);
+        var subSector = Geometry.PointInSubsector(thing.X, thing.Y, map);
 
-        thing.Subsector = subsector;
+        thing.Subsector = subSector;
 
         // Invisible things don't go into the sector links.
         if ((thing.Flags & MobjFlags.NoSector) == 0)
         {
-            var sector = subsector.Sector;
+            var sector = subSector.Sector;
 
             thing.SectorPrev = null;
             thing.SectorNext = sector.ThingList;
 
-            if (sector.ThingList != null)
-            {
+            if (sector.ThingList is not null)
                 sector.ThingList.SectorPrev = thing;
-            }
 
             sector.ThingList = thing;
         }
@@ -109,10 +107,8 @@ public sealed class ThingMovement
                 thing.BlockPrev = null;
                 thing.BlockNext = link;
 
-                if (link != null)
-                {
+                if (link is not null)
                     link.BlockPrev = thing;
-                }
 
                 map.BlockMap.ThingLists[index] = thing;
             }
@@ -139,19 +135,13 @@ public sealed class ThingMovement
         if ((thing.Flags & MobjFlags.NoSector) == 0)
         {
             // Unlink from subsector.
-            if (thing.SectorNext != null)
-            {
+            if (thing.SectorNext is not null)
                 thing.SectorNext.SectorPrev = thing.SectorPrev;
-            }
 
-            if (thing.SectorPrev != null)
-            {
+            if (thing.SectorPrev is not null)
                 thing.SectorPrev.SectorNext = thing.SectorNext;
-            }
             else
-            {
                 thing.Subsector.Sector.ThingList = thing.SectorNext;
-            }
         }
 
         // Inert things don't need to be in blockmap.
@@ -159,22 +149,16 @@ public sealed class ThingMovement
         {
             // Unlink from block map.
             if (thing.BlockNext != null)
-            {
                 thing.BlockNext.BlockPrev = thing.BlockPrev;
-            }
 
             if (thing.BlockPrev != null)
-            {
                 thing.BlockPrev.BlockNext = thing.BlockNext;
-            }
             else
             {
                 var index = map.BlockMap.GetIndex(thing.X, thing.Y);
 
                 if (index != -1)
-                {
                     map.BlockMap.ThingLists[index] = thing.BlockNext;
-                }
             }
         }
     }
@@ -196,9 +180,7 @@ public sealed class ThingMovement
         }
 
         if (Geometry.BoxOnLineSide(currentBox, line) != -1)
-        {
             return true;
-        }
 
         // A line has been hit.
         //
@@ -210,25 +192,19 @@ public sealed class ThingMovement
         //     specials are NOT sorted by order, so two special lines that are only 8 pixels
         //     apart could be crossed in either order.
 
+        // One-sided line.
         if (line.BackSector == null)
-        {
-            // One sided line.
             return false;
-        }
 
         if ((currentThing.Flags & MobjFlags.Missile) == 0)
         {
+            // Explicitly blocking everything.
             if ((line.Flags & LineFlags.Blocking) != 0)
-            {
-                // Explicitly blocking everything.
                 return false;
-            }
 
+            // Block monsters only.
             if (currentThing.Player == null && (line.Flags & LineFlags.BlockMonsters) != 0)
-            {
-                // Block monsters only.
                 return false;
-            }
         }
 
         // Set openrange, opentop, openbottom.
@@ -242,14 +218,10 @@ public sealed class ThingMovement
         }
 
         if (mc.OpenBottom > CurrentFloorZ)
-        {
             CurrentFloorZ = mc.OpenBottom;
-        }
 
         if (mc.LowFloor < CurrentDropoffZ)
-        {
             CurrentDropoffZ = mc.LowFloor;
-        }
 
         // If contacted a special line, add it to the list.
         if (line.Special != 0)
@@ -264,24 +236,17 @@ public sealed class ThingMovement
     private bool CheckThing(Mobj thing)
     {
         if ((thing.Flags & (MobjFlags.Solid | MobjFlags.Special | MobjFlags.Shootable)) == 0)
-        {
             return true;
-        }
 
         var blockDist = thing.Radius + currentThing.Radius;
 
-        if (Fixed.Abs(thing.X - currentX) >= blockDist ||
-            Fixed.Abs(thing.Y - currentY) >= blockDist)
-        {
-            // Didn't hit it.
+        // Didn't hit it.
+        if (Fixed.Abs(thing.X - currentX) >= blockDist || Fixed.Abs(thing.Y - currentY) >= blockDist)
             return true;
-        }
 
         // Don't clip against self.
         if (thing == currentThing)
-        {
             return true;
-        }
 
         // Check for skulls slamming into things.
         if ((currentThing.Flags & MobjFlags.SkullFly) != 0)
@@ -303,17 +268,14 @@ public sealed class ThingMovement
         if ((currentThing.Flags & MobjFlags.Missile) != 0)
         {
             // See if it went over / under.
+            
+            // Overhead.
             if (currentThing.Z > thing.Z + thing.Height)
-            {
-                // Overhead.
                 return true;
-            }
 
+            // Underneath.
             if (currentThing.Z + currentThing.Height < thing.Z)
-            {
-                // Underneath.
                 return true;
-            }
 
             if (currentThing.Target != null &&
                 (currentThing.Target.Type == thing.Type ||
@@ -322,29 +284,23 @@ public sealed class ThingMovement
             {
                 // Don't hit same species as originator.
                 if (thing == currentThing.Target)
-                {
                     return true;
-                }
 
+                // Explode, but do no damage.
+                // Let players missile other players.
                 if (thing.Type != MobjType.Player && !DoomInfo.DeHackEdConst.MonstersInfight)
-                {
-                    // Explode, but do no damage.
-                    // Let players missile other players.
                     return false;
-                }
             }
 
+            // Didn't do any damage.
             if ((thing.Flags & MobjFlags.Shootable) == 0)
-            {
-                // Didn't do any damage.
                 return (thing.Flags & MobjFlags.Solid) == 0;
-            }
 
             // Damage / explode.
             var damage = ((world.Random.Next() % 8) + 1) * currentThing.Info.Damage;
             world.ThingInteraction.DamageMobj(thing, currentThing, currentThing.Target, damage);
 
-            // Don't traverse any more.
+            // Don't traverse anymore.
             return false;
         }
 
@@ -417,9 +373,7 @@ public sealed class ThingMovement
         crossedSpecialCount = 0;
 
         if ((currentFlags & MobjFlags.NoClip) != 0)
-        {
             return true;
-        }
 
         // Check things first, possibly picking things up.
         // The bounding box is extended by MaxThingRadius because mobj_ts are grouped into
@@ -436,9 +390,7 @@ public sealed class ThingMovement
                 for (var by = blockY1; by <= blockY2; by++)
                 {
                     if (!map.BlockMap.IterateThings(bx, by, checkThingFunc))
-                    {
                         return false;
-                    }
                 }
             }
         }
@@ -455,9 +407,7 @@ public sealed class ThingMovement
                 for (var by = blockY1; by <= blockY2; by++)
                 {
                     if (!map.BlockMap.IterateLines(bx, by, checkLineFunc, validCount))
-                    {
                         return false;
-                    }
                 }
             }
         }
@@ -474,50 +424,37 @@ public sealed class ThingMovement
     {
         FloatOk = false;
 
+        // Solid wall or thing.
         if (!CheckPosition(thing, x, y))
-        {
-            // Solid wall or thing.
             return false;
-        }
 
         if ((thing.Flags & MobjFlags.NoClip) == 0)
         {
+            // Doesn't fit.
             if (CurrentCeilingZ - CurrentFloorZ < thing.Height)
-            {
-                // Doesn't fit.
                 return false;
-            }
 
             FloatOk = true;
 
-            if ((thing.Flags & MobjFlags.Teleport) == 0 &&
-                CurrentCeilingZ - thing.Z < thing.Height)
-            {
-                // Mobj must lower itself to fit.
+            // Mobj must lower itself to fit.
+            if ((thing.Flags & MobjFlags.Teleport) == 0 && CurrentCeilingZ - thing.Z < thing.Height)
                 return false;
-            }
 
-            if ((thing.Flags & MobjFlags.Teleport) == 0 &&
-                CurrentFloorZ - thing.Z > Fixed.FromInt(24))
-            {
-                // Too big a step up.
+            // Too big a step-up.
+            if ((thing.Flags & MobjFlags.Teleport) == 0 && CurrentFloorZ - thing.Z > Fixed.FromInt(24))
                 return false;
-            }
 
-            if ((thing.Flags & (MobjFlags.DropOff | MobjFlags.Float)) == 0 &&
-                CurrentFloorZ - CurrentDropoffZ > Fixed.FromInt(24))
-            {
-                // Don't stand over a dropoff.
+            // Don't stand over a drop-off.
+            if ((thing.Flags & (MobjFlags.DropOff | MobjFlags.Float)) == 0 && CurrentFloorZ - CurrentDropoffZ > Fixed.FromInt(24))
                 return false;
-            }
         }
 
         // The move is ok,
         // so link the thing into its new position.
         UnsetThingPosition(thing);
 
-        var oldx = thing.X;
-        var oldy = thing.Y;
+        var oldX = thing.X;
+        var oldY = thing.Y;
         thing.FloorZ = CurrentFloorZ;
         thing.CeilingZ = CurrentCeilingZ;
         thing.X = x;
@@ -533,13 +470,11 @@ public sealed class ThingMovement
                 // See if the line was crossed.
                 var line = crossedSpecials[crossedSpecialCount];
                 var newSide = Geometry.PointOnLineSide(thing.X, thing.Y, line);
-                var oldSide = Geometry.PointOnLineSide(oldx, oldy, line);
+                var oldSide = Geometry.PointOnLineSide(oldX, oldY, line);
                 if (newSide != oldSide)
                 {
                     if (line.Special != 0)
-                    {
                         world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
-                    }
                 }
             }
         }
@@ -570,22 +505,14 @@ public sealed class ThingMovement
         var player = thing.Player;
 
         if (thing.MomX > maxMove)
-        {
             thing.MomX = maxMove;
-        }
         else if (thing.MomX < -maxMove)
-        {
             thing.MomX = -maxMove;
-        }
 
         if (thing.MomY > maxMove)
-        {
             thing.MomY = maxMove;
-        }
         else if (thing.MomY < -maxMove)
-        {
             thing.MomY = -maxMove;
-        }
 
         var moveX = thing.MomX;
         var moveY = thing.MomY;
@@ -632,9 +559,7 @@ public sealed class ThingMovement
                     world.ThingInteraction.ExplodeMissile(thing);
                 }
                 else
-                {
                     thing.MomX = thing.MomY = Fixed.Zero;
-                }
             }
         } while (moveX != Fixed.Zero || moveY != Fixed.Zero);
 
@@ -646,17 +571,13 @@ public sealed class ThingMovement
             return;
         }
 
+        // No friction for missiles ever.
         if ((thing.Flags & (MobjFlags.Missile | MobjFlags.SkullFly)) != 0)
-        {
-            // No friction for missiles ever.
             return;
-        }
 
+        // No friction when airborne.
         if (thing.Z > thing.FloorZ)
-        {
-            // No friction when airborne.
             return;
-        }
 
         if ((thing.Flags & MobjFlags.Corpse) != 0)
         {
@@ -667,9 +588,7 @@ public sealed class ThingMovement
                 thing.MomY < -Fixed.One / 4)
             {
                 if (thing.FloorZ != thing.Subsector.Sector.FloorHeight)
-                {
                     return;
-                }
             }
         }
 
@@ -680,10 +599,8 @@ public sealed class ThingMovement
             (player == null || (player.Cmd.ForwardMove == 0 && player.Cmd.SideMove == 0)))
         {
             // If in a walking frame, stop moving.
-            if (player != null && (player.Mobj.State.Number - (int)MobjState.PlayRun1) < 4)
-            {
+            if (player != null && (player.Mobj!.State.Number - (int)MobjState.PlayRun1) < 4)
                 player.Mobj.SetState(MobjState.Play);
-            }
 
             thing.MomX = Fixed.Zero;
             thing.MomY = Fixed.Zero;
@@ -722,13 +639,9 @@ public sealed class ThingMovement
                 var delta = (thing.Target.Z + (thing.Height >> 1)) - thing.Z;
 
                 if (delta < Fixed.Zero && dist < -(delta * 3))
-                {
                     thing.Z -= FloatSpeed;
-                }
                 else if (delta > Fixed.Zero && dist < (delta * 3))
-                {
                     thing.Z += FloatSpeed;
-                }
             }
         }
 
@@ -743,11 +656,9 @@ public sealed class ThingMovement
 
             var correctLostSoulBounce = world.Options.GameVersion >= GameVersion.Ultimate;
 
+            // The skull slammed into something.
             if (correctLostSoulBounce && (thing.Flags & MobjFlags.SkullFly) != 0)
-            {
-                // The skull slammed into something.
                 thing.MomZ = -thing.MomZ;
-            }
 
             if (thing.MomZ < Fixed.Zero)
             {
@@ -765,11 +676,8 @@ public sealed class ThingMovement
 
             thing.Z = thing.FloorZ;
 
-            if (!correctLostSoulBounce &&
-                (thing.Flags & MobjFlags.SkullFly) != 0)
-            {
+            if (!correctLostSoulBounce && (thing.Flags & MobjFlags.SkullFly) != 0)
                 thing.MomZ = -thing.MomZ;
-            }
 
             if ((thing.Flags & MobjFlags.Missile) != 0 &&
                 (thing.Flags & MobjFlags.NoClip) == 0)
@@ -781,39 +689,25 @@ public sealed class ThingMovement
         else if ((thing.Flags & MobjFlags.NoGravity) == 0)
         {
             if (thing.MomZ == Fixed.Zero)
-            {
                 thing.MomZ = -gravity * 2;
-            }
             else
-            {
                 thing.MomZ -= gravity;
-            }
         }
 
         if (thing.Z + thing.Height > thing.CeilingZ)
         {
             // Hit the ceiling.
             if (thing.MomZ > Fixed.Zero)
-            {
                 thing.MomZ = Fixed.Zero;
-            }
 
-            {
-                thing.Z = thing.CeilingZ - thing.Height;
-            }
+            thing.Z = thing.CeilingZ - thing.Height;
 
+            // The skull slammed into something.
             if ((thing.Flags & MobjFlags.SkullFly) != 0)
-            {
-                // The skull slammed into something.
                 thing.MomZ = -thing.MomZ;
-            }
 
-            if ((thing.Flags & MobjFlags.Missile) != 0 &&
-                (thing.Flags & MobjFlags.NoClip) == 0)
-            {
+            if ((thing.Flags & MobjFlags.Missile) != 0 && (thing.Flags & MobjFlags.NoClip) == 0)
                 world.ThingInteraction.ExplodeMissile(thing);
-                return;
-            }
         }
     }
 
@@ -832,10 +726,7 @@ public sealed class ThingMovement
     ////////////////////////////////////////////////////////////
 
     private Fixed bestSlideFrac;
-    private Fixed secondSlideFrac;
-
     private LineDef bestSlideLine;
-    private LineDef secondSlideLine;
 
     private Mobj slideThing;
     private Fixed slideMoveX;
@@ -870,9 +761,7 @@ public sealed class ThingMovement
 
         var lineAngle = Geometry.PointToAngle(Fixed.Zero, Fixed.Zero, line.Dx, line.Dy);
         if (side == 1)
-        {
             lineAngle += Angle.Ang180;
-        }
 
         var moveAngle = Geometry.PointToAngle(Fixed.Zero, Fixed.Zero, slideMoveX, slideMoveY);
 
@@ -902,11 +791,9 @@ public sealed class ThingMovement
 
         if ((line.Flags & LineFlags.TwoSided) == 0)
         {
+            // Don't hit the back side.
             if (Geometry.PointOnLineSide(slideThing.X, slideThing.Y, line) != 0)
-            {
-                // Don't hit the back side.
                 return true;
-            }
 
             goto isBlocking;
         }
@@ -914,23 +801,17 @@ public sealed class ThingMovement
         // Set openrange, opentop, openbottom.
         mc.LineOpening(line);
 
+        // Doesn't fit.
         if (mc.OpenRange < slideThing.Height)
-        {
-            // Doesn't fit.
             goto isBlocking;
-        }
 
+        // Mobj is too high.
         if (mc.OpenTop - slideThing.Z < slideThing.Height)
-        {
-            // Mobj is too high.
             goto isBlocking;
-        }
 
+        // Too big a step up.
         if (mc.OpenBottom - slideThing.Z > Fixed.FromInt(24))
-        {
-            // Too big a step up.
             goto isBlocking;
-        }
 
         // This line doesn't block movement.
         return true;
@@ -939,8 +820,6 @@ public sealed class ThingMovement
     isBlocking:
         if (intercept.Frac < bestSlideFrac)
         {
-            secondSlideFrac = bestSlideFrac;
-            secondSlideLine = bestSlideLine;
             bestSlideFrac = intercept.Frac;
             bestSlideLine = line;
         }
@@ -1041,14 +920,10 @@ public sealed class ThingMovement
         bestSlideFrac = new Fixed(Fixed.FracUnit - (bestSlideFrac.Data + 0x800));
 
         if (bestSlideFrac > Fixed.One)
-        {
             bestSlideFrac = Fixed.One;
-        }
 
         if (bestSlideFrac <= Fixed.Zero)
-        {
             return;
-        }
 
         slideMoveX = thing.MomX * bestSlideFrac;
         slideMoveY = thing.MomY * bestSlideFrac;
@@ -1060,17 +935,13 @@ public sealed class ThingMovement
         thing.MomY = slideMoveY;
 
         if (!TryMove(thing, thing.X + slideMoveX, thing.Y + slideMoveY))
-        {
             goto retry;
-        }
     }
 
     private void StairStep(Mobj thing)
     {
         if (!TryMove(thing, thing.X, thing.Y + thing.MomY))
-        {
             TryMove(thing, thing.X + thing.MomX, thing.Y);
-        }
     }
 
 
@@ -1088,30 +959,23 @@ public sealed class ThingMovement
     private bool StompThing(Mobj thing)
     {
         if ((thing.Flags & MobjFlags.Shootable) == 0)
-        {
             return true;
-        }
 
         var blockDist = thing.Radius + currentThing.Radius;
         var dx = Fixed.Abs(thing.X - currentX);
         var dy = Fixed.Abs(thing.Y - currentY);
+        
+        // Didn't hit it.
         if (dx >= blockDist || dy >= blockDist)
-        {
-            // Didn't hit it.
             return true;
-        }
 
         // Don't clip against self.
         if (thing == currentThing)
-        {
             return true;
-        }
 
         // Monsters don't stomp things except on boss level.
         if (currentThing.Player == null && world.Options.Map != 30)
-        {
             return false;
-        }
 
         world.ThingInteraction.DamageMobj(thing, currentThing, currentThing, 10000);
 
@@ -1141,8 +1005,6 @@ public sealed class ThingMovement
         CurrentFloorZ = CurrentDropoffZ = ss.Sector.FloorHeight;
         CurrentCeilingZ = ss.Sector.CeilingHeight;
 
-        var validcount = world.GetNewValidCount();
-
         crossedSpecialCount = 0;
 
         // Stomp on any things contacted.
@@ -1157,9 +1019,7 @@ public sealed class ThingMovement
             for (var by = blockY1; by <= blockY2; by++)
             {
                 if (!bm.IterateThings(bx, by, stompThingFunc))
-                {
                     return false;
-                }
             }
         }
 

@@ -324,7 +324,7 @@ public sealed class SectorAction
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Sector GetNextSector(LineDef line, Sector sector)
+    private static Sector? GetNextSector(LineDef line, Sector sector)
     {
         if ((line.Flags & LineFlags.TwoSided) == 0)
             return null;
@@ -749,7 +749,7 @@ public sealed class SectorAction
     ////////////////////////////////////////////////////////////
 
     // In plutonia MAP23, number of adjoining sectors can be 44.
-    private static readonly int maxAdjoiningSectorCount = 64;
+    private const int maxAdjoiningSectorCount = 64;
     private readonly Fixed[] heightList = new Fixed[maxAdjoiningSectorCount];
 
     private Fixed FindNextHighestFloor(Sector sector, Fixed currentHeight)
@@ -798,7 +798,7 @@ public sealed class SectorAction
     }
 
 
-    private static readonly int platformWait = 3;
+    private const int platformWait = 3;
     private static readonly Fixed platformSpeed = Fixed.One;
 
     public bool DoPlatform(LineDef line, PlatformType type, int amount)
@@ -1360,9 +1360,9 @@ public sealed class SectorAction
 
 
     public static readonly Fixed CeilingSpeed = Fixed.One;
-    public static readonly int CeilingWwait = 150;
+    public const int CeilingWwait = 150;
 
-    private static readonly int maxCeilingCount = 30;
+    private const int maxCeilingCount = 30;
 
     private readonly CeilingMove?[] activeCeilings = new CeilingMove[maxCeilingCount];
 
@@ -1546,7 +1546,7 @@ public sealed class SectorAction
 
     public void TurnTagLightsOff(LineDef line)
     {
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
 
         foreach (var sector in sectors)
         {
@@ -1554,18 +1554,10 @@ public sealed class SectorAction
             {
                 var min = sector.LightLevel;
 
-                foreach (var sectorLine in sector.Lines)
+                foreach (var target in sector.Lines.Select(x => GetNextSector(x, sector)).Where(x => x is not null))
                 {
-                    var target = GetNextSector(sectorLine, sector);
-                    if (target == null)
-                    {
-                        continue;
-                    }
-
-                    if (target.LightLevel < min)
-                    {
+                    if (target!.LightLevel < min)
                         min = target.LightLevel;
-                    }
                 }
 
                 sector.LightLevel = min;
@@ -1575,7 +1567,7 @@ public sealed class SectorAction
 
     public void LightTurnOn(LineDef line, int bright)
     {
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
 
         foreach (var sector in sectors)
         {
@@ -1587,14 +1579,10 @@ public sealed class SectorAction
                 {
                     var target = GetNextSector(sectorLine, sector);
                     if (target == null)
-                    {
                         continue;
-                    }
 
                     if (target.LightLevel > bright)
-                    {
                         bright = target.LightLevel;
-                    }
                 }
             }
 
@@ -1605,7 +1593,7 @@ public sealed class SectorAction
 
     public void StartLightStrobing(LineDef line)
     {
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
         var sectorNumber = -1;
 
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)

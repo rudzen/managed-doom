@@ -85,11 +85,9 @@ public sealed class PathTraversal
 
         var frac = InterceptVector(Trace, target);
 
+        // Behind source.
         if (frac < Fixed.Zero)
-        {
-            // Behind source.
             return true;
-        }
 
         // Try to early out the check.
         if (earlyOut && frac < Fixed.One && line.BackSector == null)
@@ -211,7 +209,7 @@ public sealed class PathTraversal
                 return true;
             }
 
-            if (!func(intercept))
+            if (!func(intercept!))
             {
                 // Don't bother going farther.
                 return false;
@@ -344,9 +342,7 @@ public sealed class PathTraversal
             }
 
             if (bx == blockX2 && by == blockY2)
-            {
                 break;
-            }
 
             if ((interceptY.ToIntFloor()) == by)
             {

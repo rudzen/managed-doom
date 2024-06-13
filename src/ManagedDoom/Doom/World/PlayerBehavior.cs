@@ -25,7 +25,7 @@ using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class PlayerBehavior
+public sealed class PlayerBehavior(World world)
 {
     public static readonly int[] ForwardMove =
     [
@@ -48,14 +48,6 @@ public sealed class PlayerBehavior
 
     public static readonly int MaxMove = ForwardMove[1];
     public const int SlowTurnTics = 6;
-
-
-    private readonly World world;
-
-    public PlayerBehavior(World world)
-    {
-        this.world = world;
-    }
 
 
     ////////////////////////////////////////////////////////////

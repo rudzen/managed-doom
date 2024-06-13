@@ -63,7 +63,7 @@ public sealed class DoomGame
 
     public World.World World { get; private set; }
 
-    public Intermission.Intermission Intermission { get; private set; }
+    public Intermission.Intermission? Intermission { get; private set; }
 
     public Finale Finale { get; private set; }
 
@@ -297,15 +297,13 @@ public sealed class DoomGame
 
         State = GameState.Level;
 
-        var players = Options.Players;
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        var players = Options.Players.AsSpan();
+        foreach (var player in players)
         {
-            if (players[i].InGame && players[i].PlayerState == PlayerState.Dead)
-            {
-                players[i].PlayerState = PlayerState.Reborn;
-            }
+            if (player is { InGame: true, PlayerState: PlayerState.Dead })
+                player.PlayerState = PlayerState.Reborn;
 
-            Array.Clear(players[i].Frags, 0, players[i].Frags.Length);
+            Array.Clear(player.Frags, 0, player.Frags.Length);
         }
 
         Intermission = null;
@@ -347,13 +345,12 @@ public sealed class DoomGame
     {
         gameAction = GameAction.Nothing;
 
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        var players = Options.Players.AsSpan();
+        foreach (var player in players)
         {
-            if (Options.Players[i].InGame)
-            {
-                // Take away cards and stuff.
-                Options.Players[i].FinishLevel();
-            }
+            // Take away cards and stuff.
+            if (player.InGame)
+                player.FinishLevel();
         }
 
         if (Options.GameMode != GameMode.Commercial)
@@ -364,29 +361,25 @@ public sealed class DoomGame
                     gameAction = GameAction.Victory;
                     return;
                 case 9:
-                    for (var i = 0; i < Player.MaxPlayerCount; i++)
-                    {
-                        Options.Players[i].DidSecret = true;
-                    }
+                    foreach (var player in players)
+                        player.DidSecret = true;
 
                     break;
             }
         }
 
-        if ((Options.Map == 8) && (Options.GameMode != GameMode.Commercial))
+        if (Options.Map == 8 && Options.GameMode != GameMode.Commercial)
         {
             // Victory.
             gameAction = GameAction.Victory;
             return;
         }
 
-        if ((Options.Map == 9) && (Options.GameMode != GameMode.Commercial))
+        if (Options.Map == 9 && Options.GameMode != GameMode.Commercial)
         {
             // Exit secret level.
-            for (var i = 0; i < Player.MaxPlayerCount; i++)
-            {
-                Options.Players[i].DidSecret = true;
-            }
+            foreach (var player in players)
+                player.DidSecret = true;
         }
 
         var imInfo = Options.IntermissionInfo;
@@ -462,16 +455,11 @@ public sealed class DoomGame
         imInfo.MaxSecretCount = World.TotalSecrets;
         imInfo.TotalFrags = 0;
         if (Options.GameMode == GameMode.Commercial)
-        {
             imInfo.ParTime = 35 * DoomInfo.ParTimes.Doom2[Options.Map - 1];
-        }
         else
-        {
             imInfo.ParTime = 35 * DoomInfo.ParTimes.Doom1[Options.Episode - 1][Options.Map - 1];
-        }
 
-        var players = Options.Players;
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        for (var i = 0; i < players.Length; i++)
         {
             imInfo.Players[i].InGame = players[i].InGame;
             imInfo.Players[i].KillCount = players[i].KillCount;
@@ -551,7 +539,7 @@ public sealed class DoomGame
             // Respawn at the start.
 
             // First dissasociate the corpse.
-            Options.Players[playerNumber].Mobj.Player = null;
+            Options.Players[playerNumber].Mobj!.Player = null;
 
             var ta = World.ThingAllocation;
 
@@ -571,18 +559,18 @@ public sealed class DoomGame
             // Try to spawn at one of the other players spots.
             for (var i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (ta.CheckSpot(playerNumber, ta.PlayerStarts[i]))
-                {
-                    // Fake as other player.
-                    ta.PlayerStarts[i].Type = playerNumber + 1;
+                if (!ta.CheckSpot(playerNumber, ta.PlayerStarts[i]))
+                    continue;
 
-                    World.ThingAllocation.SpawnPlayer(ta.PlayerStarts[i]);
+                // Fake as other player.
+                ta.PlayerStarts[i].Type = playerNumber + 1;
 
-                    // Restore.
-                    ta.PlayerStarts[i].Type = i + 1;
+                World.ThingAllocation.SpawnPlayer(ta.PlayerStarts[i]);
 
-                    return;
-                }
+                // Restore.
+                ta.PlayerStarts[i].Type = i + 1;
+
+                return;
             }
 
             // He's going to be inside something.

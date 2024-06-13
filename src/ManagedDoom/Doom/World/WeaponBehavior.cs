@@ -48,25 +48,21 @@ public sealed class WeaponBehavior(World world)
     {
         var pb = world.PlayerBehavior;
 
-        // Get out of attack state.
-        if (player.Mobj.State == DoomInfo.States[(int)MobjState.PlayAtk1] ||
-            player.Mobj.State == DoomInfo.States[(int)MobjState.PlayAtk2])
-        {
-            player.Mobj.SetState(MobjState.Play);
-        }
+        var states = DoomInfo.States.AsSpan();
 
-        if (player.ReadyWeapon == WeaponType.Chainsaw &&
-            psp.State == DoomInfo.States[(int)MobjState.Saw])
-        {
+        // Get out of attack state.
+        if (player.Mobj!.State == states[(int)MobjState.PlayAtk1] || player.Mobj.State == states[(int)MobjState.PlayAtk2])
+            player.Mobj.SetState(MobjState.Play);
+
+        if (player.ReadyWeapon == WeaponType.Chainsaw && psp.State == states[(int)MobjState.Saw])
             world.StartSound(player.Mobj, Sfx.SAWIDL, SfxType.Weapon);
-        }
 
         // Check for weapon change.
         // If player is dead, put the weapon away.
         if (player.PendingWeapon != WeaponType.NoChange || player.Health == 0)
         {
             // Change weapon.
-            // Pending weapon should allready be validated.
+            // Pending weapon should already be validated.
             var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].DownState;
             pb.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
             return;
@@ -76,8 +72,7 @@ public sealed class WeaponBehavior(World world)
         // The missile launcher and bfg do not auto fire.
         if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
         {
-            if (!player.AttackDown ||
-                (player.ReadyWeapon != WeaponType.Missile && player.ReadyWeapon != WeaponType.Bfg))
+            if (!player.AttackDown || (player.ReadyWeapon != WeaponType.Missile && player.ReadyWeapon != WeaponType.Bfg))
             {
                 player.AttackDown = true;
                 FireWeapon(player);
@@ -300,7 +295,7 @@ public sealed class WeaponBehavior(World world)
 
         var hs = world.Hitscan;
 
-        var angle = player.Mobj.Angle;
+        var angle = player.Mobj!.Angle;
         angle += new Angle((random.Next() - random.Next()) << 18);
 
         var slope = hs.AimLineAttack(player.Mobj, angle, MeleeRange);
@@ -324,7 +319,7 @@ public sealed class WeaponBehavior(World world)
 
         var random = world.Random;
 
-        var attackAngle = player.Mobj.Angle;
+        var attackAngle = player.Mobj!.Angle;
         attackAngle += new Angle((random.Next() - random.Next()) << 18);
 
         var hs = world.Hitscan;

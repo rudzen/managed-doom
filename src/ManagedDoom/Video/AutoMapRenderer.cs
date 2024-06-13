@@ -135,49 +135,35 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
             if (cheating || (line.Flags & LineFlags.Mapped) != 0)
             {
                 if ((line.Flags & LineFlags.DontDraw) != 0 && !cheating)
-                {
                     continue;
-                }
 
                 if (line.BackSector == null)
-                {
                     screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, WallColors);
-                }
                 else
                 {
+                    // Teleporters.
                     if (line.Special == (LineSpecial)39)
-                    {
-                        // Teleporters.
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, WallColors + WallRange / 2);
-                    }
                     else if ((line.Flags & LineFlags.Secret) != 0)
                     {
                         // Secret door.
                         var color = cheating ? SecretWallColors : WallColors;
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, color);
                     }
+                    // Floor level change.
                     else if (line.BackSector.FloorHeight != line.FrontSector.FloorHeight)
-                    {
-                        // Floor level change.
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, FdWallColors);
-                    }
+                    // Ceiling level change.
                     else if (line.BackSector.CeilingHeight != line.FrontSector.CeilingHeight)
-                    {
-                        // Ceiling level change.
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, CdWallColors);
-                    }
                     else if (cheating)
-                    {
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, TsWallColors);
-                    }
                 }
             }
             else if (player.Powers[(int)PowerType.AllMap] > 0)
             {
                 if ((line.Flags & LineFlags.DontDraw) == 0)
-                {
                     screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, Grays + 3);
-                }
             }
         }
 
@@ -192,9 +178,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
         }
 
         if (am.State == AutoMapState.AllThings)
-        {
             DrawThings(world);
-        }
 
         DrawPlayers(world);
 
@@ -223,7 +207,6 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
         var options = world.Options;
         var players = options.Players;
         var consolePlayer = world.ConsolePlayer;
-        var am = world.AutoMap;
 
         if (!options.NetGame)
         {
@@ -246,7 +229,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
                 ? closeToBlack
                 : playerColors[i];
 
-            DrawCharacter(player.Mobj, playerArrow, color);
+            DrawCharacter(player.Mobj!, playerArrow, color);
         }
     }
 
@@ -255,9 +238,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
         foreach (var thinker in world.Thinkers)
         {
             if (thinker is Mobj mobj)
-            {
                 DrawCharacter(mobj, thingTriangle, Greens);
-            }
         }
     }
 

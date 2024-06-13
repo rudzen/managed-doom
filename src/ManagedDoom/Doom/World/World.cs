@@ -44,7 +44,7 @@ public sealed class World
 
         Map = new Map.Map(resources, this);
 
-        Thinkers = new Thinkers(this);
+        Thinkers = new Thinkers();
         Specials = new Specials(this);
         ThingAllocation = new ThingAllocation(this);
         ThingMovement = new ThingMovement(this);

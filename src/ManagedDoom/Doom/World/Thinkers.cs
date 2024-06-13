@@ -22,14 +22,9 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class Thinkers
 {
-    private Thinker cap;
+    private readonly Thinker cap;
 
-    public Thinkers(World world)
-    {
-        InitThinkers();
-    }
-
-    private void InitThinkers()
+    public Thinkers()
     {
         cap = new Thinker();
         cap.Prev = cap.Next = cap;
@@ -62,9 +57,7 @@ public sealed class Thinkers
             else
             {
                 if (current.ThinkerState == ThinkerState.Active)
-                {
                     current.Run();
-                }
             }
 
             current = current.Next;
@@ -91,31 +84,18 @@ public sealed class Thinkers
         return new ThinkerEnumerator(this);
     }
 
-
-    public struct ThinkerEnumerator : IEnumerator<Thinker>
+    public struct ThinkerEnumerator(Thinkers thinkers) : IEnumerator<Thinker>
     {
-        private readonly Thinkers thinkers;
-
-        public ThinkerEnumerator(Thinkers thinkers)
-        {
-            this.thinkers = thinkers;
-            Current = thinkers.cap;
-        }
-
         public bool MoveNext()
         {
             while (true)
             {
                 Current = Current.Next;
                 if (Current == thinkers.cap)
-                {
                     return false;
-                }
 
                 if (Current.ThinkerState != ThinkerState.Removed)
-                {
                     return true;
-                }
             }
         }
 
@@ -128,7 +108,7 @@ public sealed class Thinkers
         {
         }
 
-        public Thinker Current { get; private set; }
+        public Thinker Current { get; private set; } = thinkers.cap;
 
         object IEnumerator.Current => throw new NotImplementedException();
     }

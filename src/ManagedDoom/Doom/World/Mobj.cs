@@ -148,9 +148,9 @@ public sealed class Mobj : Thinker
 
     public Fixed Z { get; set; }
 
-    public Mobj SectorNext { get; set; }
+    public Mobj? SectorNext { get; set; }
 
-    public Mobj SectorPrev { get; set; }
+    public Mobj? SectorPrev { get; set; }
 
     public Angle Angle { get; set; }
 
@@ -158,9 +158,9 @@ public sealed class Mobj : Thinker
 
     public int Frame { get; set; }
 
-    public Mobj BlockNext { get; set; }
+    public Mobj? BlockNext { get; set; }
 
-    public Mobj BlockPrev { get; set; }
+    public Mobj? BlockPrev { get; set; }
 
     public Subsector Subsector { get; set; }
 
@@ -196,7 +196,7 @@ public sealed class Mobj : Thinker
 
     public int MoveCount { get; set; }
 
-    public Mobj Target { get; set; }
+    public Mobj? Target { get; set; }
 
     public int ReactionTime { get; set; }
 

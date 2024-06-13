@@ -43,7 +43,7 @@ public sealed class MonsterBehavior
 
     private bool LookForPlayers(Mobj actor, bool allAround)
     {
-        var players = world.Options.Players;
+        var players = world.Options.Players.AsSpan();
 
         var count = 0;
         var stop = (actor.LastLook - 1) & 3;

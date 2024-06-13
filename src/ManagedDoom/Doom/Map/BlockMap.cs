@@ -56,7 +56,7 @@ public sealed class BlockMap
     public Fixed OriginY { get; }
     public int Width { get; }
     public int Height { get; }
-    public Mobj[] ThingLists { get; }
+    public Mobj?[] ThingLists { get; }
 
     public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
     {
