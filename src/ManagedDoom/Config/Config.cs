@@ -57,8 +57,13 @@ public sealed class Config : IConfig
     {
         try
         {
-            var configJson = JsonSerializer.Serialize(Values, ConfigValuesContext.Default.ConfigValues);
+            Console.Write("Store settings: ");
+            var start = Stopwatch.GetTimestamp();
+
+            var configJson = JsonSerializer.Serialize(Values, ConfigValuesContext.Default.ConfigValues!);
             File.WriteAllText(path, configJson);
+
+            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
         }
         catch (Exception e)
         {

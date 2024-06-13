@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
-using System.Threading;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
@@ -16,7 +15,6 @@ namespace ManagedDoom.Silk;
 
 public sealed partial class SilkDoom : ISilkDoom
 {
-    private readonly Semaphore saveSemaphore = new(1, 1);
     private readonly ICommandLineArgs args;
 
     private readonly ISilkConfig silkConfig;
@@ -25,11 +23,11 @@ public sealed partial class SilkDoom : ISilkDoom
     private readonly IRenderer renderer;
 
     private readonly IWindow window;
-    private GL openGl;
+    private GL? openGl;
 
     private SilkVideo? video;
 
-    private IAudioFactory audioFactory;
+    private readonly IAudioFactory audioFactory;
 
     private SilkUserInput? userInput;
 
@@ -92,9 +90,13 @@ public sealed partial class SilkDoom : ISilkDoom
     private void OnLoad()
     {
         InitializeOpenGl();
+
+        if (openGl is null)
+            Quit();
+
         window.SwapBuffers();
 
-        video = new SilkVideo(silkConfig.Config.Values, renderer, window, openGl);
+        video = new SilkVideo(silkConfig.Config.Values, renderer, window, openGl!);
         userInput = new SilkUserInput(silkConfig.Config.Values, window, this, args);
         doom = new Doom.Doom(args, silkConfig, gameContent, video, audioFactory, userInput);
 
@@ -152,15 +154,7 @@ public sealed partial class SilkDoom : ISilkDoom
             video = null;
         }
 
-        saveSemaphore.WaitOne();
-        try
-        {
-            silkConfig.Config.Save(ConfigUtilities.GetConfigPath());
-        }
-        finally
-        {
-            saveSemaphore.Release();
-        }
+        silkConfig.Config.Save(ConfigUtilities.GetConfigPath());
     }
 
     public void KeyDown(Key key)

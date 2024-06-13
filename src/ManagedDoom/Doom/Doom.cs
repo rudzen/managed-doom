@@ -90,7 +90,7 @@ public sealed class Doom
 
         Game = new DoomGame(content, Options);
 
-        WipeEffect = new WipeEffect(video.WipeBandCount, video.WipeHeight);
+        WipeEffect = WipeEffect.CreateInstance(video.WipeBandCount, video.WipeHeight);
         Wiping = false;
 
         State = DoomState.None;
@@ -260,12 +260,7 @@ public sealed class Doom
                 video.GammaCorrectionLevel = gcl;
                 if (State == DoomState.Game && Game.State == GameState.Level)
                 {
-                    string msg;
-                    if (gcl == 0)
-                        msg = DoomInfo.Strings.GAMMALVL0;
-                    else
-                        msg = $"Gamma correction level {gcl}";
-
+                    var msg = gcl == 0 ? DoomInfo.Strings.GAMMALVL0 : $"Gamma correction level {gcl}";
                     Game.World.ConsolePlayer.SendMessage(msg);
                 }
 
@@ -356,7 +351,7 @@ public sealed class Doom
                     userInput.BuildTicCmd(cmds[Options.ConsolePlayer]);
                     if (sendPause)
                     {
-                        sendPause = false;
+                        sendPause ^= true;
                         cmds[Options.ConsolePlayer].Buttons |= TicCmdButtons.Special | TicCmdButtons.Pause;
                     }
 
@@ -416,14 +411,12 @@ public sealed class Doom
 
     public void PauseGame()
     {
-        if (State == DoomState.Game && Game is { State: GameState.Level, Paused: false } && !sendPause)
-            sendPause = true;
+        sendPause = !sendPause && State == DoomState.Game && Game is { State: GameState.Level, Paused: false };
     }
 
     public void ResumeGame()
     {
-        if (State == DoomState.Game && Game is { State: GameState.Level, Paused: true } && !sendPause)
-            sendPause = true;
+        sendPause = !sendPause && State == DoomState.Game && Game is { State: GameState.Level, Paused: true };
     }
 
     public bool SaveGame(int slotNumber, string description)

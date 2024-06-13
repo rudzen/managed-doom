@@ -28,11 +28,16 @@ public sealed class WipeEffect
     private readonly int height;
     private readonly DoomRandom random;
 
-    public WipeEffect(int width, int height)
+    private WipeEffect(int width, int height)
     {
         Y = new short[width];
         this.height = height;
         random = new DoomRandom(DateTime.Now.Millisecond);
+    }
+
+    public static WipeEffect CreateInstance(int width, int height)
+    {
+        return new WipeEffect(width, height);
     }
 
     public short[] Y { get; }
