@@ -247,13 +247,13 @@ public sealed class Cheat
     private void ToggleInvulnerability()
     {
         var player = world.ConsolePlayer;
-        if (player.Powers[(int)PowerType.Invulnerability] > 0)
+        if (player.Powers[PowerType.Invulnerability] > 0)
         {
-            player.Powers[(int)PowerType.Invulnerability] = 0;
+            player.Powers[PowerType.Invulnerability] = 0;
         }
         else
         {
-            player.Powers[(int)PowerType.Invulnerability] = DoomInfo.PowerDuration.Invulnerability;
+            player.Powers[PowerType.Invulnerability] = DoomInfo.PowerDuration.Invulnerability;
         }
 
         player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
@@ -262,13 +262,13 @@ public sealed class Cheat
     private void ToggleStrength()
     {
         var player = world.ConsolePlayer;
-        if (player.Powers[(int)PowerType.Strength] != 0)
+        if (player.Powers[PowerType.Strength] != 0)
         {
-            player.Powers[(int)PowerType.Strength] = 0;
+            player.Powers[PowerType.Strength] = 0;
         }
         else
         {
-            player.Powers[(int)PowerType.Strength] = 1;
+            player.Powers[PowerType.Strength] = 1;
         }
 
         player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
@@ -277,14 +277,14 @@ public sealed class Cheat
     private void ToggleInvisibility()
     {
         var player = world.ConsolePlayer;
-        if (player.Powers[(int)PowerType.Invisibility] > 0)
+        if (player.Powers[PowerType.Invisibility] > 0)
         {
-            player.Powers[(int)PowerType.Invisibility] = 0;
+            player.Powers[PowerType.Invisibility] = 0;
             player.Mobj.Flags &= ~MobjFlags.Shadow;
         }
         else
         {
-            player.Powers[(int)PowerType.Invisibility] = DoomInfo.PowerDuration.Invisibility;
+            player.Powers[PowerType.Invisibility] = DoomInfo.PowerDuration.Invisibility;
             player.Mobj.Flags |= MobjFlags.Shadow;
         }
 
@@ -294,13 +294,13 @@ public sealed class Cheat
     private void ToggleIronFeet()
     {
         var player = world.ConsolePlayer;
-        if (player.Powers[(int)PowerType.IronFeet] > 0)
+        if (player.Powers[PowerType.IronFeet] > 0)
         {
-            player.Powers[(int)PowerType.IronFeet] = 0;
+            player.Powers[PowerType.IronFeet] = 0;
         }
         else
         {
-            player.Powers[(int)PowerType.IronFeet] = DoomInfo.PowerDuration.IronFeet;
+            player.Powers[PowerType.IronFeet] = DoomInfo.PowerDuration.IronFeet;
         }
 
         player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
@@ -309,13 +309,13 @@ public sealed class Cheat
     private void ToggleAllMap()
     {
         var player = world.ConsolePlayer;
-        if (player.Powers[(int)PowerType.AllMap] != 0)
+        if (player.Powers[PowerType.AllMap] != 0)
         {
-            player.Powers[(int)PowerType.AllMap] = 0;
+            player.Powers[PowerType.AllMap] = 0;
         }
         else
         {
-            player.Powers[(int)PowerType.AllMap] = 1;
+            player.Powers[PowerType.AllMap] = 1;
         }
 
         player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
@@ -324,13 +324,13 @@ public sealed class Cheat
     private void ToggleInfrared()
     {
         var player = world.ConsolePlayer;
-        if (player.Powers[(int)PowerType.Infrared] > 0)
+        if (player.Powers[PowerType.Infrared] > 0)
         {
-            player.Powers[(int)PowerType.Infrared] = 0;
+            player.Powers[PowerType.Infrared] = 0;
         }
         else
         {
-            player.Powers[(int)PowerType.Infrared] = DoomInfo.PowerDuration.Infrared;
+            player.Powers[PowerType.Infrared] = DoomInfo.PowerDuration.Infrared;
         }
 
         player.SendMessage(DoomInfo.Strings.STSTR_BEHOLDX);
@@ -339,7 +339,7 @@ public sealed class Cheat
     private void GiveChainsaw()
     {
         var player = world.ConsolePlayer;
-        player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
+        player.WeaponOwned[WeaponType.Chainsaw] = true;
         player.SendMessage(DoomInfo.Strings.STSTR_CHOPPERS);
     }
 

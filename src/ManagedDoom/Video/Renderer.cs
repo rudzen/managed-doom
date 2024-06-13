@@ -329,7 +329,7 @@ public sealed class Renderer : IRenderer
 
             palette += Palette.BonusStart;
         }
-        else if (player.Powers[(int)PowerType.IronFeet] > 4 * 32 || (player.Powers[(int)PowerType.IronFeet] & 8) != 0)
+        else if (player.Powers[PowerType.IronFeet] > 4 * 32 || (player.Powers[PowerType.IronFeet] & 8) != 0)
             palette = Palette.IronFeet;
         else
             palette = 0;
@@ -341,11 +341,13 @@ public sealed class Renderer : IRenderer
     {
         var count = player.DamageCount;
 
-        if (player.Powers[(int)PowerType.Strength] == 0)
+        var strengthPower = player.Powers[PowerType.Strength];
+
+        if (strengthPower == 0)
             return count;
 
         // Slowly fade the berzerk out.
-        var bzc = 12 - (player.Powers[(int)PowerType.Strength] >> 6);
+        var bzc = 12 - (strengthPower >> 6);
         if (bzc > count)
             count = bzc;
 

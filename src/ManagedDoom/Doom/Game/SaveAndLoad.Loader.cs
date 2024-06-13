@@ -363,10 +363,10 @@ public static partial class SaveAndLoad
         player.ArmorPoints = BitConverter.ToInt32(data[(p + 36)..]);
         player.ArmorType = BitConverter.ToInt32(data[(p + 40)..]);
 
-        for (var i = 0; i < (int)PowerType.Count; i++)
+        for (var i = 0; i < PowerType.Count; i++)
             player.Powers[i] = BitConverter.ToInt32(data[(p + 44 + 4 * i)..]);
 
-        for (var i = 0; i < (int)PowerType.Count; i++)
+        for (var i = 0; i < PowerType.Count; i++)
             player.Cards[i] = BitConverter.ToInt32(data[(p + 68 + 4 * i)..]) != 0;
 
         player.Backpack = BitConverter.ToInt32(data[(p + 92)..]) != 0;

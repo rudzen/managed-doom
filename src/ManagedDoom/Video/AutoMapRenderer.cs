@@ -160,7 +160,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
                         screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, TsWallColors);
                 }
             }
-            else if (player.Powers[(int)PowerType.AllMap] > 0)
+            else if (player.Powers[PowerType.AllMap] > 0)
             {
                 if ((line.Flags & LineFlags.DontDraw) == 0)
                     screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, Grays + 3);
@@ -225,7 +225,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
 
             const int closeToBlack = 246;
             // Close to black or set base player color
-            var color = player.Powers[(int)PowerType.Invisibility] > 0
+            var color = player.Powers[PowerType.Invisibility] > 0
                 ? closeToBlack
                 : playerColors[i];
 

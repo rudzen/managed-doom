@@ -2135,8 +2135,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         };
 
         // Shadow draw.
-        var fuzz = player.Powers[(int)PowerType.Invisibility] > 4 * 32 ||
-                   (player.Powers[(int)PowerType.Invisibility] & 8) != 0;
+        var fuzz = player.Powers[PowerType.Invisibility] > 4 * 32 ||
+                   (player.Powers[PowerType.Invisibility] & 8) != 0;
 
         // Add all active psprites.
         foreach (var psp in player.PlayerSprites.AsSpan())

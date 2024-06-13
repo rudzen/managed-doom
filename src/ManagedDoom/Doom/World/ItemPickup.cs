@@ -224,45 +224,45 @@ public sealed class ItemPickup(World world)
     /// <returns>
     /// False if the power up is not necessary.
     /// </returns>
-    private static bool GivePower(Player player, PowerType type)
+    private static bool GivePower(Player player, PowerType types)
     {
-        if (type == PowerType.Invulnerability)
+        if (types == PowerType.Invulnerability)
         {
-            player.Powers[(int)type] = DoomInfo.PowerDuration.Invulnerability;
+            player.Powers[types] = DoomInfo.PowerDuration.Invulnerability;
             return true;
         }
 
-        if (type == PowerType.Invisibility)
+        if (types == PowerType.Invisibility)
         {
-            player.Powers[(int)type] = DoomInfo.PowerDuration.Invisibility;
+            player.Powers[types] = DoomInfo.PowerDuration.Invisibility;
             player.Mobj!.Flags |= MobjFlags.Shadow;
             return true;
         }
 
-        if (type == PowerType.Infrared)
+        if (types == PowerType.Infrared)
         {
-            player.Powers[(int)type] = DoomInfo.PowerDuration.Infrared;
+            player.Powers[types] = DoomInfo.PowerDuration.Infrared;
             return true;
         }
 
-        if (type == PowerType.IronFeet)
+        if (types == PowerType.IronFeet)
         {
-            player.Powers[(int)type] = DoomInfo.PowerDuration.IronFeet;
+            player.Powers[types] = DoomInfo.PowerDuration.IronFeet;
             return true;
         }
 
-        if (type == PowerType.Strength)
+        if (types == PowerType.Strength)
         {
             GiveHealth(player, 100);
-            player.Powers[(int)type] = 1;
+            player.Powers[types] = 1;
             return true;
         }
 
         // Already got it.
-        if (player.Powers[(int)type] != 0)
+        if (player.Powers[types] != 0)
             return false;
 
-        player.Powers[(int)type] = 1;
+        player.Powers[types] = 1;
 
         return true;
     }

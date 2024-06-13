@@ -123,7 +123,7 @@ public sealed class PlayerBehavior(World world)
 
             if (newWeapon == WeaponType.Fist &&
                 player.WeaponOwned[WeaponType.Chainsaw] &&
-                !(player.ReadyWeapon == WeaponType.Chainsaw && player.Powers[(int)PowerType.Strength] != 0))
+                !(player.ReadyWeapon == WeaponType.Chainsaw && player.Powers[PowerType.Strength] != 0))
             {
                 newWeapon = WeaponType.Chainsaw;
             }
@@ -168,33 +168,20 @@ public sealed class PlayerBehavior(World world)
         // Counters, time dependend power ups.
 
         // Strength counts up to diminish fade.
-        if (player.Powers[(int)PowerType.Strength] != 0)
-        {
-            player.Powers[(int)PowerType.Strength]++;
-        }
+        if (player.Powers[PowerType.Strength] != 0)
+            player.Powers[PowerType.Strength]++;
 
-        if (player.Powers[(int)PowerType.Invulnerability] > 0)
-        {
-            player.Powers[(int)PowerType.Invulnerability]--;
-        }
+        if (player.Powers[PowerType.Invulnerability] > 0)
+            player.Powers[PowerType.Invulnerability]--;
 
-        if (player.Powers[(int)PowerType.Invisibility] > 0)
-        {
-            if (--player.Powers[(int)PowerType.Invisibility] == 0)
-            {
-                player.Mobj.Flags &= ~MobjFlags.Shadow;
-            }
-        }
+        if (player.Powers[PowerType.Invisibility] > 0 && --player.Powers[PowerType.Invisibility] == 0)
+            player.Mobj.Flags &= ~MobjFlags.Shadow;
 
-        if (player.Powers[(int)PowerType.Infrared] > 0)
-        {
-            player.Powers[(int)PowerType.Infrared]--;
-        }
+        if (player.Powers[PowerType.Infrared] > 0)
+            player.Powers[PowerType.Infrared]--;
 
-        if (player.Powers[(int)PowerType.IronFeet] > 0)
-        {
-            player.Powers[(int)PowerType.IronFeet]--;
-        }
+        if (player.Powers[PowerType.IronFeet] > 0)
+            player.Powers[PowerType.IronFeet]--;
 
         if (player.DamageCount > 0)
             player.DamageCount--;
@@ -209,20 +196,20 @@ public sealed class PlayerBehavior(World world)
     private static int GetFixedColorMap(Player player)
     {
         // Invulnerability
-        if (player.Powers[(int)PowerType.Invulnerability] > 0)
+        if (player.Powers[PowerType.Invulnerability] > 0)
         {
-            return player.Powers[(int)PowerType.Invulnerability] > 4 * 32 ||
-                   (player.Powers[(int)PowerType.Invulnerability] & 8) != 0
+            return player.Powers[PowerType.Invulnerability] > 4 * 32 ||
+                   (player.Powers[PowerType.Invulnerability] & 8) != 0
                 ? ColorMap.Inverse
                 : 0;
         }
 
         // Infrared
-        if (player.Powers[(int)PowerType.Infrared] > 0)
+        if (player.Powers[PowerType.Infrared] > 0)
         {
             // 1 == Almost full bright
-            var d = player.Powers[(int)PowerType.Infrared] > 4 * 32 ||
-                    (player.Powers[(int)PowerType.Infrared] & 8) != 0;
+            var d = player.Powers[PowerType.Infrared] > 4 * 32 ||
+                    (player.Powers[PowerType.Infrared] & 8) != 0;
             return d.AsByte();
         }
 
@@ -240,26 +227,22 @@ public sealed class PlayerBehavior(World world)
     {
         var cmd = player.Cmd;
 
-        player.Mobj.Angle += new Angle(cmd.AngleTurn << 16);
+        player.Mobj!.Angle += new Angle(cmd.AngleTurn << 16);
 
         // Do not let the player control movement if not onground.
         onGround = (player.Mobj.Z <= player.Mobj.FloorZ);
 
-        if (cmd.ForwardMove != 0 && onGround)
+        if (onGround)
         {
-            Thrust(player, player.Mobj.Angle, new Fixed(cmd.ForwardMove * 2048));
+            if (cmd.ForwardMove != 0)
+                Thrust(player, player.Mobj.Angle, new Fixed(cmd.ForwardMove * 2048));
+
+            if (cmd.SideMove != 0)
+                Thrust(player, player.Mobj.Angle - Angle.Ang90, new Fixed(cmd.SideMove * 2048));
         }
 
-        if (cmd.SideMove != 0 && onGround)
-        {
-            Thrust(player, player.Mobj.Angle - Angle.Ang90, new Fixed(cmd.SideMove * 2048));
-        }
-
-        if ((cmd.ForwardMove != 0 || cmd.SideMove != 0) &&
-            player.Mobj.State == DoomInfo.States[(int)MobjState.Play])
-        {
+        if ((cmd.ForwardMove != 0 || cmd.SideMove != 0) && player.Mobj.State == DoomInfo.States[(int)MobjState.Play])
             player.Mobj.SetState(MobjState.PlayRun1);
-        }
     }
 
 
@@ -367,7 +350,7 @@ public sealed class PlayerBehavior(World world)
         {
             case 5:
                 // Hell slime damage.
-                if (player.Powers[(int)PowerType.IronFeet] == 0)
+                if (player.Powers[PowerType.IronFeet] == 0)
                 {
                     if ((world.LevelTime & 0x1f) == 0)
                     {
@@ -384,7 +367,7 @@ public sealed class PlayerBehavior(World world)
 
             case 7:
                 // Nukage damage.
-                if (player.Powers[(int)PowerType.IronFeet] == 0)
+                if (player.Powers[PowerType.IronFeet] == 0)
                 {
                     if ((world.LevelTime & 0x1f) == 0)
                     {
@@ -398,13 +381,8 @@ public sealed class PlayerBehavior(World world)
             // Super hell slime damage.
             case 4:
                 // Strobe hurt.
-                if (player.Powers[(int)PowerType.IronFeet] == 0 || (world.Random.Next() < 5))
-                {
-                    if ((world.LevelTime & 0x1f) == 0)
-                    {
-                        ti.DamageMobj(player.Mobj, null, null, 20);
-                    }
-                }
+                if ((player.Powers[PowerType.IronFeet] == 0 || world.Random.Next() < 5) && (world.LevelTime & 0x1f) == 0)
+                    ti.DamageMobj(player.Mobj, null, null, 20);
 
                 break;
 
@@ -418,14 +396,10 @@ public sealed class PlayerBehavior(World world)
                 // Exit super damage for E1M8 finale.
                 player.Cheats &= ~CheatFlags.GodMode;
                 if ((world.LevelTime & 0x1f) == 0)
-                {
                     ti.DamageMobj(player.Mobj, null, null, 20);
-                }
 
                 if (player.Health <= 10)
-                {
                     world.ExitLevel();
-                }
 
                 break;
 
@@ -447,17 +421,13 @@ public sealed class PlayerBehavior(World world)
 
         // Fall to the ground.
         if (player.ViewHeight > Fixed.FromInt(6))
-        {
             player.ViewHeight -= Fixed.One;
-        }
 
         if (player.ViewHeight < Fixed.FromInt(6))
-        {
             player.ViewHeight = Fixed.FromInt(6);
-        }
 
         player.DeltaViewHeight = Fixed.Zero;
-        onGround = (player.Mobj.Z <= player.Mobj.FloorZ);
+        onGround = player.Mobj!.Z <= player.Mobj.FloorZ;
         CalcHeight(player);
 
         if (player.Attacker != null && player.Attacker != player.Mobj)
@@ -474,28 +444,18 @@ public sealed class PlayerBehavior(World world)
                 player.Mobj.Angle = angle;
 
                 if (player.DamageCount > 0)
-                {
                     player.DamageCount--;
-                }
             }
             else if (delta < Angle.Ang180)
-            {
                 player.Mobj.Angle += ang5;
-            }
             else
-            {
                 player.Mobj.Angle -= ang5;
-            }
         }
         else if (player.DamageCount > 0)
-        {
             player.DamageCount--;
-        }
 
         if ((player.Cmd.Buttons & TicCmdButtons.Use) != 0)
-        {
             player.PlayerState = PlayerState.Reborn;
-        }
     }
 
 
@@ -509,10 +469,8 @@ public sealed class PlayerBehavior(World world)
     public void SetupPlayerSprites(Player player)
     {
         // Remove all psprites.
-        for (var i = 0; i < (int)PlayerSprite.Count; i++)
-        {
-            player.PlayerSprites[i].State = null;
-        }
+        foreach (var playerSprite in player.PlayerSprites)
+            playerSprite.State = null;
 
         // Spawn the gun.
         player.PendingWeapon = player.ReadyWeapon;
@@ -525,14 +483,10 @@ public sealed class PlayerBehavior(World world)
     public void BringUpWeapon(Player player)
     {
         if (player.PendingWeapon == WeaponType.NoChange)
-        {
             player.PendingWeapon = player.ReadyWeapon;
-        }
 
         if (player.PendingWeapon == WeaponType.Chainsaw)
-        {
-            world.StartSound(player.Mobj, Sfx.SAWUP, SfxType.Weapon);
-        }
+            world.StartSound(player.Mobj!, Sfx.SAWUP, SfxType.Weapon);
 
         var newState = DoomInfo.WeaponInfos[player.PendingWeapon].UpState;
 
@@ -602,9 +556,7 @@ public sealed class PlayerBehavior(World world)
                 {
                     psp.Tics--;
                     if (psp.Tics == 0)
-                    {
                         SetPlayerSprite(player, (PlayerSprite)i, psp.State.Next);
-                    }
                 }
             }
         }

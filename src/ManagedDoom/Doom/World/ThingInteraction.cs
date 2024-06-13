@@ -186,7 +186,7 @@ public sealed class ThingInteraction
                 damage = target.Health - 1;
 
             // Below certain threshold, ignore damage in GOD mode, or with INVUL power.
-            if (damage < 1000 && ((player.Cheats & CheatFlags.GodMode) != 0 || player.Powers[(int)PowerType.Invulnerability] > 0))
+            if (damage < 1000 && ((player.Cheats & CheatFlags.GodMode) != 0 || player.Powers[PowerType.Invulnerability] > 0))
                 return;
 
             if (player.ArmorType != 0)

@@ -168,21 +168,15 @@ public sealed class StatusBar
                     faceCount = Face.TurnDuration;
                     FaceIndex = CalcPainOffset();
 
+                    // Head-on.
                     if (diff < Angle.Ang45)
-                    {
-                        // Head-on.
                         FaceIndex += Face.RampageOffset;
-                    }
+                    // Turn face right.
                     else if (right)
-                    {
-                        // Turn face right.
                         FaceIndex += Face.TurnOffset;
-                    }
+                    // Turn face left.
                     else
-                    {
-                        // Turn face left.
                         FaceIndex += Face.TurnOffset + 1;
-                    }
                 }
             }
         }
@@ -213,9 +207,7 @@ public sealed class StatusBar
             if (player.AttackDown)
             {
                 if (lastAttackDown == -1)
-                {
                     lastAttackDown = Face.RampageDelay;
-                }
                 else if (--lastAttackDown == 0)
                 {
                     priority = 5;
@@ -225,16 +217,13 @@ public sealed class StatusBar
                 }
             }
             else
-            {
                 lastAttackDown = -1;
-            }
         }
 
         if (priority < 5)
         {
             // Invulnerability.
-            if ((player.Cheats & CheatFlags.GodMode) != 0 ||
-                player.Powers[(int)PowerType.Invulnerability] != 0)
+            if ((player.Cheats & CheatFlags.GodMode) != 0 || player.Powers[PowerType.Invulnerability] != 0)
             {
                 priority = 4;
 

@@ -290,7 +290,7 @@ public sealed class WeaponBehavior(World world)
         var random = world.Random;
 
         var damage = (random.Next() % 10 + 1) << 1;
-        if (player.Powers[(int)PowerType.Strength] != 0)
+        if (player.Powers[PowerType.Strength] != 0)
             damage *= 10;
 
         var hs = world.Hitscan;

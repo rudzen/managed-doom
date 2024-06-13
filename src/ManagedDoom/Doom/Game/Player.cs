@@ -94,7 +94,7 @@ public sealed class Player
 
         Cmd = new TicCmd();
 
-        Powers = new int[(int)PowerType.Count];
+        Powers = new int[PowerType.Count];
         Cards = new bool[(int)CardType.Count];
 
         Frags = new int[MaxPlayerCount];
