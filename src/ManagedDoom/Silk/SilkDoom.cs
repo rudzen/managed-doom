@@ -5,7 +5,6 @@ using System.Threading;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
-using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
@@ -20,7 +19,6 @@ public sealed partial class SilkDoom : ISilkDoom
     private readonly Semaphore saveSemaphore = new(1, 1);
     private readonly ICommandLineArgs args;
 
-    private readonly IConfig config;
     private readonly ISilkConfig silkConfig;
 
     private readonly IGameContent gameContent;
@@ -31,8 +29,7 @@ public sealed partial class SilkDoom : ISilkDoom
 
     private SilkVideo? video;
 
-    private ISound? sound;
-    private IMusic? music;
+    private IAudioFactory audioFactory;
 
     private SilkUserInput? userInput;
 
@@ -57,12 +54,9 @@ public sealed partial class SilkDoom : ISilkDoom
             this.window = windowFactory.GetWindow();
 
             this.silkConfig = silkConfig;
-            this.config = silkConfig.Config;
             this.gameContent = gameContent;
             this.renderer = renderer;
-
-            this.sound = audioFactory.GetSound();
-            this.music = audioFactory.GetMusic();
+            this.audioFactory = audioFactory;
 
             window.Load += OnLoad;
             window.Update += OnUpdate;
@@ -100,11 +94,11 @@ public sealed partial class SilkDoom : ISilkDoom
         InitializeOpenGl();
         window.SwapBuffers();
 
-        video = new SilkVideo(config.Values, renderer, window, openGl);
-        userInput = new SilkUserInput(config.Values, window, this, args);
-        doom = new Doom.Doom(args, config, gameContent, video, sound, music, userInput);
+        video = new SilkVideo(silkConfig.Config.Values, renderer, window, openGl);
+        userInput = new SilkUserInput(silkConfig.Config.Values, window, this, args);
+        doom = new Doom.Doom(args, silkConfig, gameContent, video, audioFactory, userInput);
 
-        fpsScale = args.TimeDemo.Present ? 1 : config.Values.VideoFpsScale;
+        fpsScale = args.TimeDemo.Present ? 1 : silkConfig.Config.Values.VideoFpsScale;
         frameCount = -1;
     }
 
@@ -161,7 +155,7 @@ public sealed partial class SilkDoom : ISilkDoom
         saveSemaphore.WaitOne();
         try
         {
-            config.Save(ConfigUtilities.GetConfigPath());
+            silkConfig.Config.Save(ConfigUtilities.GetConfigPath());
         }
         finally
         {

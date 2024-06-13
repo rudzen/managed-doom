@@ -4,6 +4,6 @@ namespace ManagedDoom.Silk;
 
 public interface IAudioFactory
 {
-    ISound? GetSound();
-    IMusic? GetMusic();
+    ISound GetSound();
+    IMusic GetMusic();
 }

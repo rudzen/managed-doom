@@ -22,7 +22,7 @@ public sealed class NullSound : ISound
 {
     private static NullSound? instance;
 
-    public static NullSound GetInstance()
+    public static ISound GetInstance()
     {
         return instance ??= new NullSound();
     }

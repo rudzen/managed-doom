@@ -24,6 +24,7 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Menu;
 using ManagedDoom.Doom.Opening;
+using ManagedDoom.Silk;
 using ManagedDoom.UserInput;
 using ManagedDoom.Video;
 
@@ -51,18 +52,22 @@ public sealed class Doom
 
     private bool mouseGrabbed;
 
-    public Doom(ICommandLineArgs args, IConfig config, IGameContent content, IVideo? video, ISound? sound, IMusic? music, IUserInput? userInput)
+    public Doom(
+        ICommandLineArgs args,
+        ISilkConfig silkConfig,
+        IGameContent content,
+        IVideo? video,
+        IAudioFactory audioFactory,
+        IUserInput? userInput)
     {
         video ??= NullVideo.GetInstance();
-        sound ??= NullSound.GetInstance();
-        music ??= NullMusic.GetInstance();
         userInput ??= NullUserInput.GetInstance();
 
         this.args = args;
-        this.config = config.Values;
+        this.config = silkConfig.Config.Values;
         this.content = content;
         this.video = video;
-        this.sound = sound;
+        this.sound = audioFactory.GetSound();
         this.userInput = userInput;
 
         events = [];
@@ -71,7 +76,7 @@ public sealed class Doom
         {
             Video = video,
             Sound = sound,
-            Music = music,
+            Music = audioFactory.GetMusic(),
             UserInput = userInput
         };
 

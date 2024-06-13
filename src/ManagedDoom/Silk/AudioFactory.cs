@@ -9,8 +9,8 @@ namespace ManagedDoom.Silk;
 
 public sealed class AudioFactory : IAudioFactory
 {
-    private readonly ISound? sound;
-    private readonly IMusic? music;
+    private readonly ISound sound;
+    private readonly IMusic music;
 
     public AudioFactory(IConfig config, ICommandLineArgs args, IGameContent gameContent)
     {
@@ -20,18 +20,18 @@ public sealed class AudioFactory : IAudioFactory
             if (!args.NoSfx.Present)
                 sound = new SilkSound(config.Values, gameContent, audioDevice);
             if (!args.NoMusic.Present)
-                music = GetMusicInstance(config.Values, gameContent, audioDevice);
+                music = GetMusicInstance(config.Values, gameContent, audioDevice) ?? NullMusic.GetInstance();
         }
         else
         {
-            sound = null;
-            music = null;
+            sound = NullSound.GetInstance();
+            music = NullMusic.GetInstance();
         }
     }
 
-    public ISound? GetSound() => sound;
+    public ISound GetSound() => sound;
 
-    public IMusic? GetMusic() => music;
+    public IMusic GetMusic() => music;
 
     private static SilkMusic? GetMusicInstance(ConfigValues configValues, IGameContent content, AudioDevice device)
     {

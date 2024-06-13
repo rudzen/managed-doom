@@ -28,7 +28,7 @@ public sealed class NullMusic : IMusic
         set { }
     }
 
-    public static NullMusic GetInstance()
+    public static IMusic GetInstance()
     {
         return instance ??= new NullMusic();
     }
