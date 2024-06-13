@@ -36,7 +36,7 @@ public sealed class Map
     {
     }
 
-    public Map(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World.World world)
+    private Map(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World.World world)
     {
         try
         {
@@ -62,8 +62,8 @@ public sealed class Map
 
             Vertices = Vertex.FromWad(wad, map + 4);
             Sectors = Sector.FromWad(wad, map + 8, flats);
-            Sides = SideDef.FromWad(wad, map + 3, textures, Sectors);
-            Lines = LineDef.FromWad(wad, map + 2, Vertices, Sides);
+            var sides = SideDef.FromWad(wad, map + 3, textures, Sectors);
+            Lines = LineDef.FromWad(wad, map + 2, Vertices, sides);
             Segs = Seg.FromWad(wad, map + 5, Vertices, Lines);
             Subsectors = Subsector.FromWad(wad, map + 6, Segs);
             Nodes = Node.FromWad(wad, map + 7);
@@ -93,7 +93,6 @@ public sealed class Map
     public TextureAnimation Animation { get; }
     public Vertex[] Vertices { get; }
     public Sector[] Sectors { get; }
-    public SideDef[] Sides { get; }
     public LineDef[] Lines { get; }
     public Seg[] Segs { get; }
     public Subsector[] Subsectors { get; }

@@ -38,7 +38,7 @@ public sealed class Thinkers
         cap.Prev = thinker;
     }
 
-    public void Remove(Thinker thinker)
+    public static void Remove(Thinker thinker)
     {
         thinker.ThinkerState = ThinkerState.Removed;
     }

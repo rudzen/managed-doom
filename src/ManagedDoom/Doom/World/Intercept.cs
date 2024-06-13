@@ -25,7 +25,7 @@ public sealed class Intercept
 
     public Mobj Thing { get; private set; }
 
-    public LineDef Line { get; private set; }
+    public LineDef? Line { get; private set; }
 
     public void Make(Fixed frac, Mobj thing)
     {

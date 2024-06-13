@@ -114,5 +114,5 @@ public readonly record struct WeaponType(WeaponTypes Value) : IMinMaxValue<Weapo
     public static implicit operator byte(WeaponType f) => (byte)f.Value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int AsInt() => (int)Value;
+    private int AsInt() => (int)Value;
 }

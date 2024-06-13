@@ -108,7 +108,7 @@ public sealed class VerticalDoor : Thinker
                         case VerticalDoorType.BlazeClose:
                             Sector.SpecialData = null;
                             // Unlink and free.
-                            world.Thinkers.Remove(this);
+                            Thinkers.Remove(this);
                             Sector.DisableFrameInterpolationForOneFrame();
                             world.StartSound(Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
                             break;
@@ -117,7 +117,7 @@ public sealed class VerticalDoor : Thinker
                         case VerticalDoorType.Close:
                             Sector.SpecialData = null;
                             // Unlink and free.
-                            world.Thinkers.Remove(this);
+                            Thinkers.Remove(this);
                             Sector.DisableFrameInterpolationForOneFrame();
                             break;
 
@@ -171,7 +171,7 @@ public sealed class VerticalDoor : Thinker
                         case VerticalDoorType.Open:
                             Sector.SpecialData = null;
                             // Unlink and free.
-                            world.Thinkers.Remove(this);
+                            Thinkers.Remove(this);
                             Sector.DisableFrameInterpolationForOneFrame();
                             break;
 

@@ -716,9 +716,8 @@ public sealed class ThingMovement
 
     public Fixed CurrentCeilingZ { get; private set; }
 
-    public Fixed CurrentDropoffZ { get; private set; }
-
     public bool FloatOk { get; private set; }
+    private Fixed CurrentDropoffZ { get; set; }
 
 
     ////////////////////////////////////////////////////////////

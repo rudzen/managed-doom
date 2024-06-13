@@ -30,6 +30,9 @@ public sealed class Hitscan
 
     private Fixed currentRange;
 
+    private Fixed bottomSlope;
+    private Fixed topSlope;
+
     // Who got hit (or null).
 
     private Mobj currentShooter;
@@ -45,10 +48,6 @@ public sealed class Hitscan
 
     public Mobj? LineTarget { get; private set; }
 
-    public Fixed BottomSlope { get; private set; }
-
-    public Fixed TopSlope { get; private set; }
-
     // Slopes to top and bottom of target.
 
     /// <summary>
@@ -57,27 +56,23 @@ public sealed class Hitscan
     /// </summary>
     private bool AimTraverse(Intercept intercept)
     {
-        if (intercept.Line != null)
+        if (intercept.Line is not null)
         {
             var line = intercept.Line;
 
+            // Stop.
             if ((line.Flags & LineFlags.TwoSided) == 0)
-            {
-                // Stop.
                 return false;
-            }
 
             var mc = world.MapCollision;
 
-            // Crosses a two sided line.
-            // A two sided line will restrict the possible target ranges.
+            // Crosses a two-sided line.
+            // A two-sided line will restrict the possible target ranges.
             mc.LineOpening(line);
 
+            // Stop.
             if (mc.OpenBottom >= mc.OpenTop)
-            {
-                // Stop.
                 return false;
-            }
 
             var dist = currentRange * intercept.Frac;
 
@@ -85,43 +80,29 @@ public sealed class Hitscan
             // in certain PWADs, which contain two-sided lines with no backsector.
             // These are imported from Chocolate Doom.
 
-            if (line.BackSector == null ||
-                line.FrontSector.FloorHeight != line.BackSector.FloorHeight)
+            if (line.BackSector == null || line.FrontSector.FloorHeight != line.BackSector.FloorHeight)
             {
                 var slope = (mc.OpenBottom - currentShooterZ) / dist;
-                if (slope > BottomSlope)
-                {
-                    BottomSlope = slope;
-                }
+                if (slope > bottomSlope)
+                    bottomSlope = slope;
             }
 
-            if (line.BackSector == null ||
-                line.FrontSector.CeilingHeight != line.BackSector.CeilingHeight)
+            if (line.BackSector == null || line.FrontSector.CeilingHeight != line.BackSector.CeilingHeight)
             {
                 var slope = (mc.OpenTop - currentShooterZ) / dist;
-                if (slope < TopSlope)
-                {
-                    TopSlope = slope;
-                }
+                if (slope < topSlope)
+                    topSlope = slope;
             }
 
-            if (TopSlope <= BottomSlope)
-            {
-                // Stop.
-                return false;
-            }
-
-            // Shot continues.
-            return true;
+            // Stop if top is lower or equal to bottom, else shot continues.
+            return topSlope > bottomSlope;
         }
 
         // Shoot a thing.
         var thing = intercept.Thing;
+        // Can't shoot self.
         if (thing == currentShooter)
-        {
-            // Can't shoot self.
             return true;
-        }
 
         {
             if ((thing.Flags & MobjFlags.Shootable) == 0)
@@ -134,7 +115,7 @@ public sealed class Hitscan
             var dist = currentRange * intercept.Frac;
             var thingTopSlope = (thing.Z + thing.Height - currentShooterZ) / dist;
 
-            if (thingTopSlope < BottomSlope)
+            if (thingTopSlope < bottomSlope)
             {
                 // Shot over the thing.
                 return true;
@@ -142,21 +123,21 @@ public sealed class Hitscan
 
             var thingBottomSlope = (thing.Z - currentShooterZ) / dist;
 
-            if (thingBottomSlope > TopSlope)
+            if (thingBottomSlope > topSlope)
             {
                 // Shot under the thing.
                 return true;
             }
 
             // This thing can be hit!
-            if (thingTopSlope > TopSlope)
+            if (thingTopSlope > topSlope)
             {
-                thingTopSlope = TopSlope;
+                thingTopSlope = topSlope;
             }
 
-            if (thingBottomSlope < BottomSlope)
+            if (thingBottomSlope < bottomSlope)
             {
-                thingBottomSlope = BottomSlope;
+                thingBottomSlope = bottomSlope;
             }
 
             currentAimSlope = (thingTopSlope + thingBottomSlope) / 2;
@@ -347,8 +328,8 @@ public sealed class Hitscan
         var targetY = shooter.Y + range.ToIntFloor() * Trig.Sin(angle);
 
         // Can't shoot outside view angles.
-        TopSlope = Fixed.FromInt(100) / 160;
-        BottomSlope = Fixed.FromInt(-100) / 160;
+        topSlope = Fixed.FromInt(100) / 160;
+        bottomSlope = Fixed.FromInt(-100) / 160;
 
         LineTarget = null;
 
@@ -407,7 +388,7 @@ public sealed class Hitscan
     /// <summary>
     /// Spawn blood.
     /// </summary>
-    public void SpawnBlood(Fixed x, Fixed y, Fixed z, int damage)
+    private void SpawnBlood(Fixed x, Fixed y, Fixed z, int damage)
     {
         var random = world.Random;
 

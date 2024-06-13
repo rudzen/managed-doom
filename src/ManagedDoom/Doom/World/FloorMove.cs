@@ -82,7 +82,7 @@ public sealed class FloorMove : Thinker
                 }
             }
 
-            world.Thinkers.Remove(this);
+            Thinkers.Remove(this);
             Sector.DisableFrameInterpolationForOneFrame();
 
             world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);

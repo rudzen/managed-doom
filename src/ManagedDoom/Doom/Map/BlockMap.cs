@@ -107,7 +107,7 @@ public sealed class BlockMap
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetIndex(int blockX, int blockY)
+    private int GetIndex(int blockX, int blockY)
     {
         if (0 <= blockX && blockX < Width && 0 <= blockY && blockY < Height)
             return Width * blockY + blockX;

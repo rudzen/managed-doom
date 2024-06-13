@@ -26,7 +26,7 @@ namespace ManagedDoom.Doom.Intermission;
 public sealed class Finale
 {
     public const int TextSpeed = 3;
-    public const int TextWait = 250;
+    private const int TextWait = 250;
 
     // Stage of animation:
     // 0 = text, 1 = art screen, 2 = character cast.

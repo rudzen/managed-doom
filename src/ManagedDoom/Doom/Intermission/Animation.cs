@@ -29,6 +29,8 @@ public sealed class Animation
     private readonly string[] patches;
     private int nextTic;
 
+    private readonly int data;
+
     public Animation(Intermission intermission, AnimationInfo info, int number)
     {
         im = intermission;
@@ -39,7 +41,7 @@ public sealed class Animation
         frameCount = info.Count;
         LocationX = info.X;
         LocationY = info.Y;
-        Data = info.Data;
+        data = info.Data;
 
         patches = new string[frameCount];
         for (var i = 0; i < frameCount; i++)
@@ -59,7 +61,6 @@ public sealed class Animation
 
     public int LocationX { get; }
     public int LocationY { get; }
-    public int Data { get; }
     public IReadOnlyList<string> Patches => patches;
     public int PatchNumber { get; private set; }
 
@@ -74,7 +75,7 @@ public sealed class Animation
         }
         else if (type == AnimationType.Random)
         {
-            nextTic = bgCount + 1 + (im.Random.Next() % Data);
+            nextTic = bgCount + 1 + (im.Random.Next() % data);
         }
         else if (type == AnimationType.Level)
         {
@@ -90,9 +91,7 @@ public sealed class Animation
             {
                 case AnimationType.Always:
                     if (++PatchNumber >= frameCount)
-                    {
                         PatchNumber = 0;
-                    }
 
                     nextTic = bgCount + period;
                     break;
@@ -102,24 +101,20 @@ public sealed class Animation
                     if (PatchNumber == frameCount)
                     {
                         PatchNumber = -1;
-                        nextTic = bgCount + (im.Random.Next() % Data);
+                        nextTic = bgCount + (im.Random.Next() % data);
                     }
                     else
-                    {
                         nextTic = bgCount + period;
-                    }
 
                     break;
 
                 case AnimationType.Level:
                     // Gawd-awful hack for level anims.
-                    if (!(im.State == IntermissionState.StatCount && number == 7) && im.Info.NextLevel == Data)
+                    if (!(im.State == IntermissionState.StatCount && number == 7) && im.Info.NextLevel == data)
                     {
                         PatchNumber++;
                         if (PatchNumber == frameCount)
-                        {
                             PatchNumber--;
-                        }
 
                         nextTic = bgCount + period;
                     }

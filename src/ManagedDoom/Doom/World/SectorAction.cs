@@ -334,7 +334,7 @@ public sealed class SectorAction
             : line.FrontSector;
     }
 
-    private Fixed FindLowestFloorSurrounding(Sector sector)
+    private static Fixed FindLowestFloorSurrounding(Sector sector)
     {
         var floor = sector.FloorHeight;
 
@@ -342,9 +342,7 @@ public sealed class SectorAction
         {
             var other = GetNextSector(check, sector);
             if (other == null)
-            {
                 continue;
-            }
 
             if (other.FloorHeight < floor)
             {
@@ -356,7 +354,7 @@ public sealed class SectorAction
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Fixed FindHighestFloorSurrounding(Sector sector)
+    private static Fixed FindHighestFloorSurrounding(Sector sector)
     {
         var floor = Fixed.FromInt(-500);
 
@@ -364,21 +362,17 @@ public sealed class SectorAction
         {
             var other = GetNextSector(check, sector);
             if (other == null)
-            {
                 continue;
-            }
 
             if (other.FloorHeight > floor)
-            {
                 floor = other.FloorHeight;
-            }
         }
 
         return floor;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Fixed FindLowestCeilingSurrounding(Sector sector)
+    private static Fixed FindLowestCeilingSurrounding(Sector sector)
     {
         var height = Fixed.MaxValue;
 
@@ -399,7 +393,7 @@ public sealed class SectorAction
         return height;
     }
 
-    private Fixed FindHighestCeilingSurrounding(Sector sector)
+    private static Fixed FindHighestCeilingSurrounding(Sector sector)
     {
         var height = Fixed.Zero;
 
@@ -614,12 +608,12 @@ public sealed class SectorAction
     public bool DoDoor(LineDef line, VerticalDoorType type)
     {
         var sectors = world.Map.Sectors;
-        var setcorNumber = -1;
+        var sectorNumber = -1;
         var result = false;
 
-        while ((setcorNumber = FindSectorFromLineTag(line, setcorNumber)) >= 0)
+        while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
-            var sector = sectors[setcorNumber];
+            var sector = sectors[sectorNumber];
             if (sector.SpecialData != null)
             {
                 continue;
@@ -636,56 +630,47 @@ public sealed class SectorAction
             door.TopWait = doorWait;
             door.Speed = doorSpeed;
 
-            switch (type)
+            if (type == VerticalDoorType.BlazeClose)
             {
-                case VerticalDoorType.BlazeClose:
-                    door.TopHeight = FindLowestCeilingSurrounding(sector);
-                    door.TopHeight -= Fixed.FromInt(4);
-                    door.Direction = -1;
-                    door.Speed = doorSpeed * 4;
-                    world.StartSound(door.Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
-                    break;
-
-                case VerticalDoorType.Close:
-                    door.TopHeight = FindLowestCeilingSurrounding(sector);
-                    door.TopHeight -= Fixed.FromInt(4);
-                    door.Direction = -1;
-                    world.StartSound(door.Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
-                    break;
-
-                case VerticalDoorType.Close30ThenOpen:
-                    door.TopHeight = sector.CeilingHeight;
-                    door.Direction = -1;
-                    world.StartSound(door.Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
-                    break;
-
-                case VerticalDoorType.BlazeRaise:
-                case VerticalDoorType.BlazeOpen:
-                    door.Direction = 1;
-                    door.TopHeight = FindLowestCeilingSurrounding(sector);
-                    door.TopHeight -= Fixed.FromInt(4);
-                    door.Speed = doorSpeed * 4;
-                    if (door.TopHeight != sector.CeilingHeight)
-                    {
-                        world.StartSound(door.Sector.SoundOrigin, Sfx.BDOPN, SfxType.Misc);
-                    }
-
-                    break;
-
-                case VerticalDoorType.Normal:
-                case VerticalDoorType.Open:
-                    door.Direction = 1;
-                    door.TopHeight = FindLowestCeilingSurrounding(sector);
-                    door.TopHeight -= Fixed.FromInt(4);
-                    if (door.TopHeight != sector.CeilingHeight)
-                    {
-                        world.StartSound(door.Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-                    }
-
-                    break;
-
-                default:
-                    break;
+                door.TopHeight = FindLowestCeilingSurrounding(sector);
+                door.TopHeight -= Fixed.FromInt(4);
+                door.Direction = -1;
+                door.Speed = doorSpeed * 4;
+                world.StartSound(door.Sector.SoundOrigin, Sfx.BDCLS, SfxType.Misc);
+            }
+            else if (type == VerticalDoorType.Close)
+            {
+                door.TopHeight = FindLowestCeilingSurrounding(sector);
+                door.TopHeight -= Fixed.FromInt(4);
+                door.Direction = -1;
+                world.StartSound(door.Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
+            }
+            else if (type == VerticalDoorType.Close30ThenOpen)
+            {
+                door.TopHeight = sector.CeilingHeight;
+                door.Direction = -1;
+                world.StartSound(door.Sector.SoundOrigin, Sfx.DORCLS, SfxType.Misc);
+            }
+            else if (type is VerticalDoorType.BlazeRaise or VerticalDoorType.BlazeOpen)
+            {
+                door.Direction = 1;
+                door.TopHeight = FindLowestCeilingSurrounding(sector);
+                door.TopHeight -= Fixed.FromInt(4);
+                door.Speed = doorSpeed * 4;
+                if (door.TopHeight != sector.CeilingHeight)
+                {
+                    world.StartSound(door.Sector.SoundOrigin, Sfx.BDOPN, SfxType.Misc);
+                }
+            }
+            else if (type is VerticalDoorType.Normal or VerticalDoorType.Open)
+            {
+                door.Direction = 1;
+                door.TopHeight = FindLowestCeilingSurrounding(sector);
+                door.TopHeight -= Fixed.FromInt(4);
+                if (door.TopHeight != sector.CeilingHeight)
+                {
+                    world.StartSound(door.Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
+                }
             }
         }
 
@@ -841,7 +826,7 @@ public sealed class SectorAction
             {
                 case PlatformType.RaiseToNearestAndChange:
                     plat.Speed = platformSpeed / 2;
-                    sector.FloorFlat = line.FrontSide.Sector.FloorFlat;
+                    sector.FloorFlat = line.FrontSide!.Sector.FloorFlat;
                     plat.High = FindNextHighestFloor(sector, sector.FloorHeight);
                     plat.Wait = 0;
                     plat.Status = PlatformState.Up;
@@ -917,13 +902,11 @@ public sealed class SectorAction
     private const int maxPlatformCount = 60;
     private readonly Platform?[] activePlatforms = new Platform[maxPlatformCount];
 
-    public void ActivateInStasis(int tag)
+    private void ActivateInStasis(int tag)
     {
         foreach (var platform in activePlatforms.AsSpan())
         {
-            if (platform != null &&
-                platform.Tag == tag &&
-                platform.Status == PlatformState.InStasis)
+            if (platform != null && platform.Tag == tag && platform.Status == PlatformState.InStasis)
             {
                 platform.Status = platform.OldStatus;
                 platform.ThinkerState = ThinkerState.Active;
@@ -968,7 +951,7 @@ public sealed class SectorAction
             if (activePlatforms[i] is not null && platform == activePlatforms[i])
             {
                 activePlatforms[i]!.Sector.SpecialData = null;
-                world.Thinkers.Remove(activePlatforms[i]!);
+                Thinkers.Remove(activePlatforms[i]!);
                 activePlatforms[i] = null;
                 return;
             }
@@ -1386,7 +1369,7 @@ public sealed class SectorAction
             if (activeCeilings[i] is not null && activeCeilings[i] == ceiling)
             {
                 activeCeilings[i]!.Sector.SpecialData = null;
-                world.Thinkers.Remove(activeCeilings[i]!);
+                Thinkers.Remove(activeCeilings[i]!);
                 activeCeilings[i] = null;
                 break;
             }
@@ -1398,7 +1381,7 @@ public sealed class SectorAction
         return ceiling is not null && activeCeilings.Any(t => t == ceiling);
     }
 
-    public void ActivateInStasisCeiling(LineDef line)
+    private void ActivateInStasisCeiling(LineDef line)
     {
         foreach (var ceiling in activeCeilings)
         {

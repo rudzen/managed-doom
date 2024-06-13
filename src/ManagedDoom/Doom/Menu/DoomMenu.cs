@@ -323,7 +323,7 @@ public sealed class DoomMenu
         Current.Open();
     }
 
-    public void Open()
+    private void Open()
     {
         Active = true;
     }

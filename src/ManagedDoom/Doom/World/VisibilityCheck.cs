@@ -14,18 +14,18 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class VisibilityCheck
+public sealed class VisibilityCheck(World world)
 {
-    private readonly DivLine occluder;
+    private readonly DivLine occluder = new();
 
     // From looker to target.
-    private readonly DivLine trace;
-    private readonly World world;
+    private readonly DivLine trace = new();
     private Fixed bottomSlope;
 
     // Eye z of looker.
@@ -34,20 +34,12 @@ public sealed class VisibilityCheck
     private Fixed targetY;
     private Fixed topSlope;
 
-    public VisibilityCheck(World world)
-    {
-        this.world = world;
-
-        trace = new DivLine();
-
-        occluder = new DivLine();
-    }
-
     /// <summary>
     /// Returns the fractional intercept point along the first divline.
     /// This is only called by the addthings and addlines traversers.
     /// </summary>
-    private Fixed InterceptVector(DivLine v2, DivLine v1)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Fixed InterceptVector(DivLine v2, DivLine v1)
     {
         var den = (v1.Dy >> 8) * v2.Dx - (v1.Dx >> 8) * v2.Dy;
 
@@ -67,13 +59,12 @@ public sealed class VisibilityCheck
     private bool CrossSubsector(int subsectorNumber, int validCount)
     {
         var map = world.Map;
-        var subsector = map.Subsectors[subsectorNumber];
-        var count = subsector.SegCount;
+        var (_, count, firstSeg) = map.Subsectors[subsectorNumber];
 
         // Check lines.
         for (var i = 0; i < count; i++)
         {
-            var seg = map.Segs[subsector.FirstSeg + i];
+            var seg = map.Segs[firstSeg + i];
             var line = seg.LineDef;
 
             // Allready checked other side?
@@ -91,9 +82,7 @@ public sealed class VisibilityCheck
 
             // Line isn't crossed?
             if (s1 == s2)
-            {
                 continue;
-            }
 
             occluder.MakeFrom(line);
             s1 = Geometry.DivLineSide(trace.X, trace.Y, occluder);
@@ -101,34 +90,25 @@ public sealed class VisibilityCheck
 
             // Line isn't crossed?
             if (s1 == s2)
-            {
                 continue;
-            }
 
             // The check below is imported from Chocolate Doom to
             // avoid crash due to two-sided lines with no backsector.
             if (line.BackSector == null)
-            {
                 return false;
-            }
 
             // Stop because it is not two sided anyway.
             // Might do this after updating validcount?
             if ((line.Flags & LineFlags.TwoSided) == 0)
-            {
                 return false;
-            }
 
             // Crosses a two sided line.
             var front = seg.FrontSector;
             var back = seg.BackSector;
 
             // No wall to block sight with?
-            if (front.FloorHeight == back.FloorHeight &&
-                front.CeilingHeight == back.CeilingHeight)
-            {
+            if (front.FloorHeight == back.FloorHeight && front.CeilingHeight == back.CeilingHeight)
                 continue;
-            }
 
             // Possible occluder because of ceiling height differences.
             var openTop = front.CeilingHeight < back.CeilingHeight
@@ -153,25 +133,19 @@ public sealed class VisibilityCheck
             {
                 var slope = (openBottom - sightZStart) / frac;
                 if (slope > bottomSlope)
-                {
                     bottomSlope = slope;
-                }
             }
 
             if (front.CeilingHeight != back.CeilingHeight)
             {
                 var slope = (openTop - sightZStart) / frac;
                 if (slope < topSlope)
-                {
                     topSlope = slope;
-                }
             }
 
+            // Stop.
             if (topSlope <= bottomSlope)
-            {
-                // Stop.
                 return false;
-            }
         }
 
         // Passed the subsector ok.
@@ -185,12 +159,8 @@ public sealed class VisibilityCheck
     {
         if (Node.IsSubsector(nodeNumber))
         {
-            if (nodeNumber == -1)
-            {
-                return CrossSubsector(0, validCount);
-            }
-
-            return CrossSubsector(Node.GetSubsector(nodeNumber), validCount);
+            var subSector = nodeNumber == 1 ? 0 : Node.GetSubsector(nodeNumber);
+            return CrossSubsector(subSector, validCount);
         }
 
         var node = world.Map.Nodes[nodeNumber];

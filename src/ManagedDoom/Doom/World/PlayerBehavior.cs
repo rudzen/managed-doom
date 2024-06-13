@@ -249,11 +249,11 @@ public sealed class PlayerBehavior(World world)
     /// <summary>
     /// Calculate the walking / running height adjustment.
     /// </summary>
-    public void CalcHeight(Player player)
+    private void CalcHeight(Player player)
     {
         // Regular movement bobbing.
         // It needs to be calculated for gun swing even if not on ground.
-        player.Bob = player.Mobj.MomX * player.Mobj.MomX + player.Mobj.MomY * player.Mobj.MomY;
+        player.Bob = player.Mobj!.MomX * player.Mobj.MomX + player.Mobj.MomY * player.Mobj.MomY;
         player.Bob >>= 2;
         if (player.Bob > maxBob)
         {
@@ -323,19 +323,18 @@ public sealed class PlayerBehavior(World world)
     /// Moves the given origin along a given angle.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Thrust(Player player, Angle angle, Fixed move)
+    private static void Thrust(Player player, Angle angle, Fixed move)
     {
-        player.Mobj.MomX += move * Trig.Cos(angle);
+        player.Mobj!.MomX += move * Trig.Cos(angle);
         player.Mobj.MomY += move * Trig.Sin(angle);
     }
-
 
     /// <summary>
     /// Called every tic frame that the player origin is in a special sector.
     /// </summary>
     private void PlayerInSpecialSector(Player player)
     {
-        var sector = player.Mobj.Subsector.Sector;
+        var sector = player.Mobj!.Subsector.Sector;
 
         // Falling, not all the way down yet?
         if (player.Mobj.Z != sector.FloorHeight)
@@ -589,7 +588,7 @@ public sealed class PlayerBehavior(World world)
         // Default death sound.
         var sound = Sfx.PLDETH;
 
-        if ((world.Options.GameMode == GameMode.Commercial) && (player.Health < -50))
+        if (world.Options.GameMode == GameMode.Commercial && player.Health < -50)
         {
             // If the player dies less than -50% without gibbing.
             sound = Sfx.PDIEHI;

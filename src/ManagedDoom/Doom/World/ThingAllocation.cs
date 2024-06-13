@@ -294,7 +294,7 @@ public sealed class ThingAllocation
         world.StopSound(mobj);
 
         // Free block.
-        world.Thinkers.Remove(mobj);
+        Thinkers.Remove(mobj);
     }
 
     /// <summary>

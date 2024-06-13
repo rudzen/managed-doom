@@ -30,13 +30,13 @@ public static partial class DoomInfo
         {
             return missionPack switch
             {
-                MissionPack.Plutonia => Plutonia[mapNumber],
-                MissionPack.Tnt      => Tnt[mapNumber],
-                _                    => Doom2[mapNumber]
+                MissionPack.Plutonia => plutonia[mapNumber],
+                MissionPack.Tnt      => tnt[mapNumber],
+                _                    => doom2[mapNumber]
             };
         }
 
-        public static IReadOnlyList<IReadOnlyList<DoomString>> Doom => new DoomString[][]
+        public static DoomString[][] Doom => new DoomString[][]
         {
             [
                 Strings.HUSTR_E1M1,
@@ -87,7 +87,7 @@ public static partial class DoomInfo
             ]
         };
 
-        public static readonly IReadOnlyList<DoomString> Doom2 = new[]
+        private static readonly DoomString[] doom2 = new[]
         {
             Strings.HUSTR_1,
             Strings.HUSTR_2,
@@ -123,7 +123,7 @@ public static partial class DoomInfo
             Strings.HUSTR_32
         };
 
-        public static readonly IReadOnlyList<DoomString> Plutonia = new[]
+        private static readonly DoomString[] plutonia = new[]
         {
             Strings.PHUSTR_1,
             Strings.PHUSTR_2,
@@ -159,7 +159,7 @@ public static partial class DoomInfo
             Strings.PHUSTR_32
         };
 
-        public static readonly IReadOnlyList<DoomString> Tnt = new[]
+        private static readonly IReadOnlyList<DoomString> tnt = new[]
         {
             Strings.THUSTR_1,
             Strings.THUSTR_2,

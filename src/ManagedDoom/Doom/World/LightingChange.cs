@@ -105,40 +105,28 @@ public sealed class LightingChange
         sector.Special = 0;
     }
 
-    private int FindMinSurroundingLight(Sector sector, int max)
+    private static int FindMinSurroundingLight(Sector sector, int max)
     {
         var min = max;
-        for (var i = 0; i < sector.Lines.Length; i++)
+        foreach (var line in sector.Lines)
         {
-            var line = sector.Lines[i];
             var check = GetNextSector(line, sector);
 
             if (check == null)
-            {
                 continue;
-            }
 
             if (check.LightLevel < min)
-            {
                 min = check.LightLevel;
-            }
         }
 
         return min;
     }
 
-    private Sector GetNextSector(LineDef line, Sector sector)
+    private static Sector? GetNextSector(LineDef line, Sector sector)
     {
         if ((line.Flags & LineFlags.TwoSided) == 0)
-        {
             return null;
-        }
 
-        if (line.FrontSector == sector)
-        {
-            return line.BackSector;
-        }
-
-        return line.FrontSector;
+        return line.FrontSector == sector ? line.BackSector : line.FrontSector;
     }
 }

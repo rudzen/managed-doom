@@ -36,6 +36,8 @@ public sealed class World
 
     private int validCount;
 
+    private readonly Cheat cheat;
+
     public World(IGameContent resources, IGameOptions options, DoomGame? game)
     {
         this.Options = options;
@@ -62,7 +64,7 @@ public sealed class World
         LightingChange = new LightingChange(this);
         StatusBar = new StatusBar(this);
         AutoMap = new AutoMap(this);
-        Cheat = new Cheat(this);
+        cheat = new Cheat(this);
 
         options.IntermissionInfo.TotalFrags = 0;
         options.IntermissionInfo.ParTime = 180;
@@ -152,7 +154,6 @@ public sealed class World
 
     public AutoMap AutoMap { get; }
 
-    public Cheat Cheat { get; }
 
     public int TotalKills { get; set; }
 
@@ -273,8 +274,8 @@ public sealed class World
 
     public bool DoEvent(in DoomEvent e)
     {
-        if (!Options.NetGame && !Options.DemoPlayback)
-            Cheat.DoEvent(e);
+        if (Options is { NetGame: false, DemoPlayback: false })
+            cheat.DoEvent(e);
 
         if (AutoMap.Visible && AutoMap.DoEvent(e))
             return true;

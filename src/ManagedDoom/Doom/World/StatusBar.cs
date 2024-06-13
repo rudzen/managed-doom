@@ -264,11 +264,11 @@ public sealed class StatusBar
     {
         public const int PainFaceCount = 5;
         public const int StraightFaceCount = 3;
-        public const int TurnFaceCount = 2;
-        public const int SpecialFaceCount = 3;
+        private const int TurnFaceCount = 2;
+        private const int SpecialFaceCount = 3;
 
         public const int Stride = StraightFaceCount + TurnFaceCount + SpecialFaceCount;
-        public const int ExtraFaceCount = 2;
+        private const int ExtraFaceCount = 2;
         public const int FaceCount = Stride * PainFaceCount + ExtraFaceCount;
 
         public const int TurnOffset = StraightFaceCount;

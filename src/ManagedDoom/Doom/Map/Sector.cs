@@ -47,7 +47,7 @@ public sealed class Sector
     private Fixed oldFloorHeight;
     private Fixed oldCeilingHeight;
 
-    public Sector(
+    private Sector(
         int number,
         Fixed floorHeight,
         Fixed ceilingHeight,

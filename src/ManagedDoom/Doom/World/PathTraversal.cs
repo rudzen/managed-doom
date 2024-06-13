@@ -166,14 +166,12 @@ public sealed class PathTraversal
     /// Returns the fractional intercept point along the first divline.
     /// This is only called by the addthings and addlines traversers.
     /// </summary>
-    private Fixed InterceptVector(DivLine v2, DivLine v1)
+    private static Fixed InterceptVector(DivLine v2, DivLine v1)
     {
         var den = (v1.Dy >> 8) * v2.Dx - (v1.Dx >> 8) * v2.Dy;
 
         if (den == Fixed.Zero)
-        {
             return Fixed.Zero;
-        }
 
         var num = ((v1.X - v2.X) >> 8) * v1.Dy + ((v2.Y - v1.Y) >> 8) * v1.Dx;
 

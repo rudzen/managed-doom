@@ -21,307 +21,269 @@ using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.UserInput;
 
-namespace ManagedDoom.Doom.World
+namespace ManagedDoom.Doom.World;
+
+public sealed class AutoMap
 {
-    public sealed class AutoMap
+    private readonly World world;
+
+    private bool zoomIn;
+    private bool zoomOut;
+
+    private bool left;
+    private bool right;
+    private bool up;
+    private bool down;
+
+    private readonly List<Vertex> marks;
+    private int nextMarkNumber;
+
+    private readonly Fixed minX;
+    private readonly Fixed maxX;
+    private readonly Fixed minY;
+    private readonly Fixed maxY;
+
+    public AutoMap(World world)
     {
-        private readonly World world;
+        this.world = world;
 
-        private bool zoomIn;
-        private bool zoomOut;
-
-        private bool left;
-        private bool right;
-        private bool up;
-        private bool down;
-
-        private readonly List<Vertex> marks;
-        private int nextMarkNumber;
-
-        public AutoMap(World world)
+        minX = Fixed.MaxValue;
+        maxX = Fixed.MinValue;
+        minY = Fixed.MaxValue;
+        maxY = Fixed.MinValue;
+        foreach (var vertex in world.Map.Vertices)
         {
-            this.world = world;
+            if (vertex.X < minX)
+                minX = vertex.X;
 
-            MinX = Fixed.MaxValue;
-            MaxX = Fixed.MinValue;
-            MinY = Fixed.MaxValue;
-            MaxY = Fixed.MinValue;
-            foreach (var vertex in world.Map.Vertices)
+            if (vertex.X > maxX)
+                maxX = vertex.X;
+
+            if (vertex.Y < minY)
+                minY = vertex.Y;
+
+            if (vertex.Y > maxY)
+                maxY = vertex.Y;
+        }
+
+        ViewX = minX + (maxX - minX) / 2;
+        ViewY = minY + (maxY - minY) / 2;
+
+        Visible = false;
+        State = AutoMapState.None;
+
+        Zoom = Fixed.One;
+        Follow = true;
+
+        zoomIn = false;
+        zoomOut = false;
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+
+        marks = new List<Vertex>();
+        nextMarkNumber = 0;
+    }
+
+
+    public Fixed ViewX { get; private set; }
+
+    public Fixed ViewY { get; private set; }
+
+    public Fixed Zoom { get; private set; }
+
+    public bool Follow { get; private set; }
+
+    public bool Visible { get; private set; }
+
+    public AutoMapState State { get; private set; }
+
+    public IReadOnlyList<Vertex> Marks => marks;
+
+    public void Update()
+    {
+        if (zoomIn)
+            Zoom += Zoom / 16;
+
+        if (zoomOut)
+            Zoom -= Zoom / 16;
+
+        if (Zoom < Fixed.One / 2)
+            Zoom = Fixed.One / 2;
+        else if (Zoom > Fixed.One * 32)
+            Zoom = Fixed.One * 32;
+
+        if (left)
+            ViewX -= 64 / Zoom;
+
+        if (right)
+            ViewX += 64 / Zoom;
+
+        if (up)
+            ViewY += 64 / Zoom;
+
+        if (down)
+            ViewY -= 64 / Zoom;
+
+        if (ViewX < minX)
+            ViewX = minX;
+        else if (ViewX > maxX)
+            ViewX = maxX;
+
+        if (ViewY < minY)
+            ViewY = minY;
+        else if (ViewY > maxY)
+            ViewY = maxY;
+
+        if (Follow)
+        {
+            var player = world.ConsolePlayer.Mobj;
+            ViewX = player!.X;
+            ViewY = player.Y;
+        }
+    }
+
+    public bool DoEvent(DoomEvent e)
+    {
+        if (e.Key is DoomKey.Add or DoomKey.Quote or DoomKey.Equal)
+        {
+            zoomIn = e.Type switch
             {
-                if (vertex.X < MinX)
-                    MinX = vertex.X;
+                EventType.KeyDown => true,
+                EventType.KeyUp   => false,
+                _                 => zoomIn
+            };
 
-                if (vertex.X > MaxX)
-                    MaxX = vertex.X;
+            return true;
+        }
 
-                if (vertex.Y < MinY)
-                    MinY = vertex.Y;
+        if (e.Key is DoomKey.Subtract or DoomKey.Hyphen or DoomKey.Semicolon)
+        {
+            zoomOut = e.Type switch
+            {
+                EventType.KeyDown => true,
+                EventType.KeyUp   => false,
+                _                 => zoomOut
+            };
 
-                if (vertex.Y > MaxY)
-                    MaxY = vertex.Y;
+            return true;
+        }
+
+        if (e.Key == DoomKey.Left)
+        {
+            left = e.Type switch
+            {
+                EventType.KeyDown => true,
+                EventType.KeyUp   => false,
+                _                 => left
+            };
+
+            return true;
+        }
+
+        if (e.Key == DoomKey.Right)
+        {
+            right = e.Type switch
+            {
+                EventType.KeyDown => true,
+                EventType.KeyUp   => false,
+                _                 => right
+            };
+
+            return true;
+        }
+
+        if (e.Key == DoomKey.Up)
+        {
+            up = e.Type switch
+            {
+                EventType.KeyDown => true,
+                EventType.KeyUp   => false,
+                _                 => up
+            };
+
+            return true;
+        }
+
+        if (e.Key == DoomKey.Down)
+        {
+            down = e.Type switch
+            {
+                EventType.KeyDown => true,
+                EventType.KeyUp   => false,
+                _                 => down
+            };
+
+            return true;
+        }
+
+        if (e.Key == DoomKey.F)
+        {
+            if (e.Type == EventType.KeyDown)
+            {
+                Follow = !Follow;
+                world.ConsolePlayer.SendMessage(Follow ? DoomInfo.Strings.AMSTR_FOLLOWON : DoomInfo.Strings.AMSTR_FOLLOWOFF);
+
+                return true;
             }
+        }
+        else if (e.Key == DoomKey.M)
+        {
+            if (e.Type == EventType.KeyDown)
+            {
+                if (marks.Count < 10)
+                {
+                    marks.Add(new Vertex(ViewX, ViewY));
+                }
+                else
+                {
+                    marks[nextMarkNumber] = new Vertex(ViewX, ViewY);
+                }
 
-            ViewX = MinX + (MaxX - MinX) / 2;
-            ViewY = MinY + (MaxY - MinY) / 2;
+                nextMarkNumber++;
+                if (nextMarkNumber == 10)
+                {
+                    nextMarkNumber = 0;
+                }
 
-            Visible = false;
-            State = AutoMapState.None;
-
-            Zoom = Fixed.One;
-            Follow = true;
-
-            zoomIn = false;
-            zoomOut = false;
-            left = false;
-            right = false;
-            up = false;
-            down = false;
-
-            marks = new List<Vertex>();
+                world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKEDSPOT);
+                return true;
+            }
+        }
+        else if (e is { Key: DoomKey.C, Type: EventType.KeyDown })
+        {
+            marks.Clear();
             nextMarkNumber = 0;
+            world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKSCLEARED);
+            return true;
         }
 
-        public void Update()
+        return false;
+    }
+
+    public void Open()
+    {
+        Visible = true;
+    }
+
+    public void Close()
+    {
+        Visible = false;
+        zoomIn = false;
+        zoomOut = false;
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+    }
+
+    public void ToggleCheat()
+    {
+        State++;
+        if ((int)State == 3)
         {
-            if (zoomIn)
-            {
-                Zoom += Zoom / 16;
-            }
-
-            if (zoomOut)
-            {
-                Zoom -= Zoom / 16;
-            }
-
-            if (Zoom < Fixed.One / 2)
-            {
-                Zoom = Fixed.One / 2;
-            }
-            else if (Zoom > Fixed.One * 32)
-            {
-                Zoom = Fixed.One * 32;
-            }
-
-            if (left)
-            {
-                ViewX -= 64 / Zoom;
-            }
-
-            if (right)
-            {
-                ViewX += 64 / Zoom;
-            }
-
-            if (up)
-            {
-                ViewY += 64 / Zoom;
-            }
-
-            if (down)
-            {
-                ViewY -= 64 / Zoom;
-            }
-
-            if (ViewX < MinX)
-            {
-                ViewX = MinX;
-            }
-            else if (ViewX > MaxX)
-            {
-                ViewX = MaxX;
-            }
-
-            if (ViewY < MinY)
-            {
-                ViewY = MinY;
-            }
-            else if (ViewY > MaxY)
-            {
-                ViewY = MaxY;
-            }
-
-            if (Follow)
-            {
-                var player = world.ConsolePlayer.Mobj;
-                ViewX = player.X;
-                ViewY = player.Y;
-            }
+            State = AutoMapState.None;
         }
-
-        public bool DoEvent(DoomEvent e)
-        {
-            if (e.Key is DoomKey.Add or DoomKey.Quote or DoomKey.Equal)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    zoomIn = true;
-                }
-                else if (e.Type == EventType.KeyUp)
-                {
-                    zoomIn = false;
-                }
-
-                return true;
-            }
-
-            if (e.Key is DoomKey.Subtract or DoomKey.Hyphen or DoomKey.Semicolon)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    zoomOut = true;
-                }
-                else if (e.Type == EventType.KeyUp)
-                {
-                    zoomOut = false;
-                }
-
-                return true;
-            }
-            if (e.Key == DoomKey.Left)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    left = true;
-                }
-                else if (e.Type == EventType.KeyUp)
-                {
-                    left = false;
-                }
-
-                return true;
-            }
-            if (e.Key == DoomKey.Right)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    right = true;
-                }
-                else if (e.Type == EventType.KeyUp)
-                {
-                    right = false;
-                }
-
-                return true;
-            }
-            if (e.Key == DoomKey.Up)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    up = true;
-                }
-                else if (e.Type == EventType.KeyUp)
-                {
-                    up = false;
-                }
-
-                return true;
-            }
-            if (e.Key == DoomKey.Down)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    down = true;
-                }
-                else if (e.Type == EventType.KeyUp)
-                {
-                    down = false;
-                }
-
-                return true;
-            }
-            if (e.Key == DoomKey.F)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    Follow = !Follow;
-                    if (Follow)
-                    {
-                        world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_FOLLOWON);
-                    }
-                    else
-                    {
-                        world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_FOLLOWOFF);
-                    }
-                    return true;
-                }
-            }
-            else if (e.Key == DoomKey.M)
-            {
-                if (e.Type == EventType.KeyDown)
-                {
-                    if (marks.Count < 10)
-                    {
-                        marks.Add(new Vertex(ViewX, ViewY));
-                    }
-                    else
-                    {
-                        marks[nextMarkNumber] = new Vertex(ViewX, ViewY);
-                    }
-                    nextMarkNumber++;
-                    if (nextMarkNumber == 10)
-                    {
-                        nextMarkNumber = 0;
-                    }
-                    world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKEDSPOT);
-                    return true;
-                }
-            }
-            else if (e is { Key: DoomKey.C, Type: EventType.KeyDown })
-            {
-                marks.Clear();
-                nextMarkNumber = 0;
-                world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKSCLEARED);
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Open()
-        {
-            Visible = true;
-        }
-
-        public void Close()
-        {
-            Visible = false;
-            zoomIn = false;
-            zoomOut = false;
-            left = false;
-            right = false;
-            up = false;
-            down = false;
-        }
-
-        public void ToggleCheat()
-        {
-            State++;
-            if ((int)State == 3)
-            {
-                State = AutoMapState.None;
-            }
-        }
-
-        public Fixed MinX { get; }
-
-        public Fixed MaxX { get; }
-
-        public Fixed MinY { get; }
-
-        public Fixed MaxY { get; }
-
-        public Fixed ViewX { get; private set; }
-
-        public Fixed ViewY { get; private set; }
-
-        public Fixed Zoom { get; private set; }
-
-        public bool Follow { get; private set; }
-
-        public bool Visible { get; private set; }
-
-        public AutoMapState State { get; private set; }
-
-        public IReadOnlyList<Vertex> Marks => marks;
     }
 }

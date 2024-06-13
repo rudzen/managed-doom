@@ -26,7 +26,7 @@ public sealed class SideDef
 {
     private const int dataSize = 30;
 
-    public SideDef(
+    private SideDef(
         Fixed textureOffset,
         Fixed rowOffset,
         int topTexture,
