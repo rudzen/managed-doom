@@ -207,7 +207,7 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
 
         if (DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
         {
-            var num = player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo];
+            var num = player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo];
             DrawNumber(ready, num);
         }
 

@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;

@@ -106,28 +106,16 @@ public sealed class FinaleRenderer(IGameContent gameContent, IPatchCache patchCa
 
         if (finale.ShowTheEnd)
         {
-            var patch = "END0";
-            switch (finale.TheEndIndex)
+            var patch = finale.TheEndIndex switch
             {
-                case 1:
-                    patch = "END1";
-                    break;
-                case 2:
-                    patch = "END2";
-                    break;
-                case 3:
-                    patch = "END3";
-                    break;
-                case 4:
-                    patch = "END4";
-                    break;
-                case 5:
-                    patch = "END5";
-                    break;
-                case 6:
-                    patch = "END6";
-                    break;
-            }
+                1 => "END1",
+                2 => "END2",
+                3 => "END3",
+                4 => "END4",
+                5 => "END5",
+                6 => "END6",
+                _ => "END0"
+            };
 
             DrawPatch(
                 patch,

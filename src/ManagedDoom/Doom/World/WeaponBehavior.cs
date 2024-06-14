@@ -107,7 +107,7 @@ public sealed class WeaponBehavior(World world)
 
         // Some do not need ammunition anyway.
         // Return if current ammunition sufficient.
-        if (ammo == AmmoType.NoAmmo || player.Ammo[(int)ammo] >= count)
+        if (ammo == AmmoType.NoAmmo || player.Ammo[ammo] >= count)
             return true;
 
         // Out of ammo, pick a weapon to change to.
@@ -423,7 +423,7 @@ public sealed class WeaponBehavior(World world)
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
@@ -448,7 +448,7 @@ public sealed class WeaponBehavior(World world)
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
@@ -474,12 +474,12 @@ public sealed class WeaponBehavior(World world)
     {
         world.StartSound(player.Mobj, Sfx.PISTOL, SfxType.Weapon);
 
-        if (player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] == 0)
+        if (player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] == 0)
             return;
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
@@ -499,7 +499,7 @@ public sealed class WeaponBehavior(World world)
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= 2;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= 2;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
@@ -564,7 +564,7 @@ public sealed class WeaponBehavior(World world)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireMissile(Player player)
     {
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Rocket);
     }
@@ -572,7 +572,7 @@ public sealed class WeaponBehavior(World world)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FirePlasma(Player player)
     {
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
@@ -591,7 +591,7 @@ public sealed class WeaponBehavior(World world)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireBFG(Player player)
     {
-        player.Ammo[(int)DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
+        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
 
         world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Bfg);
     }

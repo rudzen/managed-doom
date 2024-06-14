@@ -46,7 +46,7 @@ public sealed class WipeEffect
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Start()
     {
-        Y[0] = (short)(-(random.Next() % 16));
+        Y[0] = (short)-(random.Next() % 16);
         for (var i = 1; i < Y.Length; i++)
         {
             var r = random.Next() % 3 - 1;
@@ -74,7 +74,7 @@ public sealed class WipeEffect
             }
             else if (Y[i] < height)
             {
-                var dy = (Y[i] < 16) ? Y[i] + 1 : 8;
+                var dy = Y[i] < 16 ? Y[i] + 1 : 8;
                 if (Y[i] + dy >= height)
                     dy = height - Y[i];
                 Y[i] += (short)dy;

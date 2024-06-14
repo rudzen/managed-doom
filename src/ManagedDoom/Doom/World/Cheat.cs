@@ -124,23 +124,23 @@ public sealed class Cheat
         var player = world.ConsolePlayer;
         if (world.Options.GameMode == GameMode.Commercial)
         {
-            for (var i = 0; i < (int)WeaponType.Count; i++)
+            for (var i = 0; i < WeaponType.Count; i++)
             {
                 player.WeaponOwned[i] = true;
             }
         }
         else
         {
-            for (var i = 0; i <= (int)WeaponType.Missile; i++)
+            for (var i = 0; i <= WeaponType.Missile; i++)
             {
                 player.WeaponOwned[i] = true;
             }
 
-            player.WeaponOwned[(int)WeaponType.Chainsaw] = true;
+            player.WeaponOwned[WeaponType.Chainsaw] = true;
             if (world.Options.GameMode != GameMode.Shareware)
             {
-                player.WeaponOwned[(int)WeaponType.Plasma] = true;
-                player.WeaponOwned[(int)WeaponType.Bfg] = true;
+                player.WeaponOwned[WeaponType.Plasma] = true;
+                player.WeaponOwned[WeaponType.Bfg] = true;
             }
         }
 
