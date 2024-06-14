@@ -118,7 +118,7 @@ public sealed class DummySpriteLookup : ISpriteLookup
     {
         var spriteSection = false;
 
-        for (var lumpNumber = wad.LumpInfos.Count - 1; lumpNumber >= 0; lumpNumber--)
+        for (var lumpNumber = wad.LumpInfos.Length - 1; lumpNumber >= 0; lumpNumber--)
         {
             var name = wad.LumpInfos[lumpNumber].Name;
 

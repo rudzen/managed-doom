@@ -35,7 +35,6 @@ public sealed class Wad : IDisposable
 
     private readonly List<string> names;
     private readonly List<Stream> streams;
-    private readonly List<LumpInfo> lumpInfos;
 
     public Wad(IEnumerable<string> fileNames) : this(fileNames.ToArray())
     {
@@ -50,14 +49,12 @@ public sealed class Wad : IDisposable
 
             names = new List<string>(fileNames.Length);
             streams = new List<Stream>(fileNames.Length);
-            lumpInfos = [];
+            LumpInfos = fileNames.SelectMany(AddFile).ToArray();
 
-            foreach (var fileName in fileNames)
-                AddFile(fileName);
-
-            GameMode = GetGameMode(names);
-            MissionPack = GetMissionPack(names);
-            GameVersion = GetGameVersion(names);
+            var nameSpan = CollectionsMarshal.AsSpan(names);
+            GameMode = GetGameMode(nameSpan);
+            MissionPack = GetMissionPack(nameSpan);
+            GameVersion = GetGameVersion(nameSpan);
 
             Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{Stopwatch.GetElapsedTime(start)}]");
         }
@@ -69,9 +66,9 @@ public sealed class Wad : IDisposable
         }
     }
 
-    private void AddFile(string fileName)
+    private List<LumpInfo> AddFile(string fileName)
     {
-        names.Add(Path.GetFileNameWithoutExtension(fileName).ToLower());
+        names.Add(Path.GetFileNameWithoutExtension(fileName));
 
         var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
         streams.Add(stream);
@@ -85,6 +82,7 @@ public sealed class Wad : IDisposable
 
             try
             {
+                var lumps = new List<LumpInfo>(size);
                 var read = stream.Read(data);
 
                 if (read != size)
@@ -100,7 +98,7 @@ public sealed class Wad : IDisposable
                     var s = BitConverter.ToInt32(slice.Slice(offset + 4, 4));
 
                     if (s == -1)
-                        lumpInfos.Add(new LumpInfo(name, null));
+                        lumps.Add(new LumpInfo(name, null));
                     else
                     {
                         var buffer = new byte[s];
@@ -109,9 +107,11 @@ public sealed class Wad : IDisposable
                         if (read != s)
                             throw new Exception("Failed to read the WAD file.");
 
-                        lumpInfos.Add(new LumpInfo(name, buffer));
+                        lumps.Add(new LumpInfo(name, buffer));
                     }
                 }
+
+                return lumps;
             }
             finally
             {
@@ -144,7 +144,7 @@ public sealed class Wad : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetLumpNumber(string name)
     {
-        var lumpSpan = CollectionsMarshal.AsSpan(lumpInfos);
+        var lumpSpan = LumpInfos.AsSpan();
         for (var i = lumpSpan.Length - 1; i >= 0; i--)
         {
             if (lumpSpan[i].Name == name)
@@ -157,7 +157,7 @@ public sealed class Wad : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public (int, int) GetLumpNumberAndSize(string name)
     {
-        var lumpSpan = CollectionsMarshal.AsSpan(lumpInfos);
+        var lumpSpan = LumpInfos.AsSpan();
         for (var i = lumpSpan.Length - 1; i >= 0; i--)
         {
             if (lumpSpan[i].Name == name)
@@ -170,32 +170,19 @@ public sealed class Wad : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetLumpSize(int number)
     {
-        return lumpInfos[number].Data?.Length ?? -1;
+        return LumpInfos[number].Data?.Length ?? -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte[] ReadLump(int number)
     {
-        var lumpInfo = lumpInfos[number];
-        return lumpInfos[number].Data!;
-        // var data = new byte[lumpInfo.Size];
-        //
-        // lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
-        // var read = lumpInfo.Stream.Read(data, 0, lumpInfo.Size);
-        // if (read != lumpInfo.Size)
-        //     throw new Exception($"Failed to read the lump {number}.");
-        //
-        // return data;
+        return LumpInfos[number].Data!;
     }
 
     public void ReadLump(int number, Span<byte> buffer)
     {
-        var lumpInfo = lumpInfos[number];
+        var lumpInfo = LumpInfos[number];
         lumpInfo.Data.CopyTo(buffer);
-        // lumpInfo.Stream.Seek(lumpInfo.Position, SeekOrigin.Begin);
-        // var read = lumpInfo.Stream.Read(buffer);
-        // if (read != lumpInfo.Size)
-        //     throw new Exception($"Failed to read the lump {number}.");
     }
 
     public byte[] ReadLump(string name)
@@ -223,7 +210,7 @@ public sealed class Wad : IDisposable
         return wadId is "IWAD" or "PWAD";
     }
 
-    private static GameVersion GetGameVersion(IReadOnlyList<string> names)
+    private static GameVersion GetGameVersion(ReadOnlySpan<string> names)
     {
         foreach (var name in names)
             if (TryGetGameVersion(name, out var gameVersion))
@@ -250,7 +237,7 @@ public sealed class Wad : IDisposable
         return gameVersion != default;
     }
 
-    private static GameMode GetGameMode(IReadOnlyList<string> names)
+    private static GameMode GetGameMode(ReadOnlySpan<string> names)
     {
         foreach (var name in names)
             if (TryGetGameGameMode(name, out var gameMode))
@@ -277,7 +264,7 @@ public sealed class Wad : IDisposable
         return gameMode != default;
     }
 
-    private static MissionPack GetMissionPack(IReadOnlyList<string> names)
+    private static MissionPack GetMissionPack(ReadOnlySpan<string> names)
     {
         foreach (var name in names)
             if (TryGetMissionPack(name, out var missionPack))
@@ -302,8 +289,8 @@ public sealed class Wad : IDisposable
         return missionPack != default;
     }
 
-    public IReadOnlyList<string> Names => names;
-    public IReadOnlyList<LumpInfo> LumpInfos => lumpInfos;
+    public LumpInfo[] LumpInfos { get; }
+
     public GameVersion GameVersion { get; }
     public GameMode GameMode { get; }
     public MissionPack MissionPack { get; }

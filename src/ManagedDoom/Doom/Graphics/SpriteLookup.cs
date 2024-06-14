@@ -135,7 +135,7 @@ public sealed class SpriteLookup : ISpriteLookup
     {
         var spriteSection = false;
 
-        for (var lump = wad.LumpInfos.Count - 1; lump >= 0; lump--)
+        for (var lump = wad.LumpInfos.Length - 1; lump >= 0; lump--)
         {
             var name = wad.LumpInfos[lump].Name;
 
@@ -156,7 +156,7 @@ public sealed class SpriteLookup : ISpriteLookup
 
             if (spriteSection)
             {
-                if (wad.LumpInfos[lump].Data.Length > 0)
+                if (wad.LumpInfos[lump].Data!.Length > 0)
                     yield return lump;
             }
         }

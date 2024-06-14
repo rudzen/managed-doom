@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -29,8 +30,8 @@ public sealed class FlatLookup : IFlatLookup
 {
     private Flat[] flats;
 
-    private Dictionary<string, Flat> nameToFlat;
-    private Dictionary<string, int> nameToNumber;
+    private FrozenDictionary<string, Flat> nameToFlat2;
+    private FrozenDictionary<string, int> nameToNumber2;
 
     public FlatLookup(Wad.Wad wad)
     {
@@ -67,7 +68,7 @@ public sealed class FlatLookup : IFlatLookup
 
     public int Count => flats.Length;
     public Flat this[int num] => flats[num];
-    public Flat this[string name] => nameToFlat[name];
+    public Flat this[string name] => nameToFlat2[name];
     public int SkyFlatNumber { get; private set; }
     public Flat SkyFlat { get; private set; }
 
@@ -84,8 +85,8 @@ public sealed class FlatLookup : IFlatLookup
 
             flats = new Flat[count];
 
-            nameToFlat = new Dictionary<string, Flat>();
-            nameToNumber = new Dictionary<string, int>();
+            var nameToFlatMapping = new Dictionary<string, Flat>();
+            var nameToNumberMapping = new Dictionary<string, int>();
 
             for (var lump = firstFlat; lump <= lastFlat; lump++)
             {
@@ -97,14 +98,17 @@ public sealed class FlatLookup : IFlatLookup
                 var flat = new Flat(name, wad.ReadLump(lump));
 
                 flats[number] = flat;
-                nameToFlat[name] = flat;
-                nameToNumber[name] = number;
+                nameToFlatMapping[name] = flat;
+                nameToNumberMapping[name] = number;
             }
 
-            SkyFlatNumber = nameToNumber["F_SKY1"];
-            SkyFlat = nameToFlat["F_SKY1"];
+            SkyFlatNumber = nameToNumberMapping["F_SKY1"];
+            SkyFlat = nameToFlatMapping["F_SKY1"];
 
-            Console.WriteLine($"OK ({nameToFlat.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
+            this.nameToFlat2 = nameToFlatMapping.ToFrozenDictionary();
+            this.nameToNumber2 = nameToNumberMapping.ToFrozenDictionary();
+
+            Console.WriteLine($"OK ({nameToFlatMapping.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
         }
         catch (Exception e)
         {
@@ -121,7 +125,7 @@ public sealed class FlatLookup : IFlatLookup
 
             var allFlats = new List<int>();
             var flatZone = false;
-            for (var lump = 0; lump < wad.LumpInfos.Count; lump++)
+            for (var lump = 0; lump < wad.LumpInfos.Length; lump++)
             {
                 var name = wad.LumpInfos[lump].Name;
                 if (flatZone)
@@ -152,8 +156,8 @@ public sealed class FlatLookup : IFlatLookup
 
             flats = new Flat[distinctFlats.Count];
 
-            nameToFlat = new Dictionary<string, Flat>();
-            nameToNumber = new Dictionary<string, int>();
+            var nameToFlatMapping = new Dictionary<string, Flat>();
+            var nameToNumberMapping = new Dictionary<string, int>();
 
             for (var number = 0; number < flats.Length; number++)
             {
@@ -166,14 +170,17 @@ public sealed class FlatLookup : IFlatLookup
                 var flat = new Flat(name, wad.ReadLump(lump));
 
                 flats[number] = flat;
-                nameToFlat[name] = flat;
-                nameToNumber[name] = number;
+                nameToFlatMapping[name] = flat;
+                nameToNumberMapping[name] = number;
             }
 
-            SkyFlatNumber = nameToNumber["F_SKY1"];
-            SkyFlat = nameToFlat["F_SKY1"];
+            this.nameToFlat2 = nameToFlatMapping.ToFrozenDictionary();
+            this.nameToNumber2 = nameToNumberMapping.ToFrozenDictionary();
 
-            Console.WriteLine($"OK ({nameToFlat.Count} flats)");
+            SkyFlatNumber = nameToNumberMapping["F_SKY1"];
+            SkyFlat = nameToFlatMapping["F_SKY1"];
+
+            Console.WriteLine($"OK ({nameToFlatMapping.Count} flats)");
         }
         catch (Exception e)
         {
@@ -182,14 +189,10 @@ public sealed class FlatLookup : IFlatLookup
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetNumber(string name)
     {
-        ref var number = ref CollectionsMarshal.GetValueRefOrNullRef(nameToNumber, name);
-
-        if (!Unsafe.IsNullRef(ref number))
-            return number;
-
-        return -1;
+        return nameToNumber2.TryGetValue(name, out var number) ? number : -1;
     }
 
     public IEnumerator<Flat> GetEnumerator()

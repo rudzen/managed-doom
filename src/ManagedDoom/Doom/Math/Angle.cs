@@ -39,13 +39,13 @@ public readonly struct Angle
         this.Data = (uint)data;
     }
 
-    public static Angle FromRadian(double radian)
+    public static Angle FromRadian(in double radian)
     {
         var data = System.Math.Round(0x100000000 * (radian / (2 * System.Math.PI)));
         return new Angle((uint)data);
     }
 
-    public static Angle FromDegree(double degree)
+    public static Angle FromDegree(in double degree)
     {
         var data = System.Math.Round(0x100000000 * (degree / 360));
         return new Angle((uint)data);

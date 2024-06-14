@@ -1572,7 +1572,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         // Inner loop that does the actual texture mapping,
         // e.g. a DDA-lile scaling.
         // This is as fast as it gets.
-        var source = column.Data;
+        var source = column.Data.AsSpan();
         var offset = column.Offset;
         for (var pos = pos1; pos <= pos2; pos++)
         {
@@ -1609,7 +1609,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         // Inner loop that does the actual texture mapping,
         // e.g. a DDA-lile scaling.
         // This is as fast as it gets.
-        var source = column.Data;
+        var source = column.Data.AsSpan();
         var offset = column.Offset;
         for (var pos = pos1; pos <= pos2; pos++)
         {

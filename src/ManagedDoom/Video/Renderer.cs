@@ -151,19 +151,15 @@ public sealed class Renderer : IRenderer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RenderDoom(Doom.Doom doom, Fixed frameFrac)
     {
-        switch (doom.State)
+        if (doom.State == DoomState.Game)
+            RenderGame(doom.Game, frameFrac);
+        else if (doom.State == DoomState.Opening)
         {
-            case DoomState.Game:
-                RenderGame(doom.Game, frameFrac);
-                break;
-            case DoomState.Opening:
-                if (!openingSequenceRenderer.Render(doom.Opening))
-                    RenderGame(doom.Opening.DemoGame!, frameFrac);
-                break;
-            case DoomState.DemoPlayback:
-                RenderGame(doom.DemoPlayback!.Game, frameFrac);
-                break;
+            if (!openingSequenceRenderer.Render(doom.Opening))
+                RenderGame(doom.Opening.DemoGame!, frameFrac);
         }
+        else if (doom.State == DoomState.DemoPlayback)
+            RenderGame(doom.DemoPlayback!.Game, frameFrac);
 
         if (doom.Menu.Active)
             return;
@@ -264,6 +260,7 @@ public sealed class Renderer : IRenderer
 
         var wipe = doom.WipeEffect;
         var scale = screen.Width / 320;
+        var screenHeight = screen.Height;
         for (var i = 0; i < WipeBandCount - 1; i++)
         {
             var x1 = wipeBandWidth * i;
@@ -279,8 +276,8 @@ public sealed class Renderer : IRenderer
                 if (copyLength <= 0)
                     continue;
 
-                var srcPos = screen.Height * x;
-                var dstPos = screen.Height * x + y;
+                var srcPos = screenHeight * x;
+                var dstPos = screenHeight * x + y;
                 Array.Copy(wipeBuffer, srcPos, screen.Data, dstPos, copyLength);
             }
         }

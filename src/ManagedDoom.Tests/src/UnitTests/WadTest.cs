@@ -13,7 +13,7 @@ public sealed class WadTest(WadPath wadPath) : IClassFixture<WadPath>
         Assert.Equal(1, wad.GetLumpNumber("COLORMAP"));
         Assert.Equal(7, wad.GetLumpNumber("E1M1"));
         Assert.Equal(2305, wad.GetLumpNumber("F_END"));
-        Assert.Equal(2306, wad.LumpInfos.Count);
+        Assert.Equal(2306, wad.LumpInfos.Length);
     }
 
     [Fact]
@@ -25,7 +25,7 @@ public sealed class WadTest(WadPath wadPath) : IClassFixture<WadPath>
         Assert.Equal(1, wad.GetLumpNumber("COLORMAP"));
         Assert.Equal(6, wad.GetLumpNumber("MAP01"));
         Assert.Equal(2918, wad.GetLumpNumber("F_END"));
-        Assert.Equal(2919, wad.LumpInfos.Count);
+        Assert.Equal(2919, wad.LumpInfos.Length);
     }
 
     [Fact]

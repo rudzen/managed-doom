@@ -49,23 +49,21 @@ public sealed class GameContent : IGameContent
 
     public Wad.Wad? Wad { get; private set; }
 
-    public Palette Palette { get; private set; }
+    public Palette Palette { get; }
 
-    public ColorMap ColorMap { get; private set; }
+    public ColorMap ColorMap { get; }
 
-    public ITextureLookup Textures { get; private set; }
+    public ITextureLookup Textures { get; }
 
-    public IFlatLookup Flats { get; private set; }
+    public IFlatLookup Flats { get; }
 
-    public ISpriteLookup Sprites { get; private set; }
+    public ISpriteLookup Sprites { get; }
 
-    public TextureAnimation Animation { get; private set; }
+    public TextureAnimation Animation { get; }
 
     public static GameContent CreateDummy(params string[] wadPaths)
     {
-        var gc = new GameContent(wadPaths);
-
-        return gc;
+        return new GameContent(wadPaths);
     }
 
     public void Dispose()

@@ -22,8 +22,6 @@ namespace ManagedDoom.Doom.Graphics;
 
 public sealed class Texture
 {
-    private readonly TexturePatch[] patches;
-
     public Texture(
         string name,
         bool masked,
@@ -35,7 +33,6 @@ public sealed class Texture
         this.Masked = masked;
         this.Width = width;
         this.Height = height;
-        this.patches = patches;
         Composite = GenerateComposite(name, width, height, patches);
     }
 
@@ -72,7 +69,7 @@ public sealed class Texture
         return BitConverter.ToInt16(data[(offset + 14)..]);
     }
 
-    private static Patch GenerateComposite(string name, int width, int height, TexturePatch[] patches)
+    private static Patch GenerateComposite(string name, int width, int height, ReadOnlySpan<TexturePatch> patches)
     {
         var patchCount = new int[width];
         var columns = new Column[width][];
@@ -103,8 +100,7 @@ public sealed class Texture
         {
             if (patchCount[x] == 0)
                 columns[x] = [];
-
-            if (patchCount[x] >= 2)
+            else if (patchCount[x] >= 2)
             {
                 var column = new Column(0, data, height * i, height);
 
@@ -176,7 +172,5 @@ public sealed class Texture
     public int Width { get; }
 
     public int Height { get; }
-
-    public IReadOnlyList<TexturePatch> Patches => patches;
     public Patch Composite { get; }
 }

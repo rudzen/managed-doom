@@ -14,9 +14,13 @@
 // GNU General Public License for more details.
 //
 
+using System;
+
 namespace ManagedDoom.Doom.Graphics;
 
 public sealed record Column(int TopDelta, byte[] Data, int Offset, int Length)
 {
+    public ReadOnlySpan<byte> Span => Data.AsSpan(Offset, Length);
+    
     public const int Last = 0xFF;
 }

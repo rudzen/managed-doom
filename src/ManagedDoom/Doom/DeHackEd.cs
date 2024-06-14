@@ -412,15 +412,18 @@ public static class DeHackEd
 
     private static void ProcessBexParsBlock(List<string> data)
     {
-        foreach (var line in data.Skip(1))
+        var dataSpan = CollectionsMarshal.AsSpan(data)[1..];
+        foreach (var line in dataSpan)
         {
             var split = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (split is not ["par", _, _, ..])
                 continue;
 
+            var splitSpan = split.AsSpan(1);
+
             var parsed = new List<int>();
-            foreach (var value in split.Skip(1))
+            foreach (var value in splitSpan)
             {
                 if (int.TryParse(value, out var result))
                     parsed.Add(result);
