@@ -32,13 +32,9 @@ public sealed class ThingInteraction
     private Mobj bombSource;
     private Mobj bombSpot;
 
-    private Func<Mobj, bool> radiusAttackFunc;
-
     public ThingInteraction(World world)
     {
         this.world = world;
-
-        InitRadiusAttack();
     }
 
     /// <summary>
@@ -276,11 +272,6 @@ public sealed class ThingInteraction
             world.StartSound(thing, thing.Info.DeathSound, SfxType.Misc);
     }
 
-    private void InitRadiusAttack()
-    {
-        radiusAttackFunc = DoRadiusAttack;
-    }
-
     /// <summary>
     /// "bombSource" is the creature that caused the explosion at "bombSpot".
     /// </summary>
@@ -334,9 +325,7 @@ public sealed class ThingInteraction
         for (var by = blockY1; by <= blockY2; by++)
         {
             for (var bx = blockX1; bx <= blockX2; bx++)
-            {
-                bm.IterateThings(bx, by, radiusAttackFunc);
-            }
+                bm.IterateThings(bx, by, DoRadiusAttack);
         }
     }
 }

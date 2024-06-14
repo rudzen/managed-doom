@@ -22,8 +22,6 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class Hitscan
 {
-    private readonly Predicate<Intercept> aimTraverseFunc;
-    private readonly Predicate<Intercept> shootTraverseFunc;
     private readonly World world;
     private Fixed currentAimSlope;
     private int currentDamage;
@@ -41,9 +39,6 @@ public sealed class Hitscan
     public Hitscan(World world)
     {
         this.world = world;
-
-        aimTraverseFunc = AimTraverse;
-        shootTraverseFunc = ShootTraverse;
     }
 
     public Mobj? LineTarget { get; private set; }
@@ -298,7 +293,7 @@ public sealed class Hitscan
             shooter.X, shooter.Y,
             targetX, targetY,
             PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
-            aimTraverseFunc);
+            AimTraverse);
 
         return LineTarget is not null ? currentAimSlope : Fixed.Zero;
     }
@@ -322,7 +317,7 @@ public sealed class Hitscan
             shooter.X, shooter.Y,
             targetX, targetY,
             PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
-            shootTraverseFunc);
+            ShootTraverse);
     }
 
     /// <summary>

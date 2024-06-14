@@ -48,19 +48,10 @@ public sealed class SectorAction
     public SectorAction(World world)
     {
         this.world = world;
-
-        InitSectorChange();
     }
-
 
     private bool crushChange;
     private bool noFit;
-    private Func<Mobj, bool> crushThingFunc;
-
-    private void InitSectorChange()
-    {
-        crushThingFunc = CrushThing;
-    }
 
     private bool ThingHeightClip(Mobj thing)
     {
@@ -74,35 +65,24 @@ public sealed class SectorAction
         thing.FloorZ = tm.CurrentFloorZ;
         thing.CeilingZ = tm.CurrentCeilingZ;
 
+        // Walking monsters rise and fall with the floor.
         if (onFloor)
-        {
-            // Walking monsters rise and fall with the floor.
             thing.Z = thing.FloorZ;
-        }
-        else
-        {
-            // Don't adjust a floating monster unless forced to.
-            if (thing.Z + thing.Height > thing.CeilingZ)
-            {
-                thing.Z = thing.CeilingZ - thing.Height;
-            }
-        }
+        // Don't adjust a floating monster unless forced to.
+        else if (thing.Z + thing.Height > thing.CeilingZ)
+            thing.Z = thing.CeilingZ - thing.Height;
 
         if (thing.CeilingZ - thing.FloorZ < thing.Height)
-        {
             return false;
-        }
 
         return true;
     }
 
     private bool CrushThing(Mobj thing)
     {
+        // Keep checking.
         if (ThingHeightClip(thing))
-        {
-            // Keep checking.
             return true;
-        }
 
         // Crunch bodies to giblets.
         if (thing.Health <= 0)
@@ -166,7 +146,7 @@ public sealed class SectorAction
         {
             for (var y = blockBox.Bottom(); y <= blockBox.Top(); y++)
             {
-                bm.IterateThings(x, y, crushThingFunc);
+                bm.IterateThings(x, y, CrushThing);
             }
         }
 

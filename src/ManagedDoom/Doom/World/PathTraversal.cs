@@ -24,10 +24,7 @@ public sealed class PathTraversal
 {
     private readonly Intercept[] intercepts;
 
-    private readonly Func<LineDef, bool> lineInterceptFunc;
-
     private readonly DivLine target;
-    private readonly Func<Mobj, bool> thingInterceptFunc;
     private readonly World world;
 
     private bool earlyOut;
@@ -43,9 +40,6 @@ public sealed class PathTraversal
 
         target = new DivLine();
         Trace = new DivLine();
-
-        lineInterceptFunc = AddLineIntercepts;
-        thingInterceptFunc = AddThingIntercepts;
     }
 
     public DivLine Trace { get; }
@@ -321,7 +315,7 @@ public sealed class PathTraversal
         {
             if ((flags & PathTraverseFlags.AddLines) != 0)
             {
-                if (!bm.IterateLines(bx, by, lineInterceptFunc, validCount))
+                if (!bm.IterateLines(bx, by, AddLineIntercepts, validCount))
                 {
                     // Early out.
                     return false;
@@ -330,7 +324,7 @@ public sealed class PathTraversal
 
             if ((flags & PathTraverseFlags.AddThings) != 0)
             {
-                if (!bm.IterateThings(bx, by, thingInterceptFunc))
+                if (!bm.IterateThings(bx, by, AddThingIntercepts))
                 {
                     // Early out.
                     return false;

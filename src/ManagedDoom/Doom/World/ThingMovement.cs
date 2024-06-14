@@ -23,19 +23,8 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class ThingMovement
+public sealed class ThingMovement(World world)
 {
-    private readonly World world;
-
-    public ThingMovement(World world)
-    {
-        this.world = world;
-
-        InitThingMovement();
-        InitSlideMovement();
-        InitTeleportMovement();
-    }
-
     ////////////////////////////////////////////////////////////
     // General thing movement
     ////////////////////////////////////////////////////////////
@@ -50,24 +39,12 @@ public sealed class ThingMovement
     private MobjFlags currentFlags;
     private Fixed currentX;
     private Fixed currentY;
-    private Fixed[]? currentBox;
+    private readonly Fixed[] currentBox = new Fixed[4];
 
     private LineDef? currentCeilingLine;
 
     public int crossedSpecialCount;
-    public LineDef[]? crossedSpecials;
-
-    private Func<LineDef, bool> checkLineFunc;
-    private Func<Mobj, bool> checkThingFunc;
-
-    private void InitThingMovement()
-    {
-        currentBox = new Fixed[4];
-        crossedSpecials = new LineDef[maxSpecialCrossCount];
-        checkLineFunc = CheckLine;
-        checkThingFunc = CheckThing;
-    }
-
+    public readonly LineDef[] crossedSpecials = new LineDef[maxSpecialCrossCount];
 
     /// <summary>
     /// Links a thing into both a block and a subsector based on
@@ -162,7 +139,6 @@ public sealed class ThingMovement
             }
         }
     }
-
 
     /// <summary>
     /// Adjusts currentFloorZ and currentCeilingZ as lines are contacted.
@@ -268,7 +244,7 @@ public sealed class ThingMovement
         if ((currentThing.Flags & MobjFlags.Missile) != 0)
         {
             // See if it went over / under.
-            
+
             // Overhead.
             if (currentThing.Z > thing.Z + thing.Height)
                 return true;
@@ -389,7 +365,7 @@ public sealed class ThingMovement
             {
                 for (var by = blockY1; by <= blockY2; by++)
                 {
-                    if (!map.BlockMap.IterateThings(bx, by, checkThingFunc))
+                    if (!map.BlockMap.IterateThings(bx, by, CheckThing))
                         return false;
                 }
             }
@@ -406,7 +382,7 @@ public sealed class ThingMovement
             {
                 for (var by = blockY1; by <= blockY2; by++)
                 {
-                    if (!map.BlockMap.IterateLines(bx, by, checkLineFunc, validCount))
+                    if (!map.BlockMap.IterateLines(bx, by, CheckLine, validCount))
                         return false;
                 }
             }
@@ -471,11 +447,8 @@ public sealed class ThingMovement
                 var line = crossedSpecials[crossedSpecialCount];
                 var newSide = Geometry.PointOnLineSide(thing.X, thing.Y, line);
                 var oldSide = Geometry.PointOnLineSide(oldX, oldY, line);
-                if (newSide != oldSide)
-                {
-                    if (line.Special != 0)
-                        world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
-                }
+                if (newSide != oldSide && line.Special != 0)
+                    world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
             }
         }
 
@@ -731,13 +704,6 @@ public sealed class ThingMovement
     private Fixed slideMoveX;
     private Fixed slideMoveY;
 
-    private Predicate<Intercept> slideTraverseFunc;
-
-    private void InitSlideMovement()
-    {
-        slideTraverseFunc = SlideTraverse;
-    }
-
     /// <summary>
     /// Adjusts the x and y movement so that the next move will
     /// slide along the wall.
@@ -881,15 +847,15 @@ public sealed class ThingMovement
 
         pt.PathTraverse(
             leadX, leadY, leadX + thing.MomX, leadY + thing.MomY,
-            PathTraverseFlags.AddLines, slideTraverseFunc);
+            PathTraverseFlags.AddLines, SlideTraverse);
 
         pt.PathTraverse(
             trailX, leadY, trailX + thing.MomX, leadY + thing.MomY,
-            PathTraverseFlags.AddLines, slideTraverseFunc);
+            PathTraverseFlags.AddLines, SlideTraverse);
 
         pt.PathTraverse(
             leadX, trailY, leadX + thing.MomX, trailY + thing.MomY,
-            PathTraverseFlags.AddLines, slideTraverseFunc);
+            PathTraverseFlags.AddLines, SlideTraverse);
 
         // Move up to the wall.
         if (bestSlideFrac == Fixed.OnePlusEpsilon)
@@ -948,13 +914,6 @@ public sealed class ThingMovement
     // Teleport movement
     ////////////////////////////////////////////////////////////
 
-    private Func<Mobj, bool> stompThingFunc;
-
-    private void InitTeleportMovement()
-    {
-        stompThingFunc = StompThing;
-    }
-
     private bool StompThing(Mobj thing)
     {
         if ((thing.Flags & MobjFlags.Shootable) == 0)
@@ -963,7 +922,7 @@ public sealed class ThingMovement
         var blockDist = thing.Radius + currentThing.Radius;
         var dx = Fixed.Abs(thing.X - currentX);
         var dy = Fixed.Abs(thing.Y - currentY);
-        
+
         // Didn't hit it.
         if (dx >= blockDist || dy >= blockDist)
             return true;
@@ -1017,7 +976,7 @@ public sealed class ThingMovement
         {
             for (var by = blockY1; by <= blockY2; by++)
             {
-                if (!bm.IterateThings(bx, by, stompThingFunc))
+                if (!bm.IterateThings(bx, by, StompThing))
                     return false;
             }
         }

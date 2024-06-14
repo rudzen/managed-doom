@@ -32,7 +32,6 @@ public sealed class MonsterBehavior
     {
         this.world = world;
 
-        InitVile();
         InitBossDeath();
         InitBrain();
     }
@@ -905,15 +904,9 @@ public sealed class MonsterBehavior
     // Arch vile
     ////////////////////////////////////////////////////////////
 
-    private Func<Mobj, bool> vileCheckFunc;
     private Mobj vileTargetCorpse;
     private Fixed vileTryX;
     private Fixed vileTryY;
-
-    private void InitVile()
-    {
-        vileCheckFunc = VileCheck;
-    }
 
     private bool VileCheck(Mobj thing)
     {
@@ -971,7 +964,7 @@ public sealed class MonsterBehavior
                 for (var by = blockY1; by <= blockY2; by++)
                 {
                     // Call VileCheck to check whether object is a corpse that canbe raised.
-                    if (!bm.IterateThings(bx, by, vileCheckFunc))
+                    if (!bm.IterateThings(bx, by, VileCheck))
                     {
                         // Got one!
                         var temp = actor.Target;

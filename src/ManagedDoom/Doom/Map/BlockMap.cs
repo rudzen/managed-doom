@@ -123,7 +123,7 @@ public sealed class BlockMap
         return GetIndex(blockX, blockY);
     }
 
-    public bool IterateLines(int blockX, int blockY, Func<LineDef, bool> func, int validCount)
+    public bool IterateLines(int blockX, int blockY, Predicate<LineDef> func, int validCount)
     {
         var index = GetIndex(blockX, blockY);
 
@@ -146,7 +146,7 @@ public sealed class BlockMap
         return true;
     }
 
-    public bool IterateThings(int blockX, int blockY, Func<Mobj, bool> func)
+    public bool IterateThings(int blockX, int blockY, Predicate<Mobj> func)
     {
         var index = GetIndex(blockX, blockY);
 
