@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
@@ -152,7 +151,7 @@ public sealed class DrawScreen : IDrawScreen
         }
     }
 
-    public void DrawText(IReadOnlyList<char>? text, int x, int y, int scale)
+    public void DrawText(ReadOnlySpan<char> text, int x, int y, int scale)
     {
         var drawX = x;
         var drawY = y - 7 * scale;
@@ -250,7 +249,7 @@ public sealed class DrawScreen : IDrawScreen
         return scale * patch.Width;
     }
 
-    public int MeasureText(IReadOnlyList<char>? text, int scale)
+    public int MeasureText(ReadOnlySpan<char> text, int scale)
     {
         var width = 0;
 

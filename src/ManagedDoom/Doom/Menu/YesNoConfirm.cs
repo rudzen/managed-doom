@@ -15,23 +15,15 @@
 //
 
 using System;
-using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class YesNoConfirm : MenuDef
+public sealed class YesNoConfirm(DoomMenu menu, string text, Action action) : MenuDef(menu)
 {
-    private readonly string[] text;
-    private readonly Action action;
-
-    public YesNoConfirm(DoomMenu menu, string text, Action action) : base(menu)
-    {
-        this.text = text.Split('\n');
-        this.action = action;
-    }
+    private readonly string[] text = text.Split('\n');
 
     public override bool DoEvent(in DoomEvent e)
     {
@@ -54,5 +46,5 @@ public sealed class YesNoConfirm : MenuDef
         return true;
     }
 
-    public IReadOnlyList<string> Text => text;
+    public ReadOnlySpan<string> Text => text;
 }

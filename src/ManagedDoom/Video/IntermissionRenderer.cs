@@ -141,9 +141,9 @@ public sealed class IntermissionRenderer : IIntermissionRenderer
     }
 
 
-    public void Render(Intermission im)
+    public void Render(Intermission? im)
     {
-        switch (im.State)
+        switch (im!.State)
         {
             case IntermissionState.StatCount:
                 if (im.Options.Deathmatch != 0)
@@ -437,7 +437,7 @@ public sealed class IntermissionRenderer : IIntermissionRenderer
                 return;
             }
 
-            var last = (im.Info.LastLevel == 8) ? im.Info.NextLevel - 1 : im.Info.LastLevel;
+            var last = im.Info.LastLevel == 8 ? im.Info.NextLevel - 1 : im.Info.LastLevel;
 
             // Draw a splat on taken cities.
             for (var i = 0; i <= last; i++)

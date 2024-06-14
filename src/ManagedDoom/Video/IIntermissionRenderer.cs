@@ -20,5 +20,5 @@ namespace ManagedDoom.Video;
 
 public interface IIntermissionRenderer
 {
-    void Render(Intermission im);
+    void Render(Intermission? im);
 }

@@ -15,31 +15,24 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.Text;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class TextBoxMenuItem : MenuItem
+public sealed class TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY) : MenuItem(skullX, skullY, null)
 {
-    private IReadOnlyList<char>? text;
+    private StringBuilder text = new();
     private TextInput? edit;
 
-    public TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY)
-        : base(skullX, skullY, null)
-    {
-        this.ItemX = itemX;
-        this.ItemY = itemY;
-    }
-
-    public IReadOnlyList<char>? Text => edit?.Text ?? text;
-    public int ItemX { get; }
-    public int ItemY { get; }
-    public bool Editing => edit != null;
+    public string Text => edit?.Text.ToString() ?? text.ToString();
+    public int ItemX { get; } = itemX;
+    public int ItemY { get; } = itemY;
+    public bool Editing => edit is not null;
 
     public TextInput Edit(Action finished)
     {
         edit = new TextInput(
-            text ?? [],
+            text.Length == 0 ? string.Empty : text.ToString(),
             cs => { },
             cs =>
             {
@@ -54,7 +47,10 @@ public sealed class TextBoxMenuItem : MenuItem
 
     public void SetText(string? inputText)
     {
-        if (inputText != null)
-            this.text = inputText.ToCharArray();
+        if (inputText is not null)
+        {
+            this.text.Clear();
+            this.text.Append(inputText);
+        }
     }
 }

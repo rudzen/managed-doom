@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
@@ -25,7 +24,7 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class QuitConfirm : MenuDef
+public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
 {
     private static Sfx[] doomQuitSoundList =>
     [
@@ -51,20 +50,12 @@ public sealed class QuitConfirm : MenuDef
         Sfx.SGTATK
     ];
 
-    private readonly Doom app;
-    private readonly DoomRandom random;
-    private string[] text;
+    private readonly DoomRandom random = new(DateTime.Now.Millisecond);
+    private string[] text = [];
 
-    private int endCount;
+    private int endCount = -1;
 
-    public QuitConfirm(DoomMenu menu, Doom app) : base(menu)
-    {
-        this.app = app;
-        random = new DoomRandom(DateTime.Now.Millisecond);
-        endCount = -1;
-    }
-
-    public IReadOnlyList<string> Text => text;
+    public ReadOnlySpan<string> Text => text;
 
     public override void Open()
     {

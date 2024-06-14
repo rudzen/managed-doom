@@ -32,7 +32,7 @@ public sealed class SaveMenu : MenuDef
     private int index;
     private TextBoxMenuItem choice;
 
-    private TextInput textInput;
+    private TextInput? textInput;
 
     public SaveMenu(
         DoomMenu menu,
@@ -94,7 +94,7 @@ public sealed class SaveMenu : MenuDef
         if (e.Type != EventType.KeyDown)
             return true;
 
-        if (textInput != null)
+        if (textInput is not null)
         {
             var result = textInput.DoEvent(in e);
 
@@ -136,13 +136,8 @@ public sealed class SaveMenu : MenuDef
     public void DoSave(int slotNumber)
     {
         var text = items[slotNumber].Text;
-        var s = string.Create(text.Count, text, (span, list) =>
-        {
-            for (var i = 0; i < list.Count; i++)
-                span[i] = list[i];
-        });
-        Menu.SaveSlots[slotNumber] = s;
-        if (Menu.Doom.SaveGame(slotNumber, s))
+        Menu.SaveSlots[slotNumber] = text;
+        if (Menu.Doom.SaveGame(slotNumber, text))
         {
             Menu.Close();
             LastSaveSlot = slotNumber;

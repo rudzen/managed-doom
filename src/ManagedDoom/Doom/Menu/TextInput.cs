@@ -15,42 +15,27 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class TextInput
+public sealed class TextInput(
+    string initialText,
+    Action<StringBuilder> typed,
+    Action<StringBuilder> finished,
+    Action canceled)
 {
-    private readonly Action<IReadOnlyList<char>> typed;
-    private readonly Action<IReadOnlyList<char>?> finished;
-    private readonly Action canceled;
-
-    public TextInput(
-        IReadOnlyList<char> initialText,
-        Action<IReadOnlyList<char>> typed,
-        Action<IReadOnlyList<char>?> finished,
-        Action canceled)
-    {
-        this.Text = initialText.ToList();
-        this.typed = typed;
-        this.finished = finished;
-        this.canceled = canceled;
-
-        State = TextInputState.Typing;
-    }
-
-    public List<char>? Text { get; }
-    public TextInputState State { get; private set; }
+    public StringBuilder Text { get; } = new(initialText);
+    public TextInputState State { get; private set; } = TextInputState.Typing;
 
     public bool DoEvent(in DoomEvent e)
     {
         var ch = e.Key.GetChar();
         if (ch != 0)
         {
-            Text.Add(ch);
+            Text.Append(ch);
             typed(Text);
             return true;
         }
@@ -59,8 +44,8 @@ public sealed class TextInput
         {
             case { Key: DoomKey.Backspace, Type: EventType.KeyDown }:
             {
-                if (Text.Count > 0)
-                    Text.RemoveAt(Text.Count - 1);
+                if (Text.Length > 0)
+                    Text.Remove(Text.Length - 1, 1);
 
                 typed(Text);
                 return true;

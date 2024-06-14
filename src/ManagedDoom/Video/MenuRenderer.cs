@@ -14,7 +14,7 @@
 // GNU General Public License for more details.
 //
 
-using System.Collections.Generic;
+using System;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Menu;
@@ -25,7 +25,7 @@ public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : I
 {
     private static readonly char[]? cursor = ['_'];
 
-    private readonly char[]? emptyText = "EMPTY SLOT".ToCharArray();
+    private const string emptyText = "EMPTY SLOT";
 
     public void Render(DoomMenu menu)
     {
@@ -137,7 +137,7 @@ public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : I
         screen.DrawPatch(patchCache[name], scale * x, scale * y, scale);
     }
 
-    private void DrawMenuText(IReadOnlyList<char>? text, int x, int y)
+    private void DrawMenuText(ReadOnlySpan<char> text, int x, int y)
     {
         var scale = screen.Width / 320;
         screen.DrawText(text, scale * x, scale * y, scale);
@@ -174,7 +174,7 @@ public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : I
 
     private void DrawTextBoxMenuItem(TextBoxMenuItem item, int tics)
     {
-        var length = 24;
+        const int length = 24;
         DrawMenuPatch("M_LSLEFT", item.ItemX, item.ItemY);
         for (var i = 0; i < length; i++)
         {
@@ -186,7 +186,7 @@ public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : I
 
         if (!item.Editing)
         {
-            var text = item.Text ?? emptyText;
+            var text = string.IsNullOrWhiteSpace(item.Text) ? emptyText : item.Text;
             DrawMenuText(text, item.ItemX + 8, item.ItemY);
         }
         else
@@ -200,16 +200,17 @@ public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : I
         }
     }
 
-    private void DrawText(IReadOnlyList<string> text)
+    private void DrawText(ReadOnlySpan<string> text)
     {
         var scale = screen.Width / 320;
-        var height = 7 * scale * text.Count;
+        var height = 7 * scale * text.Length;
 
-        for (var i = 0; i < text.Count; i++)
+        for (var i = 0; i < text.Length; i++)
         {
-            var x = (screen.Width - screen.MeasureText(text[i], scale)) / 2;
+            var t = text[i].AsSpan();
+            var x = (screen.Width - screen.MeasureText(t, scale)) / 2;
             var y = (screen.Height - height) / 2 + 7 * scale * (i + 1);
-            screen.DrawText(text[i], x, y, scale);
+            screen.DrawText(t, x, y, scale);
         }
     }
 
