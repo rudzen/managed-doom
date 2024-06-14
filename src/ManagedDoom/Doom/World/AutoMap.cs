@@ -14,7 +14,9 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Map;
@@ -51,7 +53,7 @@ public sealed class AutoMap
         maxX = Fixed.MinValue;
         minY = Fixed.MaxValue;
         maxY = Fixed.MinValue;
-        foreach (var vertex in world.Map.Vertices)
+        foreach (var vertex in world.Map.Vertices.AsSpan())
         {
             if (vertex.X < minX)
                 minX = vertex.X;
@@ -82,10 +84,9 @@ public sealed class AutoMap
         up = false;
         down = false;
 
-        marks = new List<Vertex>();
+        marks = new List<Vertex>(10);
         nextMarkNumber = 0;
     }
-
 
     public Fixed ViewX { get; private set; }
 
@@ -103,38 +104,9 @@ public sealed class AutoMap
 
     public void Update()
     {
-        if (zoomIn)
-            Zoom += Zoom / 16;
-
-        if (zoomOut)
-            Zoom -= Zoom / 16;
-
-        if (Zoom < Fixed.One / 2)
-            Zoom = Fixed.One / 2;
-        else if (Zoom > Fixed.One * 32)
-            Zoom = Fixed.One * 32;
-
-        if (left)
-            ViewX -= 64 / Zoom;
-
-        if (right)
-            ViewX += 64 / Zoom;
-
-        if (up)
-            ViewY += 64 / Zoom;
-
-        if (down)
-            ViewY -= 64 / Zoom;
-
-        if (ViewX < minX)
-            ViewX = minX;
-        else if (ViewX > maxX)
-            ViewX = maxX;
-
-        if (ViewY < minY)
-            ViewY = minY;
-        else if (ViewY > maxY)
-            ViewY = maxY;
+        UpdateZoom();
+        UpdateViewX();
+        UpdateViewY();
 
         if (Follow)
         {
@@ -142,6 +114,62 @@ public sealed class AutoMap
             ViewX = player!.X;
             ViewY = player.Y;
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void UpdateZoom()
+    {
+        var zoom = Zoom;
+        if (zoomIn)
+            zoom += zoom / 16;
+
+        if (zoomOut)
+            zoom -= zoom / 16;
+
+        if (zoom < Fixed.One / 2)
+            zoom = Fixed.One / 2;
+        else if (zoom > Fixed.One * 32)
+            zoom = Fixed.One * 32;
+
+        Zoom = zoom;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void UpdateViewX()
+    {
+        var viewX = ViewX;
+
+        if (left)
+            viewX -= 64 / Zoom;
+
+        if (right)
+            viewX += 64 / Zoom;
+
+        if (viewX < minX)
+            viewX = minX;
+        else if (viewX > maxX)
+            viewX = maxX;
+
+        ViewX = viewX;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void UpdateViewY()
+    {
+        var viewY = ViewY;
+
+        if (up)
+            viewY += 64 / Zoom;
+
+        if (down)
+            viewY -= 64 / Zoom;
+
+        if (viewY < minY)
+            viewY = minY;
+        else if (viewY > maxY)
+            viewY = maxY;
+
+        ViewY = viewY;
     }
 
     public bool DoEvent(DoomEvent e)
@@ -222,9 +250,9 @@ public sealed class AutoMap
         {
             if (e.Type == EventType.KeyDown)
             {
-                Follow = !Follow;
-                world.ConsolePlayer.SendMessage(Follow ? DoomInfo.Strings.AMSTR_FOLLOWON : DoomInfo.Strings.AMSTR_FOLLOWOFF);
-
+                Follow ^= true;
+                var msg = Follow ? DoomInfo.Strings.AMSTR_FOLLOWON : DoomInfo.Strings.AMSTR_FOLLOWOFF;
+                world.ConsolePlayer.SendMessage(msg);
                 return true;
             }
         }
@@ -232,21 +260,7 @@ public sealed class AutoMap
         {
             if (e.Type == EventType.KeyDown)
             {
-                if (marks.Count < 10)
-                {
-                    marks.Add(new Vertex(ViewX, ViewY));
-                }
-                else
-                {
-                    marks[nextMarkNumber] = new Vertex(ViewX, ViewY);
-                }
-
-                nextMarkNumber++;
-                if (nextMarkNumber == 10)
-                {
-                    nextMarkNumber = 0;
-                }
-
+                AddMark();
                 world.ConsolePlayer.SendMessage(DoomInfo.Strings.AMSTR_MARKEDSPOT);
                 return true;
             }
@@ -260,6 +274,18 @@ public sealed class AutoMap
         }
 
         return false;
+    }
+
+    private void AddMark()
+    {
+        if (marks.Count < 10)
+            marks.Add(new Vertex(ViewX, ViewY));
+        else
+            marks[nextMarkNumber] = new Vertex(ViewX, ViewY);
+
+        nextMarkNumber++;
+        if (nextMarkNumber == 10)
+            nextMarkNumber = 0;
     }
 
     public void Open()
@@ -280,10 +306,9 @@ public sealed class AutoMap
 
     public void ToggleCheat()
     {
-        State++;
-        if ((int)State == 3)
-        {
+        if (State == AutoMapState.AllThings)
             State = AutoMapState.None;
-        }
+        else
+            State++;
     }
 }
