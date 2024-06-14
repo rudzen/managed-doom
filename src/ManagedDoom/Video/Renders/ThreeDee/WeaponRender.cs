@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
@@ -24,6 +25,7 @@ public sealed class WeaponRender
     public Fixed WeaponScale { get; private set; }
     public Fixed WeaponInvScale { get; private set; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset(WindowSettings windowSettings)
     {
         WeaponScale = new Fixed(Fixed.FracUnit * windowSettings.WindowWidth / 320);

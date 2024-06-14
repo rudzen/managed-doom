@@ -18,15 +18,8 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class LightingChange
+public sealed class LightingChange(World world)
 {
-    private readonly World world;
-
-    public LightingChange(World world)
-    {
-        this.world = world;
-    }
-
     public void SpawnFireFlicker(Sector sector)
     {
         // Note that we are resetting sector attributes.
@@ -74,21 +67,12 @@ public sealed class LightingChange
         strobe.MinLight = FindMinSurroundingLight(sector, sector.LightLevel);
 
         if (strobe.MinLight == strobe.MaxLight)
-        {
             strobe.MinLight = 0;
-        }
 
         // Nothing special about it during gameplay.
         sector.Special = 0;
 
-        if (inSync)
-        {
-            strobe.Count = 1;
-        }
-        else
-        {
-            strobe.Count = (world.Random.Next() & 7) + 1;
-        }
+        strobe.Count = inSync ? 1 : (world.Random.Next() & 7) + 1;
     }
 
     public void SpawnGlowingLight(Sector sector)

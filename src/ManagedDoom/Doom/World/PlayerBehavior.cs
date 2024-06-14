@@ -60,18 +60,12 @@ public sealed class PlayerBehavior(World world)
     public void PlayerThink(Player player)
     {
         if (player.MessageTime > 0)
-        {
             player.MessageTime--;
-        }
 
         if ((player.Cheats & CheatFlags.NoClip) != 0)
-        {
-            player.Mobj.Flags |= MobjFlags.NoClip;
-        }
+            player.Mobj!.Flags |= MobjFlags.NoClip;
         else
-        {
-            player.Mobj.Flags &= ~MobjFlags.NoClip;
-        }
+            player.Mobj!.Flags &= ~MobjFlags.NoClip;
 
         // Chain saw run forward.
         var cmd = player.Cmd;

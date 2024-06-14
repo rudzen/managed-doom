@@ -52,7 +52,7 @@ public sealed class RenderingHistory
     public int VisWallRangeCount { get; private set; }
     public VisWallRange[] VisWallRanges { get; }
 
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset(WindowSettings windowSettings)
     {
         Array.Fill(ClipData, (short)-1, 0, windowSettings.WindowWidth);
@@ -61,6 +61,7 @@ public sealed class RenderingHistory
         WindowHeightArray = windowSettings.WindowWidth;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear(WindowSettings windowSettings)
     {
         const short upperClipDefaultValue = -1;

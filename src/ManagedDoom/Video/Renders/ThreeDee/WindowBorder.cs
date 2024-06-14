@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
@@ -111,6 +112,7 @@ public sealed class WindowBorder(Wad wad, IFlatLookup flats)
         screen.DrawPatch(borderBottomRight, screenWidth - windowSettings.WindowX, fillHeight - windowSettings.WindowY, drawScale);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void FillRect(
         Span<byte> screenData,
         ReadOnlySpan<byte> backFlatData,

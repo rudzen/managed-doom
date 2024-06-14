@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 
@@ -102,6 +103,7 @@ public sealed class LightningRender
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear(ColorMap colorMap)
     {
         if (FixedColorMap == 0)

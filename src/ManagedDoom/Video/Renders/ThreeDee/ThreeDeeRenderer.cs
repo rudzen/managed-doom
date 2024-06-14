@@ -205,6 +205,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawSubsector(int subSector)
     {
         var target = world!.Map.Subsectors[subSector];
@@ -1229,6 +1230,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RenderMaskedTextures()
     {
         var currentVisWallRanges = renderingHistory.GetCurrentVisWallRanges();
@@ -1618,6 +1620,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawFuzzColumn(
         int x,
         int y1,
@@ -1644,6 +1647,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawSkyColumn(int x, int y1, int y2)
     {
         var angle = (viewAngle + wallRender.XToAngle[x]).Data >> SkyRender.angleToSkyShift;
@@ -1681,6 +1685,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawMaskedColumnTranslation(
         ReadOnlySpan<Column> columns,
         ReadOnlySpan<byte> translation,
@@ -2122,6 +2127,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawPlayerSprites(Player player)
     {
         // Get light level.
@@ -2149,6 +2155,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     public int WindowSize
     {
         get => windowSize;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
             var changed = windowSize != value;

@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
@@ -24,6 +25,7 @@ public sealed class SkyRender
     public Fixed SkyTextureAlt { get; } = Fixed.FromInt(100);
     public Fixed SkyInvScale { get; private set; } = Fixed.Zero;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset(int windowWidth, int screenWidth, int screenHeight)
     {
         // The code below is based on PrBoom+' sky rendering implementation.

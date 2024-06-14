@@ -22,8 +22,8 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class Hitscan
 {
-    private readonly Func<Intercept, bool> aimTraverseFunc;
-    private readonly Func<Intercept, bool> shootTraverseFunc;
+    private readonly Predicate<Intercept> aimTraverseFunc;
+    private readonly Predicate<Intercept> shootTraverseFunc;
     private readonly World world;
     private Fixed currentAimSlope;
     private int currentDamage;
@@ -105,40 +105,30 @@ public sealed class Hitscan
             return true;
 
         {
-            if ((thing.Flags & MobjFlags.Shootable) == 0)
-            {
-                // Corpse or something.
+            // Corpse or something.
+            if ((thing!.Flags & MobjFlags.Shootable) == 0)
                 return true;
-            }
 
             // Check angles to see if the thing can be aimed at.
             var dist = currentRange * intercept.Frac;
             var thingTopSlope = (thing.Z + thing.Height - currentShooterZ) / dist;
 
+            // Shot over the thing.
             if (thingTopSlope < bottomSlope)
-            {
-                // Shot over the thing.
                 return true;
-            }
 
             var thingBottomSlope = (thing.Z - currentShooterZ) / dist;
 
+            // Shot under the thing.
             if (thingBottomSlope > topSlope)
-            {
-                // Shot under the thing.
                 return true;
-            }
 
             // This thing can be hit!
             if (thingTopSlope > topSlope)
-            {
                 thingTopSlope = topSlope;
-            }
 
             if (thingBottomSlope < bottomSlope)
-            {
                 thingBottomSlope = bottomSlope;
-            }
 
             currentAimSlope = (thingTopSlope + thingBottomSlope) / 2;
             LineTarget = thing;
@@ -161,18 +151,14 @@ public sealed class Hitscan
             var line = intercept.Line;
 
             if (line.Special != 0)
-            {
                 mi.ShootSpecialLine(currentShooter, line);
-            }
 
             if ((line.Flags & LineFlags.TwoSided) == 0)
-            {
                 goto hitLine;
-            }
 
             var mc = world.MapCollision;
 
-            // Crosses a two sided line.
+            // Crosses a two-sided line.
             mc.LineOpening(line);
 
             var dist = currentRange * intercept.Frac;
@@ -183,17 +169,13 @@ public sealed class Hitscan
                 {
                     var slope = (mc.OpenBottom - currentShooterZ) / dist;
                     if (slope > currentAimSlope)
-                    {
                         goto hitLine;
-                    }
                 }
 
                 {
                     var slope = (mc.OpenTop - currentShooterZ) / dist;
                     if (slope < currentAimSlope)
-                    {
                         goto hitLine;
-                    }
                 }
             }
             else
@@ -202,18 +184,14 @@ public sealed class Hitscan
                 {
                     var slope = (mc.OpenBottom - currentShooterZ) / dist;
                     if (slope > currentAimSlope)
-                    {
                         goto hitLine;
-                    }
                 }
 
                 if (line.FrontSector.CeilingHeight != line.BackSector.CeilingHeight)
                 {
                     var slope = (mc.OpenTop - currentShooterZ) / dist;
                     if (slope < currentAimSlope)
-                    {
                         goto hitLine;
-                    }
                 }
             }
 
@@ -233,15 +211,11 @@ public sealed class Hitscan
             {
                 // Don't shoot the sky!
                 if (z > line.FrontSector.CeilingHeight)
-                {
                     return false;
-                }
 
                 // It's a sky hack wall.
                 if (line.BackSector != null && line.BackSector.CeilingFlat == world.Map.SkyFlatNumber)
-                {
                     return false;
-                }
             }
 
             // Spawn bullet puffs.
@@ -254,35 +228,28 @@ public sealed class Hitscan
         {
             // Shoot a thing.
             var thing = intercept.Thing;
+            
+            // Can't shoot self.
             if (thing == currentShooter)
-            {
-                // Can't shoot self.
                 return true;
-            }
 
-            if ((thing.Flags & MobjFlags.Shootable) == 0)
-            {
-                // Corpse or something.
+            // Corpse or something.
+            if ((thing!.Flags & MobjFlags.Shootable) == 0)
                 return true;
-            }
 
             // Check angles to see if the thing can be aimed at.
             var dist = currentRange * intercept.Frac;
             var thingTopSlope = (thing.Z + thing.Height - currentShooterZ) / dist;
 
+            // Shot over the thing.
             if (thingTopSlope < currentAimSlope)
-            {
-                // Shot over the thing.
                 return true;
-            }
 
             var thingBottomSlope = (thing.Z - currentShooterZ) / dist;
 
+            // Shot under the thing.
             if (thingBottomSlope > currentAimSlope)
-            {
-                // Shot under the thing.
                 return true;
-            }
 
             // Hit thing.
             // Position a bit closer.
@@ -293,19 +260,13 @@ public sealed class Hitscan
             var z = currentShooterZ + currentAimSlope * (frac * currentRange);
 
             // Spawn bullet puffs or blod spots, depending on target type.
-            if ((intercept.Thing.Flags & MobjFlags.NoBlood) != 0)
-            {
+            if ((intercept.Thing!.Flags & MobjFlags.NoBlood) != 0)
                 SpawnPuff(x, y, z);
-            }
             else
-            {
                 SpawnBlood(x, y, z, currentDamage);
-            }
 
             if (currentDamage != 0)
-            {
                 world.ThingInteraction.DamageMobj(thing, currentShooter, currentShooter, currentDamage);
-            }
 
             // Don't go any farther.
             return false;

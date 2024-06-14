@@ -14,6 +14,8 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom.Video.Renders.ThreeDee;
 
 public sealed class ClipRange
@@ -21,6 +23,7 @@ public sealed class ClipRange
     public int First { get; set; }
     public int Last { get; set; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void CopyFrom(ClipRange from)
     {
         First = from.First;

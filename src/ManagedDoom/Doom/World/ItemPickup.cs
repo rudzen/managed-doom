@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
@@ -172,6 +173,7 @@ public sealed class ItemPickup(World world)
     /// <returns>
     /// False if the health point isn't needed at all.
     /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool GiveHealth(Player player, int amount)
     {
         if (player.Health >= DoomInfo.DeHackEdConst.InitialHealth)

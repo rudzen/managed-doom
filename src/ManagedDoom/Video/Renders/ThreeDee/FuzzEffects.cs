@@ -14,6 +14,8 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom.Video.Renders.ThreeDee;
 
 public sealed class FuzzEffects
@@ -31,6 +33,7 @@ public sealed class FuzzEffects
 
     private int _fuzzPos;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public sbyte GetAndIncrementPosition()
     {
         var current = FuzzTable[_fuzzPos];

@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
@@ -29,6 +30,7 @@ public sealed class WindowSettings
     public Fixed CenterYFrac { get; private set; }
     public Fixed Projection { get; private set; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset(int x, int y, int width, int height)
     {
         WindowX = x;

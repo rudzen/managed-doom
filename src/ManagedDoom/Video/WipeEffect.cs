@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Extensions;
@@ -42,6 +43,7 @@ public sealed class WipeEffect
 
     public short[] Y { get; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Start()
     {
         Y[0] = (short)(-(random.Next() % 16));
@@ -58,6 +60,7 @@ public sealed class WipeEffect
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public UpdateResult Update()
     {
         var done = true;

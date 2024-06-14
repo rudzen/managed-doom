@@ -40,7 +40,7 @@ public sealed class DoomString
 
     public DoomString(string name, string original) : this(original)
     {
-        nameTable.Add(name, this);
+        nameTable[name] = this;
     }
 
     public override string ToString()

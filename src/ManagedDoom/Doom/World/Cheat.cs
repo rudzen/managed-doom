@@ -27,18 +27,18 @@ public sealed class Cheat
 {
     private static readonly CheatInfo[] list =
     [
-        new CheatInfo("idfa", (cheat, typed) => cheat.FullAmmo(), false),
-        new CheatInfo("idkfa", (cheat, typed) => cheat.FullAmmoAndKeys(), false),
-        new CheatInfo("iddqd", (cheat, typed) => cheat.GodMode(), false),
-        new CheatInfo("idclip", (cheat, typed) => cheat.NoClip(), false),
-        new CheatInfo("idspispopd", (cheat, typed) => cheat.NoClip(), false),
-        new CheatInfo("iddt", (cheat, typed) => cheat.FullMap(), true),
-        new CheatInfo("idbehold", (cheat, typed) => cheat.ShowPowerUpList(), false),
+        new CheatInfo("idfa", (cheat, _) => cheat.FullAmmo(), false),
+        new CheatInfo("idkfa", (cheat, _) => cheat.FullAmmoAndKeys(), false),
+        new CheatInfo("iddqd", (cheat, _) => cheat.GodMode(), false),
+        new CheatInfo("idclip", (cheat, _) => cheat.NoClip(), false),
+        new CheatInfo("idspispopd", (cheat, _) => cheat.NoClip(), false),
+        new CheatInfo("iddt", (cheat, _) => cheat.FullMap(), true),
+        new CheatInfo("idbehold", (cheat, _) => cheat.ShowPowerUpList(), false),
         new CheatInfo("idbehold?", (cheat, typed) => cheat.DoPowerUp(typed), false),
-        new CheatInfo("idchoppers", (cheat, typed) => cheat.GiveChainsaw(), false),
-        new CheatInfo("tntem", (cheat, typed) => cheat.KillMonsters(), false),
-        new CheatInfo("killem", (cheat, typed) => cheat.KillMonsters(), false),
-        new CheatInfo("fhhall", (cheat, typed) => cheat.KillMonsters(), false),
+        new CheatInfo("idchoppers", (cheat, _) => cheat.GiveChainsaw(), false),
+        new CheatInfo("tntem", (cheat, _) => cheat.KillMonsters(), false),
+        new CheatInfo("killem", (cheat, _) => cheat.KillMonsters(), false),
+        new CheatInfo("fhhall", (cheat, _) => cheat.KillMonsters(), false),
         new CheatInfo("idclev??", (cheat, typed) => cheat.ChangeLevel(typed), true),
         new CheatInfo("idmus??", (cheat, typed) => cheat.ChangeMusic(typed), false)
     ];

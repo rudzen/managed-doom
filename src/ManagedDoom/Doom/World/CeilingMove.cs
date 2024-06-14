@@ -117,15 +117,8 @@ public sealed class CeilingMove : Thinker
 
                 if (((world.LevelTime + Sector.Number) & 7) == 0)
                 {
-                    switch (Type)
-                    {
-                        case CeilingMoveType.SilentCrushAndRaise:
-                            break;
-
-                        default:
-                            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-                            break;
-                    }
+                    if (Type != CeilingMoveType.SilentCrushAndRaise)
+                        world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
                 }
 
                 if (result == SectorActionResult.PastDestination)
@@ -142,9 +135,7 @@ public sealed class CeilingMove : Thinker
                             }
 
                             if (Type == CeilingMoveType.CrushAndRaise)
-                            {
                                 Speed = SectorAction.CeilingSpeed;
-                            }
 
                             Direction = 1;
                             break;
@@ -163,17 +154,8 @@ public sealed class CeilingMove : Thinker
                 {
                     if (result == SectorActionResult.Crushed)
                     {
-                        switch (Type)
-                        {
-                            case CeilingMoveType.SilentCrushAndRaise:
-                            case CeilingMoveType.CrushAndRaise:
-                            case CeilingMoveType.LowerAndCrush:
-                                Speed = SectorAction.CeilingSpeed / 8;
-                                break;
-
-                            default:
-                                break;
-                        }
+                        if (Type is CeilingMoveType.SilentCrushAndRaise or CeilingMoveType.CrushAndRaise or CeilingMoveType.LowerAndCrush)
+                            Speed = SectorAction.CeilingSpeed / 8;
                     }
                 }
 

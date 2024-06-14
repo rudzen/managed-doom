@@ -11,7 +11,7 @@ public sealed class DemoTest(WadPath wadPath) : IClassFixture<WadPath>
 
         using var content = GameContent.CreateDummy(wadFile);
         {
-            var demo = new Demo(content.Wad.ReadLump("DEMO1"));
+            var demo = new Demo(content.Wad!.ReadLump("DEMO1"));
             Assert.Equal(11, demo.Options.Map);
             Assert.Equal(0, demo.Options.ConsolePlayer);
             Assert.True(demo.Options.Players[0].InGame);

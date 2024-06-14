@@ -14,18 +14,20 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
 public sealed class Button
 {
-    public LineDef Line { get; set; }
+    public LineDef? Line { get; set; }
     public ButtonPosition Position { get; set; }
     public int Texture { get; set; }
     public int Timer { get; set; }
-    public Mobj SoundOrigin { get; set; }
+    public Mobj? SoundOrigin { get; set; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
         Line = null;

@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
@@ -45,6 +46,7 @@ public sealed class ColorTranslation
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> GetTranslation(MobjFlags flags)
     {
         return ((int)(flags & MobjFlags.Translation) >> (int)MobjFlags.TransShift) switch

@@ -47,7 +47,7 @@ public sealed class GameContent : IGameContent
         Animation = new TextureAnimation(Textures, Flats);
     }
 
-    public Wad.Wad Wad { get; private set; }
+    public Wad.Wad? Wad { get; private set; }
 
     public Palette Palette { get; private set; }
 
@@ -70,7 +70,9 @@ public sealed class GameContent : IGameContent
 
     public void Dispose()
     {
-        if (Wad is null) return;
+        if (Wad is null)
+            return;
+        
         Wad.Dispose();
         Wad = null;
     }

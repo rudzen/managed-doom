@@ -30,9 +30,7 @@ public static class Geometry
     private static uint SlopeDiv(Fixed num, Fixed den)
     {
         if ((uint)den.Data < 512)
-        {
             return slopeRange;
-        }
 
         var ans = ((uint)num.Data << 3) / ((uint)den.Data >> 8);
 
@@ -130,11 +128,10 @@ public static class Geometry
             if (y >= Fixed.Zero)
             {
                 // y >= 0
+
+                // octant 0
                 if (x > y)
-                {
-                    // octant 0
                     return Trig.TanToAngle(SlopeDiv(y, x));
-                }
 
                 // octant 1
                 return new Angle(Angle.Ang90.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
@@ -143,11 +140,9 @@ public static class Geometry
             // y < 0
             y = -y;
 
+            // octant 8
             if (x > y)
-            {
-                // octant 8
                 return -Trig.TanToAngle(SlopeDiv(y, x));
-            }
 
             // octant 7
             return Angle.Ang270 + Trig.TanToAngle(SlopeDiv(x, y));
@@ -156,14 +151,12 @@ public static class Geometry
         // x < 0
         x = -x;
 
+        // y >= 0
         if (y >= Fixed.Zero)
         {
-            // y >= 0
+            // octant 3
             if (x > y)
-            {
-                // octant 3
                 return new Angle(Angle.Ang180.Data - 1) - Trig.TanToAngle(SlopeDiv(y, x));
-            }
 
             // octant 2
             return Angle.Ang90 + Trig.TanToAngle(SlopeDiv(x, y));
@@ -172,11 +165,9 @@ public static class Geometry
         // y < 0
         y = -y;
 
+        // octant 4
         if (x > y)
-        {
-            // octant 4
             return Angle.Ang180 + Trig.TanToAngle(SlopeDiv(y, x));
-        }
 
         // octant 5
         return new Angle(Angle.Ang270.Data - 1) - Trig.TanToAngle(SlopeDiv(x, y));
@@ -189,9 +180,7 @@ public static class Geometry
     {
         // Single subsector is a special case.
         if (map.Nodes.Length == 0)
-        {
             return map.Subsectors[0];
-        }
 
         var nodeNumber = map.Nodes.Length - 1;
 
@@ -222,9 +211,7 @@ public static class Geometry
         if (ldx == Fixed.Zero)
         {
             if (x <= lx)
-            {
                 return (ldy > Fixed.Zero).AsInt();
-            }
 
             return (ldy < Fixed.Zero).AsInt();
         }
@@ -232,9 +219,7 @@ public static class Geometry
         if (ldy == Fixed.Zero)
         {
             if (y <= ly)
-            {
                 return (ldx < Fixed.Zero).AsInt();
-            }
 
             return (ldx > Fixed.Zero).AsInt();
         }
@@ -245,11 +230,9 @@ public static class Geometry
         // Try to quickly decide by looking at sign bits.
         if (((ldy.Data ^ ldx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
+            // Left is negative.
             if (((ldy.Data ^ dx.Data) & 0x80000000) != 0)
-            {
-                // Left is negative.
                 return 1;
-            }
 
             return 0;
         }
@@ -257,11 +240,9 @@ public static class Geometry
         var left = new Fixed(ldy.Data >> Fixed.FracBits) * dx;
         var right = dy * new Fixed(ldx.Data >> Fixed.FracBits);
 
+        // Front side.
         if (right < left)
-        {
-            // Front side.
             return 0;
-        }
 
         // Back side.
         return 1;
@@ -276,14 +257,10 @@ public static class Geometry
     public static int PointOnLineSide(Fixed x, Fixed y, LineDef line)
     {
         if (line.Dx == Fixed.Zero)
-        {
             return x <= line.Vertex1.X ? (line.Dy > Fixed.Zero).AsInt() : (line.Dy < Fixed.Zero).AsInt();
-        }
 
         if (line.Dy == Fixed.Zero)
-        {
             return y <= line.Vertex1.Y ? (line.Dx < Fixed.Zero).AsInt() : (line.Dx > Fixed.Zero).AsInt();
-        }
 
         var dx = x - line.Vertex1.X;
         var dy = y - line.Vertex1.Y;
@@ -291,11 +268,9 @@ public static class Geometry
         var left = new Fixed(line.Dy.Data >> Fixed.FracBits) * dx;
         var right = dy * new Fixed(line.Dx.Data >> Fixed.FracBits);
 
+        // Front side.
         if (right < left)
-        {
-            // Front side.
             return 0;
-        }
 
         // Back side.
         return 1;
@@ -364,9 +339,7 @@ public static class Geometry
         if (line.Dx == Fixed.Zero)
         {
             if (x <= line.X)
-            {
                 return (line.Dy > Fixed.Zero).AsInt();
-            }
 
             return (line.Dy < Fixed.Zero).AsInt();
         }
@@ -374,9 +347,7 @@ public static class Geometry
         if (line.Dy == Fixed.Zero)
         {
             if (y <= line.Y)
-            {
                 return (line.Dx < Fixed.Zero).AsInt();
-            }
 
             return (line.Dx > Fixed.Zero).AsInt();
         }
@@ -387,11 +358,9 @@ public static class Geometry
         // Try to quickly decide by looking at sign bits.
         if (((line.Dy.Data ^ line.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
+            // Left is negative.
             if (((line.Dy.Data ^ dx.Data) & 0x80000000) != 0)
-            {
-                // Left is negative.
                 return 1;
-            }
 
             return 0;
         }
@@ -399,11 +368,9 @@ public static class Geometry
         var left = new Fixed(line.Dy.Data >> 8) * new Fixed(dx.Data >> 8);
         var right = new Fixed(dy.Data >> 8) * new Fixed(line.Dx.Data >> 8);
 
+        // Front side.
         if (right < left)
-        {
-            // Front side.
             return 0;
-        }
 
         // Back side.
         return 1;
@@ -418,9 +385,7 @@ public static class Geometry
         dy = Fixed.Abs(dy);
 
         if (dx < dy)
-        {
             return dx + dy - (dx >> 1);
-        }
 
         return dx + dy - (dy >> 1);
     }
@@ -436,14 +401,10 @@ public static class Geometry
         if (line.Dx == Fixed.Zero)
         {
             if (x == line.X)
-            {
                 return 2;
-            }
 
             if (x <= line.X)
-            {
                 return (line.Dy > Fixed.Zero).AsInt();
-            }
 
             return (line.Dy < Fixed.Zero).AsInt();
         }
@@ -451,14 +412,10 @@ public static class Geometry
         if (line.Dy == Fixed.Zero)
         {
             if (x == line.Y)
-            {
                 return 2;
-            }
 
             if (y <= line.Y)
-            {
                 return (line.Dx < Fixed.Zero).AsInt();
-            }
 
             return (line.Dx > Fixed.Zero).AsInt();
         }
@@ -469,16 +426,12 @@ public static class Geometry
         var left = new Fixed((line.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
         var right = new Fixed((dy.Data >> Fixed.FracBits) * (line.Dx.Data >> Fixed.FracBits));
 
+        // Front side.
         if (right < left)
-        {
-            // Front side.
             return 0;
-        }
 
         if (left == right)
-        {
             return 2;
-        }
 
         // Back side.
         return 1;
@@ -495,14 +448,10 @@ public static class Geometry
         if (node.Dx == Fixed.Zero)
         {
             if (x == node.X)
-            {
                 return 2;
-            }
 
             if (x <= node.X)
-            {
                 return (node.Dy > Fixed.Zero).AsInt();
-            }
 
             return (node.Dy < Fixed.Zero).AsInt();
         }
@@ -510,14 +459,10 @@ public static class Geometry
         if (node.Dy == Fixed.Zero)
         {
             if (x == node.Y)
-            {
                 return 2;
-            }
 
             if (y <= node.Y)
-            {
                 return (node.Dx < Fixed.Zero).AsInt();
-            }
 
             return (node.Dx > Fixed.Zero).AsInt();
         }
@@ -528,16 +473,12 @@ public static class Geometry
         var left = new Fixed((node.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
         var right = new Fixed((dy.Data >> Fixed.FracBits) * (node.Dx.Data >> Fixed.FracBits));
 
+        // Front side.
         if (right < left)
-        {
-            // Front side.
             return 0;
-        }
 
         if (left == right)
-        {
             return 2;
-        }
 
         // Back side.
         return 1;

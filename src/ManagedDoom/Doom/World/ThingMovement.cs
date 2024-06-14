@@ -596,7 +596,7 @@ public sealed class ThingMovement
             thing.MomX < stopSpeed &&
             thing.MomY > -stopSpeed &&
             thing.MomY < stopSpeed &&
-            (player == null || (player.Cmd.ForwardMove == 0 && player.Cmd.SideMove == 0)))
+            (player == null || player.Cmd is { ForwardMove: 0, SideMove: 0 }))
         {
             // If in a walking frame, stop moving.
             if (player != null && (player.Mobj!.State.Number - (int)MobjState.PlayRun1) < 4)
@@ -731,7 +731,7 @@ public sealed class ThingMovement
     private Fixed slideMoveX;
     private Fixed slideMoveY;
 
-    private Func<Intercept, bool> slideTraverseFunc;
+    private Predicate<Intercept> slideTraverseFunc;
 
     private void InitSlideMovement()
     {

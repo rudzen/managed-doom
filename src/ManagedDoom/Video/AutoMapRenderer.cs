@@ -16,6 +16,7 @@
 
 using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Info;
@@ -233,6 +234,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawThings(World world)
     {
         foreach (var thinker in world.Thinkers)
@@ -242,6 +244,7 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawCharacter(Mobj mobj, float[] data, int color)
     {
         var pos = ToScreenPos(mobj.X, mobj.Y);

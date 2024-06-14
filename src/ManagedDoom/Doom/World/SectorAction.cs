@@ -341,13 +341,11 @@ public sealed class SectorAction
         foreach (var check in sector.Lines)
         {
             var other = GetNextSector(check, sector);
-            if (other == null)
+            if (other is null)
                 continue;
 
             if (other.FloorHeight < floor)
-            {
                 floor = other.FloorHeight;
-            }
         }
 
         return floor;
@@ -361,7 +359,7 @@ public sealed class SectorAction
         foreach (var check in sector.Lines)
         {
             var other = GetNextSector(check, sector);
-            if (other == null)
+            if (other is null)
                 continue;
 
             if (other.FloorHeight > floor)
@@ -383,7 +381,7 @@ public sealed class SectorAction
         {
             ref var check = ref Unsafe.Add(ref linesRef, i);
             var other = GetNextSector(check, sector);
-            if (other == null)
+            if (other is null)
                 continue;
 
             if (other.CeilingHeight < height)
@@ -400,15 +398,11 @@ public sealed class SectorAction
         foreach (var check in sector.Lines)
         {
             var other = GetNextSector(check, sector);
-            if (other == null)
-            {
+            if (other is null)
                 continue;
-            }
 
             if (other.CeilingHeight > height)
-            {
                 height = other.CeilingHeight;
-            }
         }
 
         return height;
@@ -421,9 +415,7 @@ public sealed class SectorAction
         for (var i = start + 1; i < sectors.Length; i++)
         {
             if (sectors[i].Tag == line.Tag)
-            {
                 return i;
-            }
         }
 
         return -1;
@@ -450,16 +442,14 @@ public sealed class SectorAction
             // Blue Lock.
             case 26:
             case 32:
-                if (player == null)
-                {
+                if (player is null)
                     return;
-                }
 
                 if (!player.Cards[(int)CardType.BlueCard] &&
                     !player.Cards[(int)CardType.BlueSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_BLUEK);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return;
                 }
 
@@ -468,16 +458,14 @@ public sealed class SectorAction
             // Yellow Lock.
             case 27:
             case 34:
-                if (player == null)
-                {
+                if (player is null)
                     return;
-                }
 
                 if (!player.Cards[(int)CardType.YellowCard] &&
                     !player.Cards[(int)CardType.YellowSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_YELLOWK);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return;
                 }
 
@@ -486,16 +474,14 @@ public sealed class SectorAction
             // Red Lock.
             case 28:
             case 33:
-                if (player == null)
-                {
+                if (player is null)
                     return;
-                }
 
                 if (!player.Cards[(int)CardType.RedCard] &&
                     !player.Cards[(int)CardType.RedSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_REDK);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return;
                 }
 
@@ -505,7 +491,7 @@ public sealed class SectorAction
         var sector = line.BackSide.Sector;
 
         // If the sector has an active thinker, use it.
-        if (sector.SpecialData != null)
+        if (sector.SpecialData is not null)
         {
             var door = (VerticalDoor)sector.SpecialData;
             switch ((int)line.Special)
@@ -516,18 +502,14 @@ public sealed class SectorAction
                 case 27:
                 case 28:
                 case 117:
+                    // Go back up.
                     if (door.Direction == -1)
-                    {
-                        // Go back up.
                         door.Direction = 1;
-                    }
                     else
                     {
-                        if (thing.Player == null)
-                        {
-                            // Bad guys never close doors.
+                        // Bad guys never close doors.
+                        if (thing.Player is null)
                             return;
-                        }
 
                         // Start going down immediately.
                         door.Direction = -1;
@@ -614,10 +596,8 @@ public sealed class SectorAction
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
             var sector = sectors[sectorNumber];
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -658,9 +638,7 @@ public sealed class SectorAction
                 door.TopHeight -= Fixed.FromInt(4);
                 door.Speed = doorSpeed * 4;
                 if (door.TopHeight != sector.CeilingHeight)
-                {
                     world.StartSound(door.Sector.SoundOrigin, Sfx.BDOPN, SfxType.Misc);
-                }
             }
             else if (type is VerticalDoorType.Normal or VerticalDoorType.Open)
             {
@@ -668,9 +646,7 @@ public sealed class SectorAction
                 door.TopHeight = FindLowestCeilingSurrounding(sector);
                 door.TopHeight -= Fixed.FromInt(4);
                 if (door.TopHeight != sector.CeilingHeight)
-                {
                     world.StartSound(door.Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-                }
             }
         }
 
@@ -680,7 +656,7 @@ public sealed class SectorAction
     public bool DoLockedDoor(LineDef line, VerticalDoorType type, Mobj thing)
     {
         var player = thing.Player;
-        if (player == null)
+        if (player is null)
             return false;
 
         switch ((int)line.Special)
@@ -692,7 +668,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.BlueSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_BLUEO);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return false;
                 }
 
@@ -705,7 +681,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.RedSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_REDO);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return false;
                 }
 
@@ -718,7 +694,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.YellowSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_YELLOWO);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return false;
                 }
 
@@ -741,42 +717,35 @@ public sealed class SectorAction
     {
         var h = 0;
 
-        foreach (var check in sector.Lines)
+        var lines = sector.Lines.AsSpan();
+
+        foreach (var check in lines)
         {
             var other = GetNextSector(check, sector);
-            if (other == null)
-            {
+            if (other is null)
                 continue;
-            }
 
             if (other.FloorHeight > currentHeight)
-            {
                 heightList[h++] = other.FloorHeight;
-            }
 
             // Check for overflow.
             if (h >= heightList.Length)
-            {
-                // Exit.
                 throw new Exception("Too many adjoining sectors!");
-            }
         }
 
-        // Find lowest height in list.
         if (h == 0)
-        {
             return currentHeight;
-        }
 
-        var min = heightList[0];
+        // Find the lowest height in list.
 
-        // Range checking? 
-        for (var i = 1; i < h; i++)
+        var heightListSpan = heightList.AsSpan(0, h);
+        var min = heightListSpan[0];
+
+        // Range checking?
+        for (var i = 1; i < heightListSpan.Length; i++)
         {
-            if (heightList[i] < min)
-            {
-                min = heightList[i];
-            }
+            if (heightListSpan[i] < min)
+                min = heightListSpan[i];
         }
 
         return min;
@@ -789,15 +758,8 @@ public sealed class SectorAction
     public bool DoPlatform(LineDef line, PlatformType type, int amount)
     {
         //	Activate all <type> plats that are in stasis.
-        switch (type)
-        {
-            case PlatformType.PerpetualRaise:
-                ActivateInStasis(line.Tag);
-                break;
-
-            default:
-                break;
-        }
+        if (type == PlatformType.PerpetualRaise)
+            ActivateInStasis(line.Tag);
 
         var sectors = world.Map.Sectors;
         var sectorNumber = -1;
@@ -806,10 +768,8 @@ public sealed class SectorAction
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
             var sector = sectors[sectorNumber];
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -848,9 +808,7 @@ public sealed class SectorAction
                     plat.Speed = platformSpeed * 4;
                     plat.Low = FindLowestFloorSurrounding(sector);
                     if (plat.Low > sector.FloorHeight)
-                    {
                         plat.Low = sector.FloorHeight;
-                    }
 
                     plat.High = sector.FloorHeight;
                     plat.Wait = 35 * platformWait;
@@ -862,9 +820,7 @@ public sealed class SectorAction
                     plat.Speed = platformSpeed * 8;
                     plat.Low = FindLowestFloorSurrounding(sector);
                     if (plat.Low > sector.FloorHeight)
-                    {
                         plat.Low = sector.FloorHeight;
-                    }
 
                     plat.High = sector.FloorHeight;
                     plat.Wait = 35 * platformWait;
@@ -876,15 +832,11 @@ public sealed class SectorAction
                     plat.Speed = platformSpeed;
                     plat.Low = FindLowestFloorSurrounding(sector);
                     if (plat.Low > sector.FloorHeight)
-                    {
                         plat.Low = sector.FloorHeight;
-                    }
 
                     plat.High = FindHighestFloorSurrounding(sector);
                     if (plat.High < sector.FloorHeight)
-                    {
                         plat.High = sector.FloorHeight;
-                    }
 
                     plat.Wait = 35 * platformWait;
                     plat.Status = (PlatformState)(world.Random.Next() & 1);
@@ -906,7 +858,7 @@ public sealed class SectorAction
     {
         foreach (var platform in activePlatforms.AsSpan())
         {
-            if (platform != null && platform.Tag == tag && platform.Status == PlatformState.InStasis)
+            if (platform is not null && platform.Tag == tag && platform.Status == PlatformState.InStasis)
             {
                 platform.Status = platform.OldStatus;
                 platform.ThinkerState = ThinkerState.Active;
@@ -918,7 +870,7 @@ public sealed class SectorAction
     {
         foreach (var platform in activePlatforms)
         {
-            if (platform != null &&
+            if (platform is not null &&
                 platform.Status != PlatformState.InStasis &&
                 platform.Tag == line.Tag)
             {
@@ -931,12 +883,12 @@ public sealed class SectorAction
 
     public void AddActivePlatform(Platform platform)
     {
-        for (var i = 0; i < activePlatforms.Length; i++)
+        var platforms = this.activePlatforms.AsSpan();
+        for (var i = 0; i < platforms.Length; i++)
         {
-            if (activePlatforms[i] == null)
+            if (platforms[i] is null)
             {
-                activePlatforms[i] = platform;
-
+                platforms[i] = platform;
                 return;
             }
         }
@@ -946,13 +898,14 @@ public sealed class SectorAction
 
     public void RemoveActivePlatform(Platform platform)
     {
-        for (var i = 0; i < activePlatforms.Length; i++)
+        var platforms = activePlatforms.AsSpan();
+        for (var i = 0; i < platforms.Length; i++)
         {
-            if (activePlatforms[i] is not null && platform == activePlatforms[i])
+            if (platforms[i] is not null && platform == platforms[i])
             {
-                activePlatforms[i]!.Sector.SpecialData = null;
-                Thinkers.Remove(activePlatforms[i]!);
-                activePlatforms[i] = null;
+                platforms[i]!.Sector.SpecialData = null;
+                Thinkers.Remove(platforms[i]!);
+                platforms[i] = null;
                 return;
             }
         }
@@ -969,7 +922,7 @@ public sealed class SectorAction
 
     public bool DoFloor(LineDef line, FloorMoveType type)
     {
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
         var sectorNumber = -1;
         var result = false;
 
@@ -978,10 +931,8 @@ public sealed class SectorAction
             var sector = sectors[sectorNumber];
 
             // Already moving? If so, keep going...
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1014,27 +965,19 @@ public sealed class SectorAction
                     floor.Speed = floorSpeed * 4;
                     floor.FloorDestHeight = FindHighestFloorSurrounding(sector);
                     if (floor.FloorDestHeight != sector.FloorHeight)
-                    {
                         floor.FloorDestHeight += Fixed.FromInt(8);
-                    }
 
                     break;
 
                 case FloorMoveType.RaiseFloorCrush:
                 case FloorMoveType.RaiseFloor:
-                    if (type == FloorMoveType.RaiseFloorCrush)
-                    {
-                        floor.Crush = true;
-                    }
-
+                    floor.Crush = type == FloorMoveType.RaiseFloorCrush;
                     floor.Direction = 1;
                     floor.Sector = sector;
                     floor.Speed = floorSpeed;
                     floor.FloorDestHeight = FindLowestCeilingSurrounding(sector);
                     if (floor.FloorDestHeight > sector.CeilingHeight)
-                    {
                         floor.FloorDestHeight = sector.CeilingHeight;
-                    }
 
                     floor.FloorDestHeight -= Fixed.FromInt(8) * (type == FloorMoveType.RaiseFloorCrush).AsInt();
                     break;
@@ -1082,28 +1025,19 @@ public sealed class SectorAction
                     floor.Sector = sector;
                     floor.Speed = floorSpeed;
                     var textures = world.Map.Textures;
-                    for (var i = 0; i < sector.Lines.Length; i++)
+                    var lines = sector.Lines.AsSpan();
+                    foreach (var lineDef in lines)
                     {
-                        if ((sector.Lines[i].Flags & LineFlags.TwoSided) != 0)
-                        {
-                            var frontSide = sector.Lines[i].FrontSide;
-                            if (frontSide.BottomTexture >= 0)
-                            {
-                                if (textures[frontSide.BottomTexture].Height < min)
-                                {
-                                    min = textures[frontSide.BottomTexture].Height;
-                                }
-                            }
+                        if ((lineDef.Flags & LineFlags.TwoSided) == 0)
+                            continue;
 
-                            var backSide = sector.Lines[i].BackSide;
-                            if (backSide.BottomTexture >= 0)
-                            {
-                                if (textures[backSide.BottomTexture].Height < min)
-                                {
-                                    min = textures[backSide.BottomTexture].Height;
-                                }
-                            }
-                        }
+                        var frontSide = lineDef.FrontSide;
+                        if (frontSide!.BottomTexture >= 0 && textures[frontSide.BottomTexture].Height < min)
+                            min = textures[frontSide.BottomTexture].Height;
+
+                        var backSide = lineDef.BackSide;
+                        if (backSide!.BottomTexture >= 0 && textures[backSide.BottomTexture].Height < min)
+                            min = textures[backSide.BottomTexture].Height;
                     }
 
                     floor.FloorDestHeight = floor.Sector.FloorHeight + Fixed.FromInt(min);
@@ -1115,31 +1049,32 @@ public sealed class SectorAction
                     floor.Speed = floorSpeed;
                     floor.FloorDestHeight = FindLowestFloorSurrounding(sector);
                     floor.Texture = sector.FloorFlat;
-                    for (var i = 0; i < sector.Lines.Length; i++)
+                    var linesDefs = sector.Lines.AsSpan();
+                    foreach (var lineDef in linesDefs)
                     {
-                        if ((sector.Lines[i].Flags & LineFlags.TwoSided) != 0)
+                        if ((lineDef.Flags & LineFlags.TwoSided) == 0)
+                            continue;
+
+                        if (lineDef.FrontSide!.Sector.Number == sectorNumber)
                         {
-                            if (sector.Lines[i].FrontSide.Sector.Number == sectorNumber)
-                            {
-                                sector = sector.Lines[i].BackSide.Sector;
-                                if (sector.FloorHeight == floor.FloorDestHeight)
-                                {
-                                    floor.Texture = sector.FloorFlat;
-                                    floor.NewSpecial = sector.Special;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                sector = sector.Lines[i].FrontSide.Sector;
-                                if (sector.FloorHeight == floor.FloorDestHeight)
-                                {
-                                    floor.Texture = sector.FloorFlat;
-                                    floor.NewSpecial = sector.Special;
-                                    break;
-                                }
-                            }
+                            sector = lineDef.BackSide!.Sector;
+
+                            if (sector.FloorHeight != floor.FloorDestHeight)
+                                continue;
+
+                            floor.Texture = sector.FloorFlat;
+                            floor.NewSpecial = sector.Special;
+                            break;
                         }
+
+                        sector = lineDef.FrontSide.Sector;
+
+                        if (sector.FloorHeight != floor.FloorDestHeight)
+                            continue;
+
+                        floor.Texture = sector.FloorFlat;
+                        floor.NewSpecial = sector.Special;
+                        break;
                     }
 
                     break;
@@ -1152,19 +1087,18 @@ public sealed class SectorAction
 
     public bool BuildStairs(LineDef line, StairType type)
     {
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
         var sectorNumber = -1;
         var result = false;
 
+        // TODO (rudzen) : Convert to use .net enumeration
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
             var sector = sectors[sectorNumber];
 
             // Already moving? If so, keep going...
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1201,39 +1135,32 @@ public sealed class SectorAction
             //     1. Find 2-sided line with same sector side[0].
             //     2. Other side is the next sector to raise.
             bool ok;
+            var sectorLines = sector.Lines.AsSpan();
             do
             {
                 ok = false;
 
-                foreach (var sectorLine in sector.Lines.AsSpan())
+                foreach (var sectorLine in sectorLines)
                 {
-                    if (((sectorLine).Flags & LineFlags.TwoSided) == 0)
-                    {
+                    if ((sectorLine.Flags & LineFlags.TwoSided) == 0)
                         continue;
-                    }
 
                     var target = sectorLine.FrontSector;
                     var newSectorNumber = target.Number;
 
                     if (sectorNumber != newSectorNumber)
-                    {
                         continue;
-                    }
 
-                    target = (sectorLine).BackSector;
+                    target = sectorLine.BackSector;
                     newSectorNumber = target.Number;
 
                     if (target.FloorFlat != texture)
-                    {
                         continue;
-                    }
 
                     height += stairSize;
 
-                    if (target.SpecialData != null)
-                    {
+                    if (target.SpecialData is not null)
                         continue;
-                    }
 
                     sector = target;
                     sectorNumber = newSectorNumber;
@@ -1263,29 +1190,18 @@ public sealed class SectorAction
     public bool DoCeiling(LineDef line, CeilingMoveType type)
     {
         // Reactivate in-stasis ceilings...for certain types.
-        switch (type)
-        {
-            case CeilingMoveType.FastCrushAndRaise:
-            case CeilingMoveType.SilentCrushAndRaise:
-            case CeilingMoveType.CrushAndRaise:
-                ActivateInStasisCeiling(line);
-                break;
+        if (type is CeilingMoveType.FastCrushAndRaise or CeilingMoveType.SilentCrushAndRaise or CeilingMoveType.CrushAndRaise)
+            ActivateInStasisCeiling(line);
 
-            default:
-                break;
-        }
-
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
         var sectorNumber = -1;
         var result = false;
 
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
             var sector = sectors[sectorNumber];
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1318,9 +1234,7 @@ public sealed class SectorAction
 
                     ceiling.BottomHeight = sector.FloorHeight;
                     if (type != CeilingMoveType.LowerToFloor)
-                    {
                         ceiling.BottomHeight += Fixed.FromInt(8);
-                    }
 
                     ceiling.Direction = -1;
                     ceiling.Speed = CeilingSpeed;
@@ -1351,12 +1265,12 @@ public sealed class SectorAction
 
     public void AddActiveCeiling(CeilingMove ceiling)
     {
-        for (var i = 0; i < activeCeilings.Length; i++)
+        var ceilings = activeCeilings.AsSpan();
+        for (var i = 0; i < ceilings.Length; i++)
         {
-            if (activeCeilings[i] is null)
+            if (ceilings[i] is null)
             {
-                activeCeilings[i] = ceiling;
-
+                ceilings[i] = ceiling;
                 return;
             }
         }
@@ -1385,9 +1299,7 @@ public sealed class SectorAction
     {
         foreach (var ceiling in activeCeilings)
         {
-            if (ceiling != null &&
-                ceiling.Tag == line.Tag &&
-                ceiling.Direction == 0)
+            if (ceiling is not null && ceiling.Tag == line.Tag && ceiling.Direction == 0)
             {
                 ceiling.Direction = ceiling.OldDirection;
                 ceiling.ThinkerState = ThinkerState.Active;
@@ -1401,9 +1313,7 @@ public sealed class SectorAction
 
         foreach (var ceiling in activeCeilings)
         {
-            if (ceiling != null &&
-                ceiling.Tag == line.Tag &&
-                ceiling.Direction != 0)
+            if (ceiling is not null && ceiling.Tag == line.Tag && ceiling.Direction != 0)
             {
                 ceiling.OldDirection = ceiling.Direction;
                 ceiling.ThinkerState = ThinkerState.InStasis;
@@ -1424,98 +1334,80 @@ public sealed class SectorAction
     {
         // Don't teleport missiles.
         if ((thing.Flags & MobjFlags.Missile) != 0)
-        {
             return false;
-        }
 
         // Don't teleport if hit back of line, so you can get out of teleporter.
         if (side == 1)
-        {
             return false;
-        }
 
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
         var tag = line.Tag;
 
         for (var i = 0; i < sectors.Length; i++)
         {
-            if (sectors[i].Tag == tag)
+            if (sectors[i].Tag != tag)
+                continue;
+
+            foreach (var thinker in world.Thinkers)
             {
-                foreach (var thinker in world.Thinkers)
-                {
-                    if (thinker is not Mobj dest)
-                    {
-                        // Not a mobj.
-                        continue;
-                    }
+                // Not a mobj.
+                if (thinker is not Mobj dest)
+                    continue;
 
-                    if (dest.Type != MobjType.Teleportman)
-                    {
-                        // Not a teleportman.
-                        continue;
-                    }
+                // Not a teleportman.
+                if (dest.Type != MobjType.Teleportman)
+                    continue;
 
-                    var sector = dest.Subsector.Sector;
+                var sector = dest.Subsector.Sector;
 
-                    if (sector.Number != i)
-                    {
-                        // Wrong sector.
-                        continue;
-                    }
+                // Wrong sector.
+                if (sector.Number != i)
+                    continue;
 
-                    var oldX = thing.X;
-                    var oldY = thing.Y;
-                    var oldZ = thing.Z;
+                var oldX = thing.X;
+                var oldY = thing.Y;
+                var oldZ = thing.Z;
 
-                    if (!world.ThingMovement.TeleportMove(thing, dest.X, dest.Y))
-                    {
-                        return false;
-                    }
+                if (!world.ThingMovement.TeleportMove(thing, dest.X, dest.Y))
+                    return false;
 
-                    // This compatibility fix is based on Chocolate Doom's implementation.
-                    if (world.Options.GameVersion != GameVersion.Final)
-                    {
-                        thing.Z = thing.FloorZ;
-                    }
+                // This compatibility fix is based on Chocolate Doom's implementation.
+                if (world.Options.GameVersion != GameVersion.Final)
+                    thing.Z = thing.FloorZ;
 
-                    if (thing.Player != null)
-                    {
-                        thing.Player.ViewZ = thing.Z + thing.Player.ViewHeight;
-                    }
+                if (thing.Player is not null)
+                    thing.Player.ViewZ = thing.Z + thing.Player.ViewHeight;
 
-                    var ta = world.ThingAllocation;
+                var ta = world.ThingAllocation;
 
-                    // Spawn teleport fog at source position.
-                    var fog1 = ta.SpawnMobj(
-                        oldX,
-                        oldY,
-                        oldZ,
-                        MobjType.Tfog);
-                    world.StartSound(fog1, Sfx.TELEPT, SfxType.Misc);
+                // Spawn teleport fog at source position.
+                var fog1 = ta.SpawnMobj(
+                    oldX,
+                    oldY,
+                    oldZ,
+                    MobjType.Tfog);
+                world.StartSound(fog1, Sfx.TELEPT, SfxType.Misc);
 
-                    // Destination position.
-                    var angle = dest.Angle;
-                    var fog2 = ta.SpawnMobj(
-                        dest.X + 20 * Trig.Cos(angle),
-                        dest.Y + 20 * Trig.Sin(angle),
-                        thing.Z,
-                        MobjType.Tfog);
-                    world.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
+                // Destination position.
+                var angle = dest.Angle;
+                var fog2 = ta.SpawnMobj(
+                    dest.X + 20 * Trig.Cos(angle),
+                    dest.Y + 20 * Trig.Sin(angle),
+                    thing.Z,
+                    MobjType.Tfog);
+                world.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
 
-                    if (thing.Player != null)
-                    {
-                        // Don't move for a bit.
-                        thing.ReactionTime = 18;
-                    }
+                // Don't move for a bit.
+                if (thing.Player is not null)
+                    thing.ReactionTime = 18;
 
-                    thing.Angle = dest.Angle;
-                    thing.MomX = thing.MomY = thing.MomZ = Fixed.Zero;
+                thing.Angle = dest.Angle;
+                thing.MomX = thing.MomY = thing.MomZ = Fixed.Zero;
 
-                    thing.DisableFrameInterpolationForOneFrame();
-                    thing.Player?.DisableFrameInterpolationForOneFrame();
+                thing.DisableFrameInterpolationForOneFrame();
+                thing.Player?.DisableFrameInterpolationForOneFrame();
 
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -1533,18 +1425,18 @@ public sealed class SectorAction
 
         foreach (var sector in sectors)
         {
-            if (sector.Tag == line.Tag)
+            if (sector.Tag != line.Tag)
+                continue;
+
+            var min = sector.LightLevel;
+
+            foreach (var target in sector.Lines.Select(x => GetNextSector(x, sector)).Where(x => x is not null))
             {
-                var min = sector.LightLevel;
-
-                foreach (var target in sector.Lines.Select(x => GetNextSector(x, sector)).Where(x => x is not null))
-                {
-                    if (target!.LightLevel < min)
-                        min = target.LightLevel;
-                }
-
-                sector.LightLevel = min;
+                if (target!.LightLevel < min)
+                    min = target.LightLevel;
             }
+
+            sector.LightLevel = min;
         }
     }
 
@@ -1583,10 +1475,8 @@ public sealed class SectorAction
         {
             var sector = sectors[sectorNumber];
 
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             world.LightingChange.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, false);
         }
@@ -1608,10 +1498,8 @@ public sealed class SectorAction
             var s1 = sectors[sectorNumber];
 
             // Already moving? If so, keep going...
-            if (s1.SpecialData != null)
-            {
+            if (s1.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1622,24 +1510,18 @@ public sealed class SectorAction
             //
 
             if (s2 == null)
-            {
                 break;
-            }
 
             foreach (var s2Line in s2.Lines)
             {
                 var s3 = s2Line.BackSector;
 
                 if (s3 == s1)
-                {
                     continue;
-                }
 
-                if (s3 == null)
-                {
-                    // Undefined behavior in Vanilla Doom.
+                // Undefined behavior in Vanilla Doom.
+                if (s3 is null)
                     return result;
-                }
 
                 var thinkers = world.Thinkers;
 
@@ -1673,7 +1555,6 @@ public sealed class SectorAction
 
         return result;
     }
-
 
     public void SpawnDoorCloseIn30(Sector sector)
     {

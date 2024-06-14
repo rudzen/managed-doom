@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
@@ -62,6 +63,7 @@ public sealed class PlaneRender(int screenWidth, int screenHeight)
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear(Angle viewAngle, Fixed centerXFrac)
     {
         var angle = viewAngle - Angle.Ang90;
