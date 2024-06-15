@@ -93,14 +93,14 @@ public static partial class SaveAndLoad
 
     private static int UnArchivePlayers(World.World world, Span<byte> data, int ptr)
     {
-        var players = world.Options.Players;
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        var players = world.Options.Players.AsSpan();
+        foreach (var player in players)
         {
-            if (!players[i].InGame)
+            if (!player.InGame)
                 continue;
 
             ptr = PadPointer(ptr);
-            ptr = UnArchivePlayer(players[i], data, ptr);
+            ptr = UnArchivePlayer(player, data, ptr);
         }
 
         return ptr;
@@ -108,15 +108,13 @@ public static partial class SaveAndLoad
 
     private static int UnArchiveWorld(World.World world, Span<byte> data, int ptr)
     {
-        // Do sectors.
         var sectors = world.Map.Sectors.AsSpan();
         foreach (var sector in sectors)
-            ptr = UnArchiveSector(sector, data, ptr);
+            ptr += LoadSector(sector, data[ptr..]);
 
-        // Do lines.
         var lines = world.Map.Lines.AsSpan();
         foreach (var line in lines)
-            ptr = UnArchiveLine(line, data, ptr);
+            ptr += LoadLine(line, data[ptr..]);
 
         return ptr;
     }
@@ -207,52 +205,52 @@ public static partial class SaveAndLoad
         // Read in saved thinkers.
         while (true)
         {
-            var tclass = (SpecialClass)data[ptr++];
+            var thinkClass = (SpecialClass)data[ptr++];
 
-            if (tclass == SpecialClass.EndSpecials)
+            if (thinkClass == SpecialClass.EndSpecials)
                 return ptr;
 
             ptr = PadPointer(ptr);
 
-            if (tclass == SpecialClass.Ceiling)
+            if (thinkClass == SpecialClass.Ceiling)
             {
                 ptr += LoadCeilingMove(world, data[ptr..], out var ceilingMove);
                 thinkers.Add(ceilingMove);
                 sa.AddActiveCeiling(ceilingMove);
             }
-            else if (tclass == SpecialClass.Door)
+            else if (thinkClass == SpecialClass.Door)
             {
                 ptr += LoadVerticalDoor(world, data[ptr..], out var doorMove);
                 thinkers.Add(doorMove);
             }
-            else if (tclass == SpecialClass.Floor)
+            else if (thinkClass == SpecialClass.Floor)
             {
                 ptr += LoadFloorMove(world, data[ptr..], out var floorMove);
                 thinkers.Add(floorMove);
             }
-            else if (tclass == SpecialClass.Plat)
+            else if (thinkClass == SpecialClass.Plat)
             {
                 ptr += LoadPlatform(world, data[ptr..], out var platform);
                 thinkers.Add(platform);
                 sa.AddActivePlatform(platform);
             }
-            else if (tclass == SpecialClass.Flash)
+            else if (thinkClass == SpecialClass.Flash)
             {
                 ptr += LoadLightFlash(world, data[ptr..], out var flash);
                 thinkers.Add(flash);
             }
-            else if (tclass == SpecialClass.Strobe)
+            else if (thinkClass == SpecialClass.Strobe)
             {
                 ptr += LoadStrobeFlash(world, data[ptr..], out var strobe);
                 thinkers.Add(strobe);
             }
-            else if (tclass == SpecialClass.Glow)
+            else if (thinkClass == SpecialClass.Glow)
             {
                 ptr += LoadGlowingLight(world, data[ptr..], out var glow);
                 thinkers.Add(glow);
             }
             else
-                throw new Exception($"Unknown special in savegame! special={tclass}");
+                throw new Exception($"Unknown special in savegame! special={thinkClass}");
         }
     }
 
@@ -462,49 +460,54 @@ public static partial class SaveAndLoad
         return p + 280;
     }
 
-    private static int UnArchiveSector(Sector sector, Span<byte> data, int ptr)
+    private static int LoadSector(Sector sector, ReadOnlySpan<byte> data)
     {
-        sector.FloorHeight = Fixed.FromInt(BitConverter.ToInt16(data[ptr..]));
-        sector.CeilingHeight = Fixed.FromInt(BitConverter.ToInt16(data[(ptr + 2)..]));
-        sector.FloorFlat = BitConverter.ToInt16(data[(ptr + 4)..]);
-        sector.CeilingFlat = BitConverter.ToInt16(data[(ptr + 6)..]);
-        sector.LightLevel = BitConverter.ToInt16(data[(ptr + 8)..]);
-        sector.Special = (SectorSpecial)BitConverter.ToInt16(data[(ptr + 10)..]);
-        sector.Tag = BitConverter.ToInt16(data[(ptr + 12)..]);
+        const int dataSize = 14;
+        var sectorData = data[..dataSize];
+
+        sector.FloorHeight = Fixed.FromInt(BitConverter.ToInt16(sectorData[..2]));
+        sector.CeilingHeight = Fixed.FromInt(BitConverter.ToInt16(sectorData.Slice(2, 2)));
+        sector.FloorFlat = BitConverter.ToInt16(sectorData.Slice(4, 2));
+        sector.CeilingFlat = BitConverter.ToInt16(sectorData.Slice(6, 2));
+        sector.LightLevel = BitConverter.ToInt16(sectorData.Slice(8, 2));
+        sector.Special = (SectorSpecial)BitConverter.ToInt16(sectorData.Slice(10, 2));
+        sector.Tag = BitConverter.ToInt16(sectorData.Slice(12, 2));
         sector.SpecialData = null;
         sector.SoundTarget = null;
-        return ptr + 14;
+
+        return dataSize;
     }
 
-    private static int UnArchiveLine(LineDef line, Span<byte> data, int p)
+    private static int LoadLine(LineDef line, ReadOnlySpan<byte> data)
     {
-        line.Flags = (LineFlags)BitConverter.ToInt16(data[p..]);
-        line.Special = (LineSpecial)BitConverter.ToInt16(data[(p + 2)..]);
-        line.Tag = BitConverter.ToInt16(data[(p + 4)..]);
-        p += 6;
+        const int dataSize = 6;
+        var lineData = data[..dataSize];
 
-        if (line.FrontSide != null)
-        {
-            var side = line.FrontSide;
-            side.TextureOffset = Fixed.FromInt(BitConverter.ToInt16(data[p..]));
-            side.RowOffset = Fixed.FromInt(BitConverter.ToInt16(data[(p + 2)..]));
-            side.TopTexture = BitConverter.ToInt16(data[(p + 4)..]);
-            side.BottomTexture = BitConverter.ToInt16(data[(p + 6)..]);
-            side.MiddleTexture = BitConverter.ToInt16(data[(p + 8)..]);
-            p += 10;
-        }
+        line.Flags = (LineFlags)BitConverter.ToInt16(lineData[..2]);
+        line.Special = (LineSpecial)BitConverter.ToInt16(lineData.Slice(2, 2));
+        line.Tag = BitConverter.ToInt16(lineData.Slice(4, 2));
 
-        if (line.BackSide != null)
-        {
-            var side = line.BackSide;
-            side.TextureOffset = Fixed.FromInt(BitConverter.ToInt16(data[p..]));
-            side.RowOffset = Fixed.FromInt(BitConverter.ToInt16(data[(p + 2)..]));
-            side.TopTexture = BitConverter.ToInt16(data[(p + 4)..]);
-            side.BottomTexture = BitConverter.ToInt16(data[(p + 6)..]);
-            side.MiddleTexture = BitConverter.ToInt16(data[(p + 8)..]);
-            p += 10;
-        }
+        var readData = dataSize;
 
-        return p;
+        if (line.FrontSide is not null)
+            readData += LoadSide(line.FrontSide, data.Slice(readData, 10));
+
+        if (line.BackSide is not null)
+            readData += LoadSide(line.BackSide, data.Slice(readData, 10));
+
+        return readData;
+    }
+
+    private static int LoadSide(SideDef side, ReadOnlySpan<byte> sideData)
+    {
+        const int dataSize = 10;
+
+        side.TextureOffset = Fixed.FromInt(BitConverter.ToInt16(sideData[..2]));
+        side.RowOffset = Fixed.FromInt(BitConverter.ToInt16(sideData.Slice(2, 2)));
+        side.TopTexture = BitConverter.ToInt16(sideData.Slice(4, 2));
+        side.BottomTexture = BitConverter.ToInt16(sideData.Slice(6, 2));
+        side.MiddleTexture = BitConverter.ToInt16(sideData.Slice(8, 2));
+
+        return dataSize;
     }
 }

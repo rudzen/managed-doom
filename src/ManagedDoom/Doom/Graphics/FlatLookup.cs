@@ -22,7 +22,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Doom.Graphics;
 
