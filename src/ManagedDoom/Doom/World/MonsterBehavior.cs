@@ -62,21 +62,23 @@ public sealed class MonsterBehavior
             if (player.Health <= 0)
                 continue;
 
+            var mobj = player.Mobj!;
+
             // Out of sight.
-            if (!world.VisibilityCheck.CheckSight(actor, player.Mobj))
+            if (!world.VisibilityCheck.CheckSight(actor, mobj))
                 continue;
 
             if (!allAround)
             {
                 var angle = Geometry.PointToAngle(
                     actor.X, actor.Y,
-                    player.Mobj.X, player.Mobj.Y) - actor.Angle;
+                    mobj.X, mobj.Y) - actor.Angle;
 
                 if (angle > Angle.Ang90 && angle < Angle.Ang270)
                 {
                     var dist = Geometry.AproxDistance(
-                        player.Mobj.X - actor.X,
-                        player.Mobj.Y - actor.Y);
+                        mobj.X - actor.X,
+                        mobj.Y - actor.Y);
 
                     // If real close, react anyway.
                     if (dist > WeaponBehavior.MeleeRange)
@@ -233,7 +235,6 @@ public sealed class MonsterBehavior
         return true;
     }
 
-
     private static readonly Direction[] opposite =
     [
         Direction.West,
@@ -385,7 +386,9 @@ public sealed class MonsterBehavior
 
     private bool CheckMissileRange(Mobj actor)
     {
-        if (!world.VisibilityCheck.CheckSight(actor, actor.Target))
+        var target = actor.Target!;
+
+        if (!world.VisibilityCheck.CheckSight(actor, target))
             return false;
 
         if ((actor.Flags & MobjFlags.JustHit) != 0)
@@ -402,8 +405,8 @@ public sealed class MonsterBehavior
         // OPTIMIZE:
         //     Get this from a global checksight.
         var dist = Geometry.AproxDistance(
-            actor.X - actor.Target.X,
-            actor.Y - actor.Target.Y) - Fixed.FromInt(64);
+            actor.X - target.X,
+            actor.Y - target.Y) - Fixed.FromInt(64);
 
         // No melee attack, so fire more.
         if (actor.Info.MeleeState == 0)

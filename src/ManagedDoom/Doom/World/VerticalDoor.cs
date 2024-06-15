@@ -20,21 +20,14 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class VerticalDoor : Thinker
+public sealed class VerticalDoor(World world) : Thinker
 {
-    private readonly World world;
-
     // 1 = up, 0 = waiting at top, -1 = down.
 
     // Tics to wait at the top.
 
     // When it reaches 0, start going down
     // (keep in case a door going down is reset).
-
-    public VerticalDoor(World world)
-    {
-        this.world = world;
-    }
 
     public override void Run()
     {

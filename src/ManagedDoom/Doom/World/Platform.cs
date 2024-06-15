@@ -20,16 +20,9 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class Platform : Thinker
+public sealed class Platform(World world) : Thinker
 {
-    private readonly World world;
-
-    public Platform(World world)
-    {
-        this.world = world;
-    }
-
-    public Sector Sector { get; set; }
+    public Sector Sector { get; set; } = null!;
 
     public Fixed Speed { get; set; }
 
@@ -65,9 +58,7 @@ public sealed class Platform : Thinker
                 if (Type is PlatformType.RaiseAndChange or PlatformType.RaiseToNearestAndChange)
                 {
                     if (((world.LevelTime + Sector.Number) & 7) == 0)
-                    {
                         world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-                    }
                 }
 
                 if (result == SectorActionResult.Crushed && !Crush)

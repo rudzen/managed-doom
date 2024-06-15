@@ -122,7 +122,7 @@ public sealed class SpriteLookup : ISpriteLookup
                 spriteDefs[i] = new SpriteDef(frames);
             }
 
-            Console.WriteLine("OK (" + cache.Count + " sprites) [" + Stopwatch.GetElapsedTime(start) + ']');
+            Console.WriteLine($"OK ({cache.Count} sprites) [{Stopwatch.GetElapsedTime(start)}]");
         }
         catch (Exception e)
         {
@@ -174,7 +174,7 @@ public sealed class SpriteLookup : ISpriteLookup
 
     private sealed class SpriteInfo
     {
-        public Patch[] Patches { get; } = new Patch[8];
+        public Patch?[] Patches { get; } = new Patch?[8];
         public bool[] Flip { get; } = new bool[8];
 
         public void CheckCompletion()

@@ -23,7 +23,7 @@ namespace ManagedDoom.Config;
 
 public sealed class Config : IConfig
 {
-    public ConfigValues? Values { get; }
+    public ConfigValues Values { get; } = null!;
 
     public bool IsRestoredFromFile { get; }
 
@@ -41,7 +41,7 @@ public sealed class Config : IConfig
             else
             {
                 var f = File.ReadAllText(path);
-                Values = JsonSerializer.Deserialize(f, ConfigValuesContext.Default.ConfigValues);
+                Values = JsonSerializer.Deserialize(f, ConfigValuesContext.Default.ConfigValues)!;
             }
 
             Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");

@@ -15,6 +15,7 @@
 //
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Game;
 
@@ -40,11 +41,13 @@ public sealed class PatchCache(IGameContent content) : IPatchCache
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetWidth(string name)
     {
         return this[name].Width;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetHeight(string name)
     {
         return this[name].Height;

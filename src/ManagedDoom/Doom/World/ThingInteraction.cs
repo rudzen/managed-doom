@@ -28,7 +28,7 @@ public sealed class ThingInteraction
     private readonly World world;
     private int bombDamage;
 
-    private Mobj bombSource;
+    private Mobj? bombSource;
     private Mobj bombSpot;
 
     public ThingInteraction(World world)
@@ -306,7 +306,7 @@ public sealed class ThingInteraction
     /// <summary>
     /// Source is the creature that caused the explosion at spot.
     /// </summary>
-    public void RadiusAttack(Mobj spot, Mobj source, int damage)
+    public void RadiusAttack(Mobj spot, Mobj? source, int damage)
     {
         var bm = world.Map.BlockMap;
 

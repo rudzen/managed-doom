@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Intermission;
@@ -129,17 +130,17 @@ public sealed class IntermissionRenderer : IIntermissionRenderer
         screen.DrawPatch(cache[name], patchScale * point.X, patchScale * point.Y, patchScale);
     }
 
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int GetWidth(string name)
     {
         return cache.GetWidth(name);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int GetHeight(string name)
     {
         return cache.GetHeight(name);
     }
-
 
     public void Render(Intermission? im)
     {

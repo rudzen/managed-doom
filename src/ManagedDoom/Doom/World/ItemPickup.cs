@@ -337,7 +337,7 @@ public sealed class ItemPickup(World world)
                 if (player.Health > DoomInfo.DeHackEdConst.MaxSoulsphere)
                     player.Health = DoomInfo.DeHackEdConst.MaxSoulsphere;
 
-                player.Mobj.Health = player.Health;
+                player.Mobj!.Health = player.Health;
                 player.SendMessage(DoomInfo.Strings.GOTSUPER);
                 sound = Sfx.GETPOW;
                 break;

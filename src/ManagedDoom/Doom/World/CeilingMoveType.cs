@@ -25,3 +25,13 @@ public enum CeilingMoveType
     FastCrushAndRaise,
     SilentCrushAndRaise
 }
+
+/// <summary>
+/// 1 = up, 0 = waiting, -1 = down.
+/// </summary>
+public enum CeilingMoveDirection
+{
+    Down = -1,
+    Waiting = 0,
+    Up = 1
+}

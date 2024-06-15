@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>managed-doom</AssemblyName>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 
@@ -15,8 +14,8 @@
     <EventSourceSupport>false</EventSourceSupport>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
+    
+    <NoWarn>$(NoWarn);IL2104;IL3000;IL3002</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

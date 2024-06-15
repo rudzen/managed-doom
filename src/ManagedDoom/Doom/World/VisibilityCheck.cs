@@ -65,13 +65,11 @@ public sealed class VisibilityCheck(World world)
         for (var i = 0; i < count; i++)
         {
             var seg = map.Segs[firstSeg + i];
-            var line = seg.LineDef;
+            var line = seg.LineDef!;
 
-            // Allready checked other side?
+            // Already checked other side?
             if (line.ValidCount == validCount)
-            {
                 continue;
-            }
 
             line.ValidCount = validCount;
 
@@ -97,14 +95,14 @@ public sealed class VisibilityCheck(World world)
             if (line.BackSector == null)
                 return false;
 
-            // Stop because it is not two sided anyway.
+            // Stop because it is not two-sided anyway.
             // Might do this after updating validcount?
             if ((line.Flags & LineFlags.TwoSided) == 0)
                 return false;
 
-            // Crosses a two sided line.
-            var front = seg.FrontSector;
-            var back = seg.BackSector;
+            // Crosses a two-sided line.
+            var front = seg.FrontSector!;
+            var back = seg.BackSector!;
 
             // No wall to block sight with?
             if (front.FloorHeight == back.FloorHeight && front.CeilingHeight == back.CeilingHeight)
@@ -120,12 +118,9 @@ public sealed class VisibilityCheck(World world)
                 ? front.FloorHeight
                 : back.FloorHeight;
 
-            // Quick test for totally closed doors.
+            // Quick test for totally closed doors, then stop if closed
             if (openBottom >= openTop)
-            {
-                // Stop.
                 return false;
-            }
 
             var frac = InterceptVector(trace, occluder);
 
@@ -157,37 +152,37 @@ public sealed class VisibilityCheck(World world)
     /// </summary>
     private bool CrossBspNode(int nodeNumber, int validCount)
     {
-        if (Node.IsSubsector(nodeNumber))
+        while (true)
         {
-            var subSector = nodeNumber == 1 ? 0 : Node.GetSubsector(nodeNumber);
-            return CrossSubsector(subSector, validCount);
-        }
+            if (Node.IsSubsector(nodeNumber))
+            {
+                var subSector = nodeNumber == 1 ? 0 : Node.GetSubsector(nodeNumber);
+                return CrossSubsector(subSector, validCount);
+            }
 
-        var node = world.Map.Nodes[nodeNumber];
+            var node = world.Map.Nodes[nodeNumber];
 
-        // Decide which side the start point is on.
-        var side = Geometry.DivLineSide(trace.X, trace.Y, node);
-        if (side == 2)
-        {
-            // An "on" should cross both sides.
-            side = 0;
-        }
+            // Decide which side the start point is on.
+            var side = Geometry.DivLineSide(trace.X, trace.Y, node);
+            if (side == 2)
+            {
+                // An "on" should cross both sides.
+                side = 0;
+            }
 
-        // cross the starting side
-        if (!CrossBspNode(node.Children[side], validCount))
-        {
-            return false;
-        }
+            // cross the starting side
+            if (!CrossBspNode(node.Children[side], validCount))
+                return false;
 
-        // The partition plane is crossed here.
-        if (side == Geometry.DivLineSide(targetX, targetY, node))
-        {
+            // The partition plane is crossed here.
+            
             // The line doesn't touch the other side.
-            return true;
-        }
+            if (side == Geometry.DivLineSide(targetX, targetY, node))
+                return true;
 
-        // Cross the ending side.
-        return CrossBspNode(node.Children[side ^ 1], validCount);
+            // Cross the ending side.
+            nodeNumber = node.Children[side ^ 1];
+        }
     }
 
     /// <summary>

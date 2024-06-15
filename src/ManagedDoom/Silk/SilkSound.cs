@@ -362,20 +362,18 @@ public sealed class SilkSound : ISound
             infos[i].Clear();
         }
 
-        listener = null;
+        listener = null!;
     }
 
     public void Pause()
     {
         for (var i = 0; i < infos.Length; i++)
         {
-            var channel = channels[i];
+            var channel = channels![i]!;
 
-            if (channel.State == PlaybackState.Playing && channel.AudioClip is not null &&
-                channel.AudioClip.Duration - channel.PlayingOffset > TimeSpan.FromMilliseconds(200))
-            {
+            if (channel is { State: PlaybackState.Playing, AudioClip: not null }
+                && channel.AudioClip.Duration - channel.PlayingOffset > TimeSpan.FromMilliseconds(200))
                 channel.Pause();
-            }
         }
     }
 

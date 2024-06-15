@@ -54,7 +54,7 @@ public sealed record Patch(
                 p += length + 4;
             }
 
-            columns[x] = cs.ToArray();
+            columns[x] = [.. cs];
         }
 
         return new Patch(

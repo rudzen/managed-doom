@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
@@ -43,123 +44,100 @@ public sealed class CeilingMove : Thinker
     public int Tag { get; set; }
     public int OldDirection { get; set; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void Run()
     {
-        SectorActionResult result;
+        var moveDirection = (CeilingMoveDirection)Direction;
 
-        var sa = world.SectorAction;
+        if (moveDirection == CeilingMoveDirection.Waiting)
+            return;
 
-        switch (Direction)
+        if (moveDirection == CeilingMoveDirection.Up)
+            Up(world.SectorAction);
+        else
+            Down(world.SectorAction);
+    }
+
+    private void Up(SectorAction sa)
+    {
+        var result = sa.MovePlane(
+            sector: Sector,
+            speed: Speed,
+            dest: TopHeight,
+            crush: false,
+            floorOrCeiling: 1,
+            direction: Direction
+        );
+
+        if (((world.LevelTime + Sector.Number) & 7) == 0 && Type != CeilingMoveType.SilentCrushAndRaise)
+            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+
+        if (result == SectorActionResult.PastDestination)
         {
-            case 0:
-                // In statis.
-                break;
+            switch (Type)
+            {
+                case CeilingMoveType.RaiseToHighest:
+                    sa.RemoveActiveCeiling(this);
+                    Sector.DisableFrameInterpolationForOneFrame();
+                    break;
 
-            case 1:
-                // Up.
-                result = sa.MovePlane(
-                    Sector,
-                    Speed,
-                    TopHeight,
-                    false,
-                    1,
-                    Direction);
+                case CeilingMoveType.SilentCrushAndRaise:
+                case CeilingMoveType.FastCrushAndRaise:
+                case CeilingMoveType.CrushAndRaise:
+                    if (Type == CeilingMoveType.SilentCrushAndRaise)
+                        world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
 
-                if (((world.LevelTime + Sector.Number) & 7) == 0)
-                {
-                    switch (Type)
-                    {
-                        case CeilingMoveType.SilentCrushAndRaise:
-                            break;
-
-                        default:
-                            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-                            break;
-                    }
-                }
-
-                if (result == SectorActionResult.PastDestination)
-                {
-                    switch (Type)
-                    {
-                        case CeilingMoveType.RaiseToHighest:
-                            sa.RemoveActiveCeiling(this);
-                            Sector.DisableFrameInterpolationForOneFrame();
-                            break;
-
-                        case CeilingMoveType.SilentCrushAndRaise:
-                        case CeilingMoveType.FastCrushAndRaise:
-                        case CeilingMoveType.CrushAndRaise:
-                            if (Type == CeilingMoveType.SilentCrushAndRaise)
-                            {
-                                world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-                            }
-
-                            Direction = -1;
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-                break;
-
-            case -1:
-                // Down.
-                result = sa.MovePlane(
-                    Sector,
-                    Speed,
-                    BottomHeight,
-                    Crush,
-                    1,
-                    Direction);
-
-                if (((world.LevelTime + Sector.Number) & 7) == 0)
-                {
-                    if (Type != CeilingMoveType.SilentCrushAndRaise)
-                        world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-                }
-
-                if (result == SectorActionResult.PastDestination)
-                {
-                    switch (Type)
-                    {
-                        case CeilingMoveType.SilentCrushAndRaise:
-                        case CeilingMoveType.CrushAndRaise:
-                        case CeilingMoveType.FastCrushAndRaise:
-                            if (Type == CeilingMoveType.SilentCrushAndRaise)
-                            {
-                                world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-                                Speed = SectorAction.CeilingSpeed;
-                            }
-
-                            if (Type == CeilingMoveType.CrushAndRaise)
-                                Speed = SectorAction.CeilingSpeed;
-
-                            Direction = 1;
-                            break;
-
-                        case CeilingMoveType.LowerAndCrush:
-                        case CeilingMoveType.LowerToFloor:
-                            sa.RemoveActiveCeiling(this);
-                            Sector.DisableFrameInterpolationForOneFrame();
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-                else
-                {
-                    if (result == SectorActionResult.Crushed)
-                    {
-                        if (Type is CeilingMoveType.SilentCrushAndRaise or CeilingMoveType.CrushAndRaise or CeilingMoveType.LowerAndCrush)
-                            Speed = SectorAction.CeilingSpeed / 8;
-                    }
-                }
-
-                break;
+                    Direction = -1;
+                    break;
+            }
         }
+    }
+
+    private void Down(SectorAction sa)
+    {
+        var result = sa.MovePlane(
+            sector: Sector,
+            speed: Speed,
+            dest: BottomHeight,
+            crush: Crush,
+            floorOrCeiling: 1,
+            direction: Direction
+        );
+
+        if (((world.LevelTime + Sector.Number) & 7) == 0 && Type != CeilingMoveType.SilentCrushAndRaise)
+            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+
+        if (result == SectorActionResult.PastDestination)
+        {
+            switch (Type)
+            {
+                case CeilingMoveType.SilentCrushAndRaise:
+                case CeilingMoveType.CrushAndRaise:
+                case CeilingMoveType.FastCrushAndRaise:
+                    UpdateDownwardSpeed();
+                    Direction = 1;
+                    break;
+
+                case CeilingMoveType.LowerAndCrush:
+                case CeilingMoveType.LowerToFloor:
+                    sa.RemoveActiveCeiling(this);
+                    Sector.DisableFrameInterpolationForOneFrame();
+                    break;
+            }
+        }
+        else if (result == SectorActionResult.Crushed && Type is CeilingMoveType.SilentCrushAndRaise or CeilingMoveType.CrushAndRaise or CeilingMoveType.LowerAndCrush)
+            Speed = SectorAction.CeilingSpeed / 8;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void UpdateDownwardSpeed()
+    {
+        if (Type == CeilingMoveType.SilentCrushAndRaise)
+        {
+            world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+            Speed = SectorAction.CeilingSpeed;
+        }
+        else if (Type == CeilingMoveType.CrushAndRaise)
+            Speed = SectorAction.CeilingSpeed;
     }
 }

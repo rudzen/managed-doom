@@ -468,7 +468,7 @@ public sealed class SectorAction
                 break;
         }
 
-        var sector = line.BackSide.Sector;
+        var sector = line.BackSide!.Sector;
 
         // If the sector has an active thinker, use it.
         if (sector.SpecialData is not null)
@@ -777,7 +777,7 @@ public sealed class SectorAction
 
                 case PlatformType.RaiseAndChange:
                     plat.Speed = platformSpeed / 2;
-                    sector.FloorFlat = line.FrontSide.Sector.FloorFlat;
+                    sector.FloorFlat = line.FrontSide!.Sector.FloorFlat;
                     plat.High = sector.FloorHeight + amount * Fixed.One;
                     plat.Wait = 0;
                     plat.Status = PlatformState.Up;
@@ -1131,7 +1131,7 @@ public sealed class SectorAction
                     if (sectorNumber != newSectorNumber)
                         continue;
 
-                    target = sectorLine.BackSector;
+                    target = sectorLine.BackSector!;
                     newSectorNumber = target.Number;
 
                     if (target.FloorFlat != texture)

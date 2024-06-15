@@ -30,8 +30,8 @@ public sealed class FlatLookup : IFlatLookup
 {
     private Flat[] flats;
 
-    private FrozenDictionary<string, Flat> nameToFlat2;
-    private FrozenDictionary<string, int> nameToNumber2;
+    private FrozenDictionary<string, Flat> nameToFlat;
+    private FrozenDictionary<string, int> nameToNumber;
 
     public FlatLookup(Wad.Wad wad)
     {
@@ -68,7 +68,7 @@ public sealed class FlatLookup : IFlatLookup
 
     public int Count => flats.Length;
     public Flat this[int num] => flats[num];
-    public Flat this[string name] => nameToFlat2[name];
+    public Flat this[string name] => nameToFlat[name];
     public int SkyFlatNumber { get; private set; }
     public Flat SkyFlat { get; private set; }
 
@@ -105,8 +105,8 @@ public sealed class FlatLookup : IFlatLookup
             SkyFlatNumber = nameToNumberMapping["F_SKY1"];
             SkyFlat = nameToFlatMapping["F_SKY1"];
 
-            this.nameToFlat2 = nameToFlatMapping.ToFrozenDictionary();
-            this.nameToNumber2 = nameToNumberMapping.ToFrozenDictionary();
+            this.nameToFlat = nameToFlatMapping.ToFrozenDictionary();
+            this.nameToNumber = nameToNumberMapping.ToFrozenDictionary();
 
             Console.WriteLine($"OK ({nameToFlatMapping.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
         }
@@ -174,8 +174,8 @@ public sealed class FlatLookup : IFlatLookup
                 nameToNumberMapping[name] = number;
             }
 
-            this.nameToFlat2 = nameToFlatMapping.ToFrozenDictionary();
-            this.nameToNumber2 = nameToNumberMapping.ToFrozenDictionary();
+            this.nameToFlat = nameToFlatMapping.ToFrozenDictionary();
+            this.nameToNumber = nameToNumberMapping.ToFrozenDictionary();
 
             SkyFlatNumber = nameToNumberMapping["F_SKY1"];
             SkyFlat = nameToFlatMapping["F_SKY1"];
@@ -192,7 +192,7 @@ public sealed class FlatLookup : IFlatLookup
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetNumber(string name)
     {
-        return nameToNumber2.TryGetValue(name, out var number) ? number : -1;
+        return nameToNumber.TryGetValue(name, out var number) ? number : -1;
     }
 
     public IEnumerator<Flat> GetEnumerator()
