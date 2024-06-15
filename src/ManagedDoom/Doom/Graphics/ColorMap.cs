@@ -29,34 +29,25 @@ public sealed class ColorMap
 
     public ColorMap(Wad.Wad wad)
     {
+        const string lump = "COLORMAP";
+        const int blockSize = 256;
+
+        Console.Write("Load color map: ");
+
+        var start = Stopwatch.GetTimestamp();
+
         try
         {
-            Console.Write("Load color map: ");
-            var start = Stopwatch.GetTimestamp();
-
-            const string lump = "COLORMAP";
-
             var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
+            var num = lumpSize / blockSize;
 
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+            var lumpData = wad.GetLumpData(lumpNumber)[..lumpSize];
 
-            try
-            {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lumpNumber, lumpBuffer);
+            data = new byte[num][];
+            for (var i = 0; i < num; i++)
+                data[i] = lumpData.Slice(blockSize * i, blockSize).ToArray();
 
-                var num = lumpSize / 256;
-
-                data = new byte[num][];
-                for (var i = 0; i < num; i++)
-                    data[i] = lumpBuffer.Slice(256 * i, 256).ToArray();
-
-                Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
+            Console.WriteLine($"OK ({num} maps) [{Stopwatch.GetElapsedTime(start)}]");
         }
         catch (Exception e)
         {

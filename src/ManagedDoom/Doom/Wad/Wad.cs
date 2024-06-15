@@ -16,6 +16,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -177,6 +178,12 @@ public sealed class Wad : IDisposable
     public byte[] ReadLump(int number)
     {
         return LumpInfos[number].Data!;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> GetLumpData(int number)
+    {
+        return LumpInfos[number].Data.AsSpan();
     }
 
     public void ReadLump(int number, Span<byte> buffer)
