@@ -275,9 +275,9 @@ public sealed class World
     public bool DoEvent(in DoomEvent e)
     {
         if (Options is { NetGame: false, DemoPlayback: false })
-            cheat.DoEvent(e);
+            cheat.DoEvent(in e);
 
-        if (AutoMap.Visible && AutoMap.DoEvent(e))
+        if (AutoMap.Visible && AutoMap.DoEvent(in e))
             return true;
 
         switch (e)

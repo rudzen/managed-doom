@@ -172,7 +172,7 @@ public sealed class AutoMap
         ViewY = viewY;
     }
 
-    public bool DoEvent(DoomEvent e)
+    public bool DoEvent(in DoomEvent e)
     {
         if (e.Key is DoomKey.Add or DoomKey.Quote or DoomKey.Equal)
         {

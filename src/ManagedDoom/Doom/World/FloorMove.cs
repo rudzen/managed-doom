@@ -35,17 +35,16 @@ public sealed class FloorMove(World world) : Thinker
     {
         var sa = world.SectorAction;
         var result = sa.MovePlane(
-            Sector!,
-            Speed,
-            FloorDestHeight,
-            Crush,
-            0,
-            Direction);
+            sector: Sector!,
+            speed: Speed,
+            dest: FloorDestHeight,
+            crush: Crush,
+            floorOrCeiling: 0,
+            direction: Direction
+        );
 
         if (((world.LevelTime + Sector!.Number) & 7) == 0)
-        {
             world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-        }
 
         if (result == SectorActionResult.PastDestination)
         {

@@ -33,7 +33,7 @@ public class ToggleMenuItem(
 {
     private readonly string[] states = [state1, state2];
 
-    private int stateNumber = 0;
+    private int stateNumber;
 
     private readonly Func<int>? reset = reset;
 

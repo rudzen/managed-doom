@@ -104,12 +104,12 @@ public sealed class Thinkers
             Current = thinkers.cap;
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
         }
 
         public Thinker Current { get; private set; } = thinkers.cap;
 
-        object IEnumerator.Current => throw new NotImplementedException();
+        readonly object IEnumerator.Current => throw new NotImplementedException();
     }
 }

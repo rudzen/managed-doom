@@ -35,7 +35,7 @@ public sealed class SliderMenuItem(
     public int SliderX => ItemX;
     public int SliderY => ItemY + 16;
     public int SliderLength { get; } = sliderLength;
-    public int SliderPosition { get; private set; } = 0;
+    public int SliderPosition { get; private set; }
 
     public void Reset()
     {
