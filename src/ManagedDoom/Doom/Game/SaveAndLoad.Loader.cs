@@ -15,6 +15,8 @@
 //
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Info;
@@ -27,6 +29,8 @@ namespace ManagedDoom.Doom.Game;
 /// <summary>
 /// Load game
 /// </summary>
+[SuppressMessage("Style", "IDE0017:Simplify object initialization")]
+[SuppressMessage("ReSharper", "UseObjectOrCollectionInitializer")]
 public static partial class SaveAndLoad
 {
     private static int ValidateHeader(Span<byte> data)
@@ -72,7 +76,7 @@ public static partial class SaveAndLoad
 
         game.World.LevelTime = levelTime;
 
-        options.Sound.SetListener(game.World.ConsolePlayer.Mobj);
+        options.Sound.SetListener(game.World.ConsolePlayer.Mobj!);
     }
 
     private static int ReadDescription(Span<byte> data, int ptr, out string description)
@@ -135,67 +139,63 @@ public static partial class SaveAndLoad
         while (true)
         {
             var thinker = (ThinkerClass)data[ptr++];
-            switch (thinker)
+
+            if (thinker == ThinkerClass.End)
+                return ptr;
+
+            ptr = PadPointer(ptr);
+
+            if (thinker != ThinkerClass.Mobj)
+                throw new Exception($"Unknown thinker class in savegame! thinker={thinker}");
+
+            var mobj = new Mobj(world);
+            mobj.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
+            mobj.X = new Fixed(BitConverter.ToInt32(data[(ptr + 12)..]));
+            mobj.Y = new Fixed(BitConverter.ToInt32(data[(ptr + 16)..]));
+            mobj.Z = new Fixed(BitConverter.ToInt32(data[(ptr + 20)..]));
+            mobj.Angle = new Angle(BitConverter.ToInt32(data[(ptr + 32)..]));
+            mobj.Sprite = (Sprite)BitConverter.ToInt32(data[(ptr + 36)..]);
+            mobj.Frame = BitConverter.ToInt32(data[(ptr + 40)..]);
+            mobj.FloorZ = new Fixed(BitConverter.ToInt32(data[(ptr + 56)..]));
+            mobj.CeilingZ = new Fixed(BitConverter.ToInt32(data[(ptr + 60)..]));
+            mobj.Radius = new Fixed(BitConverter.ToInt32(data[(ptr + 64)..]));
+            mobj.Height = new Fixed(BitConverter.ToInt32(data[(ptr + 68)..]));
+            mobj.MomX = new Fixed(BitConverter.ToInt32(data[(ptr + 72)..]));
+            mobj.MomY = new Fixed(BitConverter.ToInt32(data[(ptr + 76)..]));
+            mobj.MomZ = new Fixed(BitConverter.ToInt32(data[(ptr + 80)..]));
+            mobj.Type = (MobjType)BitConverter.ToInt32(data[(ptr + 88)..]);
+            mobj.Info = DoomInfo.MobjInfos[(int)mobj.Type];
+            mobj.Tics = BitConverter.ToInt32(data[(ptr + 96)..]);
+            mobj.State = DoomInfo.States[BitConverter.ToInt32(data[(ptr + 100)..])];
+            mobj.Flags = (MobjFlags)BitConverter.ToInt32(data[(ptr + 104)..]);
+            mobj.Health = BitConverter.ToInt32(data[(ptr + 108)..]);
+            mobj.MoveDir = (Direction)BitConverter.ToInt32(data[(ptr + 112)..]);
+            mobj.MoveCount = BitConverter.ToInt32(data[(ptr + 116)..]);
+            mobj.ReactionTime = BitConverter.ToInt32(data[(ptr + 124)..]);
+            mobj.Threshold = BitConverter.ToInt32(data[(ptr + 128)..]);
+            var playerNumber = BitConverter.ToInt32(data[(ptr + 132)..]);
+            if (playerNumber != 0)
             {
-                case ThinkerClass.End:
-                    // End of list.
-                    return ptr;
-
-                case ThinkerClass.Mobj:
-                    ptr = PadPointer(ptr);
-                    var mobj = new Mobj(world);
-                    mobj.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    mobj.X = new Fixed(BitConverter.ToInt32(data[(ptr + 12)..]));
-                    mobj.Y = new Fixed(BitConverter.ToInt32(data[(ptr + 16)..]));
-                    mobj.Z = new Fixed(BitConverter.ToInt32(data[(ptr + 20)..]));
-                    mobj.Angle = new Angle(BitConverter.ToInt32(data[(ptr + 32)..]));
-                    mobj.Sprite = (Sprite)BitConverter.ToInt32(data[(ptr + 36)..]);
-                    mobj.Frame = BitConverter.ToInt32(data[(ptr + 40)..]);
-                    mobj.FloorZ = new Fixed(BitConverter.ToInt32(data[(ptr + 56)..]));
-                    mobj.CeilingZ = new Fixed(BitConverter.ToInt32(data[(ptr + 60)..]));
-                    mobj.Radius = new Fixed(BitConverter.ToInt32(data[(ptr + 64)..]));
-                    mobj.Height = new Fixed(BitConverter.ToInt32(data[(ptr + 68)..]));
-                    mobj.MomX = new Fixed(BitConverter.ToInt32(data[(ptr + 72)..]));
-                    mobj.MomY = new Fixed(BitConverter.ToInt32(data[(ptr + 76)..]));
-                    mobj.MomZ = new Fixed(BitConverter.ToInt32(data[(ptr + 80)..]));
-                    mobj.Type = (MobjType)BitConverter.ToInt32(data[(ptr + 88)..]);
-                    mobj.Info = DoomInfo.MobjInfos[(int)mobj.Type];
-                    mobj.Tics = BitConverter.ToInt32(data[(ptr + 96)..]);
-                    mobj.State = DoomInfo.States[BitConverter.ToInt32(data[(ptr + 100)..])];
-                    mobj.Flags = (MobjFlags)BitConverter.ToInt32(data[(ptr + 104)..]);
-                    mobj.Health = BitConverter.ToInt32(data[(ptr + 108)..]);
-                    mobj.MoveDir = (Direction)BitConverter.ToInt32(data[(ptr + 112)..]);
-                    mobj.MoveCount = BitConverter.ToInt32(data[(ptr + 116)..]);
-                    mobj.ReactionTime = BitConverter.ToInt32(data[(ptr + 124)..]);
-                    mobj.Threshold = BitConverter.ToInt32(data[(ptr + 128)..]);
-                    var playerNumber = BitConverter.ToInt32(data[(ptr + 132)..]);
-                    if (playerNumber != 0)
-                    {
-                        mobj.Player = world.Options.Players[playerNumber - 1];
-                        mobj.Player.Mobj = mobj;
-                    }
-
-                    mobj.LastLook = BitConverter.ToInt32(data[(ptr + 136)..]);
-
-                    var x = Fixed.FromInt(BitConverter.ToInt16(data[(ptr + 140)..]));
-                    var y = Fixed.FromInt(BitConverter.ToInt16(data[(ptr + 142)..]));
-                    var angle = new Angle(Angle.Ang45.Data * (uint)(BitConverter.ToInt16(data[(ptr + 144)..]) / 45));
-                    var type = BitConverter.ToInt16(data[(ptr + 146)..]);
-                    var flags = (ThingFlags)BitConverter.ToInt16(data[(ptr + 148)..]);
-
-                    mobj.SpawnPoint = new MapThing(x, y, angle, type, flags);
-
-                    ptr += 154;
-
-                    world.ThingMovement.SetThingPosition(mobj);
-                    // mobj.FloorZ = mobj.Subsector.Sector.FloorHeight;
-                    // mobj.CeilingZ = mobj.Subsector.Sector.CeilingHeight;
-                    thinkers.Add(mobj);
-                    break;
-
-                default:
-                    throw new Exception("Unknown thinker class in savegame!");
+                mobj.Player = world.Options.Players[playerNumber - 1];
+                mobj.Player.Mobj = mobj;
             }
+
+            mobj.LastLook = BitConverter.ToInt32(data[(ptr + 136)..]);
+
+            var x = Fixed.FromInt(BitConverter.ToInt16(data[(ptr + 140)..]));
+            var y = Fixed.FromInt(BitConverter.ToInt16(data[(ptr + 142)..]));
+            var angle = new Angle(Angle.Ang45.Data * (uint)(BitConverter.ToInt16(data[(ptr + 144)..]) / 45));
+            var type = BitConverter.ToInt16(data[(ptr + 146)..]);
+            var flags = (ThingFlags)BitConverter.ToInt16(data[(ptr + 148)..]);
+
+            mobj.SpawnPoint = new MapThing(x, y, angle, type, flags);
+
+            ptr += 154;
+
+            world.ThingMovement.SetThingPosition(mobj);
+            // mobj.FloorZ = mobj.Subsector.Sector.FloorHeight;
+            // mobj.CeilingZ = mobj.Subsector.Sector.CeilingHeight;
+            thinkers.Add(mobj);
         }
     }
 
@@ -208,140 +208,188 @@ public static partial class SaveAndLoad
         while (true)
         {
             var tclass = (SpecialClass)data[ptr++];
-            switch (tclass)
+
+            if (tclass == SpecialClass.EndSpecials)
+                return ptr;
+
+            ptr = PadPointer(ptr);
+
+            if (tclass == SpecialClass.Ceiling)
             {
-                case SpecialClass.EndSpecials:
-                    // End of list.
-                    return ptr;
-
-                case SpecialClass.Ceiling:
-                    ptr = PadPointer(ptr);
-                    var ceiling = new CeilingMove(world);
-                    ceiling.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    ceiling.Type = (CeilingMoveType)BitConverter.ToInt32(data[(ptr + 12)..]);
-                    ceiling.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 16)..])];
-                    ceiling.Sector.SpecialData = ceiling;
-                    ceiling.BottomHeight = new Fixed(BitConverter.ToInt32(data[(ptr + 20)..]));
-                    ceiling.TopHeight = new Fixed(BitConverter.ToInt32(data[(ptr + 24)..]));
-                    ceiling.Speed = new Fixed(BitConverter.ToInt32(data[(ptr + 28)..]));
-                    ceiling.Crush = BitConverter.ToInt32(data[(ptr + 32)..]) != 0;
-                    ceiling.Direction = BitConverter.ToInt32(data[(ptr + 36)..]);
-                    ceiling.Tag = BitConverter.ToInt32(data[(ptr + 40)..]);
-                    ceiling.OldDirection = BitConverter.ToInt32(data[(ptr + 44)..]);
-                    ptr += 48;
-
-                    thinkers.Add(ceiling);
-                    sa.AddActiveCeiling(ceiling);
-                    break;
-
-                case SpecialClass.Door:
-                    ptr = PadPointer(ptr);
-                    var door = new VerticalDoor(world);
-                    door.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    door.Type = (VerticalDoorType)BitConverter.ToInt32(data[(ptr + 12)..]);
-                    door.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 16)..])];
-                    door.Sector.SpecialData = door;
-                    door.TopHeight = new Fixed(BitConverter.ToInt32(data[(ptr + 20)..]));
-                    door.Speed = new Fixed(BitConverter.ToInt32(data[(ptr + 24)..]));
-                    door.Direction = BitConverter.ToInt32(data[(ptr + 28)..]);
-                    door.TopWait = BitConverter.ToInt32(data[(ptr + 32)..]);
-                    door.TopCountDown = BitConverter.ToInt32(data[(ptr + 36)..]);
-                    ptr += 40;
-
-                    thinkers.Add(door);
-                    break;
-
-                case SpecialClass.Floor:
-                    ptr = PadPointer(ptr);
-                    var floor = new FloorMove(world);
-                    floor.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    floor.Type = (FloorMoveType)BitConverter.ToInt32(data[(ptr + 12)..]);
-                    floor.Crush = BitConverter.ToInt32(data[(ptr + 16)..]) != 0;
-                    floor.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 20)..])];
-                    floor.Sector.SpecialData = floor;
-                    floor.Direction = BitConverter.ToInt32(data[(ptr + 24)..]);
-                    floor.NewSpecial = (SectorSpecial)BitConverter.ToInt32(data[(ptr + 28)..]);
-                    floor.Texture = BitConverter.ToInt32(data[(ptr + 32)..]);
-                    floor.FloorDestHeight = new Fixed(BitConverter.ToInt32(data[(ptr + 36)..]));
-                    floor.Speed = new Fixed(BitConverter.ToInt32(data[(ptr + 40)..]));
-                    ptr += 44;
-
-                    thinkers.Add(floor);
-                    break;
-
-                case SpecialClass.Plat:
-                    ptr = PadPointer(ptr);
-                    var plat = new Platform(world);
-                    plat.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    plat.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 12)..])];
-                    plat.Sector.SpecialData = plat;
-                    plat.Speed = new Fixed(BitConverter.ToInt32(data[(ptr + 16)..]));
-                    plat.Low = new Fixed(BitConverter.ToInt32(data[(ptr + 20)..]));
-                    plat.High = new Fixed(BitConverter.ToInt32(data[(ptr + 24)..]));
-                    plat.Wait = BitConverter.ToInt32(data[(ptr + 28)..]);
-                    plat.Count = BitConverter.ToInt32(data[(ptr + 32)..]);
-                    plat.Status = (PlatformState)BitConverter.ToInt32(data[(ptr + 36)..]);
-                    plat.OldStatus = (PlatformState)BitConverter.ToInt32(data[(ptr + 40)..]);
-                    plat.Crush = BitConverter.ToInt32(data[(ptr + 44)..]) != 0;
-                    plat.Tag = BitConverter.ToInt32(data[(ptr + 48)..]);
-                    plat.Type = (PlatformType)BitConverter.ToInt32(data[(ptr + 52)..]);
-                    ptr += 56;
-
-                    thinkers.Add(plat);
-                    sa.AddActivePlatform(plat);
-                    break;
-
-                case SpecialClass.Flash:
-                    ptr = PadPointer(ptr);
-                    var flash = new LightFlash(world.Random);
-                    flash.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    flash.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 12)..])];
-                    flash.Count = BitConverter.ToInt32(data[(ptr + 16)..]);
-                    flash.MaxLight = BitConverter.ToInt32(data[(ptr + 20)..]);
-                    flash.MinLight = BitConverter.ToInt32(data[(ptr + 24)..]);
-                    flash.MaxTime = BitConverter.ToInt32(data[(ptr + 28)..]);
-                    flash.MinTime = BitConverter.ToInt32(data[(ptr + 32)..]);
-                    ptr += 36;
-
-                    thinkers.Add(flash);
-                    break;
-
-                case SpecialClass.Strobe:
-                    ptr = PadPointer(ptr);
-                    var strobe = new StrobeFlash();
-                    strobe.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    strobe.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 12)..])];
-                    strobe.Count = BitConverter.ToInt32(data[(ptr + 16)..]);
-                    strobe.MinLight = BitConverter.ToInt32(data[(ptr + 20)..]);
-                    strobe.MaxLight = BitConverter.ToInt32(data[(ptr + 24)..]);
-                    strobe.DarkTime = BitConverter.ToInt32(data[(ptr + 28)..]);
-                    strobe.BrightTime = BitConverter.ToInt32(data[(ptr + 32)..]);
-                    ptr += 36;
-
-                    thinkers.Add(strobe);
-                    break;
-
-                case SpecialClass.Glow:
-                    ptr = PadPointer(ptr);
-                    var glow = new GlowingLight();
-                    glow.ThinkerState = ReadThinkerState(data[(ptr + 8)..]);
-                    glow.Sector = world.Map.Sectors[BitConverter.ToInt32(data[(ptr + 12)..])];
-                    glow.MinLight = BitConverter.ToInt32(data[(ptr + 16)..]);
-                    glow.MaxLight = BitConverter.ToInt32(data[(ptr + 20)..]);
-                    glow.Direction = BitConverter.ToInt32(data[(ptr + 24)..]);
-
-                    ptr += 28;
-
-                    thinkers.Add(glow);
-                    break;
-
-                default:
-                    throw new Exception("Unknown special in savegame!");
+                ptr += LoadCeilingMove(world, data[ptr..], out var ceilingMove);
+                thinkers.Add(ceilingMove);
+                sa.AddActiveCeiling(ceilingMove);
             }
+            else if (tclass == SpecialClass.Door)
+            {
+                ptr += LoadVerticalDoor(world, data[ptr..], out var doorMove);
+                thinkers.Add(doorMove);
+            }
+            else if (tclass == SpecialClass.Floor)
+            {
+                ptr += LoadFloorMove(world, data[ptr..], out var floorMove);
+                thinkers.Add(floorMove);
+            }
+            else if (tclass == SpecialClass.Plat)
+            {
+                ptr += LoadPlatform(world, data[ptr..], out var platform);
+                thinkers.Add(platform);
+                sa.AddActivePlatform(platform);
+            }
+            else if (tclass == SpecialClass.Flash)
+            {
+                ptr += LoadLightFlash(world, data[ptr..], out var flash);
+                thinkers.Add(flash);
+            }
+            else if (tclass == SpecialClass.Strobe)
+            {
+                ptr += LoadStrobeFlash(world, data[ptr..], out var strobe);
+                thinkers.Add(strobe);
+            }
+            else if (tclass == SpecialClass.Glow)
+            {
+                ptr += LoadGlowingLight(world, data[ptr..], out var glow);
+                thinkers.Add(glow);
+            }
+            else
+                throw new Exception($"Unknown special in savegame! special={tclass}");
         }
     }
 
-    private static ThinkerState ReadThinkerState(Span<byte> data)
+    private static int LoadCeilingMove(World.World world, ReadOnlySpan<byte> data, out CeilingMove ceilingMove)
+    {
+        const int dataSize = 48;
+        var ceilingData = data[..dataSize];
+
+        ceilingMove = new CeilingMove(world);
+        ceilingMove.ThinkerState = ReadThinkerState(ceilingData.Slice(8, 4));
+        ceilingMove.Type = (CeilingMoveType)BitConverter.ToInt32(ceilingData.Slice(12, 4));
+        ceilingMove.Sector = world.Map.Sectors[BitConverter.ToInt32(ceilingData.Slice(16, 4))];
+        ceilingMove.BottomHeight = new Fixed(BitConverter.ToInt32(ceilingData.Slice(20, 4)));
+        ceilingMove.TopHeight = new Fixed(BitConverter.ToInt32(ceilingData.Slice(24, 4)));
+        ceilingMove.Speed = new Fixed(BitConverter.ToInt32(ceilingData.Slice(28, 4)));
+        ceilingMove.Crush = BitConverter.ToInt32(ceilingData.Slice(32, 4)) != 0;
+        ceilingMove.Direction = BitConverter.ToInt32(ceilingData.Slice(36, 4));
+        ceilingMove.Tag = BitConverter.ToInt32(ceilingData.Slice(40, 4));
+        ceilingMove.OldDirection = BitConverter.ToInt32(ceilingData.Slice(44, 4));
+        ceilingMove.Sector.SpecialData = ceilingMove;
+
+        return dataSize;
+    }
+
+    private static int LoadVerticalDoor(World.World world, ReadOnlySpan<byte> data, out VerticalDoor verticalDoor)
+    {
+        const int dataSize = 40;
+        var doorData = data[..dataSize];
+
+        verticalDoor = new VerticalDoor(world);
+        verticalDoor.ThinkerState = ReadThinkerState(doorData.Slice(8, 4));
+        verticalDoor.Type = (VerticalDoorType)BitConverter.ToInt32(doorData.Slice(12, 4));
+        verticalDoor.Sector = world.Map.Sectors[BitConverter.ToInt32(doorData.Slice(16, 4))];
+        verticalDoor.TopHeight = new Fixed(BitConverter.ToInt32(doorData.Slice(20, 4)));
+        verticalDoor.Speed = new Fixed(BitConverter.ToInt32(doorData.Slice(24, 4)));
+        verticalDoor.Direction = BitConverter.ToInt32(doorData.Slice(28, 4));
+        verticalDoor.TopWait = BitConverter.ToInt32(doorData.Slice(32, 4));
+        verticalDoor.TopCountDown = BitConverter.ToInt32(doorData.Slice(36, 4));
+        verticalDoor.Sector.SpecialData = verticalDoor;
+
+        return dataSize;
+    }
+
+    private static int LoadFloorMove(World.World world, ReadOnlySpan<byte> data, out FloorMove floor)
+    {
+        const int dataSize = 44;
+        var floorData = data[..dataSize];
+
+        floor = new FloorMove(world);
+        floor.ThinkerState = ReadThinkerState(floorData.Slice(8, 4));
+        floor.Type = (FloorMoveType)BitConverter.ToInt32(floorData.Slice(12, 4));
+        floor.Crush = BitConverter.ToInt32(floorData.Slice(16, 4)) != 0;
+        floor.Sector = world.Map.Sectors[BitConverter.ToInt32(floorData.Slice(20, 4))];
+        floor.Direction = BitConverter.ToInt32(floorData.Slice(24, 4));
+        floor.NewSpecial = (SectorSpecial)BitConverter.ToInt32(floorData.Slice(28, 4));
+        floor.Texture = BitConverter.ToInt32(floorData.Slice(32, 4));
+        floor.FloorDestHeight = new Fixed(BitConverter.ToInt32(floorData.Slice(36, 4)));
+        floor.Speed = new Fixed(BitConverter.ToInt32(floorData.Slice(40, 4)));
+        floor.Sector.SpecialData = floor;
+
+        return dataSize;
+    }
+
+    private static int LoadPlatform(World.World world, ReadOnlySpan<byte> data, out Platform plat)
+    {
+        const int dataSize = 56;
+        var platformData = data[..dataSize];
+
+        plat = new Platform(world);
+        plat.ThinkerState = ReadThinkerState(platformData.Slice(8, 4));
+        plat.Sector = world.Map.Sectors[BitConverter.ToInt32(platformData.Slice(12, 4))];
+        plat.Speed = new Fixed(BitConverter.ToInt32(platformData.Slice(16, 4)));
+        plat.Low = new Fixed(BitConverter.ToInt32(platformData.Slice(20, 4)));
+        plat.High = new Fixed(BitConverter.ToInt32(platformData.Slice(24, 4)));
+        plat.Wait = BitConverter.ToInt32(platformData.Slice(28, 4));
+        plat.Count = BitConverter.ToInt32(platformData.Slice(32, 4));
+        plat.Status = (PlatformState)BitConverter.ToInt32(platformData.Slice(36, 4));
+        plat.OldStatus = (PlatformState)BitConverter.ToInt32(platformData.Slice(40, 4));
+        plat.Crush = BitConverter.ToInt32(platformData.Slice(44, 4)) != 0;
+        plat.Tag = BitConverter.ToInt32(platformData.Slice(48, 4));
+        plat.Type = (PlatformType)BitConverter.ToInt32(platformData.Slice(52, 4));
+        plat.Sector.SpecialData = plat;
+
+        return dataSize;
+    }
+
+    private static int LoadLightFlash(World.World world, ReadOnlySpan<byte> data, out LightFlash flash)
+    {
+        const int dataSize = 36;
+        var flashData = data[..dataSize];
+
+        flash = new LightFlash(world.Random);
+        flash.ThinkerState = ReadThinkerState(flashData.Slice(8, 4));
+        flash.Sector = world.Map.Sectors[BitConverter.ToInt32(flashData.Slice(12, 4))];
+        flash.Count = BitConverter.ToInt32(flashData.Slice(16, 4));
+        flash.MaxLight = BitConverter.ToInt32(flashData.Slice(20, 4));
+        flash.MinLight = BitConverter.ToInt32(flashData.Slice(24, 4));
+        flash.MaxTime = BitConverter.ToInt32(flashData.Slice(28, 4));
+        flash.MinTime = BitConverter.ToInt32(flashData.Slice(32, 4));
+
+        return dataSize;
+    }
+
+    private static int LoadStrobeFlash(World.World world, ReadOnlySpan<byte> data, out StrobeFlash strobe)
+    {
+        const int dataSize = 36;
+        var strobeData = data[..dataSize];
+
+        strobe = new StrobeFlash();
+        strobe.ThinkerState = ReadThinkerState(strobeData.Slice(8, 4));
+        strobe.Sector = world.Map.Sectors[BitConverter.ToInt32(strobeData.Slice(12, 4))];
+        strobe.Count = BitConverter.ToInt32(strobeData.Slice(16, 4));
+        strobe.MinLight = BitConverter.ToInt32(strobeData.Slice(20, 4));
+        strobe.MaxLight = BitConverter.ToInt32(strobeData.Slice(24, 4));
+        strobe.DarkTime = BitConverter.ToInt32(strobeData.Slice(28, 4));
+        strobe.BrightTime = BitConverter.ToInt32(strobeData.Slice(32, 4));
+
+        return dataSize;
+    }
+
+    private static int LoadGlowingLight(World.World world, ReadOnlySpan<byte> data, out GlowingLight glow)
+    {
+        const int dataSize = 28;
+        var glowData = data[..dataSize];
+
+        glow = new GlowingLight();
+        glow.ThinkerState = ReadThinkerState(glowData.Slice(8, 4));
+        glow.Sector = world.Map.Sectors[BitConverter.ToInt32(glowData.Slice(12, 4))];
+        glow.MinLight = BitConverter.ToInt32(glowData.Slice(16, 4));
+        glow.MaxLight = BitConverter.ToInt32(glowData.Slice(20, 4));
+        glow.Direction = BitConverter.ToInt32(glowData.Slice(24, 4));
+
+        return dataSize;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ThinkerState ReadThinkerState(ReadOnlySpan<byte> data)
     {
         return BitConverter.ToInt32(data) switch
         {
@@ -363,27 +411,27 @@ public static partial class SaveAndLoad
         player.ArmorPoints = BitConverter.ToInt32(data[(p + 36)..]);
         player.ArmorType = BitConverter.ToInt32(data[(p + 40)..]);
 
-        for (var i = 0; i < PowerType.Count; i++)
+        for (var i = 0; i < player.Powers.Length; i++)
             player.Powers[i] = BitConverter.ToInt32(data[(p + 44 + 4 * i)..]);
 
-        for (var i = 0; i < PowerType.Count; i++)
+        for (var i = 0; i < player.Cards.Length; i++)
             player.Cards[i] = BitConverter.ToInt32(data[(p + 68 + 4 * i)..]) != 0;
 
         player.Backpack = BitConverter.ToInt32(data[(p + 92)..]) != 0;
 
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        for (var i = 0; i < player.Frags.Length; i++)
             player.Frags[i] = BitConverter.ToInt32(data[(p + 96 + 4 * i)..]);
 
         player.ReadyWeapon = new(BitConverter.ToInt32(data[(p + 112)..]));
         player.PendingWeapon = new(BitConverter.ToInt32(data[(p + 116)..]));
 
-        for (var i = 0; i < WeaponType.Count; i++)
+        for (var i = 0; i < player.WeaponOwned.Length; i++)
             player.WeaponOwned[i] = BitConverter.ToInt32(data[(p + 120 + 4 * i)..]) != 0;
 
-        for (var i = 0; i < AmmoType.Count; i++)
+        for (var i = 0; i < player.Ammo.Length; i++)
             player.Ammo[i] = BitConverter.ToInt32(data[(p + 156 + 4 * i)..]);
 
-        for (var i = 0; i < AmmoType.Count; i++)
+        for (var i = 0; i < player.MaxAmmo.Length; i++)
             player.MaxAmmo[i] = BitConverter.ToInt32(data[(p + 172 + 4 * i)..]);
 
         player.AttackDown = BitConverter.ToInt32(data[(p + 188)..]) != 0;
