@@ -23,7 +23,7 @@ public sealed class Intercept
 {
     public Fixed Frac { get; set; }
 
-    public Mobj? Thing { get; private set; }
+    public Mobj Thing { get; private set; }
 
     public LineDef? Line { get; private set; }
 

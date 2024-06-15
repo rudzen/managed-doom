@@ -122,7 +122,7 @@ public sealed class DoomGame
     {
         // Do player reborns if needed.
         var players = Options.Players.AsSpan();
-        for (var i = 0; i < players.Length; i++)
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
         {
             if (players[i].InGame && players[i].PlayerState == PlayerState.Reborn)
                 DoReborn(i);
@@ -159,41 +159,41 @@ public sealed class DoomGame
             }
         }
 
-        for (var i = 0; i < players.Length; i++)
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
         {
-            if (!players[i].InGame)
-                continue;
+            if (players[i].InGame)
+            {
+                var cmd = players[i].Cmd;
+                cmd.CopyFrom(cmds[i]);
 
-            var cmd = players[i].Cmd;
-            cmd.CopyFrom(cmds[i]);
-
-            /*
+                /*
                 if (demorecording)
                 {
                     G_WriteDemoTiccmd(cmd);
                 }
                 */
 
-            // Check for turbo cheats.
-            if (cmd.ForwardMove > GameConst.TurboThreshold &&
-                (World.LevelTime & 31) == 0 &&
-                ((World.LevelTime >> 5) & 3) == i)
-            {
-                var player = players[Options.ConsolePlayer];
-                player.SendMessage($"{players[i].Name} is turbo!");
+                // Check for turbo cheats.
+                if (cmd.ForwardMove > GameConst.TurboThreshold &&
+                    (World.LevelTime & 31) == 0 &&
+                    ((World.LevelTime >> 5) & 3) == i)
+                {
+                    var player = players[Options.ConsolePlayer];
+                    player.SendMessage($"{players[i].Name} is turbo!");
+                }
             }
         }
 
         // Check for special buttons.
-        foreach (var player in players)
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
         {
-            if (!player.InGame)
+            if (!players[i].InGame)
                 continue;
 
-            if ((player.Cmd.Buttons & TicCmdButtons.Special) == 0)
+            if ((players[i].Cmd.Buttons & TicCmdButtons.Special) == 0)
                 continue;
 
-            if ((player.Cmd.Buttons & TicCmdButtons.SpecialMask) != TicCmdButtons.Pause)
+            if ((players[i].Cmd.Buttons & TicCmdButtons.SpecialMask) != TicCmdButtons.Pause)
                 continue;
 
             Paused ^= true;
@@ -212,19 +212,23 @@ public sealed class DoomGame
                 {
                     result = World.Update();
                     if (result == UpdateResult.Completed)
+                    {
                         gameAction = GameAction.Completed;
+                    }
                 }
 
                 break;
 
             case GameState.Intermission:
-                result = Intermission!.Update();
+                result = Intermission.Update();
                 if (result == UpdateResult.Completed)
                 {
                     gameAction = GameAction.WorldDone;
 
                     if (World.SecretExit)
+                    {
                         players[Options.ConsolePlayer].DidSecret = true;
+                    }
 
                     if (Options.GameMode == GameMode.Commercial)
                     {
@@ -265,7 +269,12 @@ public sealed class DoomGame
 
         GameTic++;
 
-        return result == UpdateResult.NeedWipe ? UpdateResult.NeedWipe : UpdateResult.None;
+        if (result == UpdateResult.NeedWipe)
+        {
+            return UpdateResult.NeedWipe;
+        }
+
+        return UpdateResult.None;
     }
 
 

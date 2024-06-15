@@ -39,12 +39,12 @@ public sealed class ThingMovement(World world)
     private MobjFlags currentFlags;
     private Fixed currentX;
     private Fixed currentY;
-    private readonly Fixed[] currentBox = new Fixed[4];
+    private Fixed[]? currentBox = new Fixed[4];
 
     private LineDef? currentCeilingLine;
 
     public int crossedSpecialCount;
-    public readonly LineDef[] crossedSpecials = new LineDef[maxSpecialCrossCount];
+    public LineDef[]? crossedSpecials = new LineDef[maxSpecialCrossCount];
 
     /// <summary>
     /// Links a thing into both a block and a subsector based on
@@ -139,6 +139,7 @@ public sealed class ThingMovement(World world)
             }
         }
     }
+
 
     /// <summary>
     /// Adjusts currentFloorZ and currentCeilingZ as lines are contacted.
@@ -244,7 +245,7 @@ public sealed class ThingMovement(World world)
         if ((currentThing.Flags & MobjFlags.Missile) != 0)
         {
             // See if it went over / under.
-
+            
             // Overhead.
             if (currentThing.Z > thing.Z + thing.Height)
                 return true;
@@ -447,8 +448,11 @@ public sealed class ThingMovement(World world)
                 var line = crossedSpecials[crossedSpecialCount];
                 var newSide = Geometry.PointOnLineSide(thing.X, thing.Y, line);
                 var oldSide = Geometry.PointOnLineSide(oldX, oldY, line);
-                if (newSide != oldSide && line.Special != 0)
-                    world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
+                if (newSide != oldSide)
+                {
+                    if (line.Special != 0)
+                        world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
+                }
             }
         }
 
@@ -569,7 +573,7 @@ public sealed class ThingMovement(World world)
             thing.MomX < stopSpeed &&
             thing.MomY > -stopSpeed &&
             thing.MomY < stopSpeed &&
-            (player == null || player.Cmd is { ForwardMove: 0, SideMove: 0 }))
+            (player == null || (player.Cmd.ForwardMove == 0 && player.Cmd.SideMove == 0)))
         {
             // If in a walking frame, stop moving.
             if (player != null && (player.Mobj!.State.Number - (int)MobjState.PlayRun1) < 4)
@@ -922,7 +926,7 @@ public sealed class ThingMovement(World world)
         var blockDist = thing.Radius + currentThing.Radius;
         var dx = Fixed.Abs(thing.X - currentX);
         var dy = Fixed.Abs(thing.Y - currentY);
-
+        
         // Didn't hit it.
         if (dx >= blockDist || dy >= blockDist)
             return true;

@@ -18,8 +18,15 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class FireFlicker(World world) : Thinker
+public sealed class FireFlicker : Thinker
 {
+    private readonly World world;
+
+    public FireFlicker(World world)
+    {
+        this.world = world;
+    }
+
     public Sector Sector { get; set; }
     public int Count { get; set; }
     public int MaxLight { get; set; }
@@ -28,14 +35,20 @@ public sealed class FireFlicker(World world) : Thinker
     public override void Run()
     {
         if (--Count > 0)
+        {
             return;
+        }
 
         var amount = (world.Random.Next() & 3) * 16;
 
         if (Sector.LightLevel - amount < MinLight)
+        {
             Sector.LightLevel = MinLight;
+        }
         else
+        {
             Sector.LightLevel = MaxLight - amount;
+        }
 
         Count = 4;
     }

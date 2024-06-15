@@ -38,7 +38,7 @@ public sealed class MapInteraction
     #region Line use
 
     private Mobj useThing;
-    private Predicate<Intercept> useTraverseFunc;
+    private Func<Intercept, bool> useTraverseFunc;
 
     private void InitUse()
     {
@@ -49,7 +49,7 @@ public sealed class MapInteraction
     {
         var mc = world.MapCollision;
 
-        if (intercept.Line!.Special == 0)
+        if (intercept.Line.Special == 0)
         {
             mc.LineOpening(intercept.Line);
             if (mc.OpenRange <= Fixed.Zero)
@@ -66,7 +66,9 @@ public sealed class MapInteraction
 
         var side = 0;
         if (Geometry.PointOnLineSide(useThing.X, useThing.Y, intercept.Line) == 1)
+        {
             side = 1;
+        }
 
         UseSpecialLine(useThing, intercept.Line, side);
 

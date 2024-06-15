@@ -16,23 +16,33 @@
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class WeaponInfo(
-    AmmoType ammo,
-    MobjState upState,
-    MobjState downState,
-    MobjState readyState,
-    MobjState attackState,
-    MobjState flashState)
+public sealed class WeaponInfo
 {
-    public AmmoType Ammo { get; set; } = ammo;
+    public WeaponInfo(
+        AmmoType ammo,
+        MobjState upState,
+        MobjState downState,
+        MobjState readyState,
+        MobjState attackState,
+        MobjState flashState)
+    {
+        this.Ammo = ammo;
+        this.UpState = upState;
+        this.DownState = downState;
+        this.ReadyState = readyState;
+        this.AttackState = attackState;
+        this.FlashState = flashState;
+    }
 
-    public MobjState UpState { get; set; } = upState;
+    public AmmoType Ammo { get; set; }
 
-    public MobjState DownState { get; set; } = downState;
+    public MobjState UpState { get; set; }
 
-    public MobjState ReadyState { get; set; } = readyState;
+    public MobjState DownState { get; set; }
 
-    public MobjState AttackState { get; set; } = attackState;
+    public MobjState ReadyState { get; set; }
 
-    public MobjState FlashState { get; set; } = flashState;
+    public MobjState AttackState { get; set; }
+
+    public MobjState FlashState { get; set; }
 }

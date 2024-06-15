@@ -177,33 +177,35 @@ public sealed class PathTraversal
     /// <summary>
     /// Returns true if the traverser function returns true for all lines.
     /// </summary>
-    private bool TraverseIntercepts(Predicate<Intercept> func, Fixed maxFrac)
+    private bool TraverseIntercepts(Func<Intercept, bool> func, Fixed maxFrac)
     {
         var count = interceptCount;
 
         Intercept? intercept = null;
 
-        var interceptsSpan = this.intercepts.AsSpan(0, count);
-
         while (count-- > 0)
         {
             var dist = Fixed.MaxValue;
-            for (var i = 0; i < interceptsSpan.Length; i++)
+            for (var i = 0; i < interceptCount; i++)
             {
-                if (interceptsSpan[i].Frac < dist)
+                if (intercepts[i].Frac < dist)
                 {
-                    dist = interceptsSpan[i].Frac;
-                    intercept = interceptsSpan[i];
+                    dist = intercepts[i].Frac;
+                    intercept = intercepts[i];
                 }
             }
 
-            // Checked everything in range.
             if (dist > maxFrac)
+            {
+                // Checked everything in range.
                 return true;
+            }
 
-            // Don't bother going farther.
             if (!func(intercept!))
+            {
+                // Don't bother going farther.
                 return false;
+            }
 
             intercept!.Frac = Fixed.MaxValue;
         }
@@ -216,7 +218,7 @@ public sealed class PathTraversal
     /// Traces a line from x1, y1 to x2, y2, calling the traverser function for each.
     /// Returns true if the traverser function returns true for all lines.
     /// </summary>
-    public bool PathTraverse(Fixed x1, Fixed y1, Fixed x2, Fixed y2, PathTraverseFlags flags, Predicate<Intercept> trav)
+    public bool PathTraverse(Fixed x1, Fixed y1, Fixed x2, Fixed y2, PathTraverseFlags flags, Func<Intercept, bool> trav)
     {
         earlyOut = (flags & PathTraverseFlags.EarlyOut) != 0;
 

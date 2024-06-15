@@ -508,7 +508,7 @@ public sealed class MonsterBehavior
         // Check for missile attack.
         if (actor.Info.MissileState != 0)
         {
-            if (world.Options is { Skill: < GameSkill.Nightmare, FastMonsters: false } && actor.MoveCount != 0)
+            if (world.Options.Skill < GameSkill.Nightmare && !world.Options.FastMonsters && actor.MoveCount != 0)
                 goto noMissile;
 
             if (!CheckMissileRange(actor))

@@ -20,11 +20,18 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class FloorMove(World world) : Thinker
+public sealed class FloorMove : Thinker
 {
+    private readonly World world;
+
+    public FloorMove(World world)
+    {
+        this.world = world;
+    }
+
     public FloorMoveType Type { get; set; }
     public bool Crush { get; set; }
-    public Sector? Sector { get; set; }
+    public Sector Sector { get; set; }
     public int Direction { get; set; }
     public SectorSpecial NewSpecial { get; set; }
     public int Texture { get; set; }
@@ -33,18 +40,22 @@ public sealed class FloorMove(World world) : Thinker
 
     public override void Run()
     {
-        var sa = world.SectorAction;
-        var result = sa.MovePlane(
-            sector: Sector!,
-            speed: Speed,
-            dest: FloorDestHeight,
-            crush: Crush,
-            floorOrCeiling: 0,
-            direction: Direction
-        );
+        SectorActionResult result;
 
-        if (((world.LevelTime + Sector!.Number) & 7) == 0)
+        var sa = world.SectorAction;
+
+        result = sa.MovePlane(
+            Sector,
+            Speed,
+            FloorDestHeight,
+            Crush,
+            0,
+            Direction);
+
+        if (((world.LevelTime + Sector.Number) & 7) == 0)
+        {
             world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
+        }
 
         if (result == SectorActionResult.PastDestination)
         {

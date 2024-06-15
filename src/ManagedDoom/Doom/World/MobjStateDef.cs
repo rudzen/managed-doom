@@ -44,7 +44,7 @@ public class MobjStateDef
         this.Misc2 = misc2;
     }
 
-    public int Number { get; }
+    public int Number { get; set; }
 
     public Sprite Sprite { get; set; }
 
