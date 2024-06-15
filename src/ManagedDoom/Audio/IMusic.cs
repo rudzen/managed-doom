@@ -18,10 +18,16 @@ using System;
 
 namespace ManagedDoom.Audio;
 
+public enum PlayMode
+{
+    Once,
+    Loop
+}
+
 public interface IMusic : IDisposable
 {
     public int MaxVolume { get; }
     public int Volume { get; set; }
 
-    void StartMusic(Bgm bgm, bool loop);
+    void StartMusic(Bgm bgm, PlayMode loop);
 }

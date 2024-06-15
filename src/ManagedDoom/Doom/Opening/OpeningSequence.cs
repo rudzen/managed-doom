@@ -176,7 +176,7 @@ public sealed class OpeningSequence : IOpeningSequence
                 GameMode.Commercial => Bgm.DM2TTL,
                 _                   => Bgm.INTRO
             };
-            options.Music.StartMusic(bgm, false);
+            options.Music.StartMusic(bgm, PlayMode.Once);
         }
 
         if (reset)

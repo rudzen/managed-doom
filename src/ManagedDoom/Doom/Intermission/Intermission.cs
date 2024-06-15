@@ -233,11 +233,11 @@ public sealed class Intermission
             // intermission music
             if (Options.GameMode == GameMode.Commercial)
             {
-                Options.Music.StartMusic(Bgm.DM2INT, true);
+                Options.Music.StartMusic(Bgm.DM2INT, PlayMode.Loop);
             }
             else
             {
-                Options.Music.StartMusic(Bgm.INTER, true);
+                Options.Music.StartMusic(Bgm.INTER, PlayMode.Loop);
             }
         }
 

@@ -33,7 +33,7 @@ public sealed class NullMusic : IMusic
         return instance ??= new NullMusic();
     }
 
-    public void StartMusic(Bgm bgm, bool loop)
+    public void StartMusic(Bgm bgm, PlayMode playMode)
     {
     }
 

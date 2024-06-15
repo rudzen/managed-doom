@@ -107,7 +107,7 @@ public sealed class World
 
         dummy = new Mobj(this);
 
-        options.Music.StartMusic(ManagedDoom.Doom.Map.Map.GetMapBgm(options), true);
+        options.Music.StartMusic(ManagedDoom.Doom.Map.Map.GetMapBgm(options), PlayMode.Loop);
     }
 
     public IGameOptions Options { get; }

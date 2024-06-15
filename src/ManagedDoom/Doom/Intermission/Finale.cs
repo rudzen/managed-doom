@@ -80,7 +80,7 @@ public sealed class Finale
             case GameMode.Shareware:
             case GameMode.Registered:
             case GameMode.Retail:
-                options.Music.StartMusic(Bgm.VICTOR, true);
+                options.Music.StartMusic(Bgm.VICTOR, PlayMode.Loop);
                 switch (options.Episode)
                 {
                     case 1:
@@ -110,7 +110,7 @@ public sealed class Finale
                 break;
 
             case GameMode.Commercial:
-                options.Music.StartMusic(Bgm.READ_M, true);
+                options.Music.StartMusic(Bgm.READ_M, PlayMode.Loop);
                 switch (options.Map)
                 {
                     case 6:
@@ -150,7 +150,7 @@ public sealed class Finale
                 break;
 
             default:
-                options.Music.StartMusic(Bgm.READ_M, true);
+                options.Music.StartMusic(Bgm.READ_M, PlayMode.Loop);
                 Flat = "F_SKY1";
                 Text = DoomInfo.Strings.C1TEXT;
                 break;
@@ -236,7 +236,7 @@ public sealed class Finale
             updateResult = UpdateResult.NeedWipe;
             if (Options.Episode == 3)
             {
-                Options.Music.StartMusic(Bgm.BUNNY, true);
+                Options.Music.StartMusic(Bgm.BUNNY, PlayMode.Loop);
             }
         }
 
@@ -330,7 +330,7 @@ public sealed class Finale
 
         updateResult = UpdateResult.NeedWipe;
 
-        Options.Music.StartMusic(Bgm.EVIL, true);
+        Options.Music.StartMusic(Bgm.EVIL, PlayMode.Loop);
     }
 
     private void UpdateCast()

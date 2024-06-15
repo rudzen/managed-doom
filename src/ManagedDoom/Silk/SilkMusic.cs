@@ -59,31 +59,31 @@ public sealed class SilkMusic : IMusic
         }
     }
 
-    public void StartMusic(Bgm bgm, bool loop)
+    public void StartMusic(Bgm bgm, PlayMode loop)
     {
         if (bgm == current)
             return;
 
         var lumpName = $"D_{DoomInfo.BgmNames[(int)bgm].ToString().ToUpper()}";
-        var data = wad.ReadLump(lumpName);
+        var lumpNumber = wad.GetLumpNumber(lumpName);
+        var data = wad.GetLumpData(lumpNumber);
         var decoder = ReadData(data, loop);
         stream!.SetDecoder(decoder);
 
         current = bgm;
     }
 
-    private static IDecoder ReadData(byte[] data, bool loop)
+    private static IDecoder ReadData(ReadOnlySpan<byte> data, PlayMode playMode)
     {
-        var dataSpan = data.AsSpan();
-        var isMus = dataSpan[..MusDecoder.MusHeader.Length].SequenceEqual(MusDecoder.MusHeader);
+        var isMus = data[..MusDecoder.MusHeader.Length].SequenceEqual(MusDecoder.MusHeader);
 
         if (isMus)
-            return new MusDecoder(data, loop);
+            return new MusDecoder(data, playMode);
 
-        var isMidi = dataSpan[..MidiDecoder.MidiHeader.Length].SequenceEqual(MidiDecoder.MidiHeader);
+        var isMidi = data[..MidiDecoder.MidiHeader.Length].SequenceEqual(MidiDecoder.MidiHeader);
 
         if (isMidi)
-            return new MidiDecoder(data, loop);
+            return new MidiDecoder(data.ToArray(), playMode);
 
         throw new Exception("Unknown format!");
     }
@@ -211,7 +211,7 @@ public sealed class SilkMusic : IMusic
         ];
 
         private readonly byte[] data;
-        private readonly bool loop;
+        private readonly PlayMode playMode;
 
         private int scoreLength;
         private readonly int scoreStart;
@@ -229,21 +229,21 @@ public sealed class SilkMusic : IMusic
 
         private int blockWrote;
 
-        public MusDecoder(byte[] data, bool loop)
+        public MusDecoder(ReadOnlySpan<byte> data, PlayMode playMode)
         {
             CheckHeader(data);
 
-            this.data = data;
-            this.loop = loop;
+            this.data = data.ToArray();
+            this.playMode = playMode;
 
-            scoreLength = BitConverter.ToUInt16(data, 4);
-            scoreStart = BitConverter.ToUInt16(data, 6);
-            channelCount = BitConverter.ToUInt16(data, 8);
-            channelCount2 = BitConverter.ToUInt16(data, 10);
-            instrumentCount = BitConverter.ToUInt16(data, 12);
+            scoreLength = BitConverter.ToUInt16(data.Slice(4, 2));
+            scoreStart = BitConverter.ToUInt16(data.Slice(6, 2));
+            channelCount = BitConverter.ToUInt16(data.Slice(8, 2));
+            channelCount2 = BitConverter.ToUInt16(data.Slice(10, 2));
+            instrumentCount = BitConverter.ToUInt16(data.Slice(12, 2));
             instruments = new int[instrumentCount];
             for (var i = 0; i < instruments.Length; i++)
-                instruments[i] = BitConverter.ToUInt16(data, 16 + 2 * i);
+                instruments[i] = BitConverter.ToUInt16(data.Slice(16 + 2 * i, 2));
 
             events = new MusEvent[128];
             for (var i = 0; i < events.Length; i++)
@@ -303,15 +303,13 @@ public sealed class SilkMusic : IMusic
 
             synthesizer.NoteOffAll(false);
 
-            if (loop)
+            if (playMode == PlayMode.Loop)
                 Reset();
         }
 
         private void Reset()
         {
-            for (var i = 0; i < lastVolume.Length; i++)
-                lastVolume[i] = 0;
-
+            Array.Fill(lastVolume, 0);
             p = scoreStart;
             delay = 0;
         }
@@ -445,9 +443,9 @@ public sealed class SilkMusic : IMusic
 
         private void SendEvents(Synthesizer synthesizer)
         {
-            for (var i = 0; i < eventCount; i++)
+            var currentEvents = events.AsSpan(0, eventCount);
+            foreach (var me in currentEvents)
             {
-                var me = events[i];
                 switch (me.Type)
                 {
                     case 0: // RELEASE NOTE
@@ -537,7 +535,7 @@ public sealed class SilkMusic : IMusic
         }
     }
 
-    private sealed class MidiDecoder : IDecoder
+    private sealed class MidiDecoder(byte[] data, PlayMode playMode) : IDecoder
     {
         public static byte[] MidiHeader =>
         [
@@ -547,23 +545,15 @@ public sealed class SilkMusic : IMusic
             (byte)'d'
         ];
 
-        private readonly MidiFile midi;
+        private readonly MidiFile midi = new(new MemoryStream(data));
         private MidiFileSequencer? sequencer;
-
-        private readonly bool loop;
-
-        public MidiDecoder(byte[] data, bool loop)
-        {
-            midi = new MidiFile(new MemoryStream(data));
-            this.loop = loop;
-        }
 
         public void RenderWaveform(Synthesizer synthesizer, Span<float> left, Span<float> right)
         {
             if (sequencer is null)
             {
                 sequencer = new MidiFileSequencer(synthesizer);
-                sequencer.Play(midi, loop);
+                sequencer.Play(midi, playMode == PlayMode.Loop);
             }
 
             sequencer.Render(left, right);
