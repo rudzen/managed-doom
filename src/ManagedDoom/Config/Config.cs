@@ -40,8 +40,8 @@ public sealed class Config : IConfig
                 Values = ConfigValues.CreateDefaults();
             else
             {
-                var f = File.ReadAllText(path);
-                Values = JsonSerializer.Deserialize(f, ConfigValuesContext.Default.ConfigValues)!;
+                using var s = File.OpenRead(path);
+                Values = JsonSerializer.Deserialize(s, ConfigValuesContext.Default.ConfigValues)!;
             }
 
             Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
@@ -49,7 +49,7 @@ public sealed class Config : IConfig
         catch
         {
             IsRestoredFromFile = false;
-            Console.WriteLine("Failed to read configuration file");
+            Console.WriteLine("Failed to read configuration file. using default settings.");
         }
     }
 
@@ -60,7 +60,7 @@ public sealed class Config : IConfig
             Console.Write("Store settings: ");
             var start = Stopwatch.GetTimestamp();
 
-            var configJson = JsonSerializer.Serialize(Values, ConfigValuesContext.Default.ConfigValues!);
+            var configJson = JsonSerializer.Serialize(Values, ConfigValuesContext.Default.ConfigValues);
             File.WriteAllText(path, configJson);
 
             Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
