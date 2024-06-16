@@ -25,26 +25,12 @@ namespace ManagedDoom.Doom.Graphics;
 
 public sealed class TextureLookup : ITextureLookup
 {
-    private List<Texture> textures;
-    private Dictionary<string, Texture> nameToTexture;
-    private Dictionary<string, int> nameToNumber;
+    private readonly List<Texture> textures = [];
+    private readonly Dictionary<string, Texture> nameToTexture = [];
+    private readonly Dictionary<string, int> nameToNumber = [];
 
-    public TextureLookup(Wad.Wad wad) : this(wad, false)
+    public TextureLookup(Wad.Wad wad)
     {
-    }
-
-    private TextureLookup(Wad.Wad wad, bool useDummy)
-    {
-        InitLookup(wad);
-        InitSwitchList();
-    }
-
-    private void InitLookup(Wad.Wad wad)
-    {
-        textures = [];
-        nameToTexture = new Dictionary<string, Texture>();
-        nameToNumber = new Dictionary<string, int>();
-
         var patches = LoadPatches(wad);
 
         for (var n = 1; n <= 2; n++)
@@ -53,35 +39,31 @@ public sealed class TextureLookup : ITextureLookup
             if (lumpNumber == -1)
                 break;
 
-            var lumpSize = wad.GetLumpSize(lumpNumber);
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+            var lumpData = wad.GetLumpData(lumpNumber);
 
-            try
+            var count = BitConverter.ToInt32(lumpData);
+            for (var i = 0; i < count; i++)
             {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lumpNumber, lumpBuffer);
-
-                var count = BitConverter.ToInt32(lumpBuffer);
-                for (var i = 0; i < count; i++)
-                {
-                    var offset = BitConverter.ToInt32(lumpBuffer[(4 + 4 * i)..]);
-                    var texture = Texture.FromData(lumpBuffer, offset, patches);
-                    nameToNumber.TryAdd(texture.Name, textures.Count);
-                    textures.Add(texture);
-                    nameToTexture.TryAdd(texture.Name, texture);
-                }
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
+                var offset = BitConverter.ToInt32(lumpData[(4 + 4 * i)..]);
+                var texture = Texture.FromData(lumpData, offset, patches);
+                nameToNumber.TryAdd(texture.Name, textures.Count);
+                textures.Add(texture);
+                nameToTexture.TryAdd(texture.Name, texture);
             }
         }
+
+        SwitchList = CreateSwitchList();
     }
 
-    private void InitSwitchList()
+    public Texture this[int num] => textures[num];
+    public Texture this[string name] => nameToTexture[name];
+    public int Count => textures.Count;
+    public int[] SwitchList { get; }
+
+    private int[] CreateSwitchList()
     {
-        var list = new List<int>();
-        foreach (var (tex1, tex2) in DoomInfo.SwitchNames)
+        var list = new List<int>(DoomInfo.SwitchNames.Length);
+        foreach (var (tex1, tex2) in DoomInfo.SwitchNames.AsSpan())
         {
             var texNum1 = GetNumber(tex1);
             var texNum2 = GetNumber(tex2);
@@ -92,20 +74,16 @@ public sealed class TextureLookup : ITextureLookup
             }
         }
 
-        SwitchList = list.ToArray();
+        return [.. list];
     }
 
     public int GetNumber(string name)
     {
         if (name[0] == '-')
-        {
             return 0;
-        }
 
         if (nameToNumber.TryGetValue(name, out var number))
-        {
             return number;
-        }
 
         return -1;
     }
@@ -146,24 +124,15 @@ public sealed class TextureLookup : ITextureLookup
     {
         const string lumpName = "PNAMES";
         var lumpNumber = wad.GetLumpNumber(lumpName);
-        var lumpSize = wad.GetLumpSize(lumpNumber);
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lumpNumber);
 
-        try
-        {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lumpNumber, lumpBuffer);
+        var count = BitConverter.ToInt32(lumpData[..4]);
+        var names = new string[count];
 
-            var count = BitConverter.ToInt32(lumpBuffer[..4]);
-            var names = new string[count];
-            for (var i = 0; i < names.Length; i++)
-                names[i] = DoomInterop.ToString(lumpBuffer.Slice(4 + 8 * i, 8));
-            return names;
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+        for (var i = 0; i < names.Length; i++)
+            names[i] = DoomInterop.ToString(lumpData.Slice(4 + 8 * i, 8));
+
+        return names;
     }
 
     public IEnumerator<Texture> GetEnumerator()
@@ -175,9 +144,4 @@ public sealed class TextureLookup : ITextureLookup
     {
         return textures.GetEnumerator();
     }
-
-    public int Count => textures.Count;
-    public Texture this[int num] => textures[num];
-    public Texture this[string name] => nameToTexture[name];
-    public int[] SwitchList { get; private set; }
 }
