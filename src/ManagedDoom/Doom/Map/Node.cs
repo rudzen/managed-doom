@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Interfaces;
@@ -123,28 +122,18 @@ public sealed class Node : IFixedCoordinates
         if (lumpSize % dataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var count = lumpSize / dataSize;
+        var nodes = new Node[count];
+
+        for (var i = 0; i < count; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-
-            var count = lumpSize / dataSize;
-            var nodes = new Node[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                nodes[i] = FromData(lumpBuffer.Slice(offset, dataSize));
-            }
-
-            return nodes;
+            var offset = dataSize * i;
+            nodes[i] = FromData(lumpData.Slice(offset, dataSize));
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return nodes;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

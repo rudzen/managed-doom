@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Interfaces;
 
