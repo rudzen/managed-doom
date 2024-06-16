@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.Map;
@@ -30,9 +29,12 @@ public sealed record Seg(
     Sector? FrontSector,
     Sector? BackSector)
 {
-    private const int dataSize = 12;
+    private const int DataSize = 12;
 
-    private static Seg FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<LineDef> lines)
+    private static Seg FromData(
+        ReadOnlySpan<byte> data,
+        ReadOnlySpan<Vertex> vertices,
+        ReadOnlySpan<LineDef> lines)
     {
         var vertex1Number = BitConverter.ToInt16(data[..2]);
         var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
@@ -59,30 +61,20 @@ public sealed record Seg(
     public static Seg[] FromWad(Wad.Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var count = lumpSize / DataSize;
+        var segments = new Seg[count];
+
+        for (var i = 0; i < segments.Length; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-
-            var count = lumpSize / dataSize;
-            var segments = new Seg[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                segments[i] = FromData(lumpBuffer.Slice(offset, dataSize), vertices, lines);
-            }
-
-            return segments;
+            var offset = DataSize * i;
+            segments[i] = FromData(lumpData.Slice(offset, DataSize), vertices, lines);
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return segments;
     }
 }
