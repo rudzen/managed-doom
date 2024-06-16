@@ -101,6 +101,7 @@ public sealed class StatusBar
                 priority = 9;
                 FaceIndex = Face.DeadIndex;
                 faceCount = 1;
+                return;
             }
         }
 
@@ -141,7 +142,7 @@ public sealed class StatusBar
 
                 if (player.Health - oldHealth > Face.MuchPain)
                 {
-                    faceCount = Face.TurnDuration;
+                    faceCount = Face.OuchDuration;
                     FaceIndex = CalcPainOffset() + Face.OuchOffset;
                 }
                 else
@@ -251,8 +252,7 @@ public sealed class StatusBar
 
         if (health != oldHealth)
         {
-            lastPainOffset = Face.Stride *
-                             (((100 - health) * Face.PainFaceCount) / 101);
+            lastPainOffset = Face.Stride * (((100 - health) * Face.PainFaceCount) / 101);
             oldHealth = health;
         }
 
