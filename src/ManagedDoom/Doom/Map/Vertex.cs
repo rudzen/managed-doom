@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Interfaces;
 
@@ -23,7 +22,7 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed record Vertex(Fixed X, Fixed Y) : IFixedCoordinates
 {
-    private const int dataSize = 4;
+    private const int DataSize = 4;
 
     private static Vertex FromData(ReadOnlySpan<byte> data)
     {
@@ -36,29 +35,20 @@ public sealed record Vertex(Fixed X, Fixed Y) : IFixedCoordinates
     public static Vertex[] FromWad(Wad.Wad wad, int lump)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var count = lumpSize / DataSize;
+        var vertices = new Vertex[count];
+
+        for (var i = 0; i < vertices.Length; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-            var count = lumpSize / dataSize;
-            var vertices = new Vertex[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                vertices[i] = FromData(lumpBuffer[offset..]);
-            }
-
-            return vertices;
+            var offset = DataSize * i;
+            vertices[i] = FromData(lumpData[offset..]);
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return vertices;
     }
 }
