@@ -12,7 +12,7 @@ public sealed class SectorAction(WadPath wadPath) : IClassFixture<WadPath>
         var demoFile = Path.Combine(WadPath.DataPath, "teleporter_test.lmp");
         using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -41,7 +41,7 @@ public sealed class SectorAction(WadPath wadPath) : IClassFixture<WadPath>
 
         using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -76,7 +76,7 @@ public sealed class SectorAction(WadPath wadPath) : IClassFixture<WadPath>
 
         using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -111,7 +111,7 @@ public sealed class SectorAction(WadPath wadPath) : IClassFixture<WadPath>
 
         using var content = GameContent.CreateDummy(wads);
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 

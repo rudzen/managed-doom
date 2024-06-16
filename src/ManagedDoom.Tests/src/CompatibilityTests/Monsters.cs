@@ -12,7 +12,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DataPath, "nightmare_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -40,7 +40,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "barrel_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -68,7 +68,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "zombieman_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -96,7 +96,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "zombieman_test2.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -124,7 +124,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "shotgunguy_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -152,7 +152,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "chaingunguy_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -180,7 +180,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "imp_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -208,7 +208,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_imp_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -236,7 +236,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "demon_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -264,7 +264,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_demon_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -298,7 +298,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
                 GameVersion = GameVersion.Final2
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -326,7 +326,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "cacodemon_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -354,7 +354,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_cacodemon_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -382,7 +382,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "baron_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -410,7 +410,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_baron_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -438,7 +438,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "revenant_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -466,7 +466,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fatso_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -494,7 +494,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "arachnotron_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -528,7 +528,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
                 GameVersion = GameVersion.Final2
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -556,7 +556,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "archvile_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -584,7 +584,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "telefrag_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 

@@ -43,7 +43,7 @@ public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
 
         for (var i = 0; i < 50; i++)
         {
-            var ordered = spots.OrderBy(spot => random.NextDouble()).ToArray();
+            var ordered = spots.OrderBy(_ => random.NextDouble()).ToArray();
 
             var total = 0;
 

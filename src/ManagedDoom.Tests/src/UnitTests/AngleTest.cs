@@ -4,16 +4,16 @@ namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class AngleTest
 {
-    private const double delta = 1.0E-3;
+    private const double Delta = 1.0E-3;
 
     [Fact]
     public void ToRadian()
     {
-        Assert.Equal(0.00 * Math.PI, Angle.Ang0.ToRadian(), delta);
-        Assert.Equal(0.25 * Math.PI, Angle.Ang45.ToRadian(), delta);
-        Assert.Equal(0.50 * Math.PI, Angle.Ang90.ToRadian(), delta);
-        Assert.Equal(1.00 * Math.PI, Angle.Ang180.ToRadian(), delta);
-        Assert.Equal(1.50 * Math.PI, Angle.Ang270.ToRadian(), delta);
+        Assert.Equal(0.00 * Math.PI, Angle.Ang0.ToRadian(), Delta);
+        Assert.Equal(0.25 * Math.PI, Angle.Ang45.ToRadian(), Delta);
+        Assert.Equal(0.50 * Math.PI, Angle.Ang90.ToRadian(), Delta);
+        Assert.Equal(1.00 * Math.PI, Angle.Ang180.ToRadian(), Delta);
+        Assert.Equal(1.50 * Math.PI, Angle.Ang270.ToRadian(), Delta);
     }
 
     [Fact]
@@ -28,19 +28,19 @@ public sealed class AngleTest
             var actualSin = Math.Sin(angle.ToRadian());
             var actualCos = Math.Cos(angle.ToRadian());
 
-            Assert.Equal(expectedSin, actualSin, delta);
-            Assert.Equal(expectedCos, actualCos, delta);
+            Assert.Equal(expectedSin, actualSin, Delta);
+            Assert.Equal(expectedCos, actualCos, Delta);
         }
     }
 
     [Fact]
     public void FromRadianToDegrees()
     {
-        Assert.Equal(0, Angle.FromRadian(0.00 * Math.PI).ToDegree(), delta);
-        Assert.Equal(45, Angle.FromRadian(0.25 * Math.PI).ToDegree(), delta);
-        Assert.Equal(90, Angle.FromRadian(0.50 * Math.PI).ToDegree(), delta);
-        Assert.Equal(180, Angle.FromRadian(1.00 * Math.PI).ToDegree(), delta);
-        Assert.Equal(270, Angle.FromRadian(1.50 * Math.PI).ToDegree(), delta);
+        Assert.Equal(0, Angle.FromRadian(0.00 * Math.PI).ToDegree(), Delta);
+        Assert.Equal(45, Angle.FromRadian(0.25 * Math.PI).ToDegree(), Delta);
+        Assert.Equal(90, Angle.FromRadian(0.50 * Math.PI).ToDegree(), Delta);
+        Assert.Equal(180, Angle.FromRadian(1.00 * Math.PI).ToDegree(), Delta);
+        Assert.Equal(270, Angle.FromRadian(1.50 * Math.PI).ToDegree(), Delta);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public sealed class AngleTest
                 var actualSin = Math.Sin(ab.ToRadian());
                 var actualCos = Math.Cos(ab.ToRadian());
 
-                Assert.Equal(expectedSin, actualSin, delta);
-                Assert.Equal(expectedCos, actualCos, delta);
+                Assert.Equal(expectedSin, actualSin, Delta);
+                Assert.Equal(expectedCos, actualCos, Delta);
             }
 
             {
@@ -75,8 +75,8 @@ public sealed class AngleTest
                 var actualSin = Math.Sin(ac.ToRadian());
                 var actualCos = Math.Cos(ac.ToRadian());
 
-                Assert.Equal(expectedSin, actualSin, delta);
-                Assert.Equal(expectedCos, actualCos, delta);
+                Assert.Equal(expectedSin, actualSin, Delta);
+                Assert.Equal(expectedCos, actualCos, Delta);
             }
         }
     }
@@ -99,8 +99,8 @@ public sealed class AngleTest
             var actualSin = Math.Sin(ab.ToRadian());
             var actualCos = Math.Cos(ab.ToRadian());
 
-            Assert.Equal(expectedSin, actualSin, delta);
-            Assert.Equal(expectedCos, actualCos, delta);
+            Assert.Equal(expectedSin, actualSin, Delta);
+            Assert.Equal(expectedCos, actualCos, Delta);
         }
     }
 
@@ -124,8 +124,8 @@ public sealed class AngleTest
             var actualSin = Math.Sin(fc.ToRadian());
             var actualCos = Math.Cos(fc.ToRadian());
 
-            Assert.Equal(expectedSin, actualSin, delta);
-            Assert.Equal(expectedCos, actualCos, delta);
+            Assert.Equal(expectedSin, actualSin, Delta);
+            Assert.Equal(expectedCos, actualCos, Delta);
         }
     }
 
@@ -149,8 +149,8 @@ public sealed class AngleTest
             var actualSin = Math.Sin(fc.ToRadian());
             var actualCos = Math.Cos(fc.ToRadian());
 
-            Assert.Equal(expectedSin, actualSin, delta);
-            Assert.Equal(expectedCos, actualCos, delta);
+            Assert.Equal(expectedSin, actualSin, Delta);
+            Assert.Equal(expectedCos, actualCos, Delta);
         }
     }
 
@@ -167,7 +167,7 @@ public sealed class AngleTest
             var fa = Angle.FromDegree(a);
             var fc = fa * b;
 
-            Assert.Equal(c, fc.ToDegree(), delta);
+            Assert.Equal(c, fc.ToDegree(), Delta);
         }
     }
 
@@ -184,7 +184,7 @@ public sealed class AngleTest
             var fb = Angle.FromDegree(b);
             var fc = a * fb;
 
-            Assert.Equal(c, fc.ToDegree(), delta);
+            Assert.Equal(c, fc.ToDegree(), Delta);
         }
     }
 
@@ -201,7 +201,7 @@ public sealed class AngleTest
             var fa = Angle.FromDegree(a);
             var fc = fa / b;
 
-            Assert.Equal(c, fc.ToDegree(), delta);
+            Assert.Equal(c, fc.ToDegree(), Delta);
         }
     }
 

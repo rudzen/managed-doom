@@ -4,7 +4,7 @@ namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class FixedTest
 {
-    private const double delta = 1.0E-3;
+    private const double Delta = 1.0E-3;
 
     [Fact]
     public void Conversion()
@@ -18,8 +18,8 @@ public sealed class FixedTest
             var fda = Fixed.FromDouble(da);
             var fsa = Fixed.FromFloat(sa);
 
-            Assert.Equal(da, fda.ToDouble(), delta);
-            Assert.Equal(sa, fsa.ToFloat(), delta);
+            Assert.Equal(da, fda.ToDouble(), Delta);
+            Assert.Equal(sa, fsa.ToFloat(), Delta);
         }
     }
 
@@ -35,7 +35,7 @@ public sealed class FixedTest
             var fa = Fixed.FromDouble(a);
             var fb = Fixed.Abs(fa);
 
-            Assert.Equal(b, fb.ToDouble(), delta);
+            Assert.Equal(b, fb.ToDouble(), Delta);
         }
     }
 
@@ -51,7 +51,7 @@ public sealed class FixedTest
             var fa = Fixed.FromDouble(a);
             var fb = Fixed.Abs(fa);
 
-            Assert.Equal(b, fb.ToDouble(), delta);
+            Assert.Equal(b, fb.ToDouble(), Delta);
         }
     }
 
@@ -65,8 +65,8 @@ public sealed class FixedTest
 
             var fa = Fixed.FromDouble(a);
 
-            Assert.Equal(+a, (+fa).ToDouble(), delta);
-            Assert.Equal(-a, (-fa).ToDouble(), delta);
+            Assert.Equal(+a, (+fa).ToDouble(), Delta);
+            Assert.Equal(-a, (-fa).ToDouble(), Delta);
         }
     }
 
@@ -80,8 +80,8 @@ public sealed class FixedTest
 
             var fa = Fixed.FromDouble(a);
 
-            Assert.Equal(+a, (+fa).ToDouble(), delta);
-            Assert.Equal(-a, (-fa).ToDouble(), delta);
+            Assert.Equal(+a, (+fa).ToDouble(), Delta);
+            Assert.Equal(-a, (-fa).ToDouble(), Delta);
         }
     }
 
@@ -99,7 +99,7 @@ public sealed class FixedTest
             var fb = Fixed.FromInt(b);
             var fc = fa + fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -117,7 +117,7 @@ public sealed class FixedTest
             var fb = Fixed.FromDouble(b);
             var fc = fa + fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -135,7 +135,7 @@ public sealed class FixedTest
             var fb = Fixed.FromInt(b);
             var fc = fa - fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -153,7 +153,7 @@ public sealed class FixedTest
             var fb = Fixed.FromDouble(b);
             var fc = fa - fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -171,7 +171,7 @@ public sealed class FixedTest
             var fb = Fixed.FromInt(b);
             var fc = fa * fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -189,7 +189,7 @@ public sealed class FixedTest
             var fb = Fixed.FromDouble(b);
             var fc = fa * fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -206,7 +206,7 @@ public sealed class FixedTest
             var fb = Fixed.FromDouble(b);
             var fc = a * fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -223,7 +223,7 @@ public sealed class FixedTest
             var fa = Fixed.FromDouble(a);
             var fc = fa * b;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -241,7 +241,7 @@ public sealed class FixedTest
             var fb = Fixed.FromInt(b);
             var fc = fa / fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -259,7 +259,7 @@ public sealed class FixedTest
             var fb = Fixed.FromDouble(b);
             var fc = fa / fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -276,7 +276,7 @@ public sealed class FixedTest
             var fb = Fixed.FromDouble(b);
             var fc = a / fb;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 
@@ -293,7 +293,7 @@ public sealed class FixedTest
             var fa = Fixed.FromDouble(a);
             var fc = fa / b;
 
-            Assert.Equal(c, fc.ToDouble(), delta);
+            Assert.Equal(c, fc.ToDouble(), Delta);
         }
     }
 

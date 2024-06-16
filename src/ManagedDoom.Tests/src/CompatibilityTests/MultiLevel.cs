@@ -18,7 +18,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
                 GameMode = GameMode.Retail
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -139,7 +139,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "multilevel_test_doom2.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -260,7 +260,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "finale_test1.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -321,7 +321,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "finale_test2.lmp");
         var demo = new Demo(demoFile);
-        var cmds = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var cmds = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 

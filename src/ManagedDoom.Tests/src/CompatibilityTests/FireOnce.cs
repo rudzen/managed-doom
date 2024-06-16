@@ -15,7 +15,7 @@ public sealed class FireOnce(WadPath wadPath) : IClassFixture<WadPath>
         options.Map = 1;
         options.Players[0].InGame = true;
 
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(i => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
         var game = new DoomGame(content, options);
         game.DeferInitNew();
 

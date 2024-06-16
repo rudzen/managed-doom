@@ -185,17 +185,17 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             {
                 var seg = map.Segs[subSector.FirstSeg + i];
 
-                var p1x = seg.Vertex1.X.ToDouble();
-                var p1y = seg.Vertex1.Y.ToDouble();
-                var p2x = seg.Vertex2.X.ToDouble();
-                var p2y = seg.Vertex2.Y.ToDouble();
+                var p1X = seg.Vertex1.X.ToDouble();
+                var p1Y = seg.Vertex1.Y.ToDouble();
+                var p2X = seg.Vertex2.X.ToDouble();
+                var p2Y = seg.Vertex2.Y.ToDouble();
 
-                var dx = p2x - p1x;
-                var dy = p2y - p1y;
+                var dx = p2X - p1X;
+                var dy = p2Y - p1Y;
                 var length = Math.Sqrt(dx * dx + dy * dy);
 
-                var centerX = (p1x + p2x) / 2;
-                var centerY = (p1y + p2y) / 2;
+                var centerX = (p1X + p2X) / 2;
+                var centerY = (p1Y + p2Y) / 2;
                 var stepX = dy / length;
                 var stepY = -dx / length;
 
@@ -236,17 +236,17 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             {
                 var seg = map.Segs[subSector.FirstSeg + i];
 
-                var p1x = seg.Vertex1.X.ToDouble();
-                var p1y = seg.Vertex1.Y.ToDouble();
-                var p2x = seg.Vertex2.X.ToDouble();
-                var p2y = seg.Vertex2.Y.ToDouble();
+                var p1X = seg.Vertex1.X.ToDouble();
+                var p1Y = seg.Vertex1.Y.ToDouble();
+                var p2X = seg.Vertex2.X.ToDouble();
+                var p2Y = seg.Vertex2.Y.ToDouble();
 
-                var dx = p2x - p1x;
-                var dy = p2y - p1y;
+                var dx = p2X - p1X;
+                var dy = p2Y - p1Y;
                 var length = Math.Sqrt(dx * dx + dy * dy);
 
-                var centerX = (p1x + p2x) / 2;
-                var centerY = (p1y + p2y) / 2;
+                var centerX = (p1X + p2X) / 2;
+                var centerY = (p1Y + p2Y) / 2;
                 var stepX = dy / length;
                 var stepY = -dx / length;
 
