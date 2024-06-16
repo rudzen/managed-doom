@@ -22,7 +22,7 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class MapThing : IFixedCoordinates
 {
-    private const int dataSize = 10;
+    private const int DataSize = 10;
 
     public static readonly MapThing Empty = new(
         Fixed.Zero,
@@ -54,18 +54,18 @@ public sealed class MapThing : IFixedCoordinates
     public static MapThing[] FromWad(Wad.Wad wad, int lump)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
         var lumpData = wad.GetLumpData(lump);
 
-        var count = lumpSize / dataSize;
+        var count = lumpSize / DataSize;
         var things = new MapThing[count];
 
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < things.Length; i++)
         {
-            var offset = dataSize * i;
-            things[i] = FromData(lumpData.Slice(offset, dataSize));
+            var offset = DataSize * i;
+            things[i] = FromData(lumpData.Slice(offset, DataSize));
         }
 
         return things;

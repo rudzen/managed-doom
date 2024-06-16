@@ -23,7 +23,7 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class Node : IFixedCoordinates
 {
-    private const int dataSize = 28;
+    private const int DataSize = 28;
 
     public Node(
         Fixed x,
@@ -119,18 +119,18 @@ public sealed class Node : IFixedCoordinates
     public static Node[] FromWad(Wad.Wad wad, int lump)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
         var lumpData = wad.GetLumpData(lump);
 
-        var count = lumpSize / dataSize;
+        var count = lumpSize / DataSize;
         var nodes = new Node[count];
 
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < nodes.Length; i++)
         {
-            var offset = dataSize * i;
-            nodes[i] = FromData(lumpData.Slice(offset, dataSize));
+            var offset = DataSize * i;
+            nodes[i] = FromData(lumpData.Slice(offset, DataSize));
         }
 
         return nodes;

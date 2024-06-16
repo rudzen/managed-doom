@@ -22,7 +22,7 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class LineDef
 {
-    private const int dataSize = 14;
+    private const int DataSize = 14;
 
     public LineDef(
         Vertex vertex1,
@@ -57,7 +57,7 @@ public sealed class LineDef
         BoundingBox[Box.Left] = Fixed.Min(vertex1.X, vertex2.X);
         BoundingBox[Box.Right] = Fixed.Max(vertex1.X, vertex2.X);
 
-        FrontSector = frontSide?.Sector;
+        FrontSector = frontSide?.Sector!;
         BackSector = backSide?.Sector;
     }
 
@@ -75,8 +75,8 @@ public sealed class LineDef
     public Sector FrontSector { get; }
     public Sector? BackSector { get; }
     public int ValidCount { get; set; }
-    public Thinker SpecialData { get; set; }
-    public Mobj SoundOrigin { get; set; }
+    public Thinker SpecialData { get; set; } = null!;
+    public Mobj SoundOrigin { get; set; } = null!;
 
     private static LineDef FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
     {
@@ -101,14 +101,14 @@ public sealed class LineDef
     public static LineDef[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
         var lumpData = wad.GetLumpData(lump);
-        var count = lumpSize / dataSize;
+        var count = lumpSize / DataSize;
         var lines = new LineDef[count];
 
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < lines.Length; i++)
         {
             var offset = 14 * i;
             lines[i] = FromData(lumpData[offset..], vertices, sides);
