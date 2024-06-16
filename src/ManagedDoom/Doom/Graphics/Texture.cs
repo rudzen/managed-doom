@@ -26,7 +26,7 @@ public sealed class Texture
         bool masked,
         int width,
         int height,
-        TexturePatch[] patches)
+        ReadOnlySpan<TexturePatch> patches)
     {
         this.Name = name;
         this.Masked = masked;
@@ -35,7 +35,7 @@ public sealed class Texture
         Composite = GenerateComposite(name, width, height, patches);
     }
 
-    public static Texture FromData(ReadOnlySpan<byte> data, int offset, Patch[] patchLookup)
+    public static Texture FromData(ReadOnlySpan<byte> data, int offset, ReadOnlySpan<Patch> patchLookup)
     {
         var root = data[offset..];
         var name = DoomInterop.ToString(root);
@@ -44,7 +44,7 @@ public sealed class Texture
         var height = BitConverter.ToInt16(root[14..]);
         var patchCount = BitConverter.ToInt16(root[20..]);
         var patches = new TexturePatch[patchCount];
-        for (var i = 0; i < patchCount; i++)
+        for (var i = 0; i < patches.Length; i++)
         {
             var patchOffset = offset + 22 + TexturePatch.DataSize * i;
             patches[i] = TexturePatch.FromData(data[patchOffset..], patchLookup);

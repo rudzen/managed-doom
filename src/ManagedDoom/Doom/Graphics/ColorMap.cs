@@ -40,7 +40,7 @@ public sealed class ColorMap
             var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
             var num = lumpSize / blockSize;
 
-            var lumpData = wad.GetLumpData(lumpNumber)[..lumpSize];
+            var lumpData = wad.GetLumpData(lumpNumber);
 
             data = new byte[num][];
             for (var i = 0; i < num; i++)

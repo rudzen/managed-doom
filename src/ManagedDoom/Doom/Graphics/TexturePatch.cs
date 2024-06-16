@@ -41,7 +41,7 @@ public sealed class TexturePatch
     public int Height => patch.Height;
     public Column[][] Columns => patch.Columns;
 
-    public static TexturePatch FromData(ReadOnlySpan<byte> data, Patch[] patches)
+    public static TexturePatch FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Patch> patches)
     {
         var originX = BitConverter.ToInt16(data);
         var originY = BitConverter.ToInt16(data[2..]);
