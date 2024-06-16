@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using ManagedDoom.Doom.Common;
@@ -27,7 +26,7 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class Sector
 {
-    private const int dataSize = 26;
+    private const int DataSize = 26;
 
     // 0 = untraversed, 1, 2 = sndlines - 1.
 
@@ -80,12 +79,12 @@ public sealed class Sector
     public int Tag { get; set; }
     public int SoundTraversed { get; set; }
     public Mobj? SoundTarget { get; set; }
-    public int[] BlockBox { get; set; }
-    public Mobj SoundOrigin { get; set; }
+    public int[] BlockBox { get; set; } = null!;
+    public Mobj SoundOrigin { get; set; } = null!;
     public int ValidCount { get; set; }
     public Mobj? ThingList { get; set; }
     public Thinker? SpecialData { get; set; }
-    public LineDef[] Lines { get; set; }
+    public LineDef[] Lines { get; set; } = null!;
 
     private static Sector FromData(ReadOnlySpan<byte> data, int number, IFlatLookup flats)
     {
@@ -111,32 +110,21 @@ public sealed class Sector
     public static Sector[] FromWad(Wad.Wad wad, int lump, IFlatLookup flats)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var count = lumpSize / DataSize;
+        var sectors = new Sector[count];
+
+        for (var i = 0; i < sectors.Length; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-
-            wad.ReadLump(lump, lumpBuffer);
-
-            var count = lumpSize / dataSize;
-            var sectors = new Sector[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                sectors[i] = FromData(lumpBuffer[offset..], i, flats);
-            }
-
-            return sectors;
+            var offset = DataSize * i;
+            sectors[i] = FromData(lumpData[offset..], i, flats);
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return sectors;
     }
 
     public void UpdateFrameInterpolationInfo()
@@ -170,40 +158,40 @@ public sealed class Sector
     public struct ThingEnumerator : IEnumerator<Mobj>
     {
         private readonly Sector sector;
-        private Mobj thing;
+        private Mobj? thing;
 
         public ThingEnumerator(Sector sector)
         {
             this.sector = sector;
             thing = sector.ThingList;
-            Current = null;
+            Current = null!;
         }
 
         public bool MoveNext()
         {
-            if (thing != null)
+            if (thing is not null)
             {
                 Current = thing;
                 thing = thing.SectorNext;
                 return true;
             }
 
-            Current = null;
+            Current = null!;
             return false;
         }
 
         public void Reset()
         {
             thing = sector.ThingList;
-            Current = null;
+            Current = null!;
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
         }
 
         public Mobj Current { get; private set; }
 
-        object IEnumerator.Current => throw new NotImplementedException();
+        readonly object IEnumerator.Current => throw new NotImplementedException();
     }
 }
