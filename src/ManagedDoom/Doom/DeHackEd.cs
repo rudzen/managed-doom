@@ -273,8 +273,8 @@ public static class DeHackEd
     {
         var ammoNumber = int.Parse(data[0].Split(' ')[1]);
         var dic = GetKeyValuePairs(data);
-        var max = DoomInfo.AmmoInfos.Max;
-        var clip = DoomInfo.AmmoInfos.Clip;
+        var max = AmmoType.AmmoMax;
+        var clip = AmmoType.ClipAmmoMax;
 
         max[ammoNumber] = GetInt(dic, "Max ammo", max[ammoNumber]);
         clip[ammoNumber] = GetInt(dic, "Per ammo", clip[ammoNumber]);

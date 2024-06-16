@@ -47,6 +47,26 @@ public readonly record struct AmmoType(AmmoTypes Value)
 
     public const int Count = (int)AmmoTypes.Count;
 
+    public static int[] AmmoMax { get; } =
+    [
+        200,
+        50,
+        300,
+        50
+    ];
+
+    public static int[] ClipAmmoMax { get; } =
+    [
+        10,
+        4,
+        20,
+        1
+    ];
+
+    public int Max => AmmoMax[(int)Value];
+
+    public int ClipMax => ClipAmmoMax[(int)Value];
+
     public static AmmoType Clip => new(AmmoTypes.Clip);
     public static AmmoType Shell => new(AmmoTypes.Shell);
     public static AmmoType Cell => new(AmmoTypes.Cell);

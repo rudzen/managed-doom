@@ -279,7 +279,7 @@ public sealed class Player
         WeaponOwned[WeaponType.Pistol] = true;
         Ammo[AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
         for (var i = 0; i < AmmoType.Count; i++)
-            MaxAmmo[i] = DoomInfo.AmmoInfos.Max[i];
+            MaxAmmo[i] = AmmoType.AmmoMax[i];
 
         // Don't do anything immediately.
         UseDown = true;

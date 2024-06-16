@@ -52,9 +52,9 @@ public sealed class ItemPickup(World world)
             return false;
 
         if (amount != 0)
-            amount *= DoomInfo.AmmoInfos.Clip[ammo];
+            amount *= ammo.ClipMax;
         else
-            amount = DoomInfo.AmmoInfos.Clip[ammo] / 2;
+            amount = ammo.ClipMax / 2;
 
         // Give double ammo in trainer mode, you'll need in nightmare.
         if (world.Options.Skill is GameSkill.Baby or GameSkill.Nightmare)

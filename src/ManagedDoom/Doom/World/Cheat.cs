@@ -129,7 +129,7 @@ public sealed class Cheat(World world)
         player.Backpack = true;
         for (var i = 0; i < AmmoType.Count; i++)
         {
-            var max = 2 * DoomInfo.AmmoInfos.Max[i];
+            var max = 2 * AmmoType.AmmoMax[i];
             player.MaxAmmo[i] = max;
             player.Ammo[i] = max;
         }
