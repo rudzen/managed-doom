@@ -15,7 +15,7 @@
         <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
         <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 
-        <NoWarn>$(NoWarn);IL2104;IL3000;IL3002</NoWarn>
+        <NoWarn>$(NoWarn);IL2104;IL3000;IL3002;CA1069</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>
