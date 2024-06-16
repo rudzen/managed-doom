@@ -15,13 +15,12 @@
 //
 
 using System;
-using System.Buffers;
 
 namespace ManagedDoom.Doom.Map;
 
 public sealed record Subsector(Sector Sector, int SegCount, int FirstSeg)
 {
-    private const int dataSize = 4;
+    private const int DataSize = 4;
 
     private static Subsector FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Seg> segments)
     {
@@ -29,38 +28,28 @@ public sealed record Subsector(Sector Sector, int SegCount, int FirstSeg)
         var firstSegNumber = BitConverter.ToInt16(data.Slice(2, 2));
 
         return new Subsector(
-            segments[firstSegNumber].SideDef.Sector,
+            segments[firstSegNumber].SideDef!.Sector!,
             segCount,
             firstSegNumber);
     }
 
-    public static Subsector[] FromWad(Wad.Wad wad, int lump, Seg[] segs)
+    public static Subsector[] FromWad(Wad.Wad wad, int lump, Seg[] segments)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var count = lumpSize / DataSize;
+        var subSectors = new Subsector[count];
+
+        for (var i = 0; i < subSectors.Length; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-
-            var count = lumpSize / dataSize;
-            var subsectors = new Subsector[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                subsectors[i] = FromData(lumpBuffer.Slice(offset, dataSize), segs);
-            }
-
-            return subsectors;
+            var offset = DataSize * i;
+            subSectors[i] = FromData(lumpData.Slice(offset, DataSize), segments);
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return subSectors;
     }
 }
