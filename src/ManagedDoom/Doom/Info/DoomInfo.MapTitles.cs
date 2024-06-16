@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
@@ -36,8 +35,14 @@ public static partial class DoomInfo
             };
         }
 
-        public static DoomString[][] Doom => new DoomString[][]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DoomString GetMapTitle(int episode, int map)
         {
+            return Doom[episode][map];
+        }
+
+        private static DoomString[][] Doom =>
+        [
             [
                 Strings.HUSTR_E1M1,
                 Strings.HUSTR_E1M2,
@@ -85,10 +90,10 @@ public static partial class DoomInfo
                 Strings.HUSTR_E4M8,
                 Strings.HUSTR_E4M9
             ]
-        };
+        ];
 
-        private static readonly DoomString[] doom2 = new[]
-        {
+        private static readonly DoomString[] doom2 =
+        [
             Strings.HUSTR_1,
             Strings.HUSTR_2,
             Strings.HUSTR_3,
@@ -121,10 +126,10 @@ public static partial class DoomInfo
             Strings.HUSTR_30,
             Strings.HUSTR_31,
             Strings.HUSTR_32
-        };
+        ];
 
-        private static readonly DoomString[] plutonia = new[]
-        {
+        private static readonly DoomString[] plutonia =
+        [
             Strings.PHUSTR_1,
             Strings.PHUSTR_2,
             Strings.PHUSTR_3,
@@ -157,10 +162,10 @@ public static partial class DoomInfo
             Strings.PHUSTR_30,
             Strings.PHUSTR_31,
             Strings.PHUSTR_32
-        };
+        ];
 
-        private static readonly IReadOnlyList<DoomString> tnt = new[]
-        {
+        private static readonly DoomString[] tnt =
+        [
             Strings.THUSTR_1,
             Strings.THUSTR_2,
             Strings.THUSTR_3,
@@ -193,6 +198,6 @@ public static partial class DoomInfo
             Strings.THUSTR_30,
             Strings.THUSTR_31,
             Strings.THUSTR_32
-        };
+        ];
     }
 }

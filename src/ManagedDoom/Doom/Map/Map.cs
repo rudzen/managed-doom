@@ -77,7 +77,7 @@ public sealed class Map
 
             Title = options.GameMode == GameMode.Commercial
                 ? DoomInfo.MapTitles.GetMapTitle(options.MissionPack, options.Map - 1)
-                : DoomInfo.MapTitles.Doom[options.Episode - 1][options.Map - 1];
+                : DoomInfo.MapTitles.GetMapTitle(options.Episode - 1, options.Map - 1);
 
             Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
         }
