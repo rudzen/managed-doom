@@ -356,7 +356,7 @@ public sealed class Mobj : Thinker
 
         // Inherit attributes from deceased one.
         var mobj = ta.SpawnMobj(sp.X, sp.Y, z, Type);
-        mobj.SpawnPoint = SpawnPoint;
+        mobj.SpawnPoint = SpawnPoint!;
         mobj.Angle = sp.Angle;
 
         if ((sp.Flags & ThingFlags.Ambush) != 0)

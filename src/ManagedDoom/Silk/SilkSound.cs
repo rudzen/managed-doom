@@ -125,6 +125,7 @@ public sealed class SilkSound : ISound
 
     private static Span<byte> GetSamples(Wad wad, int lumpNumber, string lumpName, out int sampleRate, out int sampleCount)
     {
+        // TODO (rudzen) : modify to not Span<T> instead of real array
         var data = wad.ReadLump(lumpName);
 
         if (data.Length < 8)
@@ -147,7 +148,7 @@ public sealed class SilkSound : ISound
 
         return sampleCount > 0
             ? data.AsSpan(offset, sampleCount)
-            : Span<byte>.Empty;
+            : [];
     }
 
     // Check if the data contains pad bytes.

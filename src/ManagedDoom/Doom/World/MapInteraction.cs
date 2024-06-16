@@ -83,12 +83,12 @@ public sealed class MapInteraction
     {
         var pt = world.PathTraversal;
 
-        useThing = player.Mobj;
+        useThing = player.Mobj!;
 
-        var angle = player.Mobj.Angle;
+        var angle = useThing.Angle;
 
-        var x1 = player.Mobj.X;
-        var y1 = player.Mobj.Y;
+        var x1 = useThing.X;
+        var y1 = useThing.Y;
         var x2 = x1 + useRange.ToIntFloor() * Trig.Cos(angle);
         var y2 = y1 + useRange.ToIntFloor() * Trig.Sin(angle);
 

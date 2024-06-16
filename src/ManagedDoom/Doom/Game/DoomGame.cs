@@ -31,7 +31,7 @@ public sealed class DoomGame
 
     private int loadGameSlotNumber;
     private int saveGameSlotNumber;
-    private string saveGameDescription;
+    private string? saveGameDescription;
 
     private enum GameAction
     {
@@ -336,8 +336,8 @@ public sealed class DoomGame
         gameAction = GameAction.Nothing;
 
         var directory = ConfigUtilities.GetExeDirectory;
-        var path = Path.Combine(directory, "doomsav" + saveGameSlotNumber + ".dsg");
-        SaveAndLoad.Save(this, saveGameDescription, path);
+        var path = Path.Combine(directory, $"doomsav{saveGameSlotNumber}.dsg");
+        SaveAndLoad.Save(this, saveGameDescription!, path);
         World.ConsolePlayer.SendMessage(DoomInfo.Strings.GGSAVED);
     }
 

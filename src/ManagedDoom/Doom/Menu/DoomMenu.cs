@@ -311,7 +311,7 @@ public sealed class DoomMenu
     {
         Tics++;
 
-        Current?.Update();
+        Current.Update();
 
         if (Active && !Doom.Options.NetGame)
             Doom.PauseGame();

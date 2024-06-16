@@ -450,7 +450,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.BlueSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_BLUEK);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return;
                 }
 
@@ -468,7 +468,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.YellowSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_YELLOWK);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return;
                 }
 
@@ -486,14 +486,14 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.RedSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_REDK);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return;
                 }
 
                 break;
         }
 
-        var sector = line.BackSide.Sector;
+        var sector = line.BackSide!.Sector!;
 
         // If the sector has an active thinker, use it.
         if (sector.SpecialData != null)
@@ -683,7 +683,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.BlueSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_BLUEO);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return false;
                 }
 
@@ -696,7 +696,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.RedSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_REDO);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return false;
                 }
 
@@ -709,7 +709,7 @@ public sealed class SectorAction
                     !player.Cards[(int)CardType.YellowSkull])
                 {
                     player.SendMessage(DoomInfo.Strings.PD_YELLOWO);
-                    world.StartSound(player.Mobj, Sfx.OOF, SfxType.Voice);
+                    world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
                     return false;
                 }
 
@@ -817,7 +817,7 @@ public sealed class SectorAction
             {
                 case PlatformType.RaiseToNearestAndChange:
                     plat.Speed = platformSpeed / 2;
-                    sector.FloorFlat = line.FrontSide!.Sector.FloorFlat;
+                    sector.FloorFlat = line.FrontSide!.Sector!.FloorFlat;
                     plat.High = FindNextHighestFloor(sector, sector.FloorHeight);
                     plat.Wait = 0;
                     plat.Status = PlatformState.Up;
@@ -828,7 +828,7 @@ public sealed class SectorAction
 
                 case PlatformType.RaiseAndChange:
                     plat.Speed = platformSpeed / 2;
-                    sector.FloorFlat = line.FrontSide.Sector.FloorFlat;
+                    sector.FloorFlat = line.FrontSide!.Sector!.FloorFlat;
                     plat.High = sector.FloorHeight + amount * Fixed.One;
                     plat.Wait = 0;
                     plat.Status = PlatformState.Up;

@@ -440,14 +440,14 @@ public sealed class ThingAllocation
     // Multi-player related functions
     ////////////////////////////////////////////////////////////
 
-    private const int bodyQueSize = 32;
+    private const int BodyQueSize = 32;
     private int bodyQueSlot;
     private Mobj[] bodyQue;
 
     private void InitMultiPlayerRespawn()
     {
         bodyQueSlot = 0;
-        bodyQue = new Mobj[bodyQueSize];
+        bodyQue = new Mobj[BodyQueSize];
     }
 
     /// <summary>
@@ -457,13 +457,14 @@ public sealed class ThingAllocation
     public bool CheckSpot(int playerNum, MapThing mapThing)
     {
         var players = world.Options.Players;
+        var playerMobj = players[playerNum].Mobj;
 
-        if (players[playerNum].Mobj == null)
+        if (playerMobj is null)
         {
             // First spawn of level, before corpses.
             for (var i = 0; i < playerNum; i++)
             {
-                var playerMobj = players[i].Mobj;
+                playerMobj = players[i].Mobj;
                 if (playerMobj!.X == mapThing.X && playerMobj.Y == mapThing.Y)
                     return false;
             }
@@ -474,14 +475,14 @@ public sealed class ThingAllocation
         var x = mapThing.X;
         var y = mapThing.Y;
 
-        if (!world.ThingMovement.CheckPosition(players[playerNum].Mobj, x, y))
+        if (!world.ThingMovement.CheckPosition(playerMobj, x, y))
             return false;
 
         // Flush an old corpse if needed.
-        if (bodyQueSlot >= bodyQueSize)
-            RemoveMobj(bodyQue[bodyQueSlot % bodyQueSize]);
+        if (bodyQueSlot >= BodyQueSize)
+            RemoveMobj(bodyQue[bodyQueSlot % BodyQueSize]);
 
-        bodyQue[bodyQueSlot % bodyQueSize] = players[playerNum].Mobj;
+        bodyQue[bodyQueSlot % BodyQueSize] = playerMobj;
         bodyQueSlot++;
 
         // Spawn a teleport fog.
@@ -523,7 +524,7 @@ public sealed class ThingAllocation
                 ya = Trig.Sin((int)angle);
                 break;
             default:
-                throw new Exception("Unexpected angle: " + angle);
+                throw new Exception($"Unexpected angle: {angle}");
         }
 
         var mo = SpawnMobj(

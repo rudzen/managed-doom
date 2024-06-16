@@ -206,7 +206,7 @@ public sealed class MonsterBehavior
             var good = false;
             while (tm.crossedSpecialCount-- > 0)
             {
-                var line = tm.crossedSpecials[tm.crossedSpecialCount];
+                var line = tm.crossedSpecials![tm.crossedSpecialCount];
                 // If the special is not a door that can be opened,
                 // return false.
                 if (world.MapInteraction.UseSpecialLine(actor, line, 0))

@@ -20,9 +20,9 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class GlowingLight : Thinker
 {
-    private const int glowSpeed = 8;
+    private const int GlowSpeed = 8;
 
-    public Sector Sector { get; set; }
+    public Sector Sector { get; set; } = null!;
 
     public int MinLight { get; set; }
 
@@ -36,10 +36,10 @@ public sealed class GlowingLight : Thinker
         {
             case -1:
                 // Down.
-                Sector.LightLevel -= glowSpeed;
+                Sector.LightLevel -= GlowSpeed;
                 if (Sector.LightLevel <= MinLight)
                 {
-                    Sector.LightLevel += glowSpeed;
+                    Sector.LightLevel += GlowSpeed;
                     Direction = 1;
                 }
 
@@ -47,10 +47,10 @@ public sealed class GlowingLight : Thinker
 
             case 1:
                 // Up.
-                Sector.LightLevel += glowSpeed;
+                Sector.LightLevel += GlowSpeed;
                 if (Sector.LightLevel >= MaxLight)
                 {
-                    Sector.LightLevel -= glowSpeed;
+                    Sector.LightLevel -= GlowSpeed;
                     Direction = -1;
                 }
 

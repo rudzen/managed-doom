@@ -29,7 +29,7 @@ public sealed class SimpleMenuItem : MenuItem
         int itemX,
         int itemY,
         Action? action,
-        MenuDef next)
+        MenuDef? next)
         : base(skullX, skullY, next)
     {
         this.Name = name;
@@ -45,9 +45,9 @@ public sealed class SimpleMenuItem : MenuItem
         int skullY,
         int itemX,
         int itemY,
-        Action action,
-        MenuDef next,
-        Func<bool> selectable)
+        Action? action,
+        MenuDef? next,
+        Func<bool>? selectable)
         : base(skullX, skullY, next)
     {
         this.Name = name;

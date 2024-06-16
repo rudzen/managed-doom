@@ -70,6 +70,6 @@ public sealed class GameContent : IGameContent
     {
         if (Wad is null) return;
         Wad.Dispose();
-        Wad = null;
+        Wad = null!;
     }
 }
