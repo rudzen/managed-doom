@@ -99,7 +99,7 @@ public sealed class Hitscan
         }
 
         // Shoot a thing.
-        var thing = intercept.Thing;
+        var thing = intercept.Thing!;
         // Can't shoot self.
         if (thing == currentShooter)
             return true;

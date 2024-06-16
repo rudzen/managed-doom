@@ -774,22 +774,15 @@ public sealed class SectorAction
     }
 
 
-    private const int platformWait = 3;
+    private const int PlatformWait = 3;
     private static readonly Fixed platformSpeed = Fixed.One;
 
     public bool DoPlatform(LineDef line, PlatformType type, int amount)
     {
         //	Activate all <type> plats that are in stasis.
-        switch (type)
-        {
-            case PlatformType.PerpetualRaise:
-                ActivateInStasis(line.Tag);
-                break;
-
-            default:
-                break;
-        }
-
+        if (type == PlatformType.PerpetualRaise)
+            ActivateInStasis(line.Tag);
+            
         var sectors = world.Map.Sectors;
         var sectorNumber = -1;
         var result = false;
@@ -798,9 +791,7 @@ public sealed class SectorAction
         {
             var sector = sectors[sectorNumber];
             if (sector.SpecialData != null)
-            {
                 continue;
-            }
 
             result = true;
 
@@ -844,7 +835,7 @@ public sealed class SectorAction
                     }
 
                     plat.High = sector.FloorHeight;
-                    plat.Wait = 35 * platformWait;
+                    plat.Wait = 35 * PlatformWait;
                     plat.Status = PlatformState.Down;
                     world.StartSound(sector.SoundOrigin, Sfx.PSTART, SfxType.Misc);
                     break;
@@ -858,7 +849,7 @@ public sealed class SectorAction
                     }
 
                     plat.High = sector.FloorHeight;
-                    plat.Wait = 35 * platformWait;
+                    plat.Wait = 35 * PlatformWait;
                     plat.Status = PlatformState.Down;
                     world.StartSound(sector.SoundOrigin, Sfx.PSTART, SfxType.Misc);
                     break;
@@ -877,7 +868,7 @@ public sealed class SectorAction
                         plat.High = sector.FloorHeight;
                     }
 
-                    plat.Wait = 35 * platformWait;
+                    plat.Wait = 35 * PlatformWait;
                     plat.Status = (PlatformState)(world.Random.Next() & 1);
                     world.StartSound(sector.SoundOrigin, Sfx.PSTART, SfxType.Misc);
                     break;

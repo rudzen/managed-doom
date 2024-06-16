@@ -196,6 +196,7 @@ public sealed class Renderer : IRenderer
                 else
                 {
                     threeDeeRenderer.Render(displayPlayer, frameFrac);
+
                     switch (threeDeeRenderer.WindowSize)
                     {
                         case < 8:
@@ -270,6 +271,7 @@ public sealed class Renderer : IRenderer
             var dy = (float)(y2 - y1) / wipeBandWidth;
             for (var x = x1; x < x2; x++)
             {
+                // ReSharper disable once PossibleLossOfFraction
                 var y = (int)MathF.Round(y1 + dy * ((x - x1) / 2 * 2));
                 var copyLength = screen.Height - y;
 
