@@ -1073,26 +1073,26 @@ public sealed class SectorAction
                     floor.Sector = sector;
                     floor.Speed = floorSpeed;
                     var textures = world.Map.Textures;
-                    for (var i = 0; i < sector.Lines.Length; i++)
+                    foreach (var sectorLine in sector.Lines)
                     {
-                        if ((sector.Lines[i].Flags & LineFlags.TwoSided) != 0)
-                        {
-                            var frontSide = sector.Lines[i].FrontSide;
-                            if (frontSide.BottomTexture >= 0)
-                            {
-                                if (textures[frontSide.BottomTexture].Height < min)
-                                {
-                                    min = textures[frontSide.BottomTexture].Height;
-                                }
-                            }
+                        if ((sectorLine.Flags & LineFlags.TwoSided) == 0)
+                            continue;
 
-                            var backSide = sector.Lines[i].BackSide;
-                            if (backSide.BottomTexture >= 0)
+                        var frontSide = sectorLine.FrontSide;
+                        if (frontSide!.BottomTexture >= 0)
+                        {
+                            if (textures[frontSide.BottomTexture].Height < min)
                             {
-                                if (textures[backSide.BottomTexture].Height < min)
-                                {
-                                    min = textures[backSide.BottomTexture].Height;
-                                }
+                                min = textures[frontSide.BottomTexture].Height;
+                            }
+                        }
+
+                        var backSide = sectorLine.BackSide;
+                        if (backSide!.BottomTexture >= 0)
+                        {
+                            if (textures[backSide.BottomTexture].Height < min)
+                            {
+                                min = textures[backSide.BottomTexture].Height;
                             }
                         }
                     }
@@ -1106,29 +1106,29 @@ public sealed class SectorAction
                     floor.Speed = floorSpeed;
                     floor.FloorDestHeight = FindLowestFloorSurrounding(sector);
                     floor.Texture = sector.FloorFlat;
-                    for (var i = 0; i < sector.Lines.Length; i++)
+                    foreach (var sectorLine in sector.Lines)
                     {
-                        if ((sector.Lines[i].Flags & LineFlags.TwoSided) != 0)
+                        if ((sectorLine.Flags & LineFlags.TwoSided) == 0)
+                            continue;
+
+                        if (sectorLine.FrontSide!.Sector!.Number == sectorNumber)
                         {
-                            if (sector.Lines[i].FrontSide.Sector.Number == sectorNumber)
+                            sector = sectorLine.BackSide!.Sector!;
+                            if (sector.FloorHeight == floor.FloorDestHeight)
                             {
-                                sector = sector.Lines[i].BackSide.Sector;
-                                if (sector.FloorHeight == floor.FloorDestHeight)
-                                {
-                                    floor.Texture = sector.FloorFlat;
-                                    floor.NewSpecial = sector.Special;
-                                    break;
-                                }
+                                floor.Texture = sector.FloorFlat;
+                                floor.NewSpecial = sector.Special;
+                                break;
                             }
-                            else
+                        }
+                        else
+                        {
+                            sector = sectorLine.FrontSide.Sector;
+                            if (sector.FloorHeight == floor.FloorDestHeight)
                             {
-                                sector = sector.Lines[i].FrontSide.Sector;
-                                if (sector.FloorHeight == floor.FloorDestHeight)
-                                {
-                                    floor.Texture = sector.FloorFlat;
-                                    floor.NewSpecial = sector.Special;
-                                    break;
-                                }
+                                floor.Texture = sector.FloorFlat;
+                                floor.NewSpecial = sector.Special;
+                                break;
                             }
                         }
                     }
@@ -1211,7 +1211,7 @@ public sealed class SectorAction
                         continue;
                     }
 
-                    target = (sectorLine).BackSector;
+                    target = sectorLine.BackSector!;
                     newSectorNumber = target.Number;
 
                     if (target.FloorFlat != texture)
