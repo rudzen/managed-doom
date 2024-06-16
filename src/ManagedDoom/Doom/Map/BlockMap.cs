@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
@@ -61,37 +60,27 @@ public sealed class BlockMap
     public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var table = new short[lumpSize / 2];
+        for (var i = 0; i < table.Length; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-
-            var table = new short[lumpSize / 2];
-            for (var i = 0; i < table.Length; i++)
-            {
-                var offset = 2 * i;
-                table[i] = BitConverter.ToInt16(lumpBuffer.Slice(offset, 2));
-            }
-
-            var originX = Fixed.FromInt(table[0]);
-            var originY = Fixed.FromInt(table[1]);
-            var width = table[2];
-            var height = table[3];
-
-            return new BlockMap(
-                originX,
-                originY,
-                width,
-                height,
-                table,
-                lines);
+            var offset = 2 * i;
+            table[i] = BitConverter.ToInt16(lumpData.Slice(offset, 2));
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        var originX = Fixed.FromInt(table[0]);
+        var originY = Fixed.FromInt(table[1]);
+        var width = table[2];
+        var height = table[3];
+
+        return new BlockMap(
+            originX,
+            originY,
+            width,
+            height,
+            table,
+            lines);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
