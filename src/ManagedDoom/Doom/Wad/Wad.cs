@@ -93,9 +93,9 @@ public sealed class Wad : IDisposable
                 for (var i = 0; i < wadHeader.LumpCount; i++)
                 {
                     var offset = LumpInfo.DataSize * i;
-                    var name = DoomInterop.ToString(slice.Slice(offset + 8, 8));
                     var position = BitConverter.ToInt32(slice.Slice(offset, 4));
                     var s = BitConverter.ToInt32(slice.Slice(offset + 4, 4));
+                    var name = DoomInterop.ToString(slice.Slice(offset + 8, 8));
 
                     if (s == -1)
                         lumps.Add(new LumpInfo(name, null));
@@ -138,7 +138,7 @@ public sealed class Wad : IDisposable
         if (!IsValidWadId(identification))
             throw new Exception("The file is not a WAD file.");
 
-        return new(identification, lumpCount, lumpInfoTableOffset);
+        return new WadHeader(identification, lumpCount, lumpInfoTableOffset);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
