@@ -170,7 +170,8 @@ public sealed partial class SilkDoom : ISilkDoom
             video = null;
         }
 
-        silkConfig.Config.Save(ConfigUtilities.GetConfigPath());
+        if (!args.TimeDemo.Present)
+            silkConfig.Config.Save(ConfigUtilities.GetConfigPath());
     }
 
     public void KeyDown(Key key)
