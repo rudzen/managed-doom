@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
 
@@ -46,17 +45,11 @@ public sealed class LineDef
         Dy = vertex2.Y - vertex1.Y;
 
         if (Dx == Fixed.Zero)
-        {
             SlopeType = SlopeType.Vertical;
-        }
         else if (Dy == Fixed.Zero)
-        {
             SlopeType = SlopeType.Horizontal;
-        }
         else
-        {
             SlopeType = Dy / Dx > Fixed.Zero ? SlopeType.Positive : SlopeType.Negative;
-        }
 
         BoundingBox = new Fixed[4];
         BoundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
@@ -111,28 +104,16 @@ public sealed class LineDef
         if (lumpSize % dataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
+        var count = lumpSize / dataSize;
+        var lines = new LineDef[count];
 
-        try
+        for (var i = 0; i < count; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-
-            var count = lumpSize / dataSize;
-            var lines = new LineDef[count];
-            ;
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = 14 * i;
-                lines[i] = FromData(lumpBuffer[offset..], vertices, sides);
-            }
-
-            return lines;
+            var offset = 14 * i;
+            lines[i] = FromData(lumpData[offset..], vertices, sides);
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return lines;
     }
 }
