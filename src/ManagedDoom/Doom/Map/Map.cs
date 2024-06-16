@@ -134,7 +134,7 @@ public sealed class Map
                 Box.AddPoint(boundingBox, line.Vertex2);
             }
 
-            sector.Lines = sectorLines.ToArray();
+            sector.Lines = [.. sectorLines];
 
             // Set the degenmobj_t to the middle of the bounding box.
             sector.SoundOrigin = new Mobj(world)

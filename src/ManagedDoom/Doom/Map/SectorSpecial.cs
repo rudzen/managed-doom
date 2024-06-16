@@ -18,5 +18,18 @@ namespace ManagedDoom.Doom.Map;
 
 public enum SectorSpecial
 {
-    Normal = 0
+    Normal = 0,
+
+    // Spawns
+    FlickeringLightsSpawn = 1,
+    StrobeFastSpawn = 2,
+    StrobeSlowSpawn = 3,
+    StrobeFastDeathSlimeSpawn = 4,
+    GlowingLightSpawn = 8,
+    SecretSectorSpawn = 9,
+    DoorCloseIn30SecondsSpawn = 10,
+    SyncStrobeSlowSpawn = 12,
+    SyncStrobeFastSpawn = 13,
+    DoorRaiseIn5MinutesSpawn = 14,
+    FireFlickerSpawn = 17,
 }

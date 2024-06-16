@@ -35,11 +35,9 @@ public sealed class IntermissionInfo
 
     public IntermissionInfo()
     {
-        Players = new PlayerScores[Player.MaxPlayerCount];
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-        {
-            Players[i] = new PlayerScores();
-        }
+        PlayerScores = new PlayerScores[Player.MaxPlayerCount];
+        for (var i = 0; i < PlayerScores.Length; i++)
+            PlayerScores[i] = new PlayerScores();
     }
 
     public int Episode { get; set; }
@@ -76,5 +74,5 @@ public sealed class IntermissionInfo
 
     public int ParTime { get; set; }
 
-    public PlayerScores[] Players { get; }
+    public PlayerScores[] PlayerScores { get; }
 }

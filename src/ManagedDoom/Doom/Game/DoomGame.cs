@@ -461,12 +461,12 @@ public sealed class DoomGame
 
         for (var i = 0; i < players.Length; i++)
         {
-            imInfo.Players[i].InGame = players[i].InGame;
-            imInfo.Players[i].KillCount = players[i].KillCount;
-            imInfo.Players[i].ItemCount = players[i].ItemCount;
-            imInfo.Players[i].SecretCount = players[i].SecretCount;
-            imInfo.Players[i].Time = World.LevelTime;
-            Array.Copy(players[i].Frags, imInfo.Players[i].Frags, Player.MaxPlayerCount);
+            imInfo.PlayerScores[i].InGame = players[i].InGame;
+            imInfo.PlayerScores[i].KillCount = players[i].KillCount;
+            imInfo.PlayerScores[i].ItemCount = players[i].ItemCount;
+            imInfo.PlayerScores[i].SecretCount = players[i].SecretCount;
+            imInfo.PlayerScores[i].Time = World.LevelTime;
+            Array.Copy(players[i].Frags, imInfo.PlayerScores[i].Frags, Player.MaxPlayerCount);
         }
 
         State = GameState.Intermission;

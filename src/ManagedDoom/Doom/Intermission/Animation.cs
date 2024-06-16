@@ -48,14 +48,10 @@ public sealed class Animation
         {
             // MONDO HACK!
             if (im.Info.Episode != 1 || number != 8)
-            {
-                patches[i] = "WIA" + im.Info.Episode + number.ToString("00") + i.ToString("00");
-            }
+                patches[i] = $"WIA{im.Info.Episode}{number:00}{i:00}";
+            // HACK ALERT!
             else
-            {
-                // HACK ALERT!
-                patches[i] = "WIA104" + i.ToString("00");
-            }
+                patches[i] = $"WIA104{i:00}";
         }
     }
 
@@ -68,58 +64,49 @@ public sealed class Animation
     {
         PatchNumber = -1;
 
-        // Specify the next time to draw it.
-        if (type == AnimationType.Always)
+        nextTic = type switch
         {
-            nextTic = bgCount + 1 + (im.Random.Next() % period);
-        }
-        else if (type == AnimationType.Random)
-        {
-            nextTic = bgCount + 1 + (im.Random.Next() % data);
-        }
-        else if (type == AnimationType.Level)
-        {
-            nextTic = bgCount + 1;
-        }
+            // Specify the next time to draw it.
+            AnimationType.Always => bgCount + 1 + (im.Random.Next() % period),
+            AnimationType.Random => bgCount + 1 + (im.Random.Next() % data),
+            AnimationType.Level  => bgCount + 1,
+            _                    => nextTic
+        };
     }
 
     public void Update(int bgCount)
     {
-        if (bgCount == nextTic)
+        if (bgCount != nextTic)
+            return;
+
+        if (type == AnimationType.Always)
         {
-            switch (type)
+            if (++PatchNumber >= frameCount)
+                PatchNumber = 0;
+
+            nextTic = bgCount + period;
+        }
+        else if (type == AnimationType.Random)
+        {
+            PatchNumber++;
+            if (PatchNumber == frameCount)
             {
-                case AnimationType.Always:
-                    if (++PatchNumber >= frameCount)
-                        PatchNumber = 0;
+                PatchNumber = -1;
+                nextTic = bgCount + (im.Random.Next() % data);
+            }
+            else
+                nextTic = bgCount + period;
+        }
+        else if (type == AnimationType.Level)
+        {
+            // Gawd-awful hack for level anims.
+            if (!(im.State == IntermissionState.StatCount && number == 7) && im.Info.NextLevel == data)
+            {
+                PatchNumber++;
+                if (PatchNumber == frameCount)
+                    PatchNumber--;
 
-                    nextTic = bgCount + period;
-                    break;
-
-                case AnimationType.Random:
-                    PatchNumber++;
-                    if (PatchNumber == frameCount)
-                    {
-                        PatchNumber = -1;
-                        nextTic = bgCount + (im.Random.Next() % data);
-                    }
-                    else
-                        nextTic = bgCount + period;
-
-                    break;
-
-                case AnimationType.Level:
-                    // Gawd-awful hack for level anims.
-                    if (!(im.State == IntermissionState.StatCount && number == 7) && im.Info.NextLevel == data)
-                    {
-                        PatchNumber++;
-                        if (PatchNumber == frameCount)
-                            PatchNumber--;
-
-                        nextTic = bgCount + period;
-                    }
-
-                    break;
+                nextTic = bgCount + period;
             }
         }
     }

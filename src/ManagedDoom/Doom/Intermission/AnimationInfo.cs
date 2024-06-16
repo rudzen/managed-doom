@@ -14,15 +14,14 @@
 // GNU General Public License for more details.
 //
 
-using System.Collections.Generic;
 using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Intermission;
 
 public sealed record AnimationInfo(AnimationType Type, int Period, int Count, int X, int Y, int Data = 0)
 {
-    public static readonly IReadOnlyList<IReadOnlyList<AnimationInfo>> Episodes = new AnimationInfo[][]
-    {
+    public static AnimationInfo[][] Episodes =>
+    [
         [
             new AnimationInfo(AnimationType.Always, GameConst.TicRate / 3, 3, 224, 104),
             new AnimationInfo(AnimationType.Always, GameConst.TicRate / 3, 3, 184, 160),
@@ -56,5 +55,5 @@ public sealed record AnimationInfo(AnimationType Type, int Period, int Count, in
             new AnimationInfo(AnimationType.Always, GameConst.TicRate / 3, 3, 120, 32),
             new AnimationInfo(AnimationType.Always, GameConst.TicRate / 4, 3, 40, 0)
         ]
-    };
+    ];
 }

@@ -180,5 +180,8 @@ public enum LineSpecial
     // Shoots special line
     RaiseFloorShoot = 24,
     OpenDoorImpactShoot = 46,
-    RaiseFloorNearAndChangeShoot = 47
+    RaiseFloorNearAndChangeShoot = 47,
+    
+    // Other
+    TextureScroll = 48
 }

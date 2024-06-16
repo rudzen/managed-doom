@@ -2036,7 +2036,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     private void DrawPlayerSprite(PlayerSpriteDef psp, ReadOnlySpan<byte[]> spriteLights, bool fuzz)
     {
         // Decide which patch to use.
-        var spriteDef = sprites[psp.State.Sprite];
+        var spriteDef = sprites[psp.State!.Sprite];
 
         var spriteFrame = spriteDef.Frames[psp.State.Frame & 0x7fff];
 
