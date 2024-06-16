@@ -1335,7 +1335,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         var height = Fixed.Abs(ceilingHeight - viewZ);
 
-        var flatData = flat.Data;
+        var flatData = flat.Data.AsSpan();
 
         if (sector == planeRender.CeilingPrevSector && planeRender.CeilingPrevX == x - 1)
         {
@@ -1451,7 +1451,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         var height = Fixed.Abs(floorHeight - viewZ);
 
-        var flatData = flat.Data;
+        var flatData = flat.Data.AsSpan();
 
         if (sector == planeRender.FloorPrevSector && planeRender.FloorPrevX == x - 1)
         {
@@ -1473,11 +1473,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.FloorXFrac[y] = xFrac;
                 planeRender.FloorYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
-                planeRender.FloorLights[y] = colorMap;
+                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.FloorLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = colorMap[flatData[spot]];
+                screenData[pos] = planeColorMap[flatData[spot]];
                 pos++;
             }
 
@@ -1507,11 +1507,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.FloorXFrac[y] = xFrac;
                 planeRender.FloorYFrac[y] = yFrac;
 
-                var colorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
-                planeRender.FloorLights[y] = colorMap;
+                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                planeRender.FloorLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
-                screenData[pos] = colorMap[flatData[spot]];
+                screenData[pos] = planeColorMap[flatData[spot]];
                 pos++;
             }
         }
