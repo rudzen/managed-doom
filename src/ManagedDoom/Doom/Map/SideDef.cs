@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Buffers;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
@@ -24,7 +23,7 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class SideDef
 {
-    private const int dataSize = 30;
+    private const int DataSize = 30;
 
     private SideDef(
         Fixed textureOffset,
@@ -32,7 +31,7 @@ public sealed class SideDef
         int topTexture,
         int bottomTexture,
         int middleTexture,
-        Sector sector)
+        Sector? sector)
     {
         this.TextureOffset = textureOffset;
         this.RowOffset = rowOffset;
@@ -53,7 +52,7 @@ public sealed class SideDef
 
     public int MiddleTexture { get; set; }
 
-    public Sector Sector { get; }
+    public Sector? Sector { get; }
 
     private static SideDef FromData(ReadOnlySpan<byte> data, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
     {
@@ -76,30 +75,20 @@ public sealed class SideDef
     public static SideDef[] FromWad(Wad.Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
     {
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
+        if (lumpSize % DataSize != 0)
             throw new Exception();
 
-        var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
+        var lumpData = wad.GetLumpData(lump);
 
-        try
+        var count = lumpSize / DataSize;
+        var sides = new SideDef[count];
+
+        for (var i = 0; i < sides.Length; i++)
         {
-            var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, lumpBuffer);
-
-            var count = lumpSize / dataSize;
-            var sides = new SideDef[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                sides[i] = FromData(lumpBuffer[offset..], textures, sectors);
-            }
-
-            return sides;
+            var offset = DataSize * i;
+            sides[i] = FromData(lumpData[offset..], textures, sectors);
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(lumpData);
-        }
+
+        return sides;
     }
 }
