@@ -46,6 +46,32 @@ public sealed class MapThing : IFixedCoordinates
         this.Flags = flags;
     }
 
+    public Fixed X { get; }
+    public Fixed Y { get; }
+    public Angle Angle { get; }
+    public int Type { get; set; }
+    public ThingFlags Flags { get; }
+
+    public static MapThing[] FromWad(Wad.Wad wad, int lump)
+    {
+        var lumpSize = wad.GetLumpSize(lump);
+        if (lumpSize % dataSize != 0)
+            throw new Exception();
+
+        var lumpData = wad.GetLumpData(lump);
+
+        var count = lumpSize / dataSize;
+        var things = new MapThing[count];
+
+        for (var i = 0; i < count; i++)
+        {
+            var offset = dataSize * i;
+            things[i] = FromData(lumpData.Slice(offset, dataSize));
+        }
+
+        return things;
+    }
+
     private static MapThing FromData(ReadOnlySpan<byte> data)
     {
         var x = BitConverter.ToInt16(data[..2]);
@@ -59,42 +85,7 @@ public sealed class MapThing : IFixedCoordinates
             Fixed.FromInt(y),
             new Angle(Angle.Ang45.Data * (uint)(angle / 45)),
             type,
-            (ThingFlags)flags);
-    }
-
-    public Fixed X { get; }
-    public Fixed Y { get; }
-    public Angle Angle { get; }
-    public int Type { get; set; }
-    public ThingFlags Flags { get; }
-
-    public static MapThing[] FromWad(Wad.Wad wad, int lump)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % dataSize != 0)
-            throw new Exception();
-
-        var buffer = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-        try
-        {
-            var bufferSpan = buffer.AsSpan(0, lumpSize);
-            wad.ReadLump(lump, bufferSpan);
-
-            var count = lumpSize / dataSize;
-            var things = new MapThing[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                var offset = dataSize * i;
-                things[i] = FromData(bufferSpan.Slice(offset, dataSize));
-            }
-
-            return things;
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-        }
+            (ThingFlags)flags
+        );
     }
 }
