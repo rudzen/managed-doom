@@ -122,7 +122,7 @@ public sealed class DoomGame
     {
         // Do player reborns if needed.
         var players = Options.Players.AsSpan();
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        for (var i = 0; i < players.Length; i++)
         {
             if (players[i].InGame && players[i].PlayerState == PlayerState.Reborn)
                 DoReborn(i);
@@ -159,41 +159,41 @@ public sealed class DoomGame
             }
         }
 
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        for (var i = 0; i < players.Length; i++)
         {
-            if (players[i].InGame)
-            {
-                var cmd = players[i].Cmd;
-                cmd.CopyFrom(cmds[i]);
+            if (!players[i].InGame)
+                continue;
+            
+            var cmd = players[i].Cmd;
+            cmd.CopyFrom(cmds[i]);
 
-                /*
+            /*
                 if (demorecording)
                 {
                     G_WriteDemoTiccmd(cmd);
                 }
                 */
 
-                // Check for turbo cheats.
-                if (cmd.ForwardMove > GameConst.TurboThreshold &&
-                    (World.LevelTime & 31) == 0 &&
-                    ((World.LevelTime >> 5) & 3) == i)
-                {
-                    var player = players[Options.ConsolePlayer];
-                    player.SendMessage($"{players[i].Name} is turbo!");
-                }
+            // Check for turbo cheats.
+            if (cmd.ForwardMove > GameConst.TurboThreshold &&
+                (World.LevelTime & 31) == 0 &&
+                ((World.LevelTime >> 5) & 3) == i)
+            {
+                var player = players[Options.ConsolePlayer];
+                player.SendMessage($"{players[i].Name} is turbo!");
             }
         }
 
         // Check for special buttons.
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        foreach (var player in players)
         {
-            if (!players[i].InGame)
+            if (!player.InGame)
                 continue;
 
-            if ((players[i].Cmd.Buttons & TicCmdButtons.Special) == 0)
+            if ((player.Cmd.Buttons & TicCmdButtons.Special) == 0)
                 continue;
 
-            if ((players[i].Cmd.Buttons & TicCmdButtons.SpecialMask) != TicCmdButtons.Pause)
+            if ((player.Cmd.Buttons & TicCmdButtons.SpecialMask) != TicCmdButtons.Pause)
                 continue;
 
             Paused ^= true;

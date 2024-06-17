@@ -74,10 +74,9 @@ public sealed class Demo
         if (p + 4 * playerCount > data.Length)
             return false;
 
-        var players = Options.Players.AsSpan();
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        for (var i = 0; i < Options.Players.Length; i++)
         {
-            if (!players[i].InGame)
+            if (!Options.Players[i].InGame)
                 continue;
 
             var cmd = cmds[i];
