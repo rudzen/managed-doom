@@ -132,7 +132,7 @@ public sealed class SilkSound : ISound
         {
             sampleRate = -1;
             sampleCount = -1;
-            return null;
+            return [];
         }
 
         sampleRate = BitConverter.ToUInt16(data, 2);
@@ -151,25 +151,33 @@ public sealed class SilkSound : ISound
             : [];
     }
 
-    // Check if the data contains pad bytes.
-    // If the first and last 16 samples are the same,
-    // the data should contain pad bytes.
-    // https://doomwiki.org/wiki/Sound
+    /// <summary>
+    /// Checks if the provided audio data contains DMX padding.
+    /// DMX padding is a specific pattern in Doom sound data where the first and last 16 samples are the same.
+    /// This method has been optimized to use Span&lt;T&gt; for efficient data access and manipulation.
+    /// https://doomwiki.org/wiki/Sound
+    /// </summary>
     private static bool ContainsDmxPadding(ReadOnlySpan<byte> data)
     {
         var sampleCount = BitConverter.ToInt32(data.Slice(4, 4));
         if (sampleCount < 32)
             return false;
 
-        var first = data[8];
-        for (var i = 1; i < 16; i++)
-            if (data[8 + i] != first)
+        var first16Samples = data.Slice(8, 16);
+        var firstSample = first16Samples[0];
+        foreach (var sample in first16Samples[1..])
+        {
+            if (sample != firstSample)
                 return false;
+        }
 
-        var last = data[8 + sampleCount - 1];
-        for (var i = 1; i < 16; i++)
-            if (data[8 + sampleCount - i - 1] != last)
+        var last16Samples = data.Slice(8 + sampleCount - 16, 16);
+        var lastSample = last16Samples[0];
+        foreach (var sample in last16Samples[1..])
+        {
+            if (sample != lastSample)
                 return false;
+        }
 
         return true;
     }
@@ -359,7 +367,7 @@ public sealed class SilkSound : ISound
 
         for (var i = 0; i < infos.Length; i++)
         {
-            channels[i].Stop();
+            channels![i]!.Stop();
             infos[i].Clear();
         }
 
@@ -370,7 +378,7 @@ public sealed class SilkSound : ISound
     {
         for (var i = 0; i < infos.Length; i++)
         {
-            var channel = channels![i]!;
+            var channel = channels![i];
 
             if (channel is { State: PlaybackState.Playing, AudioClip: not null }
                 && channel.AudioClip.Duration - channel.PlayingOffset > TimeSpan.FromMilliseconds(200))
@@ -382,7 +390,7 @@ public sealed class SilkSound : ISound
     {
         for (var i = 0; i < infos.Length; i++)
         {
-            var channel = channels[i];
+            var channel = channels![i]!;
 
             if (channel.State == PlaybackState.Paused)
                 channel.Play();
@@ -453,40 +461,30 @@ public sealed class SilkSound : ISound
     {
         Console.WriteLine("Shutdown sound.");
 
-        if (channels is not null)
+        var channelSpan = channels.AsSpan();
+
+        foreach (var channel in channelSpan)
         {
-            for (var i = 0; i < channels.Length; i++)
-            {
-                if (channels[i] is null)
-                    continue;
+            if (channel is null)
+                continue;
 
-                channels[i]!.Stop();
-                channels[i]!.Dispose();
-                channels[i] = null;
-            }
-
-            channels = null;
+            channel.Stop();
+            channel.Dispose();
         }
 
-        if (buffers is not null)
+        var bufferSpan = buffers.AsSpan();
+
+        foreach (var buffer in bufferSpan)
+            buffer?.Dispose();
+
+        if (uiChannel is not null)
         {
-            for (var i = 0; i < buffers.Length; i++)
-            {
-                if (buffers[i] is null)
-                    continue;
-
-                buffers[i]!.Dispose();
-                buffers[i] = null;
-            }
-
-            buffers = null;
+            uiChannel.Dispose();
+            uiChannel = null;
         }
 
-        if (uiChannel is null)
-            return;
-
-        uiChannel.Dispose();
-        uiChannel = null;
+        channels = null;
+        buffers = null;
     }
 
     public int MaxVolume => 15;
