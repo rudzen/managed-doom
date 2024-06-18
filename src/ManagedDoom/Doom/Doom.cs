@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
@@ -41,7 +42,7 @@ public sealed class Doom
 
     private readonly List<DoomEvent> events;
 
-    private readonly TicCmd[] cmds;
+    private readonly TicCmd[] ticCommands;
 
     private DoomState nextState;
     private bool needWipe;
@@ -84,9 +85,9 @@ public sealed class Doom
 
         Opening = new OpeningSequence(content, Options);
 
-        cmds = new TicCmd[Player.MaxPlayerCount];
-        for (var i = 0; i < cmds.Length; i++)
-            cmds[i] = new TicCmd();
+        ticCommands = new TicCmd[Player.MaxPlayerCount];
+        for (var i = 0; i < ticCommands.Length; i++)
+            ticCommands[i] = new TicCmd();
 
         Game = new DoomGame(content, Options);
 
@@ -172,8 +173,12 @@ public sealed class Doom
         if (Wiping)
             return;
 
-        foreach (var e in events)
+        var eventSpan = CollectionsMarshal.AsSpan(events);
+        ref var eventsRef = ref MemoryMarshal.GetReference(eventSpan);
+
+        for (var i = 0; i < eventSpan.Length; i++)
         {
+            ref var e = ref Unsafe.Add(ref eventsRef, i);
             if (Menu.DoEvent(in e))
                 continue;
 
@@ -348,14 +353,14 @@ public sealed class Doom
                     break;
 
                 case DoomState.Game:
-                    userInput.BuildTicCmd(cmds[Options.ConsolePlayer]);
+                    userInput.BuildTicCmd(ticCommands[Options.ConsolePlayer]);
                     if (sendPause)
                     {
                         sendPause ^= true;
-                        cmds[Options.ConsolePlayer].Buttons |= TicCmdButtons.Special | TicCmdButtons.Pause;
+                        ticCommands[Options.ConsolePlayer].Buttons |= TicCmdButtons.Special | TicCmdButtons.Pause;
                     }
 
-                    if (Game.Update(cmds) == UpdateResult.NeedWipe)
+                    if (Game.Update(ticCommands) == UpdateResult.NeedWipe)
                         StartWipe();
                     break;
 
