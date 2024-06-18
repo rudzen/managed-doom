@@ -122,7 +122,7 @@ public sealed class Map
         foreach (var sector in Sectors)
         {
             sectorLines.Clear();
-            Box.Clear(boundingBox);
+            boundingBox.Clear();
 
             foreach (var line in Lines)
             {
@@ -130,8 +130,8 @@ public sealed class Map
                     continue;
 
                 sectorLines.Add(line);
-                Box.AddPoint(boundingBox, line.Vertex1);
-                Box.AddPoint(boundingBox, line.Vertex2);
+                boundingBox.AddPoint(line.Vertex1);
+                boundingBox.AddPoint(line.Vertex2);
             }
 
             sector.Lines = [.. sectorLines];
@@ -193,17 +193,12 @@ public sealed class Map
 
     public static Bgm GetMapBgm(IGameOptions options)
     {
-        Bgm bgm;
         if (options.GameMode == GameMode.Commercial)
-            bgm = Bgm.RUNNIN + options.Map - 1;
-        else
-        {
-            if (options.Episode < 4)
-                bgm = Bgm.E1M1 + (options.Episode - 1) * 9 + options.Map - 1;
-            else
-                bgm = e4BgmList[options.Map - 1];
-        }
+            return Bgm.RUNNIN + options.Map - 1;
 
-        return bgm;
+        if (options.Episode < 4)
+            return Bgm.E1M1 + (options.Episode - 1) * 9 + options.Map - 1;
+
+        return e4BgmList[options.Map - 1];
     }
 }

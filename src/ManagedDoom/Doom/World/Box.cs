@@ -27,17 +27,18 @@ public static class Box
     public const int Left = 2;
     public const int Right = 3;
 
-    public static void Clear(Fixed[] box)
+    public static void Clear(this Fixed[] box)
     {
         box[Top] = box[Right] = Fixed.MinValue;
         box[Bottom] = box[Left] = Fixed.MaxValue;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddPoint(Fixed[] box, Vertex vertex)
+    public static void AddPoint(this Fixed[] box, Vertex vertex)
     {
         var x = vertex.X;
         var y = vertex.Y;
+        
         if (x < box[Left])
             box[Left] = x;
         else if (x > box[Right])
