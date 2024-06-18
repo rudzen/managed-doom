@@ -86,28 +86,20 @@ public sealed class PlayerBehavior(World world)
         // Move around.
         // Reactiontime is used to prevent movement for a bit after a teleport.
         if (player.Mobj.ReactionTime > 0)
-        {
             player.Mobj.ReactionTime--;
-        }
         else
-        {
             MovePlayer(player);
-        }
 
         CalcHeight(player);
 
         if (player.Mobj.Subsector.Sector.Special != 0)
-        {
             PlayerInSpecialSector(player);
-        }
 
         // Check for weapon change.
 
         // A special event has no other buttons.
         if ((cmd.Buttons & TicCmdButtons.Special) != 0)
-        {
             cmd.Buttons = 0;
-        }
 
         if ((cmd.Buttons & TicCmdButtons.Change) != 0)
         {
@@ -115,17 +107,17 @@ public sealed class PlayerBehavior(World world)
             // Not in the middle of an attack.
             var newWeapon = new WeaponType((cmd.Buttons & TicCmdButtons.WeaponMask) >> TicCmdButtons.WeaponShift);
 
-            if (newWeapon == WeaponType.Fist &&
-                player.WeaponOwned[WeaponType.Chainsaw] &&
-                !(player.ReadyWeapon == WeaponType.Chainsaw && player.Powers[PowerType.Strength] != 0))
+            if (newWeapon == WeaponType.Fist
+                && player.WeaponOwned[WeaponType.Chainsaw]
+                && !(player.ReadyWeapon == WeaponType.Chainsaw && player.Powers[PowerType.Strength] != 0))
             {
                 newWeapon = WeaponType.Chainsaw;
             }
 
-            if ((world.Options.GameMode == GameMode.Commercial) &&
-                newWeapon == WeaponType.Shotgun &&
-                player.WeaponOwned[WeaponType.SuperShotgun] &&
-                player.ReadyWeapon != WeaponType.SuperShotgun)
+            if (world.Options.GameMode == GameMode.Commercial
+                && newWeapon == WeaponType.Shotgun
+                && player.WeaponOwned[WeaponType.SuperShotgun]
+                && player.ReadyWeapon != WeaponType.SuperShotgun)
             {
                 newWeapon = WeaponType.SuperShotgun;
             }
@@ -134,11 +126,8 @@ public sealed class PlayerBehavior(World world)
                 newWeapon != player.ReadyWeapon)
             {
                 // Do not go to plasma or BFG in shareware, even if cheated.
-                if ((newWeapon != WeaponType.Plasma && newWeapon != WeaponType.Bfg) ||
-                    (world.Options.GameMode != GameMode.Shareware))
-                {
+                if ((newWeapon != WeaponType.Plasma && newWeapon != WeaponType.Bfg) || world.Options.GameMode != GameMode.Shareware)
                     player.PendingWeapon = newWeapon;
-                }
             }
         }
 
@@ -152,9 +141,7 @@ public sealed class PlayerBehavior(World world)
             }
         }
         else
-        {
             player.UseDown = false;
-        }
 
         // Cycle player sprites.
         MovePlayerSprites(player);
@@ -201,8 +188,7 @@ public sealed class PlayerBehavior(World world)
         if (player.Powers[PowerType.Infrared] > 0)
         {
             // 1 == Almost full bright
-            var d = player.Powers[PowerType.Infrared] > 4 * 32 ||
-                    (player.Powers[PowerType.Infrared] & 8) != 0;
+            var d = player.Powers[PowerType.Infrared] > 4 * 32 || (player.Powers[PowerType.Infrared] & 8) != 0;
             return d.AsByte();
         }
 
@@ -249,18 +235,14 @@ public sealed class PlayerBehavior(World world)
         player.Bob = player.Mobj!.MomX * player.Mobj.MomX + player.Mobj.MomY * player.Mobj.MomY;
         player.Bob >>= 2;
         if (player.Bob > maxBob)
-        {
             player.Bob = maxBob;
-        }
 
         if ((player.Cheats & CheatFlags.NoMomentum) != 0 || !onGround)
         {
             player.ViewZ = player.Mobj.Z + Player.NormalViewHeight;
 
             if (player.ViewZ > player.Mobj.CeilingZ - Fixed.FromInt(4))
-            {
                 player.ViewZ = player.Mobj.CeilingZ - Fixed.FromInt(4);
-            }
 
             player.ViewZ = player.Mobj.Z + player.ViewHeight;
 
@@ -287,9 +269,7 @@ public sealed class PlayerBehavior(World world)
                 player.ViewHeight = Player.NormalViewHeight / 2;
 
                 if (player.DeltaViewHeight <= Fixed.Zero)
-                {
                     player.DeltaViewHeight = new Fixed(1);
-                }
             }
 
             if (player.DeltaViewHeight != Fixed.Zero)
@@ -297,18 +277,14 @@ public sealed class PlayerBehavior(World world)
                 player.DeltaViewHeight += Fixed.One / 4;
 
                 if (player.DeltaViewHeight == Fixed.Zero)
-                {
                     player.DeltaViewHeight = new Fixed(1);
-                }
             }
         }
 
         player.ViewZ = player.Mobj.Z + player.ViewHeight + bob;
 
         if (player.ViewZ > player.Mobj.CeilingZ - Fixed.FromInt(4))
-        {
             player.ViewZ = player.Mobj.CeilingZ - Fixed.FromInt(4);
-        }
     }
 
 
@@ -331,9 +307,7 @@ public sealed class PlayerBehavior(World world)
 
         // Falling, not all the way down yet?
         if (player.Mobj.Z != sector.FloorHeight)
-        {
             return;
-        }
 
         var ti = world.ThingInteraction;
 
@@ -359,13 +333,8 @@ public sealed class PlayerBehavior(World world)
 
             case 7:
                 // Nukage damage.
-                if (player.Powers[PowerType.IronFeet] == 0)
-                {
-                    if ((world.LevelTime & 0x1f) == 0)
-                    {
-                        ti.DamageMobj(player.Mobj, null, null, 5);
-                    }
-                }
+                if (player.Powers[PowerType.IronFeet] == 0 && (world.LevelTime & 0x1f) == 0)
+                    ti.DamageMobj(player.Mobj, null, null, 5);
 
                 break;
 
