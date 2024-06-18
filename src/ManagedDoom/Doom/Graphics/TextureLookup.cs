@@ -102,19 +102,8 @@ public sealed class TextureLookup : ITextureLookup
             if (lumpNumber == -1)
                 continue;
 
-            var lumpSize = wad.GetLumpSize(lumpNumber);
-            var lumpData = ArrayPool<byte>.Shared.Rent(lumpSize);
-
-            try
-            {
-                var lumpBuffer = lumpData.AsSpan(0, lumpSize);
-                wad.ReadLump(lumpNumber, lumpBuffer);
-                patches[i] = Patch.FromData(name, lumpBuffer.ToArray());
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(lumpData);
-            }
+            var lumpData = wad.ReadLump(lumpNumber);
+            patches[i] = Patch.FromData(name, lumpData);
         }
 
         return patches;
