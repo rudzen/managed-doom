@@ -147,7 +147,7 @@ public sealed class Wad : IDisposable
         var lumpSpan = LumpInfos.AsSpan();
         for (var i = lumpSpan.Length - 1; i >= 0; i--)
         {
-            if (lumpSpan[i].Name == name)
+            if (string.Equals(lumpSpan[i].Name, name, StringComparison.OrdinalIgnoreCase))
                 return i;
         }
 
