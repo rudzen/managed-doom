@@ -105,10 +105,10 @@ public sealed class CommandLineArgs : ICommandLineArgs
                 Iwad = new Arg<string>(iwadPath);
 
             if (pwadPaths.Count > 0)
-                File = new Arg<string[]>(pwadPaths.ToArray());
+                File = new Arg<string[]>([.. pwadPaths]);
 
             if (dehPaths.Count > 0)
-                Deh = new Arg<string[]>(dehPaths.ToArray());
+                Deh = new Arg<string[]>([.. dehPaths]);
         }
     }
 
@@ -123,8 +123,8 @@ public sealed class CommandLineArgs : ICommandLineArgs
         var values = GetValues(args, "-warp");
         return values.Length switch
         {
-            1 when int.TryParse(values[0], out var map)                                             => new Arg<Warp>(new(1, map)),
-            2 when int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map) => new Arg<Warp>(new(episode, map)),
+            1 when int.TryParse(values[0], out var map)                                             => new Arg<Warp>(new Warp(1, map)),
+            2 when int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map) => new Arg<Warp>(new Warp(episode, map)),
             _                                                                                       => new Arg<Warp>()
         };
     }

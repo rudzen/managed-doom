@@ -66,6 +66,6 @@ public sealed class KeyBinding
                 mouseButtons.Add(mouseButton);
         }
 
-        return new KeyBinding(keys.ToArray(), mouseButtons.ToArray());
+        return new KeyBinding([.. keys], [.. mouseButtons]);
     }
 }
