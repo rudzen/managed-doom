@@ -192,10 +192,9 @@ public sealed class PlayerBehavior(World world)
         // Invulnerability
         if (player.Powers[PowerType.Invulnerability] > 0)
         {
-            return player.Powers[PowerType.Invulnerability] > 4 * 32 ||
-                   (player.Powers[PowerType.Invulnerability] & 8) != 0
-                ? ColorMap.Inverse
-                : 0;
+            // // if 1, we need to return the inverse value (32, defined as ColorMap.Inverse), otherwise we return 0.
+            var shouldFlash = (player.Powers[PowerType.Invulnerability] > 4 * 32 || (player.Powers[PowerType.Invulnerability] & 8) != 0).AsByte();
+            return shouldFlash << 5;
         }
 
         // Infrared
