@@ -21,14 +21,14 @@ namespace ManagedDoom.Audio;
 
 public interface ISound : IDisposable
 {
+    Mobj? Listener { set; }
+
     public int MaxVolume { get; }
     public int Volume { get; set; }
 
-    public void SetListener(Mobj listener);
     public void Update();
     public void StartSound(Sfx sfx);
-    public void StartSound(Mobj mobj, Sfx sfx, SfxType type);
-    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume);
+    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume = 100);
     public void StopSound(Mobj mobj);
     public void Reset();
     public void Pause();

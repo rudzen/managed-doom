@@ -27,16 +27,14 @@ public sealed class NullSound : ISound
         return instance ??= new NullSound();
     }
 
+    public Mobj? Listener { get; set; } = null!;
+    
     public int MaxVolume => 15;
 
     public int Volume
     {
         get => 0;
         set { }
-    }
-
-    public void SetListener(Mobj listener)
-    {
     }
 
     public void Update()

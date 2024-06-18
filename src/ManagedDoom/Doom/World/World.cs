@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
@@ -43,6 +44,7 @@ public sealed class World
         this.Options = options;
         this.Game = game;
         this.Random = options.Random;
+        this.ConsolePlayer = options.Players[Options.ConsolePlayer];
 
         Map = new Map.Map(resources, this);
 
@@ -62,7 +64,7 @@ public sealed class World
         WeaponBehavior = new WeaponBehavior(this);
         MonsterBehavior = new MonsterBehavior(this);
         LightingChange = new LightingChange(this);
-        StatusBar = new StatusBar(this);
+        StatusBar = new StatusBar(ConsolePlayer);
         AutoMap = new AutoMap(this);
         cheat = new Cheat(this);
 
@@ -167,7 +169,7 @@ public sealed class World
 
     public bool SecretExit { get; private set; }
 
-    public Player ConsolePlayer => Options.Players[Options.ConsolePlayer];
+    public Player ConsolePlayer { get; }
     public Player DisplayPlayer => Options.Players[displayPlayer];
     public bool FirstTicIsNotYetDone => ConsolePlayer.ViewZ == Fixed.Epsilon;
 
@@ -192,7 +194,7 @@ public sealed class World
         Specials.Update();
         ThingAllocation.RespawnSpecials();
 
-        StatusBar.Update();
+        StatusBar.Update(ConsolePlayer);
         AutoMap.Update();
 
         LevelTime++;
@@ -252,12 +254,8 @@ public sealed class World
         completed = true;
     }
 
-    public void StartSound(Mobj mobj, Sfx sfx, SfxType type)
-    {
-        Options.Sound.StartSound(mobj, sfx, type);
-    }
-
-    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume = 100)
     {
         Options.Sound.StartSound(mobj, sfx, type, volume);
     }

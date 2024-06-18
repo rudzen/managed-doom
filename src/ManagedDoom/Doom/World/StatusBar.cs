@@ -28,7 +28,6 @@ public sealed class StatusBar
     private readonly bool[] oldWeaponsOwned;
 
     private readonly DoomRandom random;
-    private readonly World world;
 
     // Count until face changes.
     private int faceCount;
@@ -46,14 +45,12 @@ public sealed class StatusBar
     // A random number per tick.
     private int randomNumber;
 
-    public StatusBar(World world)
+    public StatusBar(Player consolePlayer)
     {
-        this.world = world;
-
         oldHealth = -1;
         oldWeaponsOwned = new bool[DoomInfo.WeaponInfos.Length];
         Array.Copy(
-            world.ConsolePlayer.WeaponOwned,
+            consolePlayer.WeaponOwned,
             oldWeaponsOwned,
             DoomInfo.WeaponInfos.Length);
         faceCount = 0;
@@ -68,11 +65,11 @@ public sealed class StatusBar
 
     public int FaceIndex { get; private set; }
 
-    public void Reset()
+    public void Reset(Player consolePlayer)
     {
         oldHealth = -1;
         Array.Copy(
-            world.ConsolePlayer.WeaponOwned,
+            consolePlayer.WeaponOwned,
             oldWeaponsOwned,
             DoomInfo.WeaponInfos.Length);
         faceCount = 0;
@@ -83,20 +80,18 @@ public sealed class StatusBar
         lastPainOffset = 0;
     }
 
-    public void Update()
+    public void Update(Player consolePlayer)
     {
         randomNumber = random.Next();
-        UpdateFace();
+        UpdateFace(consolePlayer);
     }
 
-    private void UpdateFace()
+    private void UpdateFace(Player consolePlayer)
     {
-        var player = world.ConsolePlayer;
-
         if (priority < 10)
         {
             // Dead.
-            if (player.Health == 0)
+            if (consolePlayer.Health == 0)
             {
                 priority = 9;
                 FaceIndex = Face.DeadIndex;
@@ -107,17 +102,17 @@ public sealed class StatusBar
 
         if (priority < 9)
         {
-            if (player.BonusCount != 0)
+            if (consolePlayer.BonusCount != 0)
             {
                 // Picking up bonus.
                 var doEvilGrin = false;
 
                 for (var i = 0; i < DoomInfo.WeaponInfos.Length; i++)
                 {
-                    if (oldWeaponsOwned[i] != player.WeaponOwned[i])
+                    if (oldWeaponsOwned[i] != consolePlayer.WeaponOwned[i])
                     {
                         doEvilGrin = true;
-                        oldWeaponsOwned[i] = player.WeaponOwned[i];
+                        oldWeaponsOwned[i] = consolePlayer.WeaponOwned[i];
                     }
                 }
 
@@ -126,48 +121,48 @@ public sealed class StatusBar
                     // Evil grin if just picked up weapon.
                     priority = 8;
                     faceCount = Face.EvilGrinDuration;
-                    FaceIndex = CalcPainOffset() + Face.EvilGrinOffset;
+                    FaceIndex = CalcPainOffset(consolePlayer.Health) + Face.EvilGrinOffset;
                 }
             }
         }
 
         if (priority < 8)
         {
-            if (player.DamageCount != 0 &&
-                player.Attacker != null &&
-                player.Attacker != player.Mobj)
+            if (consolePlayer.DamageCount != 0 &&
+                consolePlayer.Attacker != null &&
+                consolePlayer.Attacker != consolePlayer.Mobj)
             {
                 // Being attacked.
                 priority = 7;
 
-                if (player.Health - oldHealth > Face.MuchPain)
+                if (consolePlayer.Health - oldHealth > Face.MuchPain)
                 {
                     faceCount = Face.OuchDuration;
-                    FaceIndex = CalcPainOffset() + Face.OuchOffset;
+                    FaceIndex = CalcPainOffset(consolePlayer.Health) + Face.OuchOffset;
                 }
                 else
                 {
                     var attackerAngle = Geometry.PointToAngle(
-                        player.Mobj.X, player.Mobj.Y,
-                        player.Attacker.X, player.Attacker.Y);
+                        consolePlayer.Mobj!.X, consolePlayer.Mobj.Y,
+                        consolePlayer.Attacker.X, consolePlayer.Attacker.Y);
 
                     Angle diff;
                     bool right;
-                    if (attackerAngle > player.Mobj.Angle)
+                    if (attackerAngle > consolePlayer.Mobj.Angle)
                     {
                         // Whether right or left.
-                        diff = attackerAngle - player.Mobj.Angle;
+                        diff = attackerAngle - consolePlayer.Mobj.Angle;
                         right = diff > Angle.Ang180;
                     }
                     else
                     {
                         // Whether left or right.
-                        diff = player.Mobj.Angle - attackerAngle;
+                        diff = consolePlayer.Mobj.Angle - attackerAngle;
                         right = diff <= Angle.Ang180;
                     }
 
                     faceCount = Face.TurnDuration;
-                    FaceIndex = CalcPainOffset();
+                    FaceIndex = CalcPainOffset(consolePlayer.Health);
 
                     // Head-on.
                     if (diff < Angle.Ang45)
@@ -185,19 +180,19 @@ public sealed class StatusBar
         if (priority < 7)
         {
             // Getting hurt because of your own damn stupidity.
-            if (player.DamageCount != 0)
+            if (consolePlayer.DamageCount != 0)
             {
-                if (player.Health - oldHealth > Face.MuchPain)
+                if (consolePlayer.Health - oldHealth > Face.MuchPain)
                 {
                     priority = 7;
                     faceCount = Face.TurnDuration;
-                    FaceIndex = CalcPainOffset() + Face.OuchOffset;
+                    FaceIndex = CalcPainOffset(consolePlayer.Health) + Face.OuchOffset;
                 }
                 else
                 {
                     priority = 6;
                     faceCount = Face.TurnDuration;
-                    FaceIndex = CalcPainOffset() + Face.RampageOffset;
+                    FaceIndex = CalcPainOffset(consolePlayer.Health) + Face.RampageOffset;
                 }
             }
         }
@@ -205,14 +200,14 @@ public sealed class StatusBar
         if (priority < 6)
         {
             // Rapid firing.
-            if (player.AttackDown)
+            if (consolePlayer.AttackDown)
             {
                 if (lastAttackDown == -1)
                     lastAttackDown = Face.RampageDelay;
                 else if (--lastAttackDown == 0)
                 {
                     priority = 5;
-                    FaceIndex = CalcPainOffset() + Face.RampageOffset;
+                    FaceIndex = CalcPainOffset(consolePlayer.Health) + Face.RampageOffset;
                     faceCount = 1;
                     lastAttackDown = 1;
                 }
@@ -224,7 +219,7 @@ public sealed class StatusBar
         if (priority < 5)
         {
             // Invulnerability.
-            if ((player.Cheats & CheatFlags.GodMode) != 0 || player.Powers[PowerType.Invulnerability] != 0)
+            if ((consolePlayer.Cheats & CheatFlags.GodMode) != 0 || consolePlayer.Powers[PowerType.Invulnerability] != 0)
             {
                 priority = 4;
 
@@ -236,7 +231,7 @@ public sealed class StatusBar
         // Look left or look right if the facecount has timed out.
         if (faceCount == 0)
         {
-            FaceIndex = CalcPainOffset() + (randomNumber % 3);
+            FaceIndex = CalcPainOffset(consolePlayer.Health) + (randomNumber % 3);
             faceCount = Face.StraightFaceDuration;
             priority = 0;
         }
@@ -244,11 +239,9 @@ public sealed class StatusBar
         faceCount--;
     }
 
-    private int CalcPainOffset()
+    private int CalcPainOffset(int currentHealth)
     {
-        var player = world.Options.Players[world.Options.ConsolePlayer];
-
-        var health = player.Health > 100 ? 100 : player.Health;
+        var health =currentHealth > 100 ? 100 :currentHealth;
 
         if (health != oldHealth)
         {

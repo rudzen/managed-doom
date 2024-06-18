@@ -76,7 +76,7 @@ public static partial class SaveAndLoad
 
         game.World.LevelTime = levelTime;
 
-        options.Sound.SetListener(game.World.ConsolePlayer.Mobj!);
+        options.Sound.Listener =game.World.ConsolePlayer.Mobj!;
     }
 
     private static int ReadDescription(Span<byte> data, int ptr, out string description)

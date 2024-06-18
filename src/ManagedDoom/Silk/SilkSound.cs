@@ -19,7 +19,6 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 using DrippyAL;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
@@ -34,14 +33,14 @@ namespace ManagedDoom.Silk;
 
 public sealed class SilkSound : ISound
 {
-    private const int channelCount = 8;
+    private const int ChannelCount = 8;
 
-    private static readonly float fastDecay = (float)Math.Pow(0.5, 1.0 / (35 / 5));
-    private static readonly float slowDecay = (float)Math.Pow(0.5, 1.0 / 35);
+    private const float ClipDist = 1200;
+    private const float CloseDist = 160;
+    private const float Attenuator = ClipDist - CloseDist;
 
-    private const float clipDist = 1200;
-    private const float closeDist = 160;
-    private const float attenuator = clipDist - closeDist;
+    private static readonly float fastDecay = (float)Math.Pow(0.5, 0.14285714285714285D);
+    private static readonly float slowDecay = (float)Math.Pow(0.5, 0.02857142857142857D);
 
     private readonly ConfigValues config;
 
@@ -55,8 +54,6 @@ public sealed class SilkSound : ISound
 
     private AudioChannel? uiChannel;
     private Sfx uiReserved;
-
-    private Mobj listener;
 
     private float masterVolumeDecay;
 
@@ -83,13 +80,13 @@ public sealed class SilkSound : ISound
 
             for (var i = 0; i < sfxNames.Length; i++)
             {
-                var name = $"DS{sfxNames[i].ToString().ToUpper()}";
+                var name = $"DS{sfxNames[i]}";
                 var lump = content.Wad.GetLumpNumber(name);
 
                 if (lump == -1)
                     continue;
 
-                var samples = GetSamples(content.Wad, lump, name, out var sampleRate, out var sampleCount);
+                var samples = GetSamples(content.Wad, name, out var sampleRate, out var sampleCount);
 
                 if (samples.IsEmpty)
                     continue;
@@ -98,8 +95,8 @@ public sealed class SilkSound : ISound
                 amplitudes[i] = GetAmplitude(samples, sampleRate, sampleCount);
             }
 
-            channels = new AudioChannel[channelCount];
-            infos = new ChannelInfo[channelCount];
+            channels = new AudioChannel[ChannelCount];
+            infos = new ChannelInfo[ChannelCount];
             for (var i = 0; i < channels.Length; i++)
             {
                 channels[i] = new AudioChannel(device);
@@ -123,10 +120,11 @@ public sealed class SilkSound : ISound
         }
     }
 
-    private static Span<byte> GetSamples(Wad wad, int lumpNumber, string lumpName, out int sampleRate, out int sampleCount)
+    public Mobj? Listener { private get; set; }
+
+    private static Span<byte> GetSamples(Wad wad, string lumpName, out int sampleRate, out int sampleCount)
     {
-        // TODO (rudzen) : modify to not Span<T> instead of real array
-        var data = wad.ReadLump(lumpName);
+        var data = wad.ReadLump(lumpName).AsSpan();
 
         if (data.Length < 8)
         {
@@ -135,19 +133,19 @@ public sealed class SilkSound : ISound
             return [];
         }
 
-        sampleRate = BitConverter.ToUInt16(data, 2);
-        sampleCount = BitConverter.ToInt32(data, 4);
+        sampleRate = BitConverter.ToUInt16(data.Slice(2, 2));
+        sampleCount = BitConverter.ToInt32(data.Slice(4, 4));
 
         var offset = 8;
 
-        if (ContainsDmxPadding(data))
+        if (sampleCount >= 32 && ContainsDmxPadding(data, sampleCount))
         {
             offset += 16;
             sampleCount -= 32;
         }
 
         return sampleCount > 0
-            ? data.AsSpan(offset, sampleCount)
+            ? data.Slice(offset, sampleCount)
             : [];
     }
 
@@ -157,12 +155,8 @@ public sealed class SilkSound : ISound
     /// This method has been optimized to use Span&lt;T&gt; for efficient data access and manipulation.
     /// https://doomwiki.org/wiki/Sound
     /// </summary>
-    private static bool ContainsDmxPadding(ReadOnlySpan<byte> data)
+    private static bool ContainsDmxPadding(ReadOnlySpan<byte> data, int sampleCount)
     {
-        var sampleCount = BitConverter.ToInt32(data.Slice(4, 4));
-        if (sampleCount < 32)
-            return false;
-
         var first16Samples = data.Slice(8, 16);
         var firstSample = first16Samples[0];
         foreach (var sample in first16Samples[1..])
@@ -203,11 +197,6 @@ public sealed class SilkSound : ISound
         return (float)max / 128;
     }
 
-    public void SetListener(Mobj listener)
-    {
-        this.listener = listener;
-    }
-
     public void Update()
     {
         var now = Stopwatch.GetTimestamp();
@@ -218,32 +207,15 @@ public sealed class SilkSound : ISound
         var infoSpan = infos.AsSpan();
         var channelSpan = channels.AsSpan();
 
-        ref var infoRef = ref MemoryMarshal.GetReference(infoSpan);
-        ref var channelRef = ref MemoryMarshal.GetReference(channelSpan);
-
         for (var i = 0; i < infoSpan.Length; i++)
         {
-            ref var info = ref Unsafe.Add(ref infoRef, i);
-            ref var channel = ref Unsafe.Add(ref channelRef, i);
+            var info = infoSpan[i];
+            var channel = channelSpan[i];
 
-            if (info.Playing != Sfx.NONE)
-            {
-                if (channel.State != PlaybackState.Stopped)
-                {
-                    if (info.Type == SfxType.Diffuse)
-                        info.Priority *= slowDecay;
-                    else
-                        info.Priority *= fastDecay;
+            if (channel is null)
+                return;
 
-                    SetParam(channel, info);
-                }
-                else
-                {
-                    info.Playing = Sfx.NONE;
-                    if (info.Reserved == Sfx.NONE)
-                        info.Source = null;
-                }
-            }
+            UpdateChannelInfo(info, channel);
 
             if (info.Reserved == Sfx.NONE)
                 continue;
@@ -251,7 +223,7 @@ public sealed class SilkSound : ISound
             if (info.Playing != Sfx.NONE)
                 channel.Stop();
 
-            channel.AudioClip = buffers[(int)info.Reserved];
+            channel.AudioClip = buffers![(int)info.Reserved];
             SetParam(channel, info);
             channel.Pitch = GetPitch(info.Type, info.Reserved);
             channel.Play();
@@ -259,41 +231,64 @@ public sealed class SilkSound : ISound
             info.Reserved = Sfx.NONE;
         }
 
-        if (uiReserved != Sfx.NONE)
-        {
-            if (uiChannel.State == PlaybackState.Playing)
-                uiChannel.Stop();
-
-            uiChannel.Position = new Vector3(0, 0, -1);
-            uiChannel.Volume = masterVolumeDecay;
-            uiChannel.AudioClip = buffers[(int)uiReserved];
-            uiChannel.Play();
-            uiReserved = Sfx.NONE;
-        }
+        PlayUiSound();
 
         lastUpdate = now;
     }
 
+    private void UpdateChannelInfo(ChannelInfo info, AudioChannel channel)
+    {
+        if (info.Playing == Sfx.NONE)
+            return;
+
+        if (channel.State != PlaybackState.Stopped)
+        {
+            if (info.Type == SfxType.Diffuse)
+                info.Priority *= slowDecay;
+            else
+                info.Priority *= fastDecay;
+
+            SetParam(channel, info);
+        }
+        else
+        {
+            info.Playing = Sfx.NONE;
+            if (info.Reserved == Sfx.NONE)
+                info.Source = null;
+        }
+    }
+
+    private void PlayUiSound()
+    {
+        if (uiReserved == Sfx.NONE)
+            return;
+
+        if (uiChannel!.State == PlaybackState.Playing)
+            uiChannel.Stop();
+
+        uiChannel.Position = new Vector3(0, 0, -1);
+        uiChannel.Volume = masterVolumeDecay;
+        uiChannel.AudioClip = buffers![(int)uiReserved];
+        uiChannel.Play();
+        uiReserved = Sfx.NONE;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void StartSound(Sfx sfx)
     {
-        if (buffers[sfx.AsInt()] is null)
+        if (buffers![sfx.AsInt()] is null)
             return;
 
         uiReserved = sfx;
     }
 
-    public void StartSound(Mobj mobj, Sfx sfx, SfxType type)
+    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume = 100)
     {
-        StartSound(mobj, sfx, type, 100);
-    }
-
-    public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume)
-    {
-        if (buffers[(int)sfx] is null)
+        if (buffers![(int)sfx] is null)
             return;
 
-        var x = (mobj.X - listener.X).ToFloat();
-        var y = (mobj.Y - listener.Y).ToFloat();
+        var x = (mobj.X - Listener!.X).ToFloat();
+        var y = (mobj.Y - Listener.Y).ToFloat();
         var dist = MathF.Sqrt(x * x + y * y);
 
         var priority = type == SfxType.Diffuse
@@ -324,6 +319,11 @@ public sealed class SilkSound : ISound
             return;
         }
 
+        UpdatePriority(priority, mobj, sfx, type, volume);
+    }
+
+    private void UpdatePriority(float priority, Mobj mobj, Sfx sfx, SfxType type, int volume = 100)
+    {
         var minPriority = float.MaxValue;
         var minChannel = -1;
         for (var i = 0; i < infos.Length; i++)
@@ -371,7 +371,7 @@ public sealed class SilkSound : ISound
             infos[i].Clear();
         }
 
-        listener = null!;
+        Listener = null!;
     }
 
     public void Pause()
@@ -408,8 +408,8 @@ public sealed class SilkSound : ISound
         {
             var (sourceX, sourceY) = GetSourceXy(info);
 
-            var x = (sourceX - listener.X).ToFloat();
-            var y = (sourceY - listener.Y).ToFloat();
+            var x = (sourceX - Listener!.X).ToFloat();
+            var y = (sourceY - Listener.Y).ToFloat();
 
             if (Math.Abs(x) < 16 && Math.Abs(y) < 16)
             {
@@ -419,7 +419,7 @@ public sealed class SilkSound : ISound
             else
             {
                 var dist = MathF.Sqrt(x * x + y * y);
-                var angle = MathF.Atan2(y, x) - (float)listener.Angle.ToRadian();
+                var angle = MathF.Atan2(y, x) - (float)Listener.Angle.ToRadian();
                 sound.Position = new Vector3(-MathF.Sin(angle), 0, -MathF.Cos(angle));
                 sound.Volume = 0.01F * masterVolumeDecay * GetDistanceDecay(dist) * info.Volume;
             }
@@ -437,9 +437,9 @@ public sealed class SilkSound : ISound
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static float GetDistanceDecay(float dist)
     {
-        return dist < closeDist
+        return dist < CloseDist
             ? 1F
-            : Math.Max((clipDist - dist) / attenuator, 0F);
+            : Math.Max((ClipDist - dist) / Attenuator, 0F);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

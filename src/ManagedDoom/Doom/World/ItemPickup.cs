@@ -27,7 +27,7 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class ItemPickup(World world)
 {
-    private const int bonusAdd = 6;
+    private const int BonusAdd = 6;
 
     /// <summary>
     /// Give the player the ammo.
@@ -115,28 +115,33 @@ public sealed class ItemPickup(World world)
     /// <param name="player">The player for which to give weapon to</param>
     /// <param name="weapon">The weapon to give to the player</param>
     /// <param name="dropped">True if the weapons is dropped by a monster/// </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool GiveWeapon(Player player, WeaponType weapon, bool dropped)
     {
         if (world.Options.NetGame && world.Options.Deathmatch != 2 && !dropped)
-        {
-            // Leave placed weapons forever on net games.
-            if (player.WeaponOwned[weapon])
-                return false;
+            return GiveWeaponNet(player, weapon);
 
-            player.BonusCount += bonusAdd;
-            player.WeaponOwned[weapon] = true;
+        var gaveAmmo = GaveAmmo(player, weapon, dropped);
+        var gaveWeapon = GaveWeapon(player, weapon);
 
-            var amountToGive = world.Options.Deathmatch != 0 ? 5 : 2;
-            GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, amountToGive);
+        return gaveWeapon | gaveAmmo;
+    }
 
-            player.PendingWeapon = weapon;
-
-            if (player == world.ConsolePlayer)
-                world.StartSound(player.Mobj!, Sfx.WPNUP, SfxType.Misc);
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool GaveWeapon(Player player, WeaponType weapon)
+    {
+        if (player.WeaponOwned[weapon])
             return false;
-        }
 
+        player.WeaponOwned[weapon] = true;
+        player.PendingWeapon = weapon;
+
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool GaveAmmo(Player player, WeaponType weapon, bool dropped)
+    {
         bool gaveAmmo;
         if (DoomInfo.WeaponInfos[weapon].Ammo != AmmoType.NoAmmo)
         {
@@ -153,19 +158,28 @@ public sealed class ItemPickup(World world)
         else
             gaveAmmo = false;
 
-        bool gaveWeapon;
-        if (player.WeaponOwned[weapon])
-            gaveWeapon = false;
-        else
-        {
-            gaveWeapon = true;
-            player.WeaponOwned[weapon] = true;
-            player.PendingWeapon = weapon;
-        }
-
-        return gaveWeapon || gaveAmmo;
+        return gaveAmmo;
     }
 
+    private bool GiveWeaponNet(Player player, WeaponType weapon)
+    {
+        // Leave placed weapons forever on net games.
+        if (player.WeaponOwned[weapon])
+            return false;
+
+        player.BonusCount += BonusAdd;
+        player.WeaponOwned[weapon] = true;
+
+        var amountToGive = world.Options.Deathmatch != 0 ? 5 : 2;
+        GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, amountToGive);
+
+        player.PendingWeapon = weapon;
+
+        if (player == world.ConsolePlayer)
+            world.StartSound(player.Mobj!, Sfx.WPNUP, SfxType.Misc);
+
+        return false;
+    }
 
     /// <summary>
     /// Give the health point to the player.
@@ -216,7 +230,7 @@ public sealed class ItemPickup(World world)
         if (player.Cards[(int)card])
             return;
 
-        player.BonusCount = bonusAdd;
+        player.BonusCount = BonusAdd;
         player.Cards[(int)card] = true;
     }
 
@@ -272,6 +286,7 @@ public sealed class ItemPickup(World world)
     /// <summary>
     /// Check for item pickup.
     /// </summary>
+    // ReSharper disable once CognitiveComplexity
     public void TouchSpecialThing(Mobj special, Mobj toucher)
     {
         var delta = special.Z - toucher.Z;
@@ -632,7 +647,7 @@ public sealed class ItemPickup(World world)
 
         world.ThingAllocation.RemoveMobj(special);
 
-        player.BonusCount += bonusAdd;
+        player.BonusCount += BonusAdd;
 
         if (player == world.ConsolePlayer)
             world.StartSound(player.Mobj!, sound, SfxType.Misc);
