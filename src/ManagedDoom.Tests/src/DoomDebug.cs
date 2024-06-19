@@ -14,21 +14,19 @@
 // GNU General Public License for more details.
 //
 
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.World;
 
-namespace ManagedDoom.Doom.Common;
+namespace ManagedDoom.Tests;
 
 public static class DoomDebug
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CombineHash(int a, int b) => (3 * a) ^ b;
 
-    public static int GetMobjHash(World.World world)
+    public static int GetMobjHash(World world)
     {
         var hash = 0;
         foreach (var thinker in world.Thinkers)
@@ -110,7 +108,7 @@ public static class DoomDebug
         return sb.ToString();
     }
 
-    public static void DumpMobjCsv(string path, World.World world)
+    public static void DumpMobjCsv(string path, World world)
     {
         using var writer = new StreamWriter(path);
         foreach (var thinker in world.Thinkers)
@@ -121,7 +119,7 @@ public static class DoomDebug
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetSectorHash(World.World world)
+    public static int GetSectorHash(World world)
     {
         return world.Map.Sectors.Aggregate(0, (current, sector) => CombineHash(current, GetSectorHash(sector)));
     }

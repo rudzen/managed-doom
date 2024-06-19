@@ -1,5 +1,4 @@
-﻿using ManagedDoom.Doom.Common;
-using ManagedDoom.Doom.Game;
+﻿using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Tests.CompatibilityTests;
 
