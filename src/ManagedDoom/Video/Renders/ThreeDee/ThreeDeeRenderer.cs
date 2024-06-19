@@ -1532,7 +1532,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
                 planeRender.FloorXFrac[y] = xFrac;
                 planeRender.FloorYFrac[y] = yFrac;
 
-                var planeColorMap = planeLights[Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1)];
+                var lightIndex = Math.Min((uint)(distance.Data >> LightningRender.zLightShift), LightningRender.maxZLight - 1);
+                var planeColorMap = planeLights[lightIndex];
                 planeRender.FloorLights[y] = planeColorMap;
 
                 var spot = ((yFrac.Data >> (16 - 6)) & (63 * 64)) + ((xFrac.Data >> 16) & 63);
@@ -1578,7 +1579,9 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         {
             // Re-map color indices from wall texture column
             // using a lighting/special effects LUT.
-            screenData[pos] = map[source[offset + ((frac.Data >> Fixed.FracBits) & 127)]];
+            var sourceIndex = offset + ((frac.Data >> Fixed.FracBits) & 127);
+            var mapIndex = source[sourceIndex];
+            screenData[pos] = map[mapIndex];
             frac += fracStep;
         }
     }

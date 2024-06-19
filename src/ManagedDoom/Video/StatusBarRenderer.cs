@@ -29,11 +29,6 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
 {
     public const int Height = 32;
 
-    // Ammo number pos.
-    private const int ammoWidth = 3;
-    private const int ammoX = 44;
-    private const int ammoY = 171;
-
     // Health number pos.
     private const int healthX = 90;
     private const int healthY = 171;
@@ -123,9 +118,13 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
     {
         this.screen = screen;
 
-        patches = new Patches(gameContent.Wad);
+        patches = Patches.Create(gameContent.Wad);
 
         scale = screen.Width / 320;
+
+        // Ammo number pos.
+        const int ammoX = 44;
+        const int ammoY = 171;
 
         ready = new NumberWidget(ammoX, ammoY, ammo0Width, patches.TallNumbers);
 
@@ -199,10 +198,11 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
         if (backgroundDrawing == BackgroundDrawingType.Full)
         {
             screen.DrawPatch(
-                patches.Background,
-                0,
-                scale * (200 - Height),
-                scale);
+                patch: patches.Background,
+                x: 0,
+                y: scale * (200 - Height),
+                scale: scale
+            );
         }
 
         if (DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
@@ -225,10 +225,11 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
             if (backgroundDrawing == BackgroundDrawingType.Full)
             {
                 screen.DrawPatch(
-                    patches.ArmsBackground,
-                    scale * armsBackgroundX,
-                    scale * armsBackgroundY,
-                    scale);
+                    patch: patches.ArmsBackground,
+                    x: scale * armsBackgroundX,
+                    y: scale * armsBackgroundY,
+                    scale: scale
+                );
             }
 
             for (var i = 0; i < weapons.Length; i++)
@@ -245,25 +246,39 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
             if (player.Mobj.World.Options.NetGame)
             {
                 screen.DrawPatch(
-                    patches.FaceBackground[player.Number],
-                    scale * faceBackgroundX,
-                    scale * faceBackgroundY,
-                    scale);
+                    patch: patches.FaceBackground[player.Number],
+                    x: scale * faceBackgroundX,
+                    y: scale * faceBackgroundY,
+                    scale: scale
+                );
             }
 
             screen.DrawPatch(
-                patches.Faces[player.Mobj.World.StatusBar.FaceIndex],
-                scale * faceX,
-                scale * faceY,
-                scale);
+                patch: patches.Faces[player.Mobj.World.StatusBar.FaceIndex],
+                x: scale * faceX,
+                y: scale * faceY,
+                scale: scale
+            );
         }
 
-        for (var i = 0; i < 3; i++)
+        // no need to try render keys if player doesn't have any
+        if (player.Cards == CardType.None)
+            return;
+
+        var cards = player.Cards & CardType.KeyCards;
+        while (cards != CardType.None)
         {
-            if (player.Cards[i + 3])
-                DrawMultIcon(keys[i], i + 3);
-            else if (player.Cards[i])
-                DrawMultIcon(keys[i], i);
+            var key = CardTypeExtensions.Next(ref cards);
+            var index = key.Index();
+            DrawMultIcon(keys[index], index);
+        }
+
+        cards = player.Cards & CardType.SkullKeys;
+        while (cards != CardType.None)
+        {
+            var key = CardTypeExtensions.Next(ref cards);
+            var index = key.Index();
+            DrawMultIcon(keys[index - 3], index);
         }
     }
 
@@ -307,10 +322,11 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
             x -= w;
 
             screen.DrawPatch(
-                widget.Patches[num % 10],
-                scale * x,
-                scale * widget.Y,
-                scale);
+                patch: widget.Patches[num % 10],
+                x: scale * x,
+                y: scale * widget.Y,
+                scale: scale
+            );
 
             num /= 10;
         }
@@ -333,10 +349,11 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
     private void DrawPercent(PercentWidget per, int value)
     {
         screen.DrawPatch(
-            per.Patch,
-            scale * per.NumberWidget.X,
-            scale * per.NumberWidget.Y,
-            scale);
+            patch: per.Patch,
+            x: scale * per.NumberWidget.X,
+            y: scale * per.NumberWidget.Y,
+            scale: scale
+        );
 
         DrawNumber(per.NumberWidget, value);
     }
@@ -345,10 +362,11 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
     private void DrawMultIcon(MultIconWidget mi, int value)
     {
         screen.DrawPatch(
-            mi.Patches[value],
-            scale * mi.X,
-            scale * mi.Y,
-            scale);
+            patch: mi.Patches[value],
+            x: scale * mi.X,
+            y: scale * mi.Y,
+            scale: scale
+        );
     }
 
     private sealed record NumberWidget(int X, int Y, int Width, Patch[] Patches);
@@ -357,68 +375,81 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
 
     private sealed record MultIconWidget(int X, int Y, Patch[] Patches);
 
-    private sealed class Patches
+    private sealed record Patches(
+        Patch Background,
+        Patch[] TallNumbers,
+        Patch[] ShortNumbers,
+        Patch TallMinus,
+        Patch TallPercent,
+        Patch[] Keys,
+        Patch ArmsBackground,
+        Patch[][] Arms,
+        Patch[] FaceBackground,
+        Patch[] Faces)
     {
-        public Patches(Wad wad)
+        public static Patches Create(Wad wad)
         {
-            Background = Patch.FromWad(wad, "STBAR");
+            var background = Patch.FromWad(wad, "STBAR");
 
-            TallNumbers = new Patch[10];
-            ShortNumbers = new Patch[10];
+            var tallNumbers = new Patch[10];
+            var shortNumbers = new Patch[10];
             for (var i = 0; i < 10; i++)
             {
-                TallNumbers[i] = Patch.FromWad(wad, $"STTNUM{i}");
-                ShortNumbers[i] = Patch.FromWad(wad, $"STYSNUM{i}");
+                tallNumbers[i] = Patch.FromWad(wad, $"STTNUM{i}");
+                shortNumbers[i] = Patch.FromWad(wad, $"STYSNUM{i}");
             }
 
-            TallMinus = Patch.FromWad(wad, "STTMINUS");
-            TallPercent = Patch.FromWad(wad, "STTPRCNT");
+            var tallMinus = Patch.FromWad(wad, "STTMINUS");
+            var tallPercent = Patch.FromWad(wad, "STTPRCNT");
 
-            Keys = new Patch[(int)CardType.Count];
-            for (var i = 0; i < Keys.Length; i++)
-                Keys[i] = Patch.FromWad(wad, $"STKEYS{i}");
+            var keys = new Patch[CardType.All.Count()];
+            for (var i = 0; i < keys.Length; i++)
+                keys[i] = Patch.FromWad(wad, $"STKEYS{i}");
 
-            ArmsBackground = Patch.FromWad(wad, "STARMS");
-            Arms = new Patch[6][];
-            for (var i = 0; i < Arms.Length; i++)
+            var armsBackground = Patch.FromWad(wad, "STARMS");
+            var arms = new Patch[6][];
+            for (var i = 0; i < arms.Length; i++)
             {
                 var num = i + 2;
-                Arms[i] = new Patch[2];
-                Arms[i][0] = Patch.FromWad(wad, $"STGNUM{num}");
-                Arms[i][1] = ShortNumbers[num];
+                arms[i] = [Patch.FromWad(wad, $"STGNUM{num}"), shortNumbers[num]];
             }
 
-            FaceBackground = new Patch[Player.MaxPlayerCount];
-            for (var i = 0; i < FaceBackground.Length; i++)
-                FaceBackground[i] = Patch.FromWad(wad, $"STFB{i}");
+            Patch[] faceBackground =
+            [
+                Patch.FromWad(wad, "STFB0"),
+                Patch.FromWad(wad, "STFB1"),
+                Patch.FromWad(wad, "STFB2"),
+                Patch.FromWad(wad, "STFB3")
+            ];
 
-            Faces = new Patch[StatusBar.Face.FaceCount];
+            var faces = new Patch[StatusBar.Face.FaceCount];
             var faceCount = 0;
             for (var i = 0; i < StatusBar.Face.PainFaceCount; i++)
             {
                 for (var j = 0; j < StatusBar.Face.StraightFaceCount; j++)
-                    Faces[faceCount++] = Patch.FromWad(wad, $"STFST{i}{j}");
+                    faces[faceCount++] = Patch.FromWad(wad, $"STFST{i}{j}");
 
-                Faces[faceCount++] = Patch.FromWad(wad, $"STFTR{i}0");
-                Faces[faceCount++] = Patch.FromWad(wad, $"STFTL{i}0");
-                Faces[faceCount++] = Patch.FromWad(wad, $"STFOUCH{i}");
-                Faces[faceCount++] = Patch.FromWad(wad, $"STFEVL{i}");
-                Faces[faceCount++] = Patch.FromWad(wad, $"STFKILL{i}");
+                faces[faceCount++] = Patch.FromWad(wad, $"STFTR{i}0");
+                faces[faceCount++] = Patch.FromWad(wad, $"STFTL{i}0");
+                faces[faceCount++] = Patch.FromWad(wad, $"STFOUCH{i}");
+                faces[faceCount++] = Patch.FromWad(wad, $"STFEVL{i}");
+                faces[faceCount++] = Patch.FromWad(wad, $"STFKILL{i}");
             }
 
-            Faces[faceCount++] = Patch.FromWad(wad, "STFGOD0");
-            Faces[faceCount] = Patch.FromWad(wad, "STFDEAD0");
-        }
+            faces[faceCount++] = Patch.FromWad(wad, "STFGOD0");
+            faces[faceCount] = Patch.FromWad(wad, "STFDEAD0");
 
-        public Patch Background { get; }
-        public Patch[] TallNumbers { get; }
-        public Patch[] ShortNumbers { get; }
-        public Patch TallMinus { get; }
-        public Patch TallPercent { get; }
-        public Patch[] Keys { get; }
-        public Patch ArmsBackground { get; }
-        public Patch[][] Arms { get; }
-        public Patch[] FaceBackground { get; }
-        public Patch[] Faces { get; }
+            return new Patches(
+                Background: background,
+                TallNumbers: tallNumbers,
+                ShortNumbers: shortNumbers,
+                TallMinus: tallMinus,
+                TallPercent: tallPercent,
+                Keys: keys,
+                ArmsBackground: armsBackground,
+                Arms: arms,
+                FaceBackground: faceBackground,
+                Faces: faces);
+        }
     }
 }

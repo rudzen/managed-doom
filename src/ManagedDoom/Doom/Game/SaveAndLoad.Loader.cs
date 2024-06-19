@@ -76,7 +76,7 @@ public static partial class SaveAndLoad
 
         game.World.LevelTime = levelTime;
 
-        options.Sound.Listener =game.World.ConsolePlayer.Mobj!;
+        options.Sound.Listener = game.World.ConsolePlayer.Mobj!;
     }
 
     private static int ReadDescription(Span<byte> data, int ptr, out string description)
@@ -412,8 +412,12 @@ public static partial class SaveAndLoad
         for (var i = 0; i < player.Powers.Length; i++)
             player.Powers[i] = BitConverter.ToInt32(data[(p + 44 + 4 * i)..]);
 
-        for (var i = 0; i < player.Cards.Length; i++)
-            player.Cards[i] = BitConverter.ToInt32(data[(p + 68 + 4 * i)..]) != 0;
+        // read cards
+        for (var i = 0; i < CardTypeExtensions.CardTypes.Length; i++)
+        {
+            if (BitConverter.ToInt32(data[(p + 68 + 4 * i)..]) != 0)
+                player.Cards |= CardTypeExtensions.CardTypes[i];
+        }
 
         player.Backpack = BitConverter.ToInt32(data[(p + 92)..]) != 0;
 

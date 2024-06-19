@@ -150,8 +150,7 @@ public sealed class Cheat(World world)
         var player = world.ConsolePlayer;
         player.ArmorType = DoomInfo.DeHackEdConst.IdkfaArmorClass;
         player.ArmorPoints = DoomInfo.DeHackEdConst.IdkfaArmor;
-        for (var i = 0; i < player.Cards.Length; i++)
-            player.Cards[i] = true;
+        player.Cards = CardType.All;
 
         player.SendMessage(DoomInfo.Strings.STSTR_KFAADDED);
     }

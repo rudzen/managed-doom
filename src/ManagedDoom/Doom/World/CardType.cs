@@ -14,16 +14,66 @@
 // GNU General Public License for more details.
 //
 
+using System;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom.Doom.World;
 
+[Flags]
 public enum CardType
 {
-    BlueCard,
-    YellowCard,
-    RedCard,
-    BlueSkull,
-    YellowSkull,
-    RedSkull,
+    None = 0,
+    BlueCard = 1 << 0,
+    YellowCard = 1 << 1,
+    RedCard = 1 << 2,
+    BlueSkull = 1 << 3,
+    YellowSkull = 1 << 4,
+    RedSkull = 1 << 5,
 
-    Count
+    KeyCards = BlueCard | YellowCard | RedCard,
+    SkullKeys = BlueSkull | YellowSkull | RedSkull,
+    All = KeyCards | SkullKeys
+}
+
+public static class CardTypeExtensions
+{
+    public static CardType[] CardTypes => [CardType.BlueCard, CardType.YellowCard, CardType.RedCard, CardType.BlueSkull, CardType.YellowSkull, CardType.RedSkull];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Index(this CardType ct)
+    {
+        // Convert enum value to ulong
+        var mask = (uint)ct;
+
+        // Use BitOperations to get the log2 value, which gives the bit index
+        return BitOperations.Log2(mask);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Count(this CardType ct) => BitOperations.PopCount((uint)ct);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static CardType Next(ref CardType ct)
+    {
+        var lsb = Lsb(ct);
+        ResetLsb(ref ct);
+        return lsb;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static CardType Lsb(CardType ct)
+    {
+        var tzc = BitOperations.TrailingZeroCount((int)ct);
+        return (CardType)(1 << tzc);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static void ResetLsb(ref CardType ct) => ct &= ct - 1;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool Has(this CardType ct, CardType f)
+    {
+        return (ct & f) != 0;
+    }
 }

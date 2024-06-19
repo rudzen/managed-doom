@@ -202,10 +202,7 @@ public sealed class ThingAllocation
 
         // Give all cards in death match mode.
         if (world.Options.Deathmatch != 0)
-        {
-            for (var i = 0; i < player.Cards.Length; i++)
-                player.Cards[i] = true;
-        }
+            player.Cards = CardType.All;
     }
 
     public IReadOnlyList<MapThing> PlayerStarts => playerStarts;

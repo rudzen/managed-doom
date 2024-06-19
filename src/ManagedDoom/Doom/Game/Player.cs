@@ -95,7 +95,7 @@ public sealed class Player
         Cmd = new TicCmd();
 
         Powers = new int[PowerType.Count];
-        Cards = new bool[(int)CardType.Count];
+        Cards = CardType.None;
 
         Frags = new int[MaxPlayerCount];
 
@@ -136,7 +136,7 @@ public sealed class Player
 
     public int[] Powers { get; }
 
-    public bool[] Cards { get; }
+    public CardType Cards { get; set; }
 
     public bool Backpack { get; set; }
 
@@ -202,7 +202,7 @@ public sealed class Player
         ArmorType = 0;
 
         Array.Clear(Powers);
-        Array.Clear(Cards);
+        Cards = CardType.None;
         Backpack = false;
 
         Array.Clear(Frags);
@@ -265,7 +265,7 @@ public sealed class Player
         ArmorType = 0;
 
         Array.Clear(Powers);
-        Array.Clear(Cards);
+        Cards = CardType.None;
         Backpack = false;
 
         ReadyWeapon = WeaponType.Pistol;
@@ -316,7 +316,7 @@ public sealed class Player
     public void FinishLevel()
     {
         Array.Clear(Powers);
-        Array.Clear(Cards);
+        Cards = CardType.None;
 
         // Cancel invisibility.
         if (Mobj is not null)

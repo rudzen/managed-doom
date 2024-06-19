@@ -442,12 +442,11 @@ public sealed class SectorAction
             case 26:
             case 32:
                 if (player == null)
-                {
                     return;
-                }
 
-                if (!player.Cards[(int)CardType.BlueCard] &&
-                    !player.Cards[(int)CardType.BlueSkull])
+                const CardType blueCards = CardType.BlueCard | CardType.BlueSkull;
+
+                if (!player.Cards.Has(blueCards))
                 {
                     player.SendMessage(DoomInfo.Strings.PD_BLUEK);
                     world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
@@ -460,12 +459,11 @@ public sealed class SectorAction
             case 27:
             case 34:
                 if (player == null)
-                {
                     return;
-                }
 
-                if (!player.Cards[(int)CardType.YellowCard] &&
-                    !player.Cards[(int)CardType.YellowSkull])
+                const CardType yellowCards = CardType.YellowCard | CardType.YellowSkull;
+
+                if (!player.Cards.Has(yellowCards))
                 {
                     player.SendMessage(DoomInfo.Strings.PD_YELLOWK);
                     world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
@@ -482,8 +480,9 @@ public sealed class SectorAction
                     return;
                 }
 
-                if (!player.Cards[(int)CardType.RedCard] &&
-                    !player.Cards[(int)CardType.RedSkull])
+                const CardType redCards = CardType.RedCard | CardType.RedSkull;
+
+                if (!player.Cards.Has(redCards))
                 {
                     player.SendMessage(DoomInfo.Strings.PD_REDK);
                     world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
@@ -679,8 +678,10 @@ public sealed class SectorAction
             // Blue Lock.
             case 99:
             case 133:
-                if (!player.Cards[(int)CardType.BlueCard] &&
-                    !player.Cards[(int)CardType.BlueSkull])
+
+                const CardType blueCards = CardType.BlueCard | CardType.BlueSkull;
+
+                if (!player.Cards.Has(blueCards))
                 {
                     player.SendMessage(DoomInfo.Strings.PD_BLUEO);
                     world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
@@ -692,8 +693,10 @@ public sealed class SectorAction
             // Red Lock.
             case 134:
             case 135:
-                if (!player.Cards[(int)CardType.RedCard] &&
-                    !player.Cards[(int)CardType.RedSkull])
+
+                const CardType redCards = CardType.RedCard | CardType.RedSkull;
+
+                if (!player.Cards.Has(redCards))
                 {
                     player.SendMessage(DoomInfo.Strings.PD_REDO);
                     world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
@@ -705,8 +708,10 @@ public sealed class SectorAction
             // Yellow Lock.
             case 136:
             case 137:
-                if (!player.Cards[(int)CardType.YellowCard] &&
-                    !player.Cards[(int)CardType.YellowSkull])
+
+                const CardType yellowCards = CardType.YellowCard | CardType.YellowSkull;
+
+                if (!player.Cards.Has(yellowCards))
                 {
                     player.SendMessage(DoomInfo.Strings.PD_YELLOWO);
                     world.StartSound(player.Mobj!, Sfx.OOF, SfxType.Voice);
@@ -782,7 +787,7 @@ public sealed class SectorAction
         //	Activate all <type> plats that are in stasis.
         if (type == PlatformType.PerpetualRaise)
             ActivateInStasis(line.Tag);
-            
+
         var sectors = world.Map.Sectors;
         var sectorNumber = -1;
         var result = false;

@@ -45,7 +45,7 @@ public sealed class ItemPickup(World world)
         if (ammo == AmmoType.NoAmmo)
             return false;
 
-        if (!((uint)ammo.Value < (uint)AmmoTypes.Count))
+        if (ammo > AmmoType.Count)
             throw new Exception($"Bad ammo type: {ammo}");
 
         if (player.Ammo[ammo] == player.MaxAmmo[ammo])
@@ -227,11 +227,11 @@ public sealed class ItemPickup(World world)
     /// </summary>
     private static void GiveCard(Player player, CardType card)
     {
-        if (player.Cards[(int)card])
+        if (player.Cards.Has(card))
             return;
 
         player.BonusCount = BonusAdd;
-        player.Cards[(int)card] = true;
+        player.Cards |= card;
     }
 
     /// <summary>
@@ -371,7 +371,7 @@ public sealed class ItemPickup(World world)
             // Cards.
             // Leave cards for everyone.
             case Sprite.BKEY:
-                if (!player.Cards[(int)CardType.BlueCard])
+                if (!player.Cards.Has(CardType.BlueCard))
                     player.SendMessage(DoomInfo.Strings.GOTBLUECARD);
 
                 GiveCard(player, CardType.BlueCard);
@@ -381,7 +381,7 @@ public sealed class ItemPickup(World world)
                 return;
 
             case Sprite.YKEY:
-                if (!player.Cards[(int)CardType.YellowCard])
+                if (!player.Cards.Has(CardType.YellowCard))
                     player.SendMessage(DoomInfo.Strings.GOTYELWCARD);
 
                 GiveCard(player, CardType.YellowCard);
@@ -391,7 +391,7 @@ public sealed class ItemPickup(World world)
                 return;
 
             case Sprite.RKEY:
-                if (!player.Cards[(int)CardType.RedCard])
+                if (!player.Cards.Has(CardType.RedCard))
                     player.SendMessage(DoomInfo.Strings.GOTREDCARD);
 
                 GiveCard(player, CardType.RedCard);
@@ -401,7 +401,7 @@ public sealed class ItemPickup(World world)
                 return;
 
             case Sprite.BSKU:
-                if (!player.Cards[(int)CardType.BlueSkull])
+                if (!player.Cards.Has(CardType.BlueSkull))
                     player.SendMessage(DoomInfo.Strings.GOTBLUESKUL);
 
                 GiveCard(player, CardType.BlueSkull);
@@ -411,7 +411,7 @@ public sealed class ItemPickup(World world)
                 return;
 
             case Sprite.YSKU:
-                if (!player.Cards[(int)CardType.YellowSkull])
+                if (!player.Cards.Has(CardType.YellowSkull))
                     player.SendMessage(DoomInfo.Strings.GOTYELWSKUL);
 
                 GiveCard(player, CardType.YellowSkull);
@@ -421,7 +421,7 @@ public sealed class ItemPickup(World world)
                 return;
 
             case Sprite.RSKU:
-                if (!player.Cards[(int)CardType.RedSkull])
+                if (!player.Cards.Has(CardType.RedSkull))
                     player.SendMessage(DoomInfo.Strings.GOTREDSKULL);
 
                 GiveCard(player, CardType.RedSkull);

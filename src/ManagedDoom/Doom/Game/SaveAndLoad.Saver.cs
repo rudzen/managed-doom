@@ -338,8 +338,11 @@ public static partial class SaveAndLoad
         for (var i = 0; i < player.Powers.Length; i++)
             Write(data, p + 44 + 4 * i, player.Powers[i]);
 
-        for (var i = 0; i < player.Cards.Length; i++)
-            Write(data, p + 68 + 4 * i, player.Cards[i].AsByte());
+        for (var i = 0; i < CardTypeExtensions.CardTypes.Length; i++)
+        {
+            var cardType = CardTypeExtensions.CardTypes[i];
+            Write(data, p + 68 + 4 * i, player.Cards.Has(cardType).AsInt());
+        }
 
         Write(data, p + 92, player.Backpack.AsByte());
 

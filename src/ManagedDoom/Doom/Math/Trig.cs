@@ -24,7 +24,7 @@ public static partial class Trig
     public const int FineMask = FineAngleCount - 1;
     public const int AngleToFineShift = 19;
 
-    private const int fineCosineOffset = FineAngleCount / 4;
+    private const int FineCosineOffset = FineAngleCount / 4;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Tan(Angle anglePlus90)
@@ -53,13 +53,13 @@ public static partial class Trig
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Cos(Angle angle)
     {
-        return new Fixed(fineSine[(angle.Data >> AngleToFineShift) + fineCosineOffset]);
+        return new Fixed(fineSine[(angle.Data >> AngleToFineShift) + FineCosineOffset]);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Cos(int fineAngle)
     {
-        return new Fixed(fineSine[fineAngle + fineCosineOffset]);
+        return new Fixed(fineSine[fineAngle + FineCosineOffset]);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
