@@ -76,12 +76,7 @@ public readonly struct Fixed
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Abs(Fixed a)
     {
-        if (a.Data < 0)
-        {
-            return new Fixed(-a.Data);
-        }
-
-        return a;
+        return a.Data < 0 ? new Fixed(-a.Data) : a;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -128,12 +123,9 @@ public readonly struct Fixed
 
     public static Fixed operator /(Fixed a, Fixed b)
     {
-        if ((CIntAbs(a.Data) >> 14) >= CIntAbs(b.Data))
-        {
-            return new Fixed((a.Data ^ b.Data) < 0 ? int.MinValue : int.MaxValue);
-        }
-
-        return FixedDiv2(a, b);
+        return CIntAbs(a.Data) >> 14 >= CIntAbs(b.Data)
+            ? new Fixed((a.Data ^ b.Data) < 0 ? int.MinValue : int.MaxValue)
+            : FixedDiv2(a, b);
     }
 
     // The Math.Abs method throws an exception if the input value is -2147483648.
@@ -149,9 +141,7 @@ public readonly struct Fixed
         var c = a.Data / ((double)b.Data) * FracUnit;
 
         if (c is >= 2147483648.0 or < -2147483648.0)
-        {
             throw new DivideByZeroException();
-        }
 
         return new Fixed((int)c);
     }
@@ -219,23 +209,13 @@ public readonly struct Fixed
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Min(Fixed a, Fixed b)
     {
-        if (a < b)
-        {
-            return a;
-        }
-
-        return b;
+        return a < b ? a : b;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Max(Fixed a, Fixed b)
     {
-        if (a < b)
-        {
-            return b;
-        }
-
-        return a;
+        return a < b ? b : a;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
