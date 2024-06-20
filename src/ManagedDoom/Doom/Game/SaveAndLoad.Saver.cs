@@ -351,9 +351,11 @@ public static partial class SaveAndLoad
 
         Write(data, p + 112, (int)player.ReadyWeapon);
         Write(data, p + 116, (int)player.PendingWeapon);
-        for (var i = 0; i < player.WeaponOwned.Length; i++)
+
+        for (var i = 0; i < WeaponTypesExtensions.AllWeaponTypes.Length; i++)
         {
-            Write(data, p + 120 + 4 * i, player.WeaponOwned[i].AsInt());
+            var weapon = WeaponTypesExtensions.AllWeaponTypes[i];
+            Write(data, p + 120 + 4 * i, player.WeaponOwned.Has(weapon).AsInt());
         }
 
         for (var i = 0; i < player.Ammo.Length; i++)

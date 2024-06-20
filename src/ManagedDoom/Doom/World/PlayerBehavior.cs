@@ -100,36 +100,8 @@ public sealed class PlayerBehavior(World world)
         // A special event has no other buttons.
         if ((cmd.Buttons & TicCmdButtons.Special) != 0)
             cmd.Buttons = 0;
-
-        if ((cmd.Buttons & TicCmdButtons.Change) != 0)
-        {
-            // The actual changing of the weapon is done when the weapon psprite can do it.
-            // Not in the middle of an attack.
-            var newWeapon = new WeaponType((cmd.Buttons & TicCmdButtons.WeaponMask) >> TicCmdButtons.WeaponShift);
-
-            if (newWeapon == WeaponType.Fist
-                && player.WeaponOwned[WeaponType.Chainsaw]
-                && !(player.ReadyWeapon == WeaponType.Chainsaw && player.Powers[PowerType.Strength] != 0))
-            {
-                newWeapon = WeaponType.Chainsaw;
-            }
-
-            if (world.Options.GameMode == GameMode.Commercial
-                && newWeapon == WeaponType.Shotgun
-                && player.WeaponOwned[WeaponType.SuperShotgun]
-                && player.ReadyWeapon != WeaponType.SuperShotgun)
-            {
-                newWeapon = WeaponType.SuperShotgun;
-            }
-
-            if (player.WeaponOwned[newWeapon] &&
-                newWeapon != player.ReadyWeapon)
-            {
-                // Do not go to plasma or BFG in shareware, even if cheated.
-                if ((newWeapon != WeaponType.Plasma && newWeapon != WeaponType.Bfg) || world.Options.GameMode != GameMode.Shareware)
-                    player.PendingWeapon = newWeapon;
-            }
-        }
+        else if ((cmd.Buttons & TicCmdButtons.Change) != 0)
+            SetPendingWeapons(player, world.Options.GameMode, cmd.Buttons);
 
         // Check for use.
         if ((cmd.Buttons & TicCmdButtons.Use) != 0)
@@ -171,6 +143,36 @@ public sealed class PlayerBehavior(World world)
             player.BonusCount--;
 
         player.FixedColorMap = GetFixedColorMap(player);
+    }
+
+    private static void SetPendingWeapons(Player player, GameMode gameMode, byte buttons)
+    {
+        // The actual changing of the weapon is done when the weapon psprite can do it.
+        // Not in the middle of an attack.
+        var pressed = (buttons & TicCmdButtons.WeaponMask) >> TicCmdButtons.WeaponShift;
+        var newWeapon = (WeaponTypes)(1 << pressed);
+
+        if (newWeapon == WeaponTypes.Fist
+            && player.WeaponOwned.Has(WeaponTypes.Chainsaw)
+            && !(player.ReadyWeapon == WeaponTypes.Chainsaw && player.Powers[PowerType.Strength] != 0))
+        {
+            newWeapon = WeaponTypes.Chainsaw;
+        }
+        else if (gameMode == GameMode.Commercial
+                 && newWeapon == WeaponTypes.Shotgun
+                 && player.WeaponOwned.Has(WeaponTypes.SuperShotgun)
+                 && player.ReadyWeapon != WeaponTypes.SuperShotgun)
+        {
+            newWeapon = WeaponTypes.SuperShotgun;
+        }
+
+        if (newWeapon != player.ReadyWeapon && player.WeaponOwned.Has(newWeapon))
+        {
+            // Do not go to plasma or BFG in shareware, even if cheated.
+            const WeaponTypes plasmaBfg = WeaponTypes.Plasma | WeaponTypes.Bfg;
+            if (!plasmaBfg.Has(newWeapon) || gameMode != GameMode.Shareware)
+                player.PendingWeapon = newWeapon;
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -443,15 +445,15 @@ public sealed class PlayerBehavior(World world)
     /// </summary>
     public void BringUpWeapon(Player player)
     {
-        if (player.PendingWeapon == WeaponType.NoChange)
+        if (player.PendingWeapon == WeaponTypes.None)
             player.PendingWeapon = player.ReadyWeapon;
 
-        if (player.PendingWeapon == WeaponType.Chainsaw)
+        if (player.PendingWeapon == WeaponTypes.Chainsaw)
             world.StartSound(player.Mobj!, Sfx.SAWUP, SfxType.Weapon);
 
-        var newState = DoomInfo.WeaponInfos[player.PendingWeapon].UpState;
+        var newState = player.PendingWeapon.WeaponInfo().UpState;
 
-        player.PendingWeapon = WeaponType.NoChange;
+        player.PendingWeapon = WeaponTypes.None;
         player.PlayerSprites[(int)PlayerSprite.Weapon].Sy = WeaponBehavior.WeaponBottom;
 
         SetPlayerSprite(player, PlayerSprite.Weapon, newState);
@@ -534,7 +536,7 @@ public sealed class PlayerBehavior(World world)
         SetPlayerSprite(
             player,
             PlayerSprite.Weapon,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].DownState);
+            player.ReadyWeapon.WeaponInfo().DownState);
     }
 
 

@@ -25,7 +25,7 @@ namespace ManagedDoom.Doom.World;
 public sealed class StatusBar
 {
     // Used for evil grin.
-    private readonly bool[] oldWeaponsOwned;
+    private WeaponTypes oldWeaponsOwned;
 
     private readonly DoomRandom random;
 
@@ -48,11 +48,7 @@ public sealed class StatusBar
     public StatusBar(Player consolePlayer)
     {
         oldHealth = -1;
-        oldWeaponsOwned = new bool[DoomInfo.WeaponInfos.Length];
-        Array.Copy(
-            consolePlayer.WeaponOwned,
-            oldWeaponsOwned,
-            DoomInfo.WeaponInfos.Length);
+        oldWeaponsOwned = consolePlayer.WeaponOwned;
         faceCount = 0;
         FaceIndex = 0;
         randomNumber = 0;
@@ -68,10 +64,7 @@ public sealed class StatusBar
     public void Reset(Player consolePlayer)
     {
         oldHealth = -1;
-        Array.Copy(
-            consolePlayer.WeaponOwned,
-            oldWeaponsOwned,
-            DoomInfo.WeaponInfos.Length);
+        oldWeaponsOwned = consolePlayer.WeaponOwned;
         faceCount = 0;
         FaceIndex = 0;
         randomNumber = 0;
@@ -107,13 +100,10 @@ public sealed class StatusBar
                 // Picking up bonus.
                 var doEvilGrin = false;
 
-                for (var i = 0; i < DoomInfo.WeaponInfos.Length; i++)
+                if (oldWeaponsOwned != consolePlayer.WeaponOwned)
                 {
-                    if (oldWeaponsOwned[i] != consolePlayer.WeaponOwned[i])
-                    {
-                        doEvilGrin = true;
-                        oldWeaponsOwned[i] = consolePlayer.WeaponOwned[i];
-                    }
+                    doEvilGrin = true;
+                    oldWeaponsOwned = consolePlayer.WeaponOwned;
                 }
 
                 if (doEvilGrin)
@@ -241,7 +231,7 @@ public sealed class StatusBar
 
     private int CalcPainOffset(int currentHealth)
     {
-        var health =currentHealth > 100 ? 100 :currentHealth;
+        var health = currentHealth > 100 ? 100 : currentHealth;
 
         if (health != oldHealth)
         {

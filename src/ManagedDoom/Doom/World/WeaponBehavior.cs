@@ -54,16 +54,16 @@ public sealed class WeaponBehavior(World world)
         if (player.Mobj!.State == states[(int)MobjState.PlayAtk1] || player.Mobj.State == states[(int)MobjState.PlayAtk2])
             player.Mobj.SetState(MobjState.Play);
 
-        if (player.ReadyWeapon == WeaponType.Chainsaw && psp.State == states[(int)MobjState.Saw])
+        if (player.ReadyWeapon == WeaponTypes.Chainsaw && psp.State == states[(int)MobjState.Saw])
             world.StartSound(player.Mobj, Sfx.SAWIDL, SfxType.Weapon);
 
         // Check for weapon change.
         // If player is dead, put the weapon away.
-        if (player.PendingWeapon != WeaponType.NoChange || player.Health == 0)
+        if (player.PendingWeapon != WeaponTypes.None || player.Health == 0)
         {
             // Change weapon.
             // Pending weapon should already be validated.
-            var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].DownState;
+            var newState = player.ReadyWeapon.WeaponInfo().DownState;
             pb.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
             return;
         }
@@ -72,7 +72,8 @@ public sealed class WeaponBehavior(World world)
         // The missile launcher and bfg do not auto fire.
         if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
         {
-            if (!player.AttackDown || (player.ReadyWeapon != WeaponType.Missile && player.ReadyWeapon != WeaponType.Bfg))
+            const WeaponTypes missileBfg = WeaponTypes.Missile | WeaponTypes.Bfg;
+            if (!player.AttackDown || !player.ReadyWeapon.Has(missileBfg))
             {
                 player.AttackDown = true;
                 FireWeapon(player);
@@ -93,7 +94,7 @@ public sealed class WeaponBehavior(World world)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool CheckAmmo(Player player)
     {
-        var ammo = DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo;
+        var ammo = player.ReadyWeapon.WeaponInfo().Ammo;
 
         int count;
 
@@ -114,59 +115,59 @@ public sealed class WeaponBehavior(World world)
         // Preferences are set here.
         do
         {
-            if (player.WeaponOwned[WeaponType.Plasma] &&
+            if (player.WeaponOwned.Has(WeaponTypes.Plasma) &&
                 player.Ammo[(int)AmmoTypes.Cell] > 0 &&
                 world.Options.GameMode != GameMode.Shareware)
             {
-                player.PendingWeapon = WeaponType.Plasma;
+                player.PendingWeapon = WeaponTypes.Plasma;
             }
-            else if (player.WeaponOwned[WeaponType.SuperShotgun] &&
+            else if (player.WeaponOwned.Has(WeaponTypes.SuperShotgun) &&
                      player.Ammo[(int)AmmoTypes.Shell] > 2 &&
                      world.Options.GameMode == GameMode.Commercial)
             {
-                player.PendingWeapon = WeaponType.SuperShotgun;
+                player.PendingWeapon = WeaponTypes.SuperShotgun;
             }
-            else if (player.WeaponOwned[WeaponType.Chaingun] &&
+            else if (player.WeaponOwned.Has(WeaponTypes.Chaingun) &&
                      player.Ammo[(int)AmmoTypes.Clip] > 0)
             {
-                player.PendingWeapon = WeaponType.Chaingun;
+                player.PendingWeapon = WeaponTypes.Chaingun;
             }
-            else if (player.WeaponOwned[WeaponType.Shotgun] &&
+            else if (player.WeaponOwned.Has(WeaponTypes.Shotgun) &&
                      player.Ammo[(int)AmmoTypes.Shell] > 0)
             {
-                player.PendingWeapon = WeaponType.Shotgun;
+                player.PendingWeapon = WeaponTypes.Shotgun;
             }
             else if (player.Ammo[(int)AmmoTypes.Clip] > 0)
             {
-                player.PendingWeapon = WeaponType.Pistol;
+                player.PendingWeapon = WeaponTypes.Pistol;
             }
-            else if (player.WeaponOwned[WeaponType.Chainsaw])
+            else if (player.WeaponOwned.Has(WeaponTypes.Chainsaw))
             {
-                player.PendingWeapon = WeaponType.Chainsaw;
+                player.PendingWeapon = WeaponTypes.Chainsaw;
             }
-            else if (player.WeaponOwned[WeaponType.Missile] &&
+            else if (player.WeaponOwned.Has(WeaponTypes.Missile) &&
                      player.Ammo[(int)AmmoTypes.Missile] > 0)
             {
-                player.PendingWeapon = WeaponType.Missile;
+                player.PendingWeapon = WeaponTypes.Missile;
             }
-            else if (player.WeaponOwned[WeaponType.Bfg] &&
+            else if (player.WeaponOwned.Has(WeaponTypes.Bfg) &&
                      player.Ammo[(int)AmmoTypes.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
                      world.Options.GameMode != GameMode.Shareware)
             {
-                player.PendingWeapon = WeaponType.Bfg;
+                player.PendingWeapon = WeaponTypes.Bfg;
             }
             else
             {
                 // If everything fails.
-                player.PendingWeapon = WeaponType.Fist;
+                player.PendingWeapon = WeaponTypes.Fist;
             }
-        } while (player.PendingWeapon == WeaponType.NoChange);
+        } while (player.PendingWeapon == WeaponTypes.None);
 
         // Now set appropriate weapon overlay.
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Weapon,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].DownState);
+            player.ReadyWeapon.WeaponInfo().DownState);
 
         return false;
     }
@@ -226,9 +227,9 @@ public sealed class WeaponBehavior(World world)
         if (!CheckAmmo(player))
             return;
 
-        player.Mobj.SetState(MobjState.PlayAtk1);
+        player.Mobj!.SetState(MobjState.PlayAtk1);
 
-        var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].AttackState;
+        var newState = player.ReadyWeapon.WeaponInfo().AttackState;
         world.PlayerBehavior.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
 
         NoiseAlert(player.Mobj, player.Mobj);
@@ -279,7 +280,7 @@ public sealed class WeaponBehavior(World world)
         psp.Sy = WeaponTop;
 
         // The weapon has been raised all the way, so change to the ready state.
-        var newState = DoomInfo.WeaponInfos[player.ReadyWeapon].ReadyState;
+        var newState = player.ReadyWeapon.WeaponInfo().ReadyState;
 
         world.PlayerBehavior.SetPlayerSprite(player, PlayerSprite.Weapon, newState);
     }
@@ -367,7 +368,7 @@ public sealed class WeaponBehavior(World world)
         // Check for fire.
         // If a weaponchange is pending, let it go through instead.
         if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0 &&
-            player.PendingWeapon == WeaponType.NoChange &&
+            player.PendingWeapon == WeaponTypes.None &&
             player.Health != 0)
         {
             player.Refire++;
@@ -422,13 +423,12 @@ public sealed class WeaponBehavior(World world)
         world.StartSound(player.Mobj, Sfx.PISTOL, SfxType.Weapon);
 
         player.Mobj.SetState(MobjState.PlayAtk2);
-
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
+            player.ReadyWeapon.WeaponInfo().FlashState);
 
         BulletSlope(player.Mobj);
 
@@ -447,13 +447,12 @@ public sealed class WeaponBehavior(World world)
         world.StartSound(player.Mobj, Sfx.SHOTGN, SfxType.Weapon);
 
         player.Mobj.SetState(MobjState.PlayAtk2);
-
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
+            player.ReadyWeapon.WeaponInfo().FlashState);
 
         BulletSlope(player.Mobj);
 
@@ -474,18 +473,18 @@ public sealed class WeaponBehavior(World world)
     {
         world.StartSound(player.Mobj, Sfx.PISTOL, SfxType.Weapon);
 
-        if (player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] == 0)
+        if (player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo] == 0)
             return;
 
         player.Mobj.SetState(MobjState.PlayAtk2);
 
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState +
-            psp.State.Number - DoomInfo.States[(int)MobjState.Chain1].Number);
+            player.ReadyWeapon.WeaponInfo().FlashState +
+            psp.State!.Number - DoomInfo.States[(int)MobjState.Chain1].Number);
 
         BulletSlope(player.Mobj);
 
@@ -498,13 +497,12 @@ public sealed class WeaponBehavior(World world)
         world.StartSound(player.Mobj, Sfx.DSHTGN, SfxType.Weapon);
 
         player.Mobj.SetState(MobjState.PlayAtk2);
-
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= 2;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo] -= 2;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
+            player.ReadyWeapon.WeaponInfo().FlashState);
 
         BulletSlope(player.Mobj);
 
@@ -534,66 +532,66 @@ public sealed class WeaponBehavior(World world)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void OpenShotgun2(Player player)
     {
-        world.StartSound(player.Mobj, Sfx.DBOPN, SfxType.Weapon);
+        world.StartSound(player.Mobj!, Sfx.DBOPN, SfxType.Weapon);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void LoadShotgun2(Player player)
     {
-        world.StartSound(player.Mobj, Sfx.DBLOAD, SfxType.Weapon);
+        world.StartSound(player.Mobj!, Sfx.DBLOAD, SfxType.Weapon);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void CloseShotgun2(Player player)
     {
-        world.StartSound(player.Mobj, Sfx.DBCLS, SfxType.Weapon);
+        world.StartSound(player.Mobj!, Sfx.DBCLS, SfxType.Weapon);
         ReFire(player);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GunFlash(Player player)
     {
-        player.Mobj.SetState(MobjState.PlayAtk2);
+        player.Mobj!.SetState(MobjState.PlayAtk2);
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState);
+            player.ReadyWeapon.WeaponInfo().FlashState);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireMissile(Player player)
     {
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo]--;
 
-        world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Rocket);
+        world.ThingAllocation.SpawnPlayerMissile(player.Mobj!, MobjType.Rocket);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FirePlasma(Player player)
     {
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo]--;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
             player,
             PlayerSprite.Flash,
-            DoomInfo.WeaponInfos[player.ReadyWeapon].FlashState + (world.Random.Next() & 1));
+            player.ReadyWeapon.WeaponInfo().FlashState + (world.Random.Next() & 1));
 
-        world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Plasma);
+        world.ThingAllocation.SpawnPlayerMissile(player.Mobj!, MobjType.Plasma);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void A_BFGsound(Player player)
     {
-        world.StartSound(player.Mobj, Sfx.BFG, SfxType.Weapon);
+        world.StartSound(player.Mobj!, Sfx.BFG, SfxType.Weapon);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireBFG(Player player)
     {
-        player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
+        player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo] -= DoomInfo.DeHackEdConst.BfgCellsPerShot;
 
-        world.ThingAllocation.SpawnPlayerMissile(player.Mobj, MobjType.Bfg);
+        world.ThingAllocation.SpawnPlayerMissile(player.Mobj!, MobjType.Bfg);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -608,7 +606,7 @@ public sealed class WeaponBehavior(World world)
             var an = bfgBall.Angle - Angle.Ang90 / 2 + Angle.Ang90 / 40 * (uint)i;
 
             // bfgBall.Target is the originator (player) of the missile.
-            hs.AimLineAttack(bfgBall.Target, an, Fixed.FromInt(16 * 64));
+            hs.AimLineAttack(bfgBall.Target!, an, Fixed.FromInt(16 * 64));
 
             if (hs.LineTarget == null)
                 continue;

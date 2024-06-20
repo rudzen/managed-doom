@@ -74,35 +74,37 @@ public sealed class ItemPickup(World world)
         // Preferences are not user selectable.
         if (ammo == AmmoType.Clip)
         {
-            if (player.ReadyWeapon == WeaponType.Fist)
+            if (player.ReadyWeapon == WeaponTypes.Fist)
             {
-                player.PendingWeapon = player.WeaponOwned[WeaponType.Chaingun]
-                    ? WeaponType.Chaingun
-                    : WeaponType.Pistol;
+                player.PendingWeapon = player.WeaponOwned.Has(WeaponTypes.Chaingun)
+                    ? WeaponTypes.Chaingun
+                    : WeaponTypes.Pistol;
             }
         }
         else if (ammo == AmmoType.Shell)
         {
-            if (player.ReadyWeapon == WeaponType.Fist || player.ReadyWeapon == WeaponType.Pistol)
+            const WeaponTypes fistPistol = WeaponTypes.Fist | WeaponTypes.Pistol;
+            if (player.ReadyWeapon.Has(fistPistol))
             {
-                if (player.WeaponOwned[WeaponType.Shotgun])
-                    player.PendingWeapon = WeaponType.Shotgun;
+                if (player.WeaponOwned.Has(WeaponTypes.Shotgun))
+                    player.PendingWeapon = WeaponTypes.Shotgun;
             }
         }
         else if (ammo == AmmoType.Cell)
         {
-            if (player.ReadyWeapon == WeaponType.Fist || player.ReadyWeapon == WeaponType.Pistol)
+            const WeaponTypes fistPistol = WeaponTypes.Fist | WeaponTypes.Pistol;
+            if (player.ReadyWeapon.Has(fistPistol))
             {
-                if (player.WeaponOwned[WeaponType.Plasma])
-                    player.PendingWeapon = WeaponType.Plasma;
+                if (player.WeaponOwned.Has(WeaponTypes.Plasma))
+                    player.PendingWeapon = WeaponTypes.Plasma;
             }
         }
         else if (ammo == AmmoType.Missile)
         {
-            if (player.ReadyWeapon == WeaponType.Fist)
+            if (player.ReadyWeapon.Has(WeaponTypes.Fist))
             {
-                if (player.WeaponOwned[WeaponType.Missile])
-                    player.PendingWeapon = WeaponType.Missile;
+                if (player.WeaponOwned.Has(WeaponTypes.Missile))
+                    player.PendingWeapon = WeaponTypes.Missile;
             }
         }
 
@@ -116,7 +118,7 @@ public sealed class ItemPickup(World world)
     /// <param name="weapon">The weapon to give to the player</param>
     /// <param name="dropped">True if the weapons is dropped by a monster/// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool GiveWeapon(Player player, WeaponType weapon, bool dropped)
+    private bool GiveWeapon(Player player, WeaponTypes weapon, bool dropped)
     {
         if (world.Options.NetGame && world.Options.Deathmatch != 2 && !dropped)
             return GiveWeaponNet(player, weapon);
@@ -128,22 +130,22 @@ public sealed class ItemPickup(World world)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool GaveWeapon(Player player, WeaponType weapon)
+    private static bool GaveWeapon(Player player, WeaponTypes weapon)
     {
-        if (player.WeaponOwned[weapon])
+        if (player.WeaponOwned.Has(weapon))
             return false;
 
-        player.WeaponOwned[weapon] = true;
+        player.WeaponOwned |= weapon;
         player.PendingWeapon = weapon;
 
         return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool GaveAmmo(Player player, WeaponType weapon, bool dropped)
+    private bool GaveAmmo(Player player, WeaponTypes weapon, bool dropped)
     {
         bool gaveAmmo;
-        if (DoomInfo.WeaponInfos[weapon].Ammo != AmmoType.NoAmmo)
+        if (weapon.WeaponInfo().Ammo != AmmoType.NoAmmo)
         {
             // Give one clip with a dropped weapon, two clips with a found weapon.
 
@@ -153,7 +155,7 @@ public sealed class ItemPickup(World world)
             // flipped to false + 1 = 1
             // flipped to true + 1 = 2
             var amount = (!dropped).AsInt() + 1;
-            gaveAmmo = GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, amount);
+            gaveAmmo = GiveAmmo(player, weapon.WeaponInfo().Ammo, amount);
         }
         else
             gaveAmmo = false;
@@ -161,17 +163,17 @@ public sealed class ItemPickup(World world)
         return gaveAmmo;
     }
 
-    private bool GiveWeaponNet(Player player, WeaponType weapon)
+    private bool GiveWeaponNet(Player player, WeaponTypes weapon)
     {
         // Leave placed weapons forever on net games.
-        if (player.WeaponOwned[weapon])
+        if (player.WeaponOwned.Has(weapon))
             return false;
 
         player.BonusCount += BonusAdd;
-        player.WeaponOwned[weapon] = true;
+        player.WeaponOwned |= weapon;
 
         var amountToGive = world.Options.Deathmatch != 0 ? 5 : 2;
-        GiveAmmo(player, DoomInfo.WeaponInfos[weapon].Ammo, amountToGive);
+        GiveAmmo(player, weapon.WeaponInfo().Ammo, amountToGive);
 
         player.PendingWeapon = weapon;
 
@@ -463,8 +465,8 @@ public sealed class ItemPickup(World world)
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTBERSERK);
-                if (player.ReadyWeapon != WeaponType.Fist)
-                    player.PendingWeapon = WeaponType.Fist;
+                if (player.ReadyWeapon != WeaponTypes.Fist)
+                    player.PendingWeapon = WeaponTypes.Fist;
 
                 sound = Sfx.GETPOW;
                 break;
@@ -583,7 +585,7 @@ public sealed class ItemPickup(World world)
 
             // Weapons.
             case Sprite.BFUG:
-                if (!GiveWeapon(player, WeaponType.Bfg, false))
+                if (!GiveWeapon(player, WeaponTypes.Bfg, false))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTBFG9000);
@@ -591,7 +593,7 @@ public sealed class ItemPickup(World world)
                 break;
 
             case Sprite.MGUN:
-                if (!GiveWeapon(player, WeaponType.Chaingun, (special.Flags & MobjFlags.Dropped) != 0))
+                if (!GiveWeapon(player, WeaponTypes.Chaingun, (special.Flags & MobjFlags.Dropped) != 0))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTCHAINGUN);
@@ -599,7 +601,7 @@ public sealed class ItemPickup(World world)
                 break;
 
             case Sprite.CSAW:
-                if (!GiveWeapon(player, WeaponType.Chainsaw, false))
+                if (!GiveWeapon(player, WeaponTypes.Chainsaw, false))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTCHAINSAW);
@@ -607,7 +609,7 @@ public sealed class ItemPickup(World world)
                 break;
 
             case Sprite.LAUN:
-                if (!GiveWeapon(player, WeaponType.Missile, false))
+                if (!GiveWeapon(player, WeaponTypes.Missile, false))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTLAUNCHER);
@@ -615,7 +617,7 @@ public sealed class ItemPickup(World world)
                 break;
 
             case Sprite.PLAS:
-                if (!GiveWeapon(player, WeaponType.Plasma, false))
+                if (!GiveWeapon(player, WeaponTypes.Plasma, false))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTPLASMA);
@@ -623,7 +625,7 @@ public sealed class ItemPickup(World world)
                 break;
 
             case Sprite.SHOT:
-                if (!GiveWeapon(player, WeaponType.Shotgun, (special.Flags & MobjFlags.Dropped) != 0))
+                if (!GiveWeapon(player, WeaponTypes.Shotgun, (special.Flags & MobjFlags.Dropped) != 0))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTSHOTGUN);
@@ -631,7 +633,7 @@ public sealed class ItemPickup(World world)
                 break;
 
             case Sprite.SGN2:
-                if (!GiveWeapon(player, WeaponType.SuperShotgun, (special.Flags & MobjFlags.Dropped) != 0))
+                if (!GiveWeapon(player, WeaponTypes.SuperShotgun, (special.Flags & MobjFlags.Dropped) != 0))
                     return;
 
                 player.SendMessage(DoomInfo.Strings.GOTSHOTGUN2);

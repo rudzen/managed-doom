@@ -99,13 +99,10 @@ public sealed class Player
 
         Frags = new int[MaxPlayerCount];
 
-        WeaponOwned = new bool[WeaponType.Count];
         Ammo = new int[AmmoType.Count];
         MaxAmmo = new int[AmmoType.Count];
 
-        PlayerSprites = new PlayerSpriteDef[(int)PlayerSprite.Count];
-        for (var i = 0; i < PlayerSprites.Length; i++)
-            PlayerSprites[i] = new PlayerSpriteDef();
+        PlayerSprites = [new PlayerSpriteDef(), new PlayerSpriteDef()];
     }
 
     public int Number { get; }
@@ -142,11 +139,11 @@ public sealed class Player
 
     public int[] Frags { get; }
 
-    public WeaponType ReadyWeapon { get; set; }
+    public WeaponTypes ReadyWeapon { get; set; }
 
-    public WeaponType PendingWeapon { get; set; }
+    public WeaponTypes PendingWeapon { get; set; }
 
-    public bool[] WeaponOwned { get; }
+    public WeaponTypes WeaponOwned { get; set; }
 
     public int[] Ammo { get; }
 
@@ -207,10 +204,10 @@ public sealed class Player
 
         Array.Clear(Frags);
 
-        ReadyWeapon = WeaponType.Fist;
-        PendingWeapon = WeaponType.Fist;
+        ReadyWeapon = WeaponTypes.Fist;
+        PendingWeapon = WeaponTypes.Fist;
+        WeaponOwned = WeaponTypes.None;
 
-        Array.Clear(WeaponOwned);
         Array.Clear(Ammo);
         Array.Clear(MaxAmmo);
 
@@ -268,15 +265,13 @@ public sealed class Player
         Cards = CardType.None;
         Backpack = false;
 
-        ReadyWeapon = WeaponType.Pistol;
-        PendingWeapon = WeaponType.Pistol;
+        ReadyWeapon = WeaponTypes.Pistol;
+        PendingWeapon = WeaponTypes.Pistol;
+        WeaponOwned = WeaponTypes.Fist | WeaponTypes.Pistol;
 
-        Array.Clear(WeaponOwned);
         Array.Clear(Ammo);
         Array.Clear(MaxAmmo);
 
-        WeaponOwned[WeaponType.Fist] = true;
-        WeaponOwned[WeaponType.Pistol] = true;
         Ammo[AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
         for (var i = 0; i < AmmoType.Count; i++)
             MaxAmmo[i] = AmmoType.AmmoMax[i];

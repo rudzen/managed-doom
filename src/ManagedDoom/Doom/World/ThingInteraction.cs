@@ -147,7 +147,7 @@ public sealed class ThingInteraction
         // push the victim out of reach, thus kick away unless using the chainsaw.
         var notChainsawAttack =
             source is not { Player: not null } ||
-            source.Player.ReadyWeapon != WeaponType.Chainsaw;
+            source.Player.ReadyWeapon != WeaponTypes.Chainsaw;
 
         if (inflictor != null && (target.Flags & MobjFlags.NoClip) == 0 && notChainsawAttack)
         {

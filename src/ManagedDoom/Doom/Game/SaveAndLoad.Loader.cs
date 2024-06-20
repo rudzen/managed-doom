@@ -424,11 +424,14 @@ public static partial class SaveAndLoad
         for (var i = 0; i < player.Frags.Length; i++)
             player.Frags[i] = BitConverter.ToInt32(data[(p + 96 + 4 * i)..]);
 
-        player.ReadyWeapon = new(BitConverter.ToInt32(data[(p + 112)..]));
-        player.PendingWeapon = new(BitConverter.ToInt32(data[(p + 116)..]));
+        player.ReadyWeapon = (WeaponTypes)BitConverter.ToInt32(data[(p + 112)..]);
+        player.PendingWeapon = (WeaponTypes)BitConverter.ToInt32(data[(p + 116)..]);
 
-        for (var i = 0; i < player.WeaponOwned.Length; i++)
-            player.WeaponOwned[i] = BitConverter.ToInt32(data[(p + 120 + 4 * i)..]) != 0;
+        for (var i = 0; i < WeaponTypesExtensions.AllWeaponTypes.Length; i++)
+        {
+            if (BitConverter.ToInt32(data[(p + 120 + 4 * i)..]) != 0)
+                player.WeaponOwned |= WeaponTypesExtensions.AllWeaponTypes[i];
+        }
 
         for (var i = 0; i < player.Ammo.Length; i++)
             player.Ammo[i] = BitConverter.ToInt32(data[(p + 156 + 4 * i)..]);

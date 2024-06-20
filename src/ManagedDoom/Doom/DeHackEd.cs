@@ -282,8 +282,8 @@ public static class DeHackEd
 
     private static void ProcessWeaponBlock(List<string> data)
     {
-        var weaponNumber = int.Parse(data[0].Split(' ')[1]);
-        var info = DoomInfo.WeaponInfos[weaponNumber];
+        var weaponNumber = (WeaponTypes)int.Parse(data[0].Split(' ')[1]);
+        var info = weaponNumber.WeaponInfo();
         var dic = GetKeyValuePairs(data);
 
         info.Ammo = new AmmoType(GetInt(dic, "Ammo type", (int)info.Ammo.Value));

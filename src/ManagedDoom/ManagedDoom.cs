@@ -30,8 +30,8 @@ using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
 
 Console.WriteLine(ApplicationInfo.Logo());
-Console.ForegroundColor = ConsoleColor.White;
 Console.BackgroundColor = ConsoleColor.DarkGreen;
+Console.ForegroundColor = ConsoleColor.White;
 Console.WriteLine(ApplicationInfo.Title);
 Console.ResetColor();
 

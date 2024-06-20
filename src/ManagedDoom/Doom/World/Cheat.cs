@@ -110,20 +110,17 @@ public sealed class Cheat(World world)
         var player = world.ConsolePlayer;
         if (world.Options.GameMode == GameMode.Commercial)
         {
-            for (var i = 0; i < player.WeaponOwned.Length; i++)
-                player.WeaponOwned[i] = true;
+            player.WeaponOwned = WeaponTypes.All;
         }
         else
         {
-            for (var i = 0; i <= WeaponType.Missile; i++)
-                player.WeaponOwned[i] = true;
+            var weapons = WeaponTypes.Shareware | WeaponTypes.Chainsaw;
 
-            player.WeaponOwned[WeaponType.Chainsaw] = true;
             if (world.Options.GameMode != GameMode.Shareware)
-            {
-                player.WeaponOwned[WeaponType.Plasma] = true;
-                player.WeaponOwned[WeaponType.Bfg] = true;
-            }
+                weapons |= WeaponTypes.All;
+
+            // super shotgun apparently not included (!)
+            player.WeaponOwned = weapons & ~WeaponTypes.SuperShotgun;
         }
 
         player.Backpack = true;
@@ -300,7 +297,7 @@ public sealed class Cheat(World world)
     private void GiveChainsaw()
     {
         var player = world.ConsolePlayer;
-        player.WeaponOwned[WeaponType.Chainsaw] = true;
+        player.WeaponOwned |= WeaponTypes.Chainsaw;
         player.SendMessage(DoomInfo.Strings.STSTR_CHOPPERS);
     }
 

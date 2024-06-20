@@ -205,9 +205,13 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
             );
         }
 
-        if (DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo != AmmoType.NoAmmo)
+        if (player.ReadyWeapon == WeaponTypes.None)
+            return;
+        
+        var weaponInfo = player.ReadyWeapon.WeaponInfo();
+        if (weaponInfo.Ammo != AmmoType.NoAmmo)
         {
-            var num = player.Ammo[DoomInfo.WeaponInfos[player.ReadyWeapon].Ammo];
+            var num = player.Ammo[weaponInfo.Ammo];
             DrawNumber(ready, num);
         }
 
@@ -233,7 +237,7 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
             }
 
             for (var i = 0; i < weapons.Length; i++)
-                DrawMultIcon(weapons[i], player.WeaponOwned[i + 1].AsInt());
+                DrawMultIcon(weapons[i], player.WeaponOwned.Has(WeaponTypesExtensions.AllWeaponTypes[i]).AsInt());
         }
         else
         {
@@ -402,9 +406,15 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
             var tallMinus = Patch.FromWad(wad, "STTMINUS");
             var tallPercent = Patch.FromWad(wad, "STTPRCNT");
 
-            var keys = new Patch[CardType.All.Count()];
-            for (var i = 0; i < keys.Length; i++)
-                keys[i] = Patch.FromWad(wad, $"STKEYS{i}");
+            Patch[] keys =
+            [
+                Patch.FromWad(wad, $"STKEYS0"),
+                Patch.FromWad(wad, $"STKEYS1"),
+                Patch.FromWad(wad, $"STKEYS2"),
+                Patch.FromWad(wad, $"STKEYS3"),
+                Patch.FromWad(wad, $"STKEYS4"),
+                Patch.FromWad(wad, $"STKEYS5")
+            ];
 
             var armsBackground = Patch.FromWad(wad, "STARMS");
             var arms = new Patch[6][];
