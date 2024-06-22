@@ -14,12 +14,12 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Doom.Math;
 
-public readonly struct Angle
+[method: MethodImpl(MethodImplOptions.AggressiveInlining)]
+public readonly record struct Angle(uint Data)
 {
     public static readonly Angle Ang0 = new(0x00000000);
     public static readonly Angle Ang45 = new(0x20000000);
@@ -28,15 +28,8 @@ public readonly struct Angle
     public static readonly Angle Ang270 = new(0xC0000000);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Angle(uint data)
+    public Angle(int data) : this((uint)data)
     {
-        this.Data = data;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Angle(int data)
-    {
-        this.Data = (uint)data;
     }
 
     public static Angle FromRadian(in double radian)
@@ -116,18 +109,6 @@ public readonly struct Angle
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Angle a, Angle b)
-    {
-        return a.Data == b.Data;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Angle a, Angle b)
-    {
-        return a.Data != b.Data;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator <(Angle a, Angle b)
     {
         return a.Data < b.Data;
@@ -151,11 +132,6 @@ public readonly struct Angle
         return a.Data >= b.Data;
     }
 
-    public override bool Equals(object? obj)
-    {
-        throw new NotSupportedException();
-    }
-
     public override int GetHashCode()
     {
         return Data.GetHashCode();
@@ -164,11 +140,5 @@ public readonly struct Angle
     public override string ToString()
     {
         return ToDegree().ToString();
-    }
-
-    public uint Data
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get;
     }
 }
