@@ -19,7 +19,8 @@ using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Doom.Math;
 
-public readonly struct Fixed
+[method: MethodImpl(MethodImplOptions.AggressiveInlining)]
+public readonly record struct Fixed(int Data)
 {
     public const int FracBits = 16;
     public const int FracUnit = 1 << FracBits;
@@ -28,7 +29,6 @@ public readonly struct Fixed
     public static Fixed One => new(FracUnit);
 
     public static Fixed IntTwo => FromInt(2);
-    public static Fixed IntMinusTwo => FromInt(-2);
 
     public static Fixed MaxValue => new(int.MaxValue);
     public static Fixed MinValue => new(int.MinValue);
@@ -36,12 +36,6 @@ public readonly struct Fixed
     public static Fixed Epsilon => new(1);
     public static Fixed OnePlusEpsilon => new(FracUnit + 1);
     public static Fixed OneMinusEpsilon => new(FracUnit - 1);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Fixed(int data)
-    {
-        this.Data = data;
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed FromInt(int value)
@@ -138,7 +132,7 @@ public readonly struct Fixed
 
     private static Fixed FixedDiv2(Fixed a, Fixed b)
     {
-        var c = a.Data / ((double)b.Data) * FracUnit;
+        var c = a.Data / (double)b.Data * FracUnit;
 
         if (c is >= 2147483648.0 or < -2147483648.0)
             throw new DivideByZeroException();
@@ -168,18 +162,6 @@ public readonly struct Fixed
     public static Fixed operator >> (Fixed a, int b)
     {
         return new Fixed(a.Data >> b);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Fixed a, Fixed b)
-    {
-        return a.Data == b.Data;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Fixed a, Fixed b)
-    {
-        return a.Data != b.Data;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -230,11 +212,6 @@ public readonly struct Fixed
         return (Data + FracUnit - 1) >> FracBits;
     }
 
-    public override bool Equals(object? obj)
-    {
-        throw new NotSupportedException();
-    }
-
     public override int GetHashCode()
     {
         return Data.GetHashCode();
@@ -243,11 +220,5 @@ public readonly struct Fixed
     public override string ToString()
     {
         return ((double)Data / FracUnit).ToString();
-    }
-
-    public int Data
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get;
     }
 }
