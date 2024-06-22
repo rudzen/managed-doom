@@ -72,20 +72,10 @@ public static class Geometry
     public static int PointOnSide(Fixed x, Fixed y, Node node)
     {
         if (node.Dx == Fixed.Zero)
-        {
-            if (x <= node.X)
-                return (node.Dy > Fixed.Zero).AsInt();
-
-            return (node.Dy < Fixed.Zero).AsInt();
-        }
+            return x <= node.X ? (node.Dy > Fixed.Zero).AsInt() : (node.Dy < Fixed.Zero).AsInt();
 
         if (node.Dy == Fixed.Zero)
-        {
-            if (y <= node.Y)
-                return (node.Dx < Fixed.Zero).AsInt();
-
-            return (node.Dx > Fixed.Zero).AsInt();
-        }
+            return y <= node.Y ? (node.Dx < Fixed.Zero).AsInt() : (node.Dx > Fixed.Zero).AsInt();
 
         var dx = x - node.X;
         var dy = y - node.Y;
@@ -94,21 +84,14 @@ public static class Geometry
         if (((node.Dy.Data ^ node.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
             // Left is negative.
-            if (((node.Dy.Data ^ dx.Data) & 0x80000000) != 0)
-                return 1;
-
-            return 0;
+            return (((node.Dy.Data ^ dx.Data) & 0x80000000) != 0).AsInt();
         }
 
         var left = new Fixed(node.Dy.Data >> Fixed.FracBits) * dx;
         var right = dy * new Fixed(node.Dx.Data >> Fixed.FracBits);
 
-        // Front side.
-        if (right < left)
-            return 0;
-
-        // Back side.
-        return 1;
+        // if right < left, front side, else back side
+        return (right >= left).AsInt();
     }
 
     /// <summary>
@@ -209,20 +192,10 @@ public static class Geometry
         var ldy = line.Vertex2.Y - ly;
 
         if (ldx == Fixed.Zero)
-        {
-            if (x <= lx)
-                return (ldy > Fixed.Zero).AsInt();
-
-            return (ldy < Fixed.Zero).AsInt();
-        }
+            return x <= lx ? (ldy > Fixed.Zero).AsInt() : (ldy < Fixed.Zero).AsInt();
 
         if (ldy == Fixed.Zero)
-        {
-            if (y <= ly)
-                return (ldx < Fixed.Zero).AsInt();
-
-            return (ldx > Fixed.Zero).AsInt();
-        }
+            return y <= ly ? (ldx < Fixed.Zero).AsInt() : (ldx > Fixed.Zero).AsInt();
 
         var dx = (x - lx);
         var dy = (y - ly);
@@ -231,10 +204,7 @@ public static class Geometry
         if (((ldy.Data ^ ldx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
             // Left is negative.
-            if (((ldy.Data ^ dx.Data) & 0x80000000) != 0)
-                return 1;
-
-            return 0;
+            return (((ldy.Data ^ dx.Data) & 0x80000000) != 0).AsInt();
         }
 
         var left = new Fixed(ldy.Data >> Fixed.FracBits) * dx;
@@ -268,12 +238,8 @@ public static class Geometry
         var left = new Fixed(line.Dy.Data >> Fixed.FracBits) * dx;
         var right = dy * new Fixed(line.Dx.Data >> Fixed.FracBits);
 
-        // Front side.
-        if (right < left)
-            return 0;
-
-        // Back side.
-        return 1;
+        // If right < left, front side, else back side.
+        return (right >= left).AsInt();
     }
 
     /// <summary>
@@ -337,20 +303,10 @@ public static class Geometry
     public static int PointOnDivLineSide(Fixed x, Fixed y, DivLine line)
     {
         if (line.Dx == Fixed.Zero)
-        {
-            if (x <= line.X)
-                return (line.Dy > Fixed.Zero).AsInt();
-
-            return (line.Dy < Fixed.Zero).AsInt();
-        }
+            return x <= line.X ? (line.Dy > Fixed.Zero).AsInt() : (line.Dy < Fixed.Zero).AsInt();
 
         if (line.Dy == Fixed.Zero)
-        {
-            if (y <= line.Y)
-                return (line.Dx < Fixed.Zero).AsInt();
-
-            return (line.Dx > Fixed.Zero).AsInt();
-        }
+            return y <= line.Y ? (line.Dx < Fixed.Zero).AsInt() : (line.Dx > Fixed.Zero).AsInt();
 
         var dx = x - line.X;
         var dy = y - line.Y;
@@ -359,10 +315,7 @@ public static class Geometry
         if (((line.Dy.Data ^ line.Dx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)
         {
             // Left is negative.
-            if (((line.Dy.Data ^ dx.Data) & 0x80000000) != 0)
-                return 1;
-
-            return 0;
+            return (((line.Dy.Data ^ dx.Data) & 0x80000000) != 0).AsInt();
         }
 
         var left = new Fixed(line.Dy.Data >> 8) * new Fixed(dx.Data >> 8);
@@ -403,10 +356,7 @@ public static class Geometry
             if (x == line.X)
                 return 2;
 
-            if (x <= line.X)
-                return (line.Dy > Fixed.Zero).AsInt();
-
-            return (line.Dy < Fixed.Zero).AsInt();
+            return x <= line.X ? (line.Dy > Fixed.Zero).AsInt() : (line.Dy < Fixed.Zero).AsInt();
         }
 
         if (line.Dy == Fixed.Zero)
@@ -414,10 +364,7 @@ public static class Geometry
             if (x == line.Y)
                 return 2;
 
-            if (y <= line.Y)
-                return (line.Dx < Fixed.Zero).AsInt();
-
-            return (line.Dx > Fixed.Zero).AsInt();
+            return y <= line.Y ? (line.Dx < Fixed.Zero).AsInt() : (line.Dx > Fixed.Zero).AsInt();
         }
 
         var dx = (x - line.X);
@@ -430,11 +377,8 @@ public static class Geometry
         if (right < left)
             return 0;
 
-        if (left == right)
-            return 2;
-
-        // Back side.
-        return 1;
+        // If right == left, the point is on (or crosses) the line, otherwise the back side
+        return (left == right).AsInt() + 1;
     }
 
     /// <summary>
@@ -450,10 +394,7 @@ public static class Geometry
             if (x == node.X)
                 return 2;
 
-            if (x <= node.X)
-                return (node.Dy > Fixed.Zero).AsInt();
-
-            return (node.Dy < Fixed.Zero).AsInt();
+            return x <= node.X ? (node.Dy > Fixed.Zero).AsInt() : (node.Dy < Fixed.Zero).AsInt();
         }
 
         if (node.Dy == Fixed.Zero)
@@ -461,10 +402,7 @@ public static class Geometry
             if (x == node.Y)
                 return 2;
 
-            if (y <= node.Y)
-                return (node.Dx < Fixed.Zero).AsInt();
-
-            return (node.Dx > Fixed.Zero).AsInt();
+            return y <= node.Y ? (node.Dx < Fixed.Zero).AsInt() : (node.Dx > Fixed.Zero).AsInt();
         }
 
         var dx = x - node.X;
@@ -477,10 +415,7 @@ public static class Geometry
         if (right < left)
             return 0;
 
-        if (left == right)
-            return 2;
-
-        // Back side.
-        return 1;
+        // If right == left, the point is on (or crosses) the line, otherwise the back side
+        return (left == right).AsInt() + 1;
     }
 }
