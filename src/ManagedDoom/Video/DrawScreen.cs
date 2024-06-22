@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
@@ -112,7 +113,7 @@ public sealed class DrawScreen : IDrawScreen
         }
     }
 
-    private void DrawColumn(Column[] source, int x, int y, int scale)
+    private void DrawColumn(ReadOnlySpan<Column> source, int x, int y, int scale)
     {
         var step = Fixed.One / scale;
 
@@ -151,6 +152,27 @@ public sealed class DrawScreen : IDrawScreen
         }
     }
 
+    public void DrawChar(char ch, int x, int y, int scale)
+    {
+        var drawY = y - 7 * scale;
+
+        if (ch >= chars.Length)
+            return;
+
+        if (ch == 32)
+            return;
+
+        var index = (int)ch;
+        if (index is >= 'a' and <= 'z')
+            index = index - 'a' + 'A';
+
+        var patch = chars[index];
+        if (patch == null)
+            return;
+
+        DrawPatch(patch, x, drawY, scale);
+    }
+
     public void DrawText(ReadOnlySpan<char> text, int x, int y, int scale)
     {
         var drawX = x;
@@ -180,75 +202,13 @@ public sealed class DrawScreen : IDrawScreen
         }
     }
 
-    public void DrawChar(char ch, int x, int y, int scale)
-    {
-        var drawY = y - 7 * scale;
-
-        if (ch >= chars.Length)
-            return;
-
-        if (ch == 32)
-            return;
-
-        var index = (int)ch;
-        if (index is >= 'a' and <= 'z')
-            index = index - 'a' + 'A';
-
-        var patch = chars[index];
-        if (patch == null)
-            return;
-
-        DrawPatch(patch, x, drawY, scale);
-    }
-
-    public void DrawText(string text, int x, int y, int scale)
-    {
-        var drawX = x;
-        var drawY = y - 7 * scale;
-        foreach (var ch in text)
-        {
-            if (ch >= chars.Length)
-                continue;
-
-            if (ch == 32)
-            {
-                drawX += 4 * scale;
-                continue;
-            }
-
-            var index = (int)ch;
-            if (index is >= 'a' and <= 'z')
-                index = index - 'a' + 'A';
-
-            var patch = chars[index];
-            if (patch == null)
-                continue;
-
-            DrawPatch(patch, drawX, drawY, scale);
-
-            drawX += scale * patch.Width;
-        }
-    }
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int MeasureChar(char ch, int scale)
     {
-        if (ch >= chars.Length)
-            return 0;
-
-        if (ch == 32)
-            return 4 * scale;
-
-        var index = (int)ch;
-        if (index is >= 'a' and <= 'z')
-            index = index - 'a' + 'A';
-
-        var patch = chars[index];
-        if (patch == null)
-            return 0;
-
-        return scale * patch.Width;
+        return ch >= chars.Length ? 0 : GetCharWidth(ch, scale);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int MeasureText(ReadOnlySpan<char> text, int scale)
     {
         var width = 0;
@@ -258,53 +218,27 @@ public sealed class DrawScreen : IDrawScreen
             if (ch >= chars.Length)
                 continue;
 
-            if (ch == 32)
-            {
-                width += 4 * scale;
-                continue;
-            }
-
-            var index = (int)ch;
-            if (index is >= 'a' and <= 'z')
-                index = index - 'a' + 'A';
-
-            var patch = chars[index];
-            if (patch == null)
-                continue;
-
-            width += scale * patch.Width;
+            width += GetCharWidth(ch, scale);
         }
 
         return width;
     }
 
-    public int MeasureText(string text, int scale)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int GetCharWidth(char ch, int scale)
     {
-        var width = 0;
+        if (ch == 32)
+            return 4 * scale;
 
-        foreach (var ch in text)
-        {
-            if (ch >= chars.Length)
-                continue;
+        var index = (int)ch;
+        if (char.IsLower(ch))
+            index = index - 'a' + 'A';
 
-            if (ch == 32)
-            {
-                width += 4 * scale;
-                continue;
-            }
+        var patch = chars[index];
+        if (patch == null)
+            return 0;
 
-            var index = (int)ch;
-            if (index is >= 'a' and <= 'z')
-                index = index - 'a' + 'A';
-
-            var patch = chars[index];
-            if (patch == null)
-                continue;
-
-            width += scale * patch.Width;
-        }
-
-        return width;
+        return scale * patch.Width;
     }
 
     public void FillRect(int x, int y, int w, int h, int color)
@@ -321,6 +255,7 @@ public sealed class DrawScreen : IDrawScreen
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private OutCode ComputeOutCode(float x, float y)
     {
         var code = OutCode.Inside;
