@@ -15,6 +15,7 @@
 //
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Doom.Math;
 
@@ -29,37 +30,43 @@ public static partial class Trig
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Tan(Angle anglePlus90)
     {
-        return new Fixed(fineTangent[anglePlus90.Data >> AngleToFineShift]);
+        ref var tangent = ref MemoryMarshal.GetArrayDataReference(fineTangent);
+        return new Fixed(Unsafe.Add(ref tangent, anglePlus90.Data >> AngleToFineShift));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Tan(int fineAnglePlus90)
     {
-        return new Fixed(fineTangent[fineAnglePlus90]);
+        ref var tangent = ref MemoryMarshal.GetArrayDataReference(fineTangent);
+        return new Fixed(Unsafe.Add(ref tangent, fineAnglePlus90));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Sin(Angle angle)
     {
-        return new Fixed(fineSine[angle.Data >> AngleToFineShift]);
+        ref var sine = ref MemoryMarshal.GetArrayDataReference(fineSine);
+        return new Fixed(Unsafe.Add(ref sine, angle.Data >> AngleToFineShift));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Sin(int fineAngle)
     {
-        return new Fixed(fineSine[fineAngle]);
+        ref var sine = ref MemoryMarshal.GetArrayDataReference(fineSine);
+        return new Fixed(Unsafe.Add(ref sine, fineAngle));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Cos(Angle angle)
     {
-        return new Fixed(fineSine[(angle.Data >> AngleToFineShift) + FineCosineOffset]);
+        ref var sine = ref MemoryMarshal.GetArrayDataReference(fineSine);
+        return new Fixed(Unsafe.Add(ref sine, (angle.Data >> AngleToFineShift) + FineCosineOffset));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed Cos(int fineAngle)
     {
-        return new Fixed(fineSine[fineAngle + FineCosineOffset]);
+        ref var sine = ref MemoryMarshal.GetArrayDataReference(fineSine);
+        return new Fixed(Unsafe.Add(ref sine, fineAngle + FineCosineOffset));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

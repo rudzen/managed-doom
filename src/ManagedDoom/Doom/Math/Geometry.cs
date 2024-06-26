@@ -23,18 +23,18 @@ namespace ManagedDoom.Doom.Math;
 
 public static class Geometry
 {
-    private const int slopeRange = 2048;
-    private const int slopeBits = 11;
-    private const int fracToSlopeShift = Fixed.FracBits - slopeBits;
+    private const int SlopeRange = 2048;
+    private const int SlopeBits = 11;
+    private const int FracToSlopeShift = Fixed.FracBits - SlopeBits;
 
     private static uint SlopeDiv(Fixed num, Fixed den)
     {
         if ((uint)den.Data < 512)
-            return slopeRange;
+            return SlopeRange;
 
         var ans = ((uint)num.Data << 3) / ((uint)den.Data >> 8);
 
-        return ans <= slopeRange ? ans : slopeRange;
+        return ans <= SlopeRange ? ans : SlopeRange;
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public static class Geometry
         else
             frac = Fixed.Zero;
 
-        var angle = (Trig.TanToAngle((uint)frac.Data >> fracToSlopeShift) + Angle.Ang90);
+        var angle = (Trig.TanToAngle((uint)frac.Data >> FracToSlopeShift) + Angle.Ang90);
 
         // Use as cosine.
         var dist = dx / Trig.Sin(angle);

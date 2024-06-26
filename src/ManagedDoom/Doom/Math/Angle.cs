@@ -34,7 +34,7 @@ public readonly record struct Angle(uint Data)
 
     public static Angle FromRadian(in double radian)
     {
-        var data = System.Math.Round(0x100000000 * (radian / (2 * System.Math.PI)));
+        var data = System.Math.Round(0x100000000 * (radian / System.Math.Tau));
         return new Angle((uint)data);
     }
 
@@ -46,7 +46,7 @@ public readonly record struct Angle(uint Data)
 
     public double ToRadian()
     {
-        return 2 * System.Math.PI * ((double)Data / 0x100000000);
+        return System.Math.Tau * ((double)Data / 0x100000000);
     }
 
     public double ToDegree()
@@ -58,12 +58,7 @@ public readonly record struct Angle(uint Data)
     public static Angle Abs(Angle angle)
     {
         var data = (int)angle.Data;
-        if (data < 0)
-        {
-            return new Angle((uint)-data);
-        }
-
-        return angle;
+        return data < 0 ? new Angle((uint)-data) : angle;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

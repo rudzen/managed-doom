@@ -25,7 +25,6 @@ public sealed class BlockMap
 {
     private const int IntBlockSize = 128;
     public static readonly Fixed BlockSize = Fixed.FromInt(IntBlockSize);
-    public static readonly int BlockMask = BlockSize.Data - 1;
     public const int FracToBlockShift = Fixed.FracBits + 7;
     public const int BlockToFracShift = FracToBlockShift - Fixed.FracBits;
 
