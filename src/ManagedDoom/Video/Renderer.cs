@@ -149,17 +149,17 @@ public sealed class Renderer : IRenderer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void RenderDoom(Doom.Doom doom, Fixed frameFrac)
+    private void RenderDoom(Doom.Doom doom, Fixed frameFrac, in long fps)
     {
         if (doom.State == DoomState.Game)
-            RenderGame(doom.Game, frameFrac);
+            RenderGame(doom.Game, frameFrac, fps);
         else if (doom.State == DoomState.Opening)
         {
             if (!openingSequenceRenderer.Render(doom.Opening))
-                RenderGame(doom.Opening.DemoGame!, frameFrac);
+                RenderGame(doom.Opening.DemoGame!, frameFrac, fps);
         }
         else if (doom.State == DoomState.DemoPlayback)
-            RenderGame(doom.DemoPlayback!.Game, frameFrac);
+            RenderGame(doom.DemoPlayback!.Game, frameFrac, fps);
 
         if (doom.Menu.Active)
             return;
@@ -176,10 +176,12 @@ public sealed class Renderer : IRenderer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void RenderGame(DoomGame game, Fixed frameFrac)
+    public void RenderGame(DoomGame game, Fixed frameFrac, in long fps)
     {
         if (game.Paused)
             frameFrac = Fixed.One;
+
+        var scale = screen.Width / 320;
 
         switch (game.State)
         {
@@ -212,7 +214,6 @@ public sealed class Renderer : IRenderer
                 {
                     if (consolePlayer.MessageTime > 0)
                     {
-                        var scale = screen.Width / 320;
                         screen.DrawText(consolePlayer.Message!, 0, 7 * scale, scale);
                     }
                 }
@@ -226,18 +227,25 @@ public sealed class Renderer : IRenderer
                 finaleRenderer.Render(game.Finale);
                 break;
         }
+
+        if (fps > 0)
+        {
+            var fpsText = fps.ToString();
+            var fpsWidth = screen.MeasureText(fpsText, scale);
+            screen.DrawText(fps.ToString(), screen.Width - fpsWidth, 7 * scale, scale);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Render(Doom.Doom doom, Span<byte> destination, Fixed frameFrac)
+    public void Render(Doom.Doom doom, Span<byte> destination, Fixed frameFrac, in long fps)
     {
         if (doom.Wiping)
         {
-            RenderWipe(doom, destination);
+            RenderWipe(doom, destination, fps);
             return;
         }
-
-        RenderDoom(doom, frameFrac);
+        
+        RenderDoom(doom, frameFrac, fps);
         menuRenderer.Render(doom.Menu);
 
         uint[] colors;
@@ -255,9 +263,9 @@ public sealed class Renderer : IRenderer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void RenderWipe(Doom.Doom doom, Span<byte> destination)
+    private void RenderWipe(Doom.Doom doom, Span<byte> destination, in long fps)
     {
-        RenderDoom(doom, Fixed.One);
+        RenderDoom(doom, Fixed.One, fps);
 
         var wipe = doom.WipeEffect;
         var scale = screen.Width / 320;

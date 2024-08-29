@@ -18,21 +18,8 @@ namespace ManagedDoom.Config;
 
 public readonly record struct Arg(bool Present);
 
-public readonly struct Arg<T>
+public readonly record struct Arg<T>(T? Value)
 {
-    public bool Present { get; }
-
-    public T? Value { get; }
-
-    public Arg()
-    {
-        this.Present = false;
-        this.Value = default;
-    }
-
-    public Arg(T? value)
-    {
-        this.Present = value is not null;
-        this.Value = value;
-    }
+    public static Arg<T> Empty => new(default!);
+    public bool Present => Value is not null;
 }

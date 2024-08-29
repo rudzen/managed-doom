@@ -156,7 +156,6 @@ public sealed class World
 
     public AutoMap AutoMap { get; }
 
-
     public int TotalKills { get; set; }
 
     public int TotalItems { get; set; }
@@ -260,16 +259,19 @@ public sealed class World
         Options.Sound.StartSound(mobj, sfx, type, volume);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void StopSound(Mobj mobj)
     {
         Options.Sound.StopSound(mobj);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetNewValidCount()
     {
         return ++validCount;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool DoEvent(in DoomEvent e)
     {
         if (Options is { NetGame: false, DemoPlayback: false })

@@ -14,13 +14,14 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video;
 
-public interface IVideo
+public interface IVideo : IDisposable
 {
-    public void Render(Doom.Doom doom, Fixed frameFrac);
+    public void Render(Doom.Doom doom, Fixed frameFrac, in long fps);
     public void InitializeWipe();
     public bool HasFocus();
 

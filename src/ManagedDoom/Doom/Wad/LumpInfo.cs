@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.Doom.Wad;
 
-public sealed record LumpInfo(string Name, byte[]? Data)
+public sealed record LumpInfo(string Name, byte[] Data)
 {
     public const int DataSize = 16;
 }

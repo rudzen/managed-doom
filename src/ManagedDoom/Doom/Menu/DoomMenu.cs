@@ -65,29 +65,36 @@ public sealed class DoomMenu
             this,
             doom);
 
+        const int skullX = 16;
+        const int skullYStep = 16;
+        var skullYPos = 0;
+        var skullY = 58;
+
+        int NextSkullY() => skullY + skullYStep * skullYPos++;
+
         var skillMenu = new SelectableMenu(
             this,
             "M_NEWG", 96, 14,
             "M_SKILL", 54, 38,
             2,
             new SimpleMenuItem(
-                "M_JKILL", 16, 58, 48, 63,
+                "M_JKILL", skullX, NextSkullY(), 48, 63,
                 () => doom.NewGame(GameSkill.Baby, selectedEpisode, 1),
                 null),
             new SimpleMenuItem(
-                "M_ROUGH", 16, 74, 48, 79,
+                "M_ROUGH", skullX, NextSkullY(), 48, 79,
                 () => doom.NewGame(GameSkill.Easy, selectedEpisode, 1),
                 null),
             new SimpleMenuItem(
-                "M_HURT", 16, 90, 48, 95,
+                "M_HURT", skullX, NextSkullY(), 48, 95,
                 () => doom.NewGame(GameSkill.Medium, selectedEpisode, 1),
                 null),
             new SimpleMenuItem(
-                "M_ULTRA", 16, 106, 48, 111,
+                "M_ULTRA", skullX, NextSkullY(), 48, 111,
                 () => doom.NewGame(GameSkill.Hard, selectedEpisode, 1),
                 null),
             new SimpleMenuItem(
-                "M_NMARE", 16, 122, 48, 127,
+                "M_NMARE", skullX, NextSkullY(), 48, 127,
                 null,
                 nightmareConfirm));
 
@@ -98,19 +105,19 @@ public sealed class DoomMenu
                 "M_EPISOD", 54, 38,
                 0,
                 new SimpleMenuItem(
-                    "M_EPI1", 16, 58, 48, 63,
+                    "M_EPI1", skullX, 58, 48, 63,
                     () => selectedEpisode = 1,
                     skillMenu),
                 new SimpleMenuItem(
-                    "M_EPI2", 16, 74, 48, 79,
+                    "M_EPI2", skullX, 74, 48, 79,
                     () => selectedEpisode = 2,
                     skillMenu),
                 new SimpleMenuItem(
-                    "M_EPI3", 16, 90, 48, 95,
+                    "M_EPI3", skullX, 90, 48, 95,
                     () => selectedEpisode = 3,
                     skillMenu),
                 new SimpleMenuItem(
-                    "M_EPI4", 16, 106, 48, 111,
+                    "M_EPI4", skullX, 106, 48, 111,
                     () => selectedEpisode = 4,
                     skillMenu));
         }
@@ -123,15 +130,15 @@ public sealed class DoomMenu
                     "M_EPISOD", 54, 38,
                     0,
                     new SimpleMenuItem(
-                        "M_EPI1", 16, 58, 48, 63,
+                        "M_EPI1", skullX, 58, 48, 63,
                         () => selectedEpisode = 1,
                         skillMenu),
                     new SimpleMenuItem(
-                        "M_EPI2", 16, 74, 48, 79,
+                        "M_EPI2", skullX, 74, 48, 79,
                         null,
                         thisIsShareware),
                     new SimpleMenuItem(
-                        "M_EPI3", 16, 90, 48, 95,
+                        "M_EPI3", skullX, 90, 48, 95,
                         null,
                         thisIsShareware));
             }

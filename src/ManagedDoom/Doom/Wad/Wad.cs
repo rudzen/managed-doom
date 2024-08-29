@@ -98,7 +98,7 @@ public sealed class Wad : IDisposable
                     var name = DoomInterop.ToString(slice.Slice(offset + 8, 8));
 
                     if (s == -1)
-                        lumps.Add(new LumpInfo(name, null));
+                        lumps.Add(new LumpInfo(name, []));
                     else
                     {
                         var buffer = new byte[s];

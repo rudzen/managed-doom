@@ -31,7 +31,7 @@ public sealed class ThingMovement(World world)
 
     public static readonly Fixed FloatSpeed = Fixed.FromInt(4);
 
-    private const int maxSpecialCrossCount = 64;
+    private const int MaxSpecialCrossCount = 64;
     private static readonly Fixed maxMove = Fixed.FromInt(30);
     private static readonly Fixed gravity = Fixed.One;
 
@@ -44,7 +44,7 @@ public sealed class ThingMovement(World world)
     private LineDef? currentCeilingLine;
 
     public int crossedSpecialCount;
-    public LineDef[]? crossedSpecials = new LineDef[maxSpecialCrossCount];
+    public LineDef[]? crossedSpecials = new LineDef[MaxSpecialCrossCount];
 
     /// <summary>
     /// Links a thing into both a block and a subsector based on
@@ -923,7 +923,7 @@ public sealed class ThingMovement(World world)
         if ((thing.Flags & MobjFlags.Shootable) == 0)
             return true;
 
-        var blockDist = thing.Radius + currentThing.Radius;
+        var blockDist = thing.Radius + currentThing!.Radius;
         var dx = Fixed.Abs(thing.X - currentX);
         var dy = Fixed.Abs(thing.Y - currentY);
         
@@ -953,7 +953,7 @@ public sealed class ThingMovement(World world)
         currentX = x;
         currentY = y;
 
-        currentBox[Box.Top] = y + currentThing.Radius;
+        currentBox![Box.Top] = y + currentThing.Radius;
         currentBox[Box.Bottom] = y - currentThing.Radius;
         currentBox[Box.Right] = x + currentThing.Radius;
         currentBox[Box.Left] = x - currentThing.Radius;

@@ -27,7 +27,7 @@ using ManagedDoom.Video;
 
 namespace ManagedDoom.Silk;
 
-public sealed class SilkVideo : IVideo, IDisposable
+public sealed class SilkVideo : IVideo
 {
     private readonly IRenderer renderer;
 
@@ -89,9 +89,9 @@ public sealed class SilkVideo : IVideo, IDisposable
         Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
     }
 
-    public void Render(Doom.Doom doom, Fixed frameFrac)
+    public void Render(Doom.Doom doom, Fixed frameFrac, in long fps)
     {
-        renderer.Render(doom, textureData, frameFrac);
+        renderer.Render(doom, textureData, frameFrac, in fps);
 
         texture!.SetData<byte>(textureData, 0, 0, (uint)renderer.Height, (uint)renderer.Width);
 

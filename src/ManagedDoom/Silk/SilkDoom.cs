@@ -52,6 +52,10 @@ public sealed partial class SilkDoom : ISilkDoom
     private int fpsScale;
     private int frameCount;
 
+    private long frameTimes;
+    private long frameTimesRender;
+    private long fpsStamp;
+
     public SilkDoom(
         ICommandLineArgs args,
         IGameContent gameContent,
@@ -118,6 +122,7 @@ public sealed partial class SilkDoom : ISilkDoom
 
         fpsScale = args.TimeDemo.Present ? 1 : silkConfig.Config.Values.VideoFpsScale;
         frameCount = -1;
+        fpsStamp = Stopwatch.GetTimestamp();
     }
 
     private void OnUpdate(double obj)
@@ -128,6 +133,16 @@ public sealed partial class SilkDoom : ISilkDoom
 
             if (frameCount % fpsScale == 0 && doom!.Update() == UpdateResult.Completed)
                 window.Close();
+
+            frameTimes++;
+
+            if (Stopwatch.GetElapsedTime(fpsStamp) >= TimeSpan.FromSeconds(1))
+            {
+                fpsStamp = Stopwatch.GetTimestamp();
+                Console.WriteLine("fps: " + frameTimes + " frames per second.");
+                frameTimesRender = frameTimes;
+                frameTimes = default;
+            }
         }
         catch (Exception e)
         {
@@ -143,7 +158,11 @@ public sealed partial class SilkDoom : ISilkDoom
         try
         {
             var frameFrac = Fixed.FromInt(frameCount % fpsScale + 1) / fpsScale;
-            video!.Render(doom!, frameFrac);
+            video!.Render(doom!, frameFrac, in frameTimesRender);
+            // if (frameCount == 0)
+            // {
+            //     frameTimesRender = 0;
+            // }
         }
         catch (Exception e)
         {

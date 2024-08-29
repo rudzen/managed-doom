@@ -244,6 +244,7 @@ public sealed class DrawScreen : IDrawScreen
     public void FillRect(int x, int y, int w, int h, int color)
     {
         var x2 = x + w;
+
         for (var drawX = x; drawX < x2; drawX++)
         {
             var pos = Height * drawX + y;

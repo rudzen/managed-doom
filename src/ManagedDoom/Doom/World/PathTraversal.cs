@@ -336,7 +336,7 @@ public sealed class PathTraversal
             if (bx == blockX2 && by == blockY2)
                 break;
 
-            if ((interceptY.ToIntFloor()) == by)
+            if (interceptY.ToIntFloor() == by)
             {
                 interceptY += stepY;
                 bx += blockStepX;

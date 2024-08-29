@@ -30,7 +30,7 @@ public interface IRenderer
     int WindowSize { get; set; }
     bool DisplayMessage { get; set; }
     int GammaCorrectionLevel { get; set; }
-    void RenderGame(DoomGame game, Fixed frameFrac);
-    void Render(Doom.Doom doom, Span<byte> destination, Fixed frameFrac);
+    void RenderGame(DoomGame game, Fixed frameFrac, in long fps);
+    void Render(Doom.Doom doom, Span<byte> destination, Fixed frameFrac, in long fps);
     void InitializeWipe();
 }

@@ -51,12 +51,10 @@ public sealed class DemoPlayback
         demo.Options.Video = options.Video;
         demo.Options.Sound = options.Sound;
         demo.Options.Music = options.Music;
-
-        if (args.SoloNet.Present)
-            demo.Options.NetGame = true;
+        demo.Options.NetGame = args.SoloNet.Present;
 
         ticCommands = new TicCmd[Player.MaxPlayerCount];
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        for (var i = 0; i < ticCommands.Length; i++)
             ticCommands[i] = new TicCmd();
 
         Game = new DoomGame(content, demo.Options);

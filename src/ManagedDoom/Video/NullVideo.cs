@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Video.Renders.ThreeDee;
 
@@ -23,7 +24,7 @@ public class NullVideo : IVideo
 {
     private static NullVideo? instance;
 
-    public void Render(Doom.Doom doom, Fixed frameFrac)
+    public void Render(Doom.Doom doom, Fixed frameFrac, in long fps)
     {
     }
 
@@ -64,5 +65,11 @@ public class NullVideo : IVideo
     public static NullVideo GetInstance()
     {
         return instance ??= new NullVideo();
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        // TODO release managed resources here
     }
 }

@@ -40,9 +40,7 @@ public sealed class DummyFlatLookup : IFlatLookup
         for (var lump = firstFlat; lump <= lastFlat; lump++)
         {
             if (wad.GetLumpSize(lump) != 4096)
-            {
                 continue;
-            }
 
             var number = lump - firstFlat;
             var name = wad.LumpInfos[lump].Name;
