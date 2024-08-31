@@ -70,7 +70,7 @@ public sealed class WeaponBehavior(World world)
 
         // Check for fire.
         // The missile launcher and bfg do not auto fire.
-        if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
+        if ((player.Command.Buttons & TicCommandButtons.Attack) != 0)
         {
             const WeaponTypes missileBfg = WeaponTypes.Missile | WeaponTypes.Bfg;
             if (!player.AttackDown || !player.ReadyWeapon.Has(missileBfg))
@@ -367,7 +367,7 @@ public sealed class WeaponBehavior(World world)
     {
         // Check for fire.
         // If a weaponchange is pending, let it go through instead.
-        if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0 &&
+        if ((player.Command.Buttons & TicCommandButtons.Attack) != 0 &&
             player.PendingWeapon == WeaponTypes.None &&
             player.Health != 0)
         {

@@ -34,7 +34,7 @@ public sealed class Wad : IDisposable
     private readonly record struct WadHeader(string Id, int LumpCount, int LumpInfoTableOffset);
 
     private readonly List<string> names;
-    private readonly List<Stream> streams;
+    //private readonly List<Stream> streams;
 
     public Wad(IEnumerable<string> fileNames) : this(fileNames.ToArray())
     {
@@ -48,7 +48,7 @@ public sealed class Wad : IDisposable
             var start = Stopwatch.GetTimestamp();
 
             names = new List<string>(fileNames.Length);
-            streams = new List<Stream>(fileNames.Length);
+            //streams = new List<Stream>(fileNames.Length);
             LumpInfos = fileNames.SelectMany(AddFile).ToArray();
 
             var nameSpan = CollectionsMarshal.AsSpan(names);
@@ -56,7 +56,8 @@ public sealed class Wad : IDisposable
             MissionPack = GetMissionPack(nameSpan);
             GameVersion = GetGameVersion(nameSpan);
 
-            Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{end}]");
         }
         catch (Exception e)
         {
@@ -71,9 +72,11 @@ public sealed class Wad : IDisposable
         names.Add(Path.GetFileNameWithoutExtension(fileName));
 
         var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-        streams.Add(stream);
+        //streams.Add(stream);
 
         var wadHeader = ReadWadHeader(stream);
+
+        Console.Write("[Header: Id={0} Lumps={1} TableOffset={2}] ", wadHeader.Id, wadHeader.LumpCount, wadHeader.LumpInfoTableOffset);
 
         {
             var size = LumpInfo.DataSize * wadHeader.LumpCount;
@@ -161,7 +164,13 @@ public sealed class Wad : IDisposable
         for (var i = lumpSpan.Length - 1; i >= 0; i--)
         {
             if (lumpSpan[i].Name == name)
-                return (i, lumpSpan[i].Data?.Length ?? -1);
+            {
+                var length = lumpSpan[i].Data.Length;
+                if (length == 0)
+                    length--;
+
+                return (i, length);
+            }
         }
 
         return (-1, -1);
@@ -170,25 +179,20 @@ public sealed class Wad : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetLumpSize(int number)
     {
-        return LumpInfos[number].Data?.Length ?? -1;
+        var length = LumpInfos[number].Data.Length;
+        return length == 0 ? -1 : length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte[] ReadLump(int number)
     {
-        return LumpInfos[number].Data!;
+        return LumpInfos[number].Data;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> GetLumpData(int number)
     {
         return LumpInfos[number].Data.AsSpan();
-    }
-
-    public void ReadLump(int number, Span<byte> buffer)
-    {
-        var lumpInfo = LumpInfos[number];
-        lumpInfo.Data.CopyTo(buffer);
     }
 
     public byte[] ReadLump(string name)
@@ -205,10 +209,10 @@ public sealed class Wad : IDisposable
     {
         Console.WriteLine("Close WAD files.");
 
-        foreach (var stream in streams)
-            stream.Dispose();
-
-        streams.Clear();
+        // foreach (var stream in streams)
+        //     stream.Dispose();
+        //
+        // streams.Clear();
     }
 
     private static bool IsValidWadId(ReadOnlySpan<char> wadId)
@@ -295,6 +299,7 @@ public sealed class Wad : IDisposable
         return missionPack != default;
     }
 
+    //public LumpInfoCache LumpInfos { get; }
     public LumpInfo[] LumpInfos { get; }
 
     public GameVersion GameVersion { get; }

@@ -636,7 +636,7 @@ public sealed class Intermission
             var player = Options.Players[i];
             if (player.InGame)
             {
-                if ((player.Cmd.Buttons & TicCmdButtons.Attack) != 0)
+                if ((player.Command.Buttons & TicCommandButtons.Attack) != 0)
                 {
                     if (!player.AttackDown)
                         accelerateStage = true;
@@ -646,7 +646,7 @@ public sealed class Intermission
                 else
                     player.AttackDown = false;
 
-                if ((player.Cmd.Buttons & TicCmdButtons.Use) != 0)
+                if ((player.Command.Buttons & TicCommandButtons.Use) != 0)
                 {
                     if (!player.UseDown)
                         accelerateStage = true;

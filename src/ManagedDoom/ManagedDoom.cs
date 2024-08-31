@@ -35,7 +35,7 @@ Console.ForegroundColor = ConsoleColor.White;
 Console.WriteLine(ApplicationInfo.Title);
 Console.ResetColor();
 
-// register early
+// register early (required)
 GlfwWindowing.RegisterPlatform();
 GlfwInput.RegisterPlatform();
 

@@ -118,7 +118,7 @@ public sealed class DoomGame
     /// <summary>
     /// Advance the game one frame.
     /// </summary>
-    public UpdateResult Update(ReadOnlySpan<TicCmd> cmds)
+    public UpdateResult Update(ReadOnlySpan<TicCommand> cmds)
     {
         // Do player reborns if needed.
         var players = Options.Players.AsSpan();
@@ -163,14 +163,15 @@ public sealed class DoomGame
         {
             if (!players[i].InGame)
                 continue;
-            
-            var cmd = players[i].Cmd;
+
+            ref var c = ref players[i];
+            var cmd = players[i].Command;
             cmd.CopyFrom(cmds[i]);
 
             /*
                 if (demorecording)
                 {
-                    G_WriteDemoTiccmd(cmd);
+                    G_WriteDemoTiccmd(command);
                 }
                 */
 
@@ -190,10 +191,10 @@ public sealed class DoomGame
             if (!player.InGame)
                 continue;
 
-            if ((player.Cmd.Buttons & TicCmdButtons.Special) == 0)
+            if ((player.Command.Buttons & TicCommandButtons.Special) == 0)
                 continue;
 
-            if ((player.Cmd.Buttons & TicCmdButtons.SpecialMask) != TicCmdButtons.Pause)
+            if ((player.Command.Buttons & TicCommandButtons.SpecialMask) != TicCommandButtons.Pause)
                 continue;
 
             Paused ^= true;
@@ -226,9 +227,7 @@ public sealed class DoomGame
                     gameAction = GameAction.WorldDone;
 
                     if (World.SecretExit)
-                    {
                         players[Options.ConsolePlayer].DidSecret = true;
-                    }
 
                     if (Options.GameMode == GameMode.Commercial)
                     {
@@ -260,9 +259,7 @@ public sealed class DoomGame
             case GameState.Finale:
                 result = Finale.Update();
                 if (result == UpdateResult.Completed)
-                {
                     gameAction = GameAction.WorldDone;
-                }
 
                 break;
         }
@@ -270,9 +267,7 @@ public sealed class DoomGame
         GameTic++;
 
         if (result == UpdateResult.NeedWipe)
-        {
             return UpdateResult.NeedWipe;
-        }
 
         return UpdateResult.None;
     }

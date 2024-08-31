@@ -22,7 +22,7 @@ namespace ManagedDoom.Doom.Opening;
 public sealed class OpeningSequence : IOpeningSequence
 {
     private readonly IGameContent content;
-    private readonly GameOptions options;
+    private readonly IGameOptions options;
 
     private int currentStage;
     private int nextStage;
@@ -30,19 +30,19 @@ public sealed class OpeningSequence : IOpeningSequence
     private int count;
     private int timer;
 
-    private readonly TicCmd[] cmds;
+    private readonly TicCommand[] ticCommands;
     private Demo? demo;
 
     private bool reset;
 
-    public OpeningSequence(IGameContent content, GameOptions options)
+    public OpeningSequence(IGameContent content, IGameOptions options)
     {
         this.content = content;
         this.options = options;
 
-        cmds = new TicCmd[Player.MaxPlayerCount];
-        for (var i = 0; i < Player.MaxPlayerCount; i++)
-            cmds[i] = new TicCmd();
+        ticCommands = new TicCommand[Player.MaxPlayerCount];
+        for (var i = 0; i < ticCommands.Length; i++)
+            ticCommands[i] = new TicCommand();
 
         currentStage = 0;
         nextStage = 0;
@@ -116,10 +116,10 @@ public sealed class OpeningSequence : IOpeningSequence
                 break;
 
             case 1:
-                if (!demo.ReadCmd(cmds))
+                if (!demo.ReadCmd(ticCommands))
                     nextStage = 2;
                 else
-                    DemoGame.Update(cmds);
+                    DemoGame.Update(ticCommands);
 
                 break;
 
@@ -131,10 +131,10 @@ public sealed class OpeningSequence : IOpeningSequence
                 break;
 
             case 3:
-                if (!demo.ReadCmd(cmds))
+                if (!demo.ReadCmd(ticCommands))
                     nextStage = 4;
                 else
-                    DemoGame.Update(cmds);
+                    DemoGame.Update(ticCommands);
 
                 break;
 
@@ -146,10 +146,10 @@ public sealed class OpeningSequence : IOpeningSequence
                 break;
 
             case 5:
-                if (!demo.ReadCmd(cmds))
+                if (!demo.ReadCmd(ticCommands))
                     nextStage = content.Wad.GetLumpNumber("DEMO4") == -1 ? 0 : 6;
                 else
-                    DemoGame.Update(cmds);
+                    DemoGame.Update(ticCommands);
 
                 break;
 
@@ -161,10 +161,10 @@ public sealed class OpeningSequence : IOpeningSequence
                 break;
 
             case 7:
-                if (!demo.ReadCmd(cmds))
+                if (!demo.ReadCmd(ticCommands))
                     nextStage = 0;
                 else
-                    DemoGame.Update(cmds);
+                    DemoGame.Update(ticCommands);
 
                 break;
         }
@@ -191,9 +191,8 @@ public sealed class OpeningSequence : IOpeningSequence
     private void StartTitleScreen()
     {
         State = OpeningSequenceState.Title;
-
         count = 0;
-        timer = options.GameMode == GameMode.Commercial ? 35 * 11 : 170;
+        timer = options.GameMode.DemoTimer();
     }
 
     private void StartCreditScreen()

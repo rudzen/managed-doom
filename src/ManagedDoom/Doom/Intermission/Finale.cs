@@ -196,7 +196,7 @@ public sealed class Finale
             // Go on to the next level.
             for (i = 0; i < Player.MaxPlayerCount; i++)
             {
-                if (Options.Players[i].Cmd.Buttons != 0)
+                if (Options.Players[i].Command.Buttons != 0)
                 {
                     break;
                 }

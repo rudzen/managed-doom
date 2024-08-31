@@ -21,7 +21,7 @@ namespace ManagedDoom.UserInput;
 
 public interface IUserInput : IDisposable
 {
-    void BuildTicCmd(TicCmd cmd);
+    void BuildTicCmd(TicCommand command);
     void Reset();
     void GrabMouse();
     void ReleaseMouse();

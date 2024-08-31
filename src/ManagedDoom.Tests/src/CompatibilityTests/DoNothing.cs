@@ -15,7 +15,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
         options.Map = 1;
         options.Players[0].InGame = true;
 
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, options);
         game.DeferInitNew();
 
@@ -46,7 +46,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
         options.Map = 1;
         options.Players[0].InGame = true;
 
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, options);
         game.DeferInitNew();
 
@@ -74,7 +74,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
         options.NoMonsters = true;
         options.Players[0].InGame = true;
 
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, options);
         game.DeferInitNew();
 

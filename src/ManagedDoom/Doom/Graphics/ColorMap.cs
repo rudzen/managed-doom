@@ -43,7 +43,7 @@ public sealed class ColorMap
             var lumpData = wad.GetLumpData(lumpNumber);
 
             data = new byte[num][];
-            for (var i = 0; i < num; i++)
+            for (var i = 0; i < data.Length; i++)
                 data[i] = lumpData.Slice(blockSize * i, blockSize).ToArray();
 
             Console.WriteLine($"OK ({num} maps) [{Stopwatch.GetElapsedTime(start)}]");

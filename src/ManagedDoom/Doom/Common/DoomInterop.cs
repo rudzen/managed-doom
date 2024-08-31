@@ -16,13 +16,14 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Doom.Common;
 
 public static class DoomInterop
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SkipLocalsInit]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ToString(ReadOnlySpan<byte> data)
     {
         const byte zero = 0;
@@ -32,12 +33,13 @@ public static class DoomInterop
 
         foreach (var t in data)
         {
-            var c = t;
+            var c = (char)t;
             if (c == zero)
                 break;
-            if (c >= 'a' && c <= 'z')
-                c -= 0x20;
-            chars[pos++] = (char)c;
+            if (char.IsBetween(c, 'a', 'z'))
+                chars[pos++] = (char)(c - 0x20);
+            else
+                chars[pos++] = c;
         }
 
         return new string(chars[..pos]);

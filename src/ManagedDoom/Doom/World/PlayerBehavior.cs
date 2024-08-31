@@ -68,7 +68,7 @@ public sealed class PlayerBehavior(World world)
             player.Mobj!.Flags &= ~MobjFlags.NoClip;
 
         // Chain saw run forward.
-        var cmd = player.Cmd;
+        var cmd = player.Command;
         if ((player.Mobj.Flags & MobjFlags.JustAttacked) != 0)
         {
             cmd.AngleTurn = 0;
@@ -98,13 +98,13 @@ public sealed class PlayerBehavior(World world)
         // Check for weapon change.
 
         // A special event has no other buttons.
-        if ((cmd.Buttons & TicCmdButtons.Special) != 0)
+        if ((cmd.Buttons & TicCommandButtons.Special) != 0)
             cmd.Buttons = 0;
-        else if ((cmd.Buttons & TicCmdButtons.Change) != 0)
+        else if ((cmd.Buttons & TicCommandButtons.Change) != 0)
             SetPendingWeapons(player, world.Options.GameMode, cmd.Buttons);
 
         // Check for use.
-        if ((cmd.Buttons & TicCmdButtons.Use) != 0)
+        if ((cmd.Buttons & TicCommandButtons.Use) != 0)
         {
             if (!player.UseDown)
             {
@@ -149,7 +149,7 @@ public sealed class PlayerBehavior(World world)
     {
         // The actual changing of the weapon is done when the weapon psprite can do it.
         // Not in the middle of an attack.
-        var pressed = (buttons & TicCmdButtons.WeaponMask) >> TicCmdButtons.WeaponShift;
+        var pressed = (buttons & TicCommandButtons.WeaponMask) >> TicCommandButtons.WeaponShift;
         var newWeapon = (WeaponTypes)(1 << pressed);
 
         if (newWeapon == WeaponTypes.Fist
@@ -202,11 +202,11 @@ public sealed class PlayerBehavior(World world)
     private bool onGround;
 
     /// <summary>
-    /// Move the player according to TicCmd.
+    /// Move the player according to TicCommand.
     /// </summary>
     private void MovePlayer(Player player)
     {
-        var cmd = player.Cmd;
+        var cmd = player.Command;
 
         player.Mobj!.Angle += new Angle(cmd.AngleTurn << 16);
 
@@ -417,7 +417,7 @@ public sealed class PlayerBehavior(World world)
         else if (player.DamageCount > 0)
             player.DamageCount--;
 
-        if ((player.Cmd.Buttons & TicCmdButtons.Use) != 0)
+        if ((player.Command.Buttons & TicCommandButtons.Use) != 0)
             player.PlayerState = PlayerState.Reborn;
     }
 

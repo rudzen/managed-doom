@@ -26,7 +26,7 @@ namespace ManagedDoom.Doom.Opening;
 public sealed class DemoPlayback
 {
     private readonly Demo demo;
-    private readonly TicCmd[] ticCommands;
+    private readonly TicCommand[] ticCommands;
 
     private readonly Stopwatch stopwatch;
     private int frameCount;
@@ -53,9 +53,9 @@ public sealed class DemoPlayback
         demo.Options.Music = options.Music;
         demo.Options.NetGame = args.SoloNet.Present;
 
-        ticCommands = new TicCmd[Player.MaxPlayerCount];
+        ticCommands = new TicCommand[Player.MaxPlayerCount];
         for (var i = 0; i < ticCommands.Length; i++)
-            ticCommands[i] = new TicCmd();
+            ticCommands[i] = new TicCommand();
 
         Game = new DoomGame(content, demo.Options);
         Game.DeferInitNew();

@@ -16,29 +16,25 @@
 
 namespace ManagedDoom.Doom.Game;
 
-public sealed class TicCmd
+public static class TicCommandButtons
 {
-    public sbyte ForwardMove { get; set; }
+    public const byte Attack = 1;
 
-    public sbyte SideMove { get; set; }
+    // Use button, to open doors, activate switches.
+    public const byte Use = 2;
 
-    public short AngleTurn { get; set; }
+    // Flag: game events, not really buttons.
+    public const byte Special = 128;
+    public const byte SpecialMask = 3;
 
-    public byte Buttons { get; set; }
+    // Flag, weapon change pending.
+    // If true, the next 3 bits hold weapon num.
+    public const byte Change = 4;
 
-    public void Clear()
-    {
-        ForwardMove = 0;
-        SideMove = 0;
-        AngleTurn = 0;
-        Buttons = 0;
-    }
+    // The 3bit weapon mask and shift, convenience.
+    public const byte WeaponMask = 8 + 16 + 32;
+    public const byte WeaponShift = 3;
 
-    public void CopyFrom(TicCmd cmd)
-    {
-        ForwardMove = cmd.ForwardMove;
-        SideMove = cmd.SideMove;
-        AngleTurn = cmd.AngleTurn;
-        Buttons = cmd.Buttons;
-    }
+    // Pause the game.
+    public const byte Pause = 1;
 }

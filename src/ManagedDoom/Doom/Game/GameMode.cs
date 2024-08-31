@@ -14,6 +14,8 @@
 // GNU General Public License for more details.
 //
 
+using System;
+
 namespace ManagedDoom.Doom.Game;
 
 public enum GameMode
@@ -25,4 +27,15 @@ public enum GameMode
     // DOOM 2 german edition not handled
     Retail,      // DOOM 1 retail, E4, M36
     Indetermined // Well, no IWAD found.
+}
+
+public static class GameModeExtensions
+{
+    public static int DemoTimer(this GameMode gameMode)
+    {
+        const int commercialTimer = 35 * 11;
+        const int nonCommercialTimer = 170;
+
+        return gameMode == GameMode.Commercial ? commercialTimer : nonCommercialTimer;
+    }
 }

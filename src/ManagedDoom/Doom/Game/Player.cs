@@ -92,7 +92,7 @@ public sealed class Player
 
         Name = defaultPlayerNames[number];
 
-        Cmd = new TicCmd();
+        Command = new TicCommand();
 
         Powers = new int[PowerType.Count];
         Cards = CardType.None;
@@ -115,7 +115,7 @@ public sealed class Player
 
     public PlayerState PlayerState { get; set; }
 
-    public TicCmd Cmd { get; }
+    public TicCommand Command { get; }
 
     public Fixed ViewZ { get; set; }
 
@@ -187,7 +187,7 @@ public sealed class Player
     {
         Mobj = null;
         PlayerState = 0;
-        Cmd.Clear();
+        Command.Clear();
 
         ViewZ = Fixed.Zero;
         ViewHeight = Fixed.Zero;
@@ -250,7 +250,7 @@ public sealed class Player
     {
         Mobj = null;
         PlayerState = PlayerState.Live;
-        Cmd.Clear();
+        Command.Clear();
 
         ViewZ = Fixed.Zero;
         ViewHeight = Fixed.Zero;

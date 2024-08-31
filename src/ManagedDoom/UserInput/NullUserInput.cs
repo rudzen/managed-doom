@@ -27,9 +27,9 @@ public sealed class NullUserInput : IUserInput
         return _instance ??= new NullUserInput();
     }
 
-    public void BuildTicCmd(TicCmd cmd)
+    public void BuildTicCmd(TicCommand command)
     {
-        cmd.Clear();
+        command.Clear();
     }
 
     public void Reset()

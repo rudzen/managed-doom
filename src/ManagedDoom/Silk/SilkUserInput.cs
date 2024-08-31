@@ -83,7 +83,7 @@ public sealed class SilkUserInput : IUserInput
     }
 
     [SkipLocalsInit]
-    public void BuildTicCmd(TicCmd cmd)
+    public void BuildTicCmd(TicCommand command)
     {
         var keyForward = IsPressed(keyboard, config.KeyForward);
         var keyBackward = IsPressed(keyboard, config.KeyBackward);
@@ -107,7 +107,7 @@ public sealed class SilkUserInput : IUserInput
             keyboard.IsKeyPressed(Key.Number7)
         };
 
-        cmd.Clear();
+        command.Clear();
 
         var speed = keyRun.AsInt();
         var forward = 0;
@@ -135,9 +135,9 @@ public sealed class SilkUserInput : IUserInput
         else
         {
             if (keyTurnRight)
-                cmd.AngleTurn -= (short)PlayerBehavior.AngleTurn[turnSpeed];
+                command.AngleTurn -= (short)PlayerBehavior.AngleTurn[turnSpeed];
             if (keyTurnLeft)
-                cmd.AngleTurn += (short)PlayerBehavior.AngleTurn[turnSpeed];
+                command.AngleTurn += (short)PlayerBehavior.AngleTurn[turnSpeed];
         }
 
         if (keyForward)
@@ -151,10 +151,10 @@ public sealed class SilkUserInput : IUserInput
             side += PlayerBehavior.SideMove[speed];
 
         if (keyFire)
-            cmd.Buttons |= TicCmdButtons.Attack;
+            command.Buttons |= TicCommandButtons.Attack;
 
         if (keyUse)
-            cmd.Buttons |= TicCmdButtons.Use;
+            command.Buttons |= TicCommandButtons.Use;
 
         // Check weapon keys.
         for (var i = 0; i < weaponKeys.Length; i++)
@@ -162,8 +162,8 @@ public sealed class SilkUserInput : IUserInput
             if (!weaponKeys[i])
                 continue;
 
-            cmd.Buttons |= TicCmdButtons.Change;
-            cmd.Buttons |= (byte)(i << TicCmdButtons.WeaponShift);
+            command.Buttons |= TicCommandButtons.Change;
+            command.Buttons |= (byte)(i << TicCommandButtons.WeaponShift);
             break;
         }
 
@@ -175,7 +175,7 @@ public sealed class SilkUserInput : IUserInput
         if (keyStrafe)
             side += mx * 2;
         else
-            cmd.AngleTurn -= (short)(mx * 0x8);
+            command.AngleTurn -= (short)(mx * 0x8);
 
         if (forward > PlayerBehavior.MaxMove)
             forward = PlayerBehavior.MaxMove;
@@ -187,8 +187,8 @@ public sealed class SilkUserInput : IUserInput
         else if (side < -PlayerBehavior.MaxMove)
             side = -PlayerBehavior.MaxMove;
 
-        cmd.ForwardMove += (sbyte)forward;
-        cmd.SideMove += (sbyte)side;
+        command.ForwardMove += (sbyte)forward;
+        command.SideMove += (sbyte)side;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

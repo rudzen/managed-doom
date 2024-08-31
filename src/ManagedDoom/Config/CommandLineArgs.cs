@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -88,16 +89,16 @@ public sealed class CommandLineArgs : ICommandLineArgs
 
             foreach (var path in args)
             {
-                var extension = Path.GetExtension(path).ToLower();
+                var extension = Path.GetExtension(path);
 
-                if (extension == ".wad")
+                if (string.Equals(extension, ".wad", StringComparison.OrdinalIgnoreCase))
                 {
                     if (ConfigUtilities.IsIwad(path))
                         iwadPath = path;
                     else
                         pwadPaths.Add(path);
                 }
-                else if (extension == ".deh")
+                else if (string.Equals(extension, ".deh", StringComparison.OrdinalIgnoreCase))
                     dehPaths.Add(path);
             }
 
@@ -115,7 +116,7 @@ public sealed class CommandLineArgs : ICommandLineArgs
     private static Arg<string[]> Check(string[] args, string value)
     {
         var values = GetValues(args, value);
-        return values.Length >= 1 ? new Arg<string[]>(values) : new Arg<string[]>();
+        return values.Length >= 1 ? new Arg<string[]>(values) : Arg<string[]>.Empty;
     }
 
     private static Arg<Warp> Check_warp(string[] args)
@@ -125,14 +126,14 @@ public sealed class CommandLineArgs : ICommandLineArgs
         {
             1 when int.TryParse(values[0], out var map)                                             => new Arg<Warp>(new Warp(1, map)),
             2 when int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map) => new Arg<Warp>(new Warp(episode, map)),
-            _                                                                                       => new Arg<Warp>()
+            _                                                                                       => Arg<Warp>.Empty
         };
     }
 
     private static Arg<string> GetString(string[] args, string name)
     {
         var values = GetValues(args, name);
-        return values.Length == 1 ? new Arg<string>(values[0]) : new Arg<string>();
+        return values.Length == 1 ? new Arg<string>(values[0]) : Arg<string>.Empty;
     }
 
     private static Arg<int> GetInt(string[] args, string name)
@@ -140,7 +141,7 @@ public sealed class CommandLineArgs : ICommandLineArgs
         var values = GetValues(args, name);
         return values.Length == 1 && int.TryParse(values[0], out var result)
             ? new Arg<int>(result)
-            : new Arg<int>();
+            : Arg<int>.Empty;
     }
 
     private static string[] GetValues(string[] args, string name)

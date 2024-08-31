@@ -14,7 +14,7 @@ public sealed class FireOnce(WadPath wadPath) : IClassFixture<WadPath>
         options.Map = 1;
         options.Players[0].InGame = true;
 
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, options);
         game.DeferInitNew();
 
@@ -25,7 +25,7 @@ public sealed class FireOnce(WadPath wadPath) : IClassFixture<WadPath>
         var aggHash = 0;
         for (var i = 0; i < tics; i++)
         {
-            ticCommands[0].Buttons = i < pressFireUntil ? TicCmdButtons.Attack : defaultButton;
+            ticCommands[0].Buttons = i < pressFireUntil ? TicCommandButtons.Attack : defaultButton;
 
             game.Update(ticCommands);
             aggHash = DoomDebug.CombineHash(aggHash, DoomDebug.GetMobjHash(game.World));

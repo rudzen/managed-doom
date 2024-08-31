@@ -63,7 +63,7 @@ public sealed class Demo
 
     public IGameOptions Options { get; }
 
-    public bool ReadCmd(ReadOnlySpan<TicCmd> cmds)
+    public bool ReadCmd(ReadOnlySpan<TicCommand> cmds)
     {
         if (p == data.Length)
             return false;

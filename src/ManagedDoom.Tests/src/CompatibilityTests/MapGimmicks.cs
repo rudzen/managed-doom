@@ -17,7 +17,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
                 GameMode = content.Wad.GameMode
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -57,7 +57,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
                 GameMode = content.Wad.GameMode
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -91,7 +91,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map06_crusher_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -125,7 +125,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map07_boss_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -159,7 +159,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map30_brain_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -193,7 +193,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
         using var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map32_keen_test.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCmd()).ToArray();
+        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 

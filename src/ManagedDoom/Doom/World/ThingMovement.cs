@@ -573,7 +573,7 @@ public sealed class ThingMovement(World world)
             thing.MomX < stopSpeed &&
             thing.MomY > -stopSpeed &&
             thing.MomY < stopSpeed &&
-            (player == null || (player.Cmd.ForwardMove == 0 && player.Cmd.SideMove == 0)))
+            (player == null || (player.Command.ForwardMove == 0 && player.Command.SideMove == 0)))
         {
             // If in a walking frame, stop moving.
             if (player != null && (player.Mobj!.State.Number - (int)MobjState.PlayRun1) < 4)

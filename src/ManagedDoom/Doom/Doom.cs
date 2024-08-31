@@ -42,7 +42,7 @@ public sealed class Doom
 
     private readonly List<DoomEvent> events;
 
-    private readonly TicCmd[] ticCommands;
+    private readonly TicCommand[] ticCommands;
 
     private DoomState nextState;
     private bool needWipe;
@@ -85,9 +85,9 @@ public sealed class Doom
 
         Opening = new OpeningSequence(content, Options);
 
-        ticCommands = new TicCmd[Player.MaxPlayerCount];
+        ticCommands = new TicCommand[Player.MaxPlayerCount];
         for (var i = 0; i < ticCommands.Length; i++)
-            ticCommands[i] = new TicCmd();
+            ticCommands[i] = new TicCommand();
 
         Game = new DoomGame(content, Options);
 
@@ -357,7 +357,7 @@ public sealed class Doom
                     if (sendPause)
                     {
                         sendPause ^= true;
-                        ticCommands[Options.ConsolePlayer].Buttons |= TicCmdButtons.Special | TicCmdButtons.Pause;
+                        ticCommands[Options.ConsolePlayer].Buttons |= TicCommandButtons.Special | TicCommandButtons.Pause;
                     }
 
                     if (Game.Update(ticCommands) == UpdateResult.NeedWipe)
