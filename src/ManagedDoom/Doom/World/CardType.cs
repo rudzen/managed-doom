@@ -40,18 +40,21 @@ public static class CardTypeExtensions
 {
     public static CardType[] CardTypes => [CardType.BlueCard, CardType.YellowCard, CardType.RedCard, CardType.BlueSkull, CardType.YellowSkull, CardType.RedSkull];
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Index(this CardType ct)
+    extension(CardType ct)
     {
-        // Convert enum value to ulong
-        var mask = (uint)ct;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Index()
+        {
+            // Convert enum value to ulong
+            var mask = (uint)ct;
 
-        // Use BitOperations to get the log2 value, which gives the bit index
-        return BitOperations.Log2(mask);
+            // Use BitOperations to get the log2 value, which gives the bit index
+            return BitOperations.Log2(mask);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has(CardType f) => (ct & f) != 0;
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Count(this CardType ct) => BitOperations.PopCount((uint)ct);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CardType Next(ref CardType ct)
@@ -70,10 +73,4 @@ public static class CardTypeExtensions
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static void ResetLsb(ref CardType ct) => ct &= ct - 1;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Has(this CardType ct, CardType f)
-    {
-        return (ct & f) != 0;
-    }
 }

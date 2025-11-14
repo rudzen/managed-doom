@@ -31,11 +31,6 @@ public enum PowerTypes : byte
 
 public readonly record struct PowerType(PowerTypes Value)
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PowerType(byte t) : this((PowerTypes)t)
-    {
-    }
-
     public static PowerType Invulnerability => new(PowerTypes.Invulnerability);
     public static PowerType Strength => new(PowerTypes.Strength);
     public static PowerType Invisibility => new(PowerTypes.Invisibility);

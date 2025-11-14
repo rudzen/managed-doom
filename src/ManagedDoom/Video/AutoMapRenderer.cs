@@ -26,7 +26,7 @@ using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Video;
 
-public sealed class AutoMapRenderer : IAutoMapRenderer
+public sealed class AutoMapRenderer
 {
     private const float Tr = 16;
 
@@ -87,14 +87,14 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
 
     private readonly int scale;
 
-    private readonly IDrawScreen screen;
+    private readonly DrawScreen screen;
 
     private Vector2 actualView = Vector2.Zero;
     private Vector2 renderView = Vector2.Zero;
 
     private float zoom;
 
-    public AutoMapRenderer(IGameContent gameContent, IDrawScreen screen)
+    public AutoMapRenderer(IGameContent gameContent, DrawScreen screen)
     {
         this.screen = screen;
 
@@ -139,32 +139,32 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
                     continue;
 
                 if (line.BackSector == null)
-                    screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, WallColors);
+                    screen.DrawLine(v1, v2, WallColors);
                 else
                 {
                     // Teleporters.
                     if (line.Special == (LineSpecial)39)
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, WallColors + WallRange / 2);
+                        screen.DrawLine(v1, v2, WallColors + WallRange / 2);
                     else if ((line.Flags & LineFlags.Secret) != 0)
                     {
                         // Secret door.
                         var color = cheating ? SecretWallColors : WallColors;
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, color);
+                        screen.DrawLine(v1, v2, color);
                     }
                     // Floor level change.
                     else if (line.BackSector.FloorHeight != line.FrontSector.FloorHeight)
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, FdWallColors);
+                        screen.DrawLine(v1, v2, FdWallColors);
                     // Ceiling level change.
                     else if (line.BackSector.CeilingHeight != line.FrontSector.CeilingHeight)
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, CdWallColors);
+                        screen.DrawLine(v1, v2, CdWallColors);
                     else if (cheating)
-                        screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, TsWallColors);
+                        screen.DrawLine(v1, v2, TsWallColors);
                 }
             }
             else if (player.Powers[PowerType.AllMap] > 0)
             {
                 if ((line.Flags & LineFlags.DontDraw) == 0)
-                    screen.DrawLine(v1.X, v1.Y, v2.X, v2.Y, Grays + 3);
+                    screen.DrawLine(v1, v2, Grays + 3);
             }
         }
 
@@ -185,15 +185,19 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
 
         if (!am.Follow)
         {
-            screen.DrawLine(
-                amWidth / 2 - 2 * scale, amHeight / 2,
-                amWidth / 2 + 2 * scale, amHeight / 2,
-                Grays);
+            var halfWidth = amWidth / 2.0F;
+            var halfHeight = amHeight / 2.0F;
+            var doubleScale = 2.0F * scale;
 
-            screen.DrawLine(
-                amWidth / 2, amHeight / 2 - 2 * scale,
-                amWidth / 2, amHeight / 2 + 2 * scale,
-                Grays);
+            var p1 = Vector2.Create(halfWidth - doubleScale, halfHeight);
+            var p2 = Vector2.Create(halfWidth + doubleScale, halfHeight);
+
+            screen.DrawLine(p1, p2, Grays);
+
+            p1 = Vector2.Create(halfWidth, halfHeight - doubleScale);
+            p2 = Vector2.Create(halfWidth, halfHeight + doubleScale);
+
+            screen.DrawLine(p1, p2, Grays);
         }
 
         screen.DrawText(
@@ -250,13 +254,13 @@ public sealed class AutoMapRenderer : IAutoMapRenderer
         var pos = ToScreenPos(mobj.X, mobj.Y);
         var sin = (float)Math.Sin(mobj.Angle.ToRadian());
         var cos = (float)Math.Cos(mobj.Angle.ToRadian());
+        var zoomedPpu = zoom * ppu;
+
         for (var i = 0; i < data.Length; i += 4)
         {
-            var x1 = pos.X + zoom * ppu * (cos * data[i + 0] - sin * data[i + 1]);
-            var y1 = pos.Y - zoom * ppu * (sin * data[i + 0] + cos * data[i + 1]);
-            var x2 = pos.X + zoom * ppu * (cos * data[i + 2] - sin * data[i + 3]);
-            var y2 = pos.Y - zoom * ppu * (sin * data[i + 2] + cos * data[i + 3]);
-            screen.DrawLine(x1, y1, x2, y2, color);
+            var p1 = Vector2.Create(pos.X + zoomedPpu * (cos * data[i + 0] - sin * data[i + 1]), pos.Y - zoomedPpu * (sin * data[i + 0] + cos * data[i + 1]));
+            var p2 = Vector2.Create(pos.X + zoomedPpu * (cos * data[i + 2] - sin * data[i + 3]), pos.Y - zoomedPpu * (sin * data[i + 2] + cos * data[i + 3]));
+            screen.DrawLine(p1, p2, color);
         }
     }
 

@@ -21,7 +21,7 @@ using ManagedDoom.Config;
 
 namespace ManagedDoom.Silk;
 
-public sealed class SilkConfig : ISilkConfig
+public sealed class SilkConfig
 {
     private const int MinScreenWidth = 320;
     private const int MaxScreenWidth = 3200;

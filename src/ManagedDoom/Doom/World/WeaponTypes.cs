@@ -47,53 +47,35 @@ public static class WeaponTypesExtensions
         WeaponTypes.SuperShotgun
     ];
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Index(this WeaponTypes wt)
+    extension(WeaponTypes wt)
     {
-        // Convert enum value to ulong
-        var mask = (uint)wt;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int Index()
+        {
+            // Convert enum value to ulong
+            var mask = (uint)wt;
 
-        // Use BitOperations to get the log2 value, which gives the bit index
-        return BitOperations.Log2(mask);
-    }
+            // Use BitOperations to get the log2 value, which gives the bit index
+            return BitOperations.Log2(mask);
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Count(this WeaponTypes wt) => BitOperations.PopCount((uint)wt);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has(WeaponTypes f)
+        {
+            return (wt & f) != 0;
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static WeaponTypes Next(ref WeaponTypes wt)
-    {
-        var lsb = Lsb(wt);
-        ResetLsb(ref wt);
-        return lsb;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static WeaponTypes Lsb(WeaponTypes wt)
-    {
-        var tzc = BitOperations.TrailingZeroCount((int)wt);
-        return (WeaponTypes)(1 << tzc);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static void ResetLsb(ref WeaponTypes wt) => wt &= wt - 1;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Has(this WeaponTypes wt, WeaponTypes f)
-    {
-        return (wt & f) != 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static WeaponInfo WeaponInfo(this WeaponTypes wt)
-    {
-        return weaponInfos[wt.Index()];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WeaponInfo WeaponInfo()
+        {
+            return weaponInfos[wt.Index()];
+        }
     }
 
     private static readonly WeaponInfo[] weaponInfos =
     [
         // fist
-        new WeaponInfo(
+        new(
             ammo: AmmoType.NoAmmo,
             upState: MobjState.Punchup,
             downState: MobjState.Punchdown,
@@ -103,7 +85,7 @@ public static class WeaponTypesExtensions
         ),
 
         // pistol
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Clip,
             upState: MobjState.Pistolup,
             downState: MobjState.Pistoldown,
@@ -113,7 +95,7 @@ public static class WeaponTypesExtensions
         ),
 
         // shotgun
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Shell,
             upState: MobjState.Sgunup,
             downState: MobjState.Sgundown,
@@ -123,7 +105,7 @@ public static class WeaponTypesExtensions
         ),
 
         // chaingun
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Clip,
             upState: MobjState.Chainup,
             downState: MobjState.Chaindown,
@@ -133,7 +115,7 @@ public static class WeaponTypesExtensions
         ),
 
         // missile launcher
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Missile,
             upState: MobjState.Missileup,
             downState: MobjState.Missiledown,
@@ -143,7 +125,7 @@ public static class WeaponTypesExtensions
         ),
 
         // plasma rifle
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Cell,
             upState: MobjState.Plasmaup,
             downState: MobjState.Plasmadown,
@@ -153,7 +135,7 @@ public static class WeaponTypesExtensions
         ),
 
         // bfg 9000
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Cell,
             upState: MobjState.Bfgup,
             downState: MobjState.Bfgdown,
@@ -163,7 +145,7 @@ public static class WeaponTypesExtensions
         ),
 
         // chainsaw
-        new WeaponInfo(
+        new(
             ammo: AmmoType.NoAmmo,
             upState: MobjState.Sawup,
             downState: MobjState.Sawdown,
@@ -173,7 +155,7 @@ public static class WeaponTypesExtensions
         ),
 
         // super shotgun
-        new WeaponInfo(
+        new(
             ammo: AmmoType.Shell,
             upState: MobjState.Dsgunup,
             downState: MobjState.Dsgundown,

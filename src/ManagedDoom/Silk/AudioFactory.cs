@@ -23,7 +23,7 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Silk;
 
-public sealed class AudioFactory : IAudioFactory
+public sealed class AudioFactory
 {
     private readonly ISound sound;
     private readonly IMusic music;

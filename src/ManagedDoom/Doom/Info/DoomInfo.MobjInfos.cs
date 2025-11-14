@@ -24,7 +24,7 @@ public static partial class DoomInfo
 {
     public static readonly MobjInfo[] MobjInfos =
     [
-        new MobjInfo(                                                                                                      // MobjType.Player
+        new(                                                                                                               // MobjType.Player
             doomEdNum: -1,                                                                                                 // doomEdNum
             spawnState: MobjState.Play,                                                                                    // spawnState
             spawnHealth: 100,                                                                                              // spawnHealth
@@ -50,7 +50,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                                     // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Possessed
+        new(                                                                    // MobjType.Possessed
             doomEdNum: 3004,                                                    // doomEdNum
             spawnState: MobjState.PossStnd,                                     // spawnState
             spawnHealth: 20,                                                    // spawnHealth
@@ -76,7 +76,7 @@ public static partial class DoomInfo
             raiseState: MobjState.PossRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Shotguy
+        new(                                                                    // MobjType.Shotguy
             doomEdNum: 9,                                                       // doomEdNum
             spawnState: MobjState.SposStnd,                                     // spawnState
             spawnHealth: 30,                                                    // spawnHealth

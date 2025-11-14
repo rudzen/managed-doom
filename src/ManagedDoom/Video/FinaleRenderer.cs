@@ -21,7 +21,7 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Video;
 
-public sealed class FinaleRenderer(IGameContent gameContent, IPatchCache patchCache, IDrawScreen screen) : IFinaleRenderer
+public sealed class FinaleRenderer(IGameContent gameContent, IPatchCache patchCache, DrawScreen screen)
 {
     private readonly int scale = screen.Width / 320;
     private readonly IFlatLookup flats = gameContent.Flats;

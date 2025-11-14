@@ -45,8 +45,8 @@ await Host.CreateDefaultBuilder(args)
           .ConfigureServices((_, services) =>
           {
               // related to Silk.NET etc
-              services.AddSingleton<IWindowFactory, WindowFactory>();
-              services.AddSingleton<IOpenGlFactory, OpenGlFactory>();
+              services.AddSingleton<WindowFactory>();
+              services.AddSingleton<OpenGlFactory>();
 
               // command line args
               services.AddSingleton(_ =>
@@ -63,20 +63,20 @@ await Host.CreateDefaultBuilder(args)
               });
 
               // game fundamentals
-              services.AddSingleton<ISilkConfig, SilkConfig>();
-              services.AddSingleton<ISilkDoom, SilkDoom>();
-              services.AddSingleton<IAudioFactory, AudioFactory>();
+              services.AddSingleton<SilkConfig>();
+              services.AddSingleton<SilkDoom>();
+              services.AddSingleton<AudioFactory>();
 
                 // game content
-              services.AddSingleton<IDrawScreen, DrawScreen>();
+              services.AddSingleton<DrawScreen>();
               services.AddSingleton<IRenderer, Renderer>();
-              services.AddSingleton<IMenuRenderer, MenuRenderer>();
+              services.AddSingleton<MenuRenderer>();
               services.AddSingleton<IThreeDeeRenderer, ThreeDeeRenderer>();
-              services.AddSingleton<IStatusBarRenderer, StatusBarRenderer>();
-              services.AddSingleton<IIntermissionRenderer, IntermissionRenderer>();
-              services.AddSingleton<IOpeningSequenceRenderer, OpeningSequenceRenderer>();
-              services.AddSingleton<IAutoMapRenderer, AutoMapRenderer>();
-              services.AddSingleton<IFinaleRenderer, FinaleRenderer>();
+              services.AddSingleton<StatusBarRenderer>();
+              services.AddSingleton<IntermissionRenderer>();
+              services.AddSingleton<OpeningSequenceRenderer>();
+              services.AddSingleton<AutoMapRenderer>();
+              services.AddSingleton<FinaleRenderer>();
               services.AddSingleton<IGameContent, GameContent>();
               services.AddSingleton<IPatchCache, PatchCache>();
 

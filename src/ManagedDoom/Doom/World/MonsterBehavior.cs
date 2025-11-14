@@ -146,26 +146,26 @@ public sealed class MonsterBehavior
 
     private static readonly Fixed[] xSpeed =
     [
-        new Fixed(Fixed.FracUnit),
-        new Fixed(47000),
-        new Fixed(0),
-        new Fixed(-47000),
-        new Fixed(-Fixed.FracUnit),
-        new Fixed(-47000),
-        new Fixed(0),
-        new Fixed(47000)
+        new(Fixed.FracUnit),
+        new(47000),
+        new(0),
+        new(-47000),
+        new(-Fixed.FracUnit),
+        new(-47000),
+        new(0),
+        new(47000)
     ];
 
     private static readonly Fixed[] ySpeed =
     [
-        new Fixed(0),
-        new Fixed(47000),
-        new Fixed(Fixed.FracUnit),
-        new Fixed(47000),
-        new Fixed(0),
-        new Fixed(-47000),
-        new Fixed(-Fixed.FracUnit),
-        new Fixed(-47000)
+        new(0),
+        new(47000),
+        new(Fixed.FracUnit),
+        new(47000),
+        new(0),
+        new(-47000),
+        new(-Fixed.FracUnit),
+        new(-47000)
     ];
 
     private bool Move(Mobj actor)
@@ -508,7 +508,7 @@ public sealed class MonsterBehavior
         // Check for missile attack.
         if (actor.Info.MissileState != 0)
         {
-            if (world.Options.Skill < GameSkill.Nightmare && !world.Options.FastMonsters && actor.MoveCount != 0)
+            if (world.Options is { Skill: < GameSkill.Nightmare, FastMonsters: false } && actor.MoveCount != 0)
                 goto noMissile;
 
             if (!CheckMissileRange(actor))

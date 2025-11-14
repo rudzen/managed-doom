@@ -55,10 +55,10 @@ public sealed class Doom
 
     public Doom(
         ICommandLineArgs args,
-        ISilkConfig silkConfig,
+        SilkConfig silkConfig,
         IGameContent content,
         IVideo? video,
-        IAudioFactory audioFactory,
+        AudioFactory audioFactory,
         IUserInput? userInput)
     {
         video ??= NullVideo.GetInstance();

@@ -47,37 +47,37 @@ public sealed class Renderer : IRenderer
         0.50
     ];
 
-    private readonly IAutoMapRenderer autoMapRenderer;
+    private readonly AutoMapRenderer autoMapRenderer;
 
     private readonly ConfigValues config;
-    private readonly IFinaleRenderer finaleRenderer;
-    private readonly IIntermissionRenderer intermissionRenderer;
+    private readonly FinaleRenderer finaleRenderer;
+    private readonly IntermissionRenderer intermissionRenderer;
 
-    private readonly IMenuRenderer menuRenderer;
-    private readonly IOpeningSequenceRenderer openingSequenceRenderer;
+    private readonly MenuRenderer menuRenderer;
+    private readonly OpeningSequenceRenderer openingSequenceRenderer;
 
     private readonly Palette palette;
 
     private readonly Patch pause;
 
-    private readonly IDrawScreen screen;
-    private readonly IStatusBarRenderer statusBarRenderer;
+    private readonly DrawScreen screen;
+    private readonly StatusBarRenderer statusBarRenderer;
     private readonly IThreeDeeRenderer threeDeeRenderer;
 
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
 
     public Renderer(
-        ISilkConfig silkConfig,
+        SilkConfig silkConfig,
         IGameContent content,
-        IDrawScreen drawScreen,
-        IMenuRenderer menuRenderer,
+        DrawScreen drawScreen,
+        MenuRenderer menuRenderer,
         IThreeDeeRenderer threeDeeRenderer,
-        IStatusBarRenderer statusBarRenderer,
-        IIntermissionRenderer intermissionRenderer,
-        IOpeningSequenceRenderer openingSequenceRenderer,
-        IAutoMapRenderer autoMapRenderer,
-        IFinaleRenderer finaleRenderer)
+        StatusBarRenderer statusBarRenderer,
+        IntermissionRenderer intermissionRenderer,
+        OpeningSequenceRenderer openingSequenceRenderer,
+        AutoMapRenderer autoMapRenderer,
+        FinaleRenderer finaleRenderer)
     {
         this.config = silkConfig.Config.Values;
 

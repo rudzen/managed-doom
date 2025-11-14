@@ -14,6 +14,8 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom.Doom.World;
 
 public enum MobjState
@@ -985,4 +987,10 @@ public enum MobjState
     Tech2Lamp2,
     Tech2Lamp3,
     Tech2Lamp4
+}
+
+public static class MobjStateExtensions
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int AsInt(this MobjState state) => (int)state;
 }

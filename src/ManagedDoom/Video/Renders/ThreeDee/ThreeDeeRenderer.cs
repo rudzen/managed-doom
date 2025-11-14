@@ -36,7 +36,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     private readonly IFlatLookup flats;
     private readonly ISpriteLookup sprites;
 
-    private readonly IDrawScreen screen;
+    private readonly DrawScreen screen;
     private readonly int screenWidth;
     private readonly int screenHeight;
     private readonly byte[] screenData;
@@ -59,7 +59,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     private readonly ColorTranslation colorTranslation;
     private readonly WindowBorder windowBorder;
 
-    public ThreeDeeRenderer(IGameContent content, IDrawScreen screen, ISilkConfig silkConfig)
+    public ThreeDeeRenderer(IGameContent content, DrawScreen screen, SilkConfig silkConfig)
     {
         colorMap = content.ColorMap;
         textures = content.Textures;
@@ -865,7 +865,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         //
 
         var upperWallTexture = default(Texture);
-        var upperWallWidthMask = default(int);
+        var upperWallWidthMask = 0;
         var upperTextureAlt = default(Fixed);
         if (drawUpperWall)
         {
@@ -884,7 +884,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         }
 
         var lowerWallTexture = default(Texture);
-        var lowerWallWidthMask = default(int);
+        var lowerWallWidthMask = 0;
         var lowerTextureAlt = default(Fixed);
         if (drawLowerWall)
         {
@@ -1073,7 +1073,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             visWallRange.Silhouette |= Silhouette.Upper;
         }
 
-        var maskedTextureColumn = default(int);
+        var maskedTextureColumn = 0;
         if (drawMaskedTexture)
         {
             maskedTextureColumn = renderingHistory.ClipDataLength - x1;
@@ -1104,8 +1104,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             var drawWallY1 = (wallY1Frac.Data + heightUnit - 1) >> heightBits;
             var drawWallY2 = wallY2Frac.Data >> heightBits;
 
-            var textureColumn = default(int);
-            var lightIndex = default(int);
+            var textureColumn = 0;
+            var lightIndex = 0;
             var invScale = default(Fixed);
             if (segTextured)
             {

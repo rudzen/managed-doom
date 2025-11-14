@@ -2,7 +2,7 @@
 
 public sealed class FpsRenderer
 {
-    private readonly IDrawScreen screen;
+    private readonly DrawScreen screen;
     
     public void Add(in long fps)
     {

@@ -29,11 +29,11 @@ using Silk.NET.OpenGL;
 
 namespace ManagedDoom.Silk;
 
-public sealed partial class SilkDoom : ISilkDoom
+public sealed partial class SilkDoom
 {
     private readonly ICommandLineArgs args;
 
-    private readonly ISilkConfig silkConfig;
+    private readonly SilkConfig silkConfig;
 
     private readonly IGameContent gameContent;
     private readonly IRenderer renderer;
@@ -43,7 +43,7 @@ public sealed partial class SilkDoom : ISilkDoom
 
     private SilkVideo? video;
 
-    private readonly IAudioFactory audioFactory;
+    private readonly AudioFactory audioFactory;
 
     private SilkUserInput? userInput;
 
@@ -59,10 +59,10 @@ public sealed partial class SilkDoom : ISilkDoom
     public SilkDoom(
         ICommandLineArgs args,
         IGameContent gameContent,
-        ISilkConfig silkConfig,
-        IWindowFactory windowFactory,
+        SilkConfig silkConfig,
+        WindowFactory windowFactory,
         IRenderer renderer,
-        IAudioFactory audioFactory
+        AudioFactory audioFactory
     )
     {
         try
@@ -141,7 +141,7 @@ public sealed partial class SilkDoom : ISilkDoom
                 fpsStamp = Stopwatch.GetTimestamp();
                 Console.WriteLine("fps: " + frameTimes + " frames per second.");
                 frameTimesRender = frameTimes;
-                frameTimes = default;
+                frameTimes = 0;
             }
         }
         catch (Exception e)

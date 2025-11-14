@@ -129,29 +129,17 @@ public sealed class SilkVideo : IVideo
     {
         Console.WriteLine("Shutdown video.");
 
-        if (shader is not null)
-        {
-            shader.Dispose();
-            shader = null;
-        }
+        shader?.Dispose();
+        shader = null;
 
-        if (textureBatcher is not null)
-        {
-            textureBatcher.Dispose();
-            textureBatcher = null;
-        }
+        textureBatcher?.Dispose();
+        textureBatcher = null;
 
-        if (texture is not null)
-        {
-            texture.Dispose();
-            texture = null;
-        }
+        texture?.Dispose();
+        texture = null;
 
-        if (device is not null)
-        {
-            device.Dispose();
-            device = null;
-        }
+        device?.Dispose();
+        device = null;
     }
 
     public int WipeBandCount => renderer.WipeBandCount;

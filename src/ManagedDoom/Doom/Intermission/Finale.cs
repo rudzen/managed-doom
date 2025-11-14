@@ -197,21 +197,15 @@ public sealed class Finale
             for (i = 0; i < Player.MaxPlayerCount; i++)
             {
                 if (Options.Players[i].Command.Buttons != 0)
-                {
                     break;
-                }
             }
 
             if (i < Player.MaxPlayerCount && Stage != 2)
             {
                 if (Options.Map == 30)
-                {
                     StartCast();
-                }
                 else
-                {
                     return UpdateResult.Completed;
-                }
             }
         }
 
@@ -225,9 +219,7 @@ public sealed class Finale
         }
 
         if (Options.GameMode == GameMode.Commercial)
-        {
             return updateResult;
-        }
 
         if (Stage == 0 && Count > Text.Length * TextSpeed + TextWait)
         {
@@ -235,15 +227,11 @@ public sealed class Finale
             Stage = 1;
             updateResult = UpdateResult.NeedWipe;
             if (Options.Episode == 3)
-            {
                 Options.Music.StartMusic(Bgm.BUNNY, PlayMode.Loop);
-            }
         }
 
         if (Stage == 1 && Options.Episode == 3)
-        {
             BunnyScroll();
-        }
 
         return updateResult;
     }
@@ -252,19 +240,13 @@ public sealed class Finale
     {
         Scrolled = 320 - (Count - 230) / 2;
         if (Scrolled > 320)
-        {
             Scrolled = 320;
-        }
 
         if (Scrolled < 0)
-        {
             Scrolled = 0;
-        }
 
         if (Count < 1130)
-        {
             return;
-        }
 
         ShowTheEnd = true;
 
@@ -276,9 +258,7 @@ public sealed class Finale
 
         var stage = (Count - 1180) / 5;
         if (stage > 6)
-        {
             stage = 6;
-        }
 
         if (stage > TheEndIndex)
         {
@@ -290,23 +270,23 @@ public sealed class Finale
 
     private static readonly CastInfo[] castOrder =
     [
-        new CastInfo(DoomInfo.Strings.CC_ZOMBIE, MobjType.Possessed),
-        new CastInfo(DoomInfo.Strings.CC_SHOTGUN, MobjType.Shotguy),
-        new CastInfo(DoomInfo.Strings.CC_HEAVY, MobjType.Chainguy),
-        new CastInfo(DoomInfo.Strings.CC_IMP, MobjType.Troop),
-        new CastInfo(DoomInfo.Strings.CC_DEMON, MobjType.Sergeant),
-        new CastInfo(DoomInfo.Strings.CC_LOST, MobjType.Skull),
-        new CastInfo(DoomInfo.Strings.CC_CACO, MobjType.Head),
-        new CastInfo(DoomInfo.Strings.CC_HELL, MobjType.Knight),
-        new CastInfo(DoomInfo.Strings.CC_BARON, MobjType.Bruiser),
-        new CastInfo(DoomInfo.Strings.CC_ARACH, MobjType.Baby),
-        new CastInfo(DoomInfo.Strings.CC_PAIN, MobjType.Pain),
-        new CastInfo(DoomInfo.Strings.CC_REVEN, MobjType.Undead),
-        new CastInfo(DoomInfo.Strings.CC_MANCU, MobjType.Fatso),
-        new CastInfo(DoomInfo.Strings.CC_ARCH, MobjType.Vile),
-        new CastInfo(DoomInfo.Strings.CC_SPIDER, MobjType.Spider),
-        new CastInfo(DoomInfo.Strings.CC_CYBER, MobjType.Cyborg),
-        new CastInfo(DoomInfo.Strings.CC_HERO, MobjType.Player)
+        new(DoomInfo.Strings.CC_ZOMBIE, MobjType.Possessed),
+        new(DoomInfo.Strings.CC_SHOTGUN, MobjType.Shotguy),
+        new(DoomInfo.Strings.CC_HEAVY, MobjType.Chainguy),
+        new(DoomInfo.Strings.CC_IMP, MobjType.Troop),
+        new(DoomInfo.Strings.CC_DEMON, MobjType.Sergeant),
+        new(DoomInfo.Strings.CC_LOST, MobjType.Skull),
+        new(DoomInfo.Strings.CC_CACO, MobjType.Head),
+        new(DoomInfo.Strings.CC_HELL, MobjType.Knight),
+        new(DoomInfo.Strings.CC_BARON, MobjType.Bruiser),
+        new(DoomInfo.Strings.CC_ARACH, MobjType.Baby),
+        new(DoomInfo.Strings.CC_PAIN, MobjType.Pain),
+        new(DoomInfo.Strings.CC_REVEN, MobjType.Undead),
+        new(DoomInfo.Strings.CC_MANCU, MobjType.Fatso),
+        new(DoomInfo.Strings.CC_ARCH, MobjType.Vile),
+        new(DoomInfo.Strings.CC_SPIDER, MobjType.Spider),
+        new(DoomInfo.Strings.CC_CYBER, MobjType.Cyborg),
+        new(DoomInfo.Strings.CC_HERO, MobjType.Player)
     ];
 
     private int castNumber;
@@ -335,11 +315,9 @@ public sealed class Finale
 
     private void UpdateCast()
     {
+        // Not time to change state yet.
         if (--castTics > 0)
-        {
-            // Not time to change state yet.
             return;
-        }
 
         var mobjInfoSpan = DoomInfo.MobjInfos.AsSpan();
 
@@ -349,14 +327,10 @@ public sealed class Finale
             castNumber++;
             castDeath = false;
             if (castNumber == castOrder.Length)
-            {
                 castNumber = 0;
-            }
 
             if (mobjInfoSpan[(int)castOrder[castNumber].Type].SeeSound != 0)
-            {
                 StartSound(mobjInfoSpan[(int)castOrder[castNumber].Type].SeeSound);
-            }
 
             CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].SeeState];
             castFrames = 0;
@@ -378,121 +352,46 @@ public sealed class Finale
             castFrames++;
 
             // Sound hacks....
-            Sfx sfx;
-            switch (st)
+            Sfx sfx = st switch
             {
-                case MobjState.PlayAtk1:
-                    sfx = Sfx.DSHTGN;
-                    break;
-
-                case MobjState.PossAtk2:
-                    sfx = Sfx.PISTOL;
-                    break;
-
-                case MobjState.SposAtk2:
-                    sfx = Sfx.SHOTGN;
-                    break;
-
-                case MobjState.VileAtk2:
-                    sfx = Sfx.VILATK;
-                    break;
-
-                case MobjState.SkelFist2:
-                    sfx = Sfx.SKESWG;
-                    break;
-
-                case MobjState.SkelFist4:
-                    sfx = Sfx.SKEPCH;
-                    break;
-
-                case MobjState.SkelMiss2:
-                    sfx = Sfx.SKEATK;
-                    break;
-
-                case MobjState.FattAtk8:
-                case MobjState.FattAtk5:
-                case MobjState.FattAtk2:
-                    sfx = Sfx.FIRSHT;
-                    break;
-
-                case MobjState.CposAtk2:
-                case MobjState.CposAtk3:
-                case MobjState.CposAtk4:
-                    sfx = Sfx.SHOTGN;
-                    break;
-
-                case MobjState.TrooAtk3:
-                    sfx = Sfx.CLAW;
-                    break;
-
-                case MobjState.SargAtk2:
-                    sfx = Sfx.SGTATK;
-                    break;
-
-                case MobjState.BossAtk2:
-                case MobjState.Bos2Atk2:
-                case MobjState.HeadAtk2:
-                    sfx = Sfx.FIRSHT;
-                    break;
-
-                case MobjState.SkullAtk2:
-                    sfx = Sfx.SKLATK;
-                    break;
-
-                case MobjState.SpidAtk2:
-                case MobjState.SpidAtk3:
-                    sfx = Sfx.SHOTGN;
-                    break;
-
-                case MobjState.BspiAtk2:
-                    sfx = Sfx.PLASMA;
-                    break;
-
-                case MobjState.CyberAtk2:
-                case MobjState.CyberAtk4:
-                case MobjState.CyberAtk6:
-                    sfx = Sfx.RLAUNC;
-                    break;
-
-                case MobjState.PainAtk3:
-                    sfx = Sfx.SKLATK;
-                    break;
-
-                default:
-                    sfx = 0;
-                    break;
-            }
+                MobjState.PlayAtk1                                                => Sfx.DSHTGN,
+                MobjState.PossAtk2                                                => Sfx.PISTOL,
+                MobjState.SposAtk2                                                => Sfx.SHOTGN,
+                MobjState.VileAtk2                                                => Sfx.VILATK,
+                MobjState.SkelFist2                                               => Sfx.SKESWG,
+                MobjState.SkelFist4                                               => Sfx.SKEPCH,
+                MobjState.SkelMiss2                                               => Sfx.SKEATK,
+                MobjState.FattAtk8 or MobjState.FattAtk5 or MobjState.FattAtk2    => Sfx.FIRSHT,
+                MobjState.CposAtk2 or MobjState.CposAtk3 or MobjState.CposAtk4    => Sfx.SHOTGN,
+                MobjState.TrooAtk3                                                => Sfx.CLAW,
+                MobjState.SargAtk2                                                => Sfx.SGTATK,
+                MobjState.BossAtk2 or MobjState.Bos2Atk2 or MobjState.HeadAtk2    => Sfx.FIRSHT,
+                MobjState.SkullAtk2                                               => Sfx.SKLATK,
+                MobjState.SpidAtk2 or MobjState.SpidAtk3                          => Sfx.SHOTGN,
+                MobjState.BspiAtk2                                                => Sfx.PLASMA,
+                MobjState.CyberAtk2 or MobjState.CyberAtk4 or MobjState.CyberAtk6 => Sfx.RLAUNC,
+                MobjState.PainAtk3                                                => Sfx.SKLATK,
+                _                                                                 => 0
+            };
 
             if (sfx != 0)
-            {
                 StartSound(sfx);
-            }
         }
 
         if (castFrames == 12)
         {
             // Go into attack frame.
             castAttacking = true;
-            if (castOnMelee)
-            {
-                CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MeleeState];
-            }
-            else
-            {
-                CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MissileState];
-            }
+            var infoIndex = (int)castOrder[castNumber].Type;
+            var mobjInfo = mobjInfoSpan[infoIndex];
+            var stateIndex = castOnMelee ? mobjInfo.MeleeState : mobjInfo.MissileState;
+            CastState = DoomInfo.States[(int)stateIndex];
 
-            castOnMelee = !castOnMelee;
+            castOnMelee ^= true;
             if (CastState == DoomInfo.States[(int)MobjState.Null])
             {
-                if (castOnMelee)
-                {
-                    CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MeleeState];
-                }
-                else
-                {
-                    CastState = DoomInfo.States[(int)mobjInfoSpan[(int)castOrder[castNumber].Type].MissileState];
-                }
+                stateIndex = castOnMelee ? mobjInfo.MeleeState : mobjInfo.MissileState;
+                CastState = DoomInfo.States[(int)stateIndex];
             }
         }
 
@@ -511,45 +410,36 @@ public sealed class Finale
 
         castTics = CastState.Tics;
         if (castTics == -1)
-        {
             castTics = 15;
-        }
     }
 
     public bool DoEvent(in DoomEvent e)
     {
         if (Stage != 2)
-        {
             return false;
-        }
 
-        if (e.Type == EventType.KeyDown)
-        {
-            if (castDeath)
-            {
-                // Already in dying frames.
-                return true;
-            }
+        if (e.Type != EventType.KeyDown)
+            return false;
 
-            // Go into death frame.
-            castDeath = true;
-            CastState = DoomInfo.States[(int)DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].DeathState];
-            castTics = CastState.Tics;
-            castFrames = 0;
-            castAttacking = false;
-            if (DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].DeathSound != 0)
-            {
-                StartSound(DoomInfo.MobjInfos[(int)castOrder[castNumber].Type].DeathSound);
-            }
-
+        // Already in dying frames.
+        if (castDeath)
             return true;
-        }
 
-        return false;
+        var mobjInfoIndex = (int)castOrder[castNumber].Type;
+        var mobjInfo = DoomInfo.MobjInfos[mobjInfoIndex];
+
+        // Go into death frame.
+        castDeath = true;
+        CastState = DoomInfo.States[(int)mobjInfo.DeathState];
+        castTics = CastState.Tics;
+        castFrames = 0;
+        castAttacking = false;
+
+        if (mobjInfo.DeathSound != 0)
+            StartSound(mobjInfo.DeathSound);
+
+        return true;
     }
 
-    private void StartSound(Sfx sfx)
-    {
-        Options.Sound.StartSound(sfx);
-    }
+    private void StartSound(Sfx sfx) => Options.Sound.StartSound(sfx);
 }

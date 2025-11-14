@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
@@ -23,11 +24,11 @@ using ManagedDoom.Silk;
 
 namespace ManagedDoom.Video;
 
-public sealed class DrawScreen : IDrawScreen
+public sealed class DrawScreen
 {
     private readonly Patch?[] chars;
 
-    public DrawScreen(IGameContent gameContent, ISilkConfig silkConfig)
+    public DrawScreen(IGameContent gameContent, SilkConfig silkConfig)
     {
         var (width, height) = silkConfig.Config.Values.VideoHighResolution ? (640, 400) : (320, 200);
 
@@ -257,27 +258,27 @@ public sealed class DrawScreen : IDrawScreen
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private OutCode ComputeOutCode(float x, float y)
+    private OutCode ComputeOutCode(Vector2 p)
     {
         var code = OutCode.Inside;
 
-        if (x < 0)
+        if (p.X < 0)
             code |= OutCode.Left;
-        else if (x > Width)
+        else if (p.X > Width)
             code |= OutCode.Right;
 
-        if (y < 0)
+        if (p.Y < 0)
             code |= OutCode.Bottom;
-        else if (y > Height)
+        else if (p.Y > Height)
             code |= OutCode.Top;
 
         return code;
     }
 
-    public void DrawLine(float x1, float y1, float x2, float y2, int color)
+    public void DrawLine(Vector2 p1, Vector2 p2, int color)
     {
-        var outCode1 = ComputeOutCode(x1, y1);
-        var outCode2 = ComputeOutCode(x2, y2);
+        var outCode1 = ComputeOutCode(p1);
+        var outCode2 = ComputeOutCode(p2);
 
         var accept = false;
 
@@ -298,45 +299,43 @@ public sealed class DrawScreen : IDrawScreen
 
             if ((outCodeOut & OutCode.Top) != 0)
             {
-                x = x1 + (x2 - x1) * (Height - y1) / (y2 - y1);
+                x = p1.X + (p2.X - p1.X) * (Height - p1.Y) / (p2.Y - p1.Y);
                 y = Height;
             }
             else if ((outCodeOut & OutCode.Bottom) != 0)
             {
-                x = x1 + (x2 - x1) * (0 - y1) / (y2 - y1);
+                x = p1.X + (p2.X - p1.X) * (0 - p1.Y) / (p2.Y - p1.Y);
                 y = 0;
             }
             else if ((outCodeOut & OutCode.Right) != 0)
             {
-                y = y1 + (y2 - y1) * (Width - x1) / (x2 - x1);
+                y = p1.Y + (p2.Y - p1.Y) * (Width - p1.X) / (p2.X - p1.X);
                 x = Width;
             }
             else if ((outCodeOut & OutCode.Left) != 0)
             {
-                y = y1 + (y2 - y1) * (0 - x1) / (x2 - x1);
+                y = p1.Y + (p2.Y - p1.Y) * (0 - p1.X) / (p2.X - p1.X);
                 x = 0;
             }
 
             if (outCodeOut == outCode1)
             {
-                x1 = x;
-                y1 = y;
-                outCode1 = ComputeOutCode(x1, y1);
+                p1 = Vector2.Create(x, y);
+                outCode1 = ComputeOutCode(p1);
             }
             else
             {
-                x2 = x;
-                y2 = y;
-                outCode2 = ComputeOutCode(x2, y2);
+                p2 = Vector2.Create(x, y);
+                outCode2 = ComputeOutCode(p2);
             }
         }
 
         if (accept)
         {
-            var bx1 = Math.Clamp((int)x1, 0, Width - 1);
-            var by1 = Math.Clamp((int)y1, 0, Height - 1);
-            var bx2 = Math.Clamp((int)x2, 0, Width - 1);
-            var by2 = Math.Clamp((int)y2, 0, Height - 1);
+            var bx1 = Math.Clamp((int)p1.X, 0, Width - 1);
+            var by1 = Math.Clamp((int)p1.Y, 0, Height - 1);
+            var bx2 = Math.Clamp((int)p2.X, 0, Width - 1);
+            var by2 = Math.Clamp((int)p2.Y, 0, Height - 1);
             Bresenham(bx1, by1, bx2, by2, color);
         }
     }

@@ -46,7 +46,7 @@ public sealed class SilkUserInput : IUserInput
     private Vector2 mousePrevXy;
     private Vector2 mouseDeltaXy;
 
-    public SilkUserInput(ConfigValues config, IWindow window, ISilkDoom silkDoom, ICommandLineArgs args)
+    public SilkUserInput(ConfigValues config, IWindow window, SilkDoom silkDoom, ICommandLineArgs args)
     {
         try
         {
@@ -96,8 +96,8 @@ public sealed class SilkUserInput : IUserInput
         var keyRun = IsPressed(keyboard, config.KeyRun);
         var keyStrafe = IsPressed(keyboard, config.KeyStrafe);
 
-        Span<bool> weaponKeys = stackalloc bool[7]
-        {
+        Span<bool> weaponKeys =
+        [
             keyboard.IsKeyPressed(Key.Number1),
             keyboard.IsKeyPressed(Key.Number2),
             keyboard.IsKeyPressed(Key.Number3),
@@ -105,7 +105,7 @@ public sealed class SilkUserInput : IUserInput
             keyboard.IsKeyPressed(Key.Number5),
             keyboard.IsKeyPressed(Key.Number6),
             keyboard.IsKeyPressed(Key.Number7)
-        };
+        ];
 
         command.Clear();
 

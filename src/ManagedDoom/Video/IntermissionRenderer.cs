@@ -23,7 +23,7 @@ using ManagedDoom.Doom.Intermission;
 
 namespace ManagedDoom.Video;
 
-public sealed class IntermissionRenderer : IIntermissionRenderer
+public sealed class IntermissionRenderer
 {
     // GLOBAL LOCATIONS
     private const int titleY = 2;
@@ -81,7 +81,7 @@ public sealed class IntermissionRenderer : IIntermissionRenderer
     private readonly Patch percent;
 
     private readonly int scale;
-    private readonly IDrawScreen screen;
+    private readonly DrawScreen screen;
 
     static IntermissionRenderer()
     {
@@ -98,7 +98,7 @@ public sealed class IntermissionRenderer : IIntermissionRenderer
             doom2Levels[m] = $"CWILV{m:00}";
     }
 
-    public IntermissionRenderer(IGameContent gameContent, IPatchCache patchCache, IDrawScreen screen)
+    public IntermissionRenderer(IGameContent gameContent, IPatchCache patchCache, DrawScreen screen)
     {
         this.screen = screen;
         this.cache = patchCache;

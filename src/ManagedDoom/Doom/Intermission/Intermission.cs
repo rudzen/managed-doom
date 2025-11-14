@@ -678,8 +678,5 @@ public sealed class Intermission
         return frags;
     }
 
-    private void StartSound(Sfx sfx)
-    {
-        Options.Sound.StartSound(sfx);
-    }
+    private void StartSound(Sfx sfx) => Options.Sound.StartSound(sfx);
 }

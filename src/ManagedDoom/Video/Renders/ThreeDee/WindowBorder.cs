@@ -39,7 +39,7 @@ public sealed class WindowBorder(Wad wad, IFlatLookup flats)
 
     public void FillBackScreen(
         Span<byte> screenData,
-        IDrawScreen screen,
+        DrawScreen screen,
         WindowSettings windowSettings,
         int drawScale)
     {

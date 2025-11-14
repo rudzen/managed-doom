@@ -21,7 +21,7 @@ using ManagedDoom.Doom.Menu;
 
 namespace ManagedDoom.Video;
 
-public sealed class MenuRenderer(IPatchCache patchCache, IDrawScreen screen) : IMenuRenderer
+public sealed class MenuRenderer(IPatchCache patchCache, DrawScreen screen)
 {
     private static readonly char[]? cursor = ['_'];
 

@@ -537,13 +537,7 @@ public sealed class SilkMusic : IMusic
 
     private sealed class MidiDecoder(byte[] data, PlayMode playMode) : IDecoder
     {
-        public static byte[] MidiHeader =>
-        [
-            (byte)'M',
-            (byte)'T',
-            (byte)'h',
-            (byte)'d'
-        ];
+        public static byte[] MidiHeader => "MThd"u8.ToArray();
 
         private readonly MidiFile midi = new(new MemoryStream(data));
         private MidiFileSequencer? sequencer;

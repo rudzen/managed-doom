@@ -31,7 +31,11 @@ namespace ManagedDoom.Doom.Wad;
 
 public sealed class Wad : IDisposable
 {
+    public readonly record struct LumpNumberAndSize(int LumpNumber, int Size);
+
     private readonly record struct WadHeader(string Id, int LumpCount, int LumpInfoTableOffset);
+
+    private static readonly LumpNumberAndSize DefaultLumpNumberAndSize = new(-1, -1);
 
     private readonly List<string> names;
     //private readonly List<Stream> streams;
@@ -158,7 +162,7 @@ public sealed class Wad : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public (int, int) GetLumpNumberAndSize(string name)
+    public LumpNumberAndSize GetLumpNumberAndSize(string name)
     {
         var lumpSpan = LumpInfos.AsSpan();
         for (var i = lumpSpan.Length - 1; i >= 0; i--)
@@ -169,11 +173,11 @@ public sealed class Wad : IDisposable
                 if (length == 0)
                     length--;
 
-                return (i, length);
+                return new(i, length);
             }
         }
 
-        return (-1, -1);
+        return DefaultLumpNumberAndSize;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -184,16 +188,10 @@ public sealed class Wad : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public byte[] ReadLump(int number)
-    {
-        return LumpInfos[number].Data;
-    }
+    public byte[] ReadLump(int number) => LumpInfos[number].Data;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<byte> GetLumpData(int number)
-    {
-        return LumpInfos[number].Data.AsSpan();
-    }
+    public ReadOnlySpan<byte> GetLumpData(int number) => LumpInfos[number].Data.AsSpan();
 
     public byte[] ReadLump(string name)
     {

@@ -19,12 +19,12 @@ using Silk.NET.Windowing;
 
 namespace ManagedDoom.Silk;
 
-public sealed class OpenGlFactory : IOpenGlFactory
+public sealed class OpenGlFactory
 {
     private readonly IWindow window;
     private GL openGl;
 
-    public OpenGlFactory(IWindowFactory windowFactory)
+    public OpenGlFactory(WindowFactory windowFactory)
     {
         window = windowFactory.GetWindow();
     }

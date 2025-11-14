@@ -24,9 +24,9 @@ public sealed class WallRender(int screenWidth)
 
     // wall rendering
 
-    public int[] AngleToX { get; set; } = new int[Trig.FineAngleCount / 2];
+    public int[] AngleToX { get; } = new int[Trig.FineAngleCount / 2];
 
-    public Angle[] XToAngle { get; set; } = new Angle[screenWidth];
+    public Angle[] XToAngle { get; } = new Angle[screenWidth];
 
     public Angle ClipAngle { get; private set; } = Angle.Ang0;
 

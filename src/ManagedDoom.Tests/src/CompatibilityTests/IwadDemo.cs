@@ -312,8 +312,13 @@ public sealed class IwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
         using var content = GameContent.CreateDummy(wad);
-        var demo = new Demo(content.Wad.ReadLump("DEMO3"));
-        demo.Options.GameVersion = GameVersion.Final2;
+        var demo = new Demo(content.Wad.ReadLump("DEMO3"))
+        {
+            Options =
+            {
+                GameVersion = GameVersion.Final2
+            }
+        };
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();

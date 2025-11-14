@@ -150,14 +150,8 @@ public sealed class DummySpriteLookup : ISpriteLookup
 
     private sealed class SpriteInfo
     {
-        public readonly Patch?[] Patches;
-        public readonly bool[] Flip;
-
-        public SpriteInfo()
-        {
-            Patches = new Patch[8];
-            Flip = new bool[8];
-        }
+        public readonly Patch?[] Patches = new Patch[8];
+        public readonly bool[] Flip = new bool[8];
 
         public void CheckCompletion()
         {

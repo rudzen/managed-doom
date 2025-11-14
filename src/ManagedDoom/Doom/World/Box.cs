@@ -27,26 +27,30 @@ public static class Box
     public const int Left = 2;
     public const int Right = 3;
 
-    public static void Clear(this Fixed[] box)
+    extension(Fixed[] box)
     {
-        box[Top] = box[Right] = Fixed.MinValue;
-        box[Bottom] = box[Left] = Fixed.MaxValue;
-    }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
+        {
+            box[Top] = box[Right] = Fixed.MinValue;
+            box[Bottom] = box[Left] = Fixed.MaxValue;
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddPoint(this Fixed[] box, Vertex vertex)
-    {
-        var x = vertex.X;
-        var y = vertex.Y;
-        
-        if (x < box[Left])
-            box[Left] = x;
-        else if (x > box[Right])
-            box[Right] = x;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddPoint(Vertex vertex)
+        {
+            var x = vertex.X;
+            var y = vertex.Y;
 
-        if (y < box[Bottom])
-            box[Bottom] = y;
-        else if (y > box[Top])
-            box[Top] = y;
+            if (x < box[Left])
+                box[Left] = x;
+            else if (x > box[Right])
+                box[Right] = x;
+
+            if (y < box[Bottom])
+                box[Bottom] = y;
+            else if (y > box[Top])
+                box[Top] = y;
+        }
     }
 }

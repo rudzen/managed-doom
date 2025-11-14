@@ -39,12 +39,12 @@ public sealed class ThingMovement(World world)
     private MobjFlags currentFlags;
     private Fixed currentX;
     private Fixed currentY;
-    private Fixed[]? currentBox = new Fixed[4];
+    private readonly Fixed[]? currentBox = new Fixed[4];
 
     private LineDef? currentCeilingLine;
 
     public int crossedSpecialCount;
-    public LineDef[]? crossedSpecials = new LineDef[MaxSpecialCrossCount];
+    public readonly LineDef[]? crossedSpecials = new LineDef[MaxSpecialCrossCount];
 
     /// <summary>
     /// Links a thing into both a block and a subsector based on
@@ -573,7 +573,7 @@ public sealed class ThingMovement(World world)
             thing.MomX < stopSpeed &&
             thing.MomY > -stopSpeed &&
             thing.MomY < stopSpeed &&
-            (player == null || (player.Command.ForwardMove == 0 && player.Command.SideMove == 0)))
+            (player == null || player.Command is { ForwardMove: 0, SideMove: 0 }))
         {
             // If in a walking frame, stop moving.
             if (player != null && (player.Mobj!.State.Number - (int)MobjState.PlayRun1) < 4)

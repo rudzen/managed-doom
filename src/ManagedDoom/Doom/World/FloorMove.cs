@@ -40,11 +40,9 @@ public sealed class FloorMove : Thinker
 
     public override void Run()
     {
-        SectorActionResult result;
-
         var sa = world.SectorAction;
 
-        result = sa.MovePlane(
+        var result = sa.MovePlane(
             Sector,
             Speed,
             FloorDestHeight,
@@ -53,9 +51,7 @@ public sealed class FloorMove : Thinker
             Direction);
 
         if (((world.LevelTime + Sector.Number) & 7) == 0)
-        {
             world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-        }
 
         if (result == SectorActionResult.PastDestination)
         {

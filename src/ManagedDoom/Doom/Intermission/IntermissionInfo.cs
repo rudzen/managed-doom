@@ -26,11 +26,6 @@ public sealed class IntermissionInfo
 
     // Previous and next levels, origin 0.
 
-    private int maxKillCount;
-    private int maxItemCount;
-    private int maxSecretCount;
-    private int totalFrags;
-
     // The par time.
 
     public IntermissionInfo()
@@ -50,26 +45,26 @@ public sealed class IntermissionInfo
 
     public int MaxKillCount
     {
-        get => System.Math.Max(maxKillCount, 1);
-        set => maxKillCount = value;
+        get => System.Math.Max(field, 1);
+        set;
     }
 
     public int MaxItemCount
     {
-        get => System.Math.Max(maxItemCount, 1);
-        set => maxItemCount = value;
+        get => System.Math.Max(field, 1);
+        set;
     }
 
     public int MaxSecretCount
     {
-        get => System.Math.Max(maxSecretCount, 1);
-        set => maxSecretCount = value;
+        get => System.Math.Max(field, 1);
+        set;
     }
 
     public int TotalFrags
     {
-        get => System.Math.Max(totalFrags, 1);
-        set => totalFrags = value;
+        get => System.Math.Max(field, 1);
+        set;
     }
 
     public int ParTime { get; set; }

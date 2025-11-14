@@ -25,7 +25,7 @@ using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Video;
 
-public sealed class StatusBarRenderer : IStatusBarRenderer
+public sealed class StatusBarRenderer
 {
     public const int Height = 32;
 
@@ -110,11 +110,11 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
 
     private readonly int scale;
 
-    private readonly IDrawScreen screen;
+    private readonly DrawScreen screen;
 
     private readonly MultIconWidget[] weapons;
 
-    public StatusBarRenderer(IGameContent gameContent, IDrawScreen screen)
+    public StatusBarRenderer(IGameContent gameContent, DrawScreen screen)
     {
         this.screen = screen;
 
@@ -408,12 +408,12 @@ public sealed class StatusBarRenderer : IStatusBarRenderer
 
             Patch[] keys =
             [
-                Patch.FromWad(wad, $"STKEYS0"),
-                Patch.FromWad(wad, $"STKEYS1"),
-                Patch.FromWad(wad, $"STKEYS2"),
-                Patch.FromWad(wad, $"STKEYS3"),
-                Patch.FromWad(wad, $"STKEYS4"),
-                Patch.FromWad(wad, $"STKEYS5")
+                Patch.FromWad(wad, "STKEYS0"),
+                Patch.FromWad(wad, "STKEYS1"),
+                Patch.FromWad(wad, "STKEYS2"),
+                Patch.FromWad(wad, "STKEYS3"),
+                Patch.FromWad(wad, "STKEYS4"),
+                Patch.FromWad(wad, "STKEYS5")
             ];
 
             var armsBackground = Patch.FromWad(wad, "STARMS");

@@ -20,7 +20,7 @@ using Silk.NET.Windowing;
 
 namespace ManagedDoom.Silk;
 
-public sealed class WindowFactory : IWindowFactory
+public sealed class WindowFactory
 {
     private readonly IWindow window;
 

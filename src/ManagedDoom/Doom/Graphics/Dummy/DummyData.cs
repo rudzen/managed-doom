@@ -55,7 +55,7 @@ public static class DummyData
         if (dummyTextures.TryGetValue(height, out var texture))
             return texture;
 
-        TexturePatch[] patch = [new TexturePatch(0, 0, GetPatch())];
+        TexturePatch[] patch = [new(0, 0, GetPatch())];
 
         dummyTextures.Add(height, new Texture(Name, false, 64, height, patch));
 

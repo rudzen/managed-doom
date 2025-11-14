@@ -22,7 +22,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ManagedDoom.Host;
 
-public sealed class DoomHost(ISilkDoom silkDoom, IHostApplicationLifetime lifetime) : IHostedService
+public sealed class DoomHost(SilkDoom silkDoom, IHostApplicationLifetime lifetime) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {

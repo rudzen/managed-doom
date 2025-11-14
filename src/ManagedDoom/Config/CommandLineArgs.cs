@@ -23,6 +23,8 @@ namespace ManagedDoom.Config;
 
 public sealed record Warp(int Episode, int Map);
 
+// TODO (rudz) : Replace all this crap with a proper command line parser library.
+
 public sealed class CommandLineArgs : ICommandLineArgs
 {
     public Arg<string> Iwad { get; }

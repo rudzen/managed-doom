@@ -38,7 +38,7 @@ public sealed class WadTest(WadPath wadPath) : IClassFixture<WadPath>
         for (var lump = start; lump < end; lump++)
         {
             var size = wad.GetLumpSize(lump);
-            Assert.True(size is 0 or 4096);
+            Assert.True(size is -1 or 4096);
         }
     }
 
@@ -52,7 +52,7 @@ public sealed class WadTest(WadPath wadPath) : IClassFixture<WadPath>
         for (var lump = start; lump < end; lump++)
         {
             var size = wad.GetLumpSize(lump);
-            Assert.True(size is 0 or 4096);
+            Assert.True(size is -1 or 4096);
         }
     }
 }

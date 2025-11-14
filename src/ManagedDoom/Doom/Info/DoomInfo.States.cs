@@ -23,972 +23,972 @@ public static partial class DoomInfo
 {
     public static readonly MobjStateDef[] States =
     [
-        new MobjStateDef(number: 0, sprite: Sprite.TROO, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                              // State.Null
-        new MobjStateDef(number: 1, sprite: Sprite.SHTG, frame: 4, tics: 0, playerAction: PlayerActions.Light0, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),               // State.Lightdone
-        new MobjStateDef(number: 2, sprite: Sprite.PUNG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Punch, misc1: 0, misc2: 0),         // State.Punch
-        new MobjStateDef(number: 3, sprite: Sprite.PUNG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Punchdown, misc1: 0, misc2: 0),           // State.Punchdown
-        new MobjStateDef(number: 4, sprite: Sprite.PUNG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Punchup, misc1: 0, misc2: 0),             // State.Punchup
-        new MobjStateDef(number: 5, sprite: Sprite.PUNG, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Punch2, misc1: 0, misc2: 0),                             // State.Punch1
-        new MobjStateDef(number: 6, sprite: Sprite.PUNG, frame: 2, tics: 4, playerAction: PlayerActions.Punch, mobjAction: null, next: MobjState.Punch3, misc1: 0, misc2: 0),              // State.Punch2
-        new MobjStateDef(number: 7, sprite: Sprite.PUNG, frame: 3, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Punch4, misc1: 0, misc2: 0),                             // State.Punch3
-        new MobjStateDef(number: 8, sprite: Sprite.PUNG, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Punch5, misc1: 0, misc2: 0),                             // State.Punch4
-        new MobjStateDef(number: 9, sprite: Sprite.PUNG, frame: 1, tics: 5, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Punch, misc1: 0, misc2: 0),              // State.Punch5
-        new MobjStateDef(number: 10, sprite: Sprite.PISG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Pistol, misc1: 0, misc2: 0),       // State.Pistol
-        new MobjStateDef(number: 11, sprite: Sprite.PISG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Pistoldown, misc1: 0, misc2: 0),         // State.Pistoldown
-        new MobjStateDef(number: 12, sprite: Sprite.PISG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Pistolup, misc1: 0, misc2: 0),           // State.Pistolup
-        new MobjStateDef(number: 13, sprite: Sprite.PISG, frame: 0, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Pistol2, misc1: 0, misc2: 0),                           // State.Pistol1
-        new MobjStateDef(number: 14, sprite: Sprite.PISG, frame: 1, tics: 6, playerAction: PlayerActions.FirePistol, mobjAction: null, next: MobjState.Pistol3, misc1: 0, misc2: 0),       // State.Pistol2
-        new MobjStateDef(number: 15, sprite: Sprite.PISG, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Pistol4, misc1: 0, misc2: 0),                           // State.Pistol3
-        new MobjStateDef(number: 16, sprite: Sprite.PISG, frame: 1, tics: 5, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Pistol, misc1: 0, misc2: 0),            // State.Pistol4
-        new MobjStateDef(number: 17, sprite: Sprite.PISF, frame: 32768, tics: 7, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Pistolflash
-        new MobjStateDef(number: 18, sprite: Sprite.SHTG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Sgun, misc1: 0, misc2: 0),         // State.Sgun
-        new MobjStateDef(number: 19, sprite: Sprite.SHTG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Sgundown, misc1: 0, misc2: 0),           // State.Sgundown
-        new MobjStateDef(number: 20, sprite: Sprite.SHTG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Sgunup, misc1: 0, misc2: 0),             // State.Sgunup
-        new MobjStateDef(number: 21, sprite: Sprite.SHTG, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Sgun2, misc1: 0, misc2: 0),                             // State.Sgun1
-        new MobjStateDef(number: 22, sprite: Sprite.SHTG, frame: 0, tics: 7, playerAction: PlayerActions.FireShotgun, mobjAction: null, next: MobjState.Sgun3, misc1: 0, misc2: 0),        // State.Sgun2
-        new MobjStateDef(number: 23, sprite: Sprite.SHTG, frame: 1, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun4, misc1: 0, misc2: 0),                             // State.Sgun3
-        new MobjStateDef(number: 24, sprite: Sprite.SHTG, frame: 2, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun5, misc1: 0, misc2: 0),                             // State.Sgun4
-        new MobjStateDef(number: 25, sprite: Sprite.SHTG, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Sgun6, misc1: 0, misc2: 0),                             // State.Sgun5
-        new MobjStateDef(number: 26, sprite: Sprite.SHTG, frame: 2, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun7, misc1: 0, misc2: 0),                             // State.Sgun6
-        new MobjStateDef(number: 27, sprite: Sprite.SHTG, frame: 1, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun8, misc1: 0, misc2: 0),                             // State.Sgun7
-        new MobjStateDef(number: 28, sprite: Sprite.SHTG, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Sgun9, misc1: 0, misc2: 0),                             // State.Sgun8
-        new MobjStateDef(number: 29, sprite: Sprite.SHTG, frame: 0, tics: 7, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Sgun, misc1: 0, misc2: 0),              // State.Sgun9
-        new MobjStateDef(number: 30, sprite: Sprite.SHTF, frame: 32768, tics: 4, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Sgunflash2, misc1: 0, misc2: 0),    // State.Sgunflash1
-        new MobjStateDef(number: 31, sprite: Sprite.SHTF, frame: 32769, tics: 3, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Sgunflash2
-        new MobjStateDef(number: 32, sprite: Sprite.SHT2, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Dsgun, misc1: 0, misc2: 0),        // State.Dsgun
-        new MobjStateDef(number: 33, sprite: Sprite.SHT2, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Dsgundown, misc1: 0, misc2: 0),          // State.Dsgundown
-        new MobjStateDef(number: 34, sprite: Sprite.SHT2, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Dsgunup, misc1: 0, misc2: 0),            // State.Dsgunup
-        new MobjStateDef(number: 35, sprite: Sprite.SHT2, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Dsgun2, misc1: 0, misc2: 0),                            // State.Dsgun1
-        new MobjStateDef(number: 36, sprite: Sprite.SHT2, frame: 0, tics: 7, playerAction: PlayerActions.FireShotgun2, mobjAction: null, next: MobjState.Dsgun3, misc1: 0, misc2: 0),      // State.Dsgun2
-        new MobjStateDef(number: 37, sprite: Sprite.SHT2, frame: 1, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Dsgun4, misc1: 0, misc2: 0),                            // State.Dsgun3
-        new MobjStateDef(number: 38, sprite: Sprite.SHT2, frame: 2, tics: 7, playerAction: PlayerActions.CheckReload, mobjAction: null, next: MobjState.Dsgun5, misc1: 0, misc2: 0),       // State.Dsgun4
-        new MobjStateDef(number: 39, sprite: Sprite.SHT2, frame: 3, tics: 7, playerAction: PlayerActions.OpenShotgun2, mobjAction: null, next: MobjState.Dsgun6, misc1: 0, misc2: 0),      // State.Dsgun5
-        new MobjStateDef(number: 40, sprite: Sprite.SHT2, frame: 4, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Dsgun7, misc1: 0, misc2: 0),                            // State.Dsgun6
-        new MobjStateDef(number: 41, sprite: Sprite.SHT2, frame: 5, tics: 7, playerAction: PlayerActions.LoadShotgun2, mobjAction: null, next: MobjState.Dsgun8, misc1: 0, misc2: 0),      // State.Dsgun7
-        new MobjStateDef(number: 42, sprite: Sprite.SHT2, frame: 6, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Dsgun9, misc1: 0, misc2: 0),                            // State.Dsgun8
-        new MobjStateDef(number: 43, sprite: Sprite.SHT2, frame: 7, tics: 6, playerAction: PlayerActions.CloseShotgun2, mobjAction: null, next: MobjState.Dsgun10, misc1: 0, misc2: 0),    // State.Dsgun9
-        new MobjStateDef(number: 44, sprite: Sprite.SHT2, frame: 0, tics: 5, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Dsgun, misc1: 0, misc2: 0),             // State.Dsgun10
-        new MobjStateDef(number: 45, sprite: Sprite.SHT2, frame: 1, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Dsnr2, misc1: 0, misc2: 0),                             // State.Dsnr1
-        new MobjStateDef(number: 46, sprite: Sprite.SHT2, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Dsgundown, misc1: 0, misc2: 0),                         // State.Dsnr2
-        new MobjStateDef(number: 47, sprite: Sprite.SHT2, frame: 32776, tics: 5, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Dsgunflash2, misc1: 0, misc2: 0),   // State.Dsgunflash1
-        new MobjStateDef(number: 48, sprite: Sprite.SHT2, frame: 32777, tics: 4, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Dsgunflash2
-        new MobjStateDef(number: 49, sprite: Sprite.CHGG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Chain, misc1: 0, misc2: 0),        // State.Chain
-        new MobjStateDef(number: 50, sprite: Sprite.CHGG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Chaindown, misc1: 0, misc2: 0),          // State.Chaindown
-        new MobjStateDef(number: 51, sprite: Sprite.CHGG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Chainup, misc1: 0, misc2: 0),            // State.Chainup
-        new MobjStateDef(number: 52, sprite: Sprite.CHGG, frame: 0, tics: 4, playerAction: PlayerActions.FireCGun, mobjAction: null, next: MobjState.Chain2, misc1: 0, misc2: 0),          // State.Chain1
-        new MobjStateDef(number: 53, sprite: Sprite.CHGG, frame: 1, tics: 4, playerAction: PlayerActions.FireCGun, mobjAction: null, next: MobjState.Chain3, misc1: 0, misc2: 0),          // State.Chain2
-        new MobjStateDef(number: 54, sprite: Sprite.CHGG, frame: 1, tics: 0, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Chain, misc1: 0, misc2: 0),             // State.Chain3
-        new MobjStateDef(number: 55, sprite: Sprite.CHGF, frame: 32768, tics: 5, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Chainflash1
-        new MobjStateDef(number: 56, sprite: Sprite.CHGF, frame: 32769, tics: 5, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Chainflash2
-        new MobjStateDef(number: 57, sprite: Sprite.MISG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Missile, misc1: 0, misc2: 0),      // State.Missile
-        new MobjStateDef(number: 58, sprite: Sprite.MISG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Missiledown, misc1: 0, misc2: 0),        // State.Missiledown
-        new MobjStateDef(number: 59, sprite: Sprite.MISG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Missileup, misc1: 0, misc2: 0),          // State.Missileup
-        new MobjStateDef(number: 60, sprite: Sprite.MISG, frame: 1, tics: 8, playerAction: PlayerActions.GunFlash, mobjAction: null, next: MobjState.Missile2, misc1: 0, misc2: 0),        // State.Missile1
-        new MobjStateDef(number: 61, sprite: Sprite.MISG, frame: 1, tics: 12, playerAction: PlayerActions.FireMissile, mobjAction: null, next: MobjState.Missile3, misc1: 0, misc2: 0),    // State.Missile2
-        new MobjStateDef(number: 62, sprite: Sprite.MISG, frame: 1, tics: 0, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Missile, misc1: 0, misc2: 0),           // State.Missile3
-        new MobjStateDef(number: 63, sprite: Sprite.MISF, frame: 32768, tics: 3, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Missileflash2, misc1: 0, misc2: 0), // State.Missileflash1
-        new MobjStateDef(number: 64, sprite: Sprite.MISF, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Missileflash3, misc1: 0, misc2: 0),                 // State.Missileflash2
-        new MobjStateDef(number: 65, sprite: Sprite.MISF, frame: 32770, tics: 4, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Missileflash4, misc1: 0, misc2: 0), // State.Missileflash3
-        new MobjStateDef(number: 66, sprite: Sprite.MISF, frame: 32771, tics: 4, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Missileflash4
-        new MobjStateDef(number: 67, sprite: Sprite.SAWG, frame: 2, tics: 4, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Sawb, misc1: 0, misc2: 0),         // State.Saw
-        new MobjStateDef(number: 68, sprite: Sprite.SAWG, frame: 3, tics: 4, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Saw, misc1: 0, misc2: 0),          // State.Sawb
-        new MobjStateDef(number: 69, sprite: Sprite.SAWG, frame: 2, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Sawdown, misc1: 0, misc2: 0),            // State.Sawdown
-        new MobjStateDef(number: 70, sprite: Sprite.SAWG, frame: 2, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Sawup, misc1: 0, misc2: 0),              // State.Sawup
-        new MobjStateDef(number: 71, sprite: Sprite.SAWG, frame: 0, tics: 4, playerAction: PlayerActions.Saw, mobjAction: null, next: MobjState.Saw2, misc1: 0, misc2: 0),                 // State.Saw1
-        new MobjStateDef(number: 72, sprite: Sprite.SAWG, frame: 1, tics: 4, playerAction: PlayerActions.Saw, mobjAction: null, next: MobjState.Saw3, misc1: 0, misc2: 0),                 // State.Saw2
-        new MobjStateDef(number: 73, sprite: Sprite.SAWG, frame: 1, tics: 0, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Saw, misc1: 0, misc2: 0),               // State.Saw3
-        new MobjStateDef(number: 74, sprite: Sprite.PLSG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Plasma, misc1: 0, misc2: 0),       // State.Plasma
-        new MobjStateDef(number: 75, sprite: Sprite.PLSG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Plasmadown, misc1: 0, misc2: 0),         // State.Plasmadown
-        new MobjStateDef(number: 76, sprite: Sprite.PLSG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Plasmaup, misc1: 0, misc2: 0),           // State.Plasmaup
-        new MobjStateDef(number: 77, sprite: Sprite.PLSG, frame: 0, tics: 3, playerAction: PlayerActions.FirePlasma, mobjAction: null, next: MobjState.Plasma2, misc1: 0, misc2: 0),       // State.Plasma1
-        new MobjStateDef(number: 78, sprite: Sprite.PLSG, frame: 1, tics: 20, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Plasma, misc1: 0, misc2: 0),           // State.Plasma2
-        new MobjStateDef(number: 79, sprite: Sprite.PLSF, frame: 32768, tics: 4, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Plasmaflash1
-        new MobjStateDef(number: 80, sprite: Sprite.PLSF, frame: 32769, tics: 4, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Plasmaflash2
-        new MobjStateDef(number: 81, sprite: Sprite.BFGG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Bfg, misc1: 0, misc2: 0),          // State.Bfg
-        new MobjStateDef(number: 82, sprite: Sprite.BFGG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Bfgdown, misc1: 0, misc2: 0),            // State.Bfgdown
-        new MobjStateDef(number: 83, sprite: Sprite.BFGG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Bfgup, misc1: 0, misc2: 0),              // State.Bfgup
-        new MobjStateDef(number: 84, sprite: Sprite.BFGG, frame: 0, tics: 20, playerAction: PlayerActions.BFGsound, mobjAction: null, next: MobjState.Bfg2, misc1: 0, misc2: 0),           // State.Bfg1
-        new MobjStateDef(number: 85, sprite: Sprite.BFGG, frame: 1, tics: 10, playerAction: PlayerActions.GunFlash, mobjAction: null, next: MobjState.Bfg3, misc1: 0, misc2: 0),           // State.Bfg2
-        new MobjStateDef(number: 86, sprite: Sprite.BFGG, frame: 1, tics: 10, playerAction: PlayerActions.FireBFG, mobjAction: null, next: MobjState.Bfg4, misc1: 0, misc2: 0),            // State.Bfg3
-        new MobjStateDef(number: 87, sprite: Sprite.BFGG, frame: 1, tics: 20, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Bfg, misc1: 0, misc2: 0),              // State.Bfg4
-        new MobjStateDef(number: 88, sprite: Sprite.BFGF, frame: 32768, tics: 11, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Bfgflash2, misc1: 0, misc2: 0),    // State.Bfgflash1
-        new MobjStateDef(number: 89, sprite: Sprite.BFGF, frame: 32769, tics: 6, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Bfgflash2
-        new MobjStateDef(number: 90, sprite: Sprite.BLUD, frame: 2, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Blood2, misc1: 0, misc2: 0),                            // State.Blood1
-        new MobjStateDef(number: 91, sprite: Sprite.BLUD, frame: 1, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Blood3, misc1: 0, misc2: 0),                            // State.Blood2
-        new MobjStateDef(number: 92, sprite: Sprite.BLUD, frame: 0, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                              // State.Blood3
-        new MobjStateDef(number: 93, sprite: Sprite.PUFF, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Puff2, misc1: 0, misc2: 0),                         // State.Puff1
-        new MobjStateDef(number: 94, sprite: Sprite.PUFF, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Puff3, misc1: 0, misc2: 0),                             // State.Puff2
-        new MobjStateDef(number: 95, sprite: Sprite.PUFF, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Puff4, misc1: 0, misc2: 0),                             // State.Puff3
-        new MobjStateDef(number: 96, sprite: Sprite.PUFF, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                              // State.Puff4
-        new MobjStateDef(number: 97, sprite: Sprite.BAL1, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tball2, misc1: 0, misc2: 0),                        // State.Tball1
-        new MobjStateDef(number: 98, sprite: Sprite.BAL1, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tball1, misc1: 0, misc2: 0),                        // State.Tball2
-        new MobjStateDef(number: 99, sprite: Sprite.BAL1, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tballx2, misc1: 0, misc2: 0),                       // State.Tballx1
-        new MobjStateDef(number: 100, sprite: Sprite.BAL1, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tballx3, misc1: 0, misc2: 0),                      // State.Tballx2
-        new MobjStateDef(number: 101, sprite: Sprite.BAL1, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Tballx3
-        new MobjStateDef(number: 102, sprite: Sprite.BAL2, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rball2, misc1: 0, misc2: 0),                       // State.Rball1
-        new MobjStateDef(number: 103, sprite: Sprite.BAL2, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rball1, misc1: 0, misc2: 0),                       // State.Rball2
-        new MobjStateDef(number: 104, sprite: Sprite.BAL2, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Rballx2, misc1: 0, misc2: 0),                      // State.Rballx1
-        new MobjStateDef(number: 105, sprite: Sprite.BAL2, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Rballx3, misc1: 0, misc2: 0),                      // State.Rballx2
-        new MobjStateDef(number: 106, sprite: Sprite.BAL2, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Rballx3
-        new MobjStateDef(number: 107, sprite: Sprite.PLSS, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Plasball2, misc1: 0, misc2: 0),                    // State.Plasball
-        new MobjStateDef(number: 108, sprite: Sprite.PLSS, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Plasball, misc1: 0, misc2: 0),                     // State.Plasball2
-        new MobjStateDef(number: 109, sprite: Sprite.PLSE, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp2, misc1: 0, misc2: 0),                     // State.Plasexp
-        new MobjStateDef(number: 110, sprite: Sprite.PLSE, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp3, misc1: 0, misc2: 0),                     // State.Plasexp2
-        new MobjStateDef(number: 111, sprite: Sprite.PLSE, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp4, misc1: 0, misc2: 0),                     // State.Plasexp3
-        new MobjStateDef(number: 112, sprite: Sprite.PLSE, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp5, misc1: 0, misc2: 0),                     // State.Plasexp4
-        new MobjStateDef(number: 113, sprite: Sprite.PLSE, frame: 32772, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Plasexp5
-        new MobjStateDef(number: 114, sprite: Sprite.MISL, frame: 32768, tics: 1, playerAction: null, mobjAction: null, next: MobjState.Rocket, misc1: 0, misc2: 0),                       // State.Rocket
-        new MobjStateDef(number: 115, sprite: Sprite.BFS1, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bfgshot2, misc1: 0, misc2: 0),                     // State.Bfgshot
-        new MobjStateDef(number: 116, sprite: Sprite.BFS1, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bfgshot, misc1: 0, misc2: 0),                      // State.Bfgshot2
-        new MobjStateDef(number: 117, sprite: Sprite.BFE1, frame: 32768, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland2, misc1: 0, misc2: 0),                     // State.Bfgland
-        new MobjStateDef(number: 118, sprite: Sprite.BFE1, frame: 32769, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland3, misc1: 0, misc2: 0),                     // State.Bfgland2
-        new MobjStateDef(number: 119, sprite: Sprite.BFE1, frame: 32770, tics: 8, playerAction: null, mobjAction: MobjActions.BFGSpray, next: MobjState.Bfgland4, misc1: 0, misc2: 0),     // State.Bfgland3
-        new MobjStateDef(number: 120, sprite: Sprite.BFE1, frame: 32771, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland5, misc1: 0, misc2: 0),                     // State.Bfgland4
-        new MobjStateDef(number: 121, sprite: Sprite.BFE1, frame: 32772, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland6, misc1: 0, misc2: 0),                     // State.Bfgland5
-        new MobjStateDef(number: 122, sprite: Sprite.BFE1, frame: 32773, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Bfgland6
-        new MobjStateDef(number: 123, sprite: Sprite.BFE2, frame: 32768, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgexp2, misc1: 0, misc2: 0),                      // State.Bfgexp
-        new MobjStateDef(number: 124, sprite: Sprite.BFE2, frame: 32769, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgexp3, misc1: 0, misc2: 0),                      // State.Bfgexp2
-        new MobjStateDef(number: 125, sprite: Sprite.BFE2, frame: 32770, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgexp4, misc1: 0, misc2: 0),                      // State.Bfgexp3
-        new MobjStateDef(number: 126, sprite: Sprite.BFE2, frame: 32771, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Bfgexp4
-        new MobjStateDef(number: 127, sprite: Sprite.MISL, frame: 32769, tics: 8, playerAction: null, mobjAction: MobjActions.Explode, next: MobjState.Explode2, misc1: 0, misc2: 0),      // State.Explode1
-        new MobjStateDef(number: 128, sprite: Sprite.MISL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Explode3, misc1: 0, misc2: 0),                     // State.Explode2
-        new MobjStateDef(number: 129, sprite: Sprite.MISL, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Explode3
-        new MobjStateDef(number: 130, sprite: Sprite.TFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog01, misc1: 0, misc2: 0),                       // State.Tfog
-        new MobjStateDef(number: 131, sprite: Sprite.TFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog02, misc1: 0, misc2: 0),                       // State.Tfog01
-        new MobjStateDef(number: 132, sprite: Sprite.TFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog2, misc1: 0, misc2: 0),                        // State.Tfog02
-        new MobjStateDef(number: 133, sprite: Sprite.TFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog3, misc1: 0, misc2: 0),                        // State.Tfog2
-        new MobjStateDef(number: 134, sprite: Sprite.TFOG, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog4, misc1: 0, misc2: 0),                        // State.Tfog3
-        new MobjStateDef(number: 135, sprite: Sprite.TFOG, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog5, misc1: 0, misc2: 0),                        // State.Tfog4
-        new MobjStateDef(number: 136, sprite: Sprite.TFOG, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog6, misc1: 0, misc2: 0),                        // State.Tfog5
-        new MobjStateDef(number: 137, sprite: Sprite.TFOG, frame: 32773, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog7, misc1: 0, misc2: 0),                        // State.Tfog6
-        new MobjStateDef(number: 138, sprite: Sprite.TFOG, frame: 32774, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog8, misc1: 0, misc2: 0),                        // State.Tfog7
-        new MobjStateDef(number: 139, sprite: Sprite.TFOG, frame: 32775, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog9, misc1: 0, misc2: 0),                        // State.Tfog8
-        new MobjStateDef(number: 140, sprite: Sprite.TFOG, frame: 32776, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog10, misc1: 0, misc2: 0),                       // State.Tfog9
-        new MobjStateDef(number: 141, sprite: Sprite.TFOG, frame: 32777, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Tfog10
-        new MobjStateDef(number: 142, sprite: Sprite.IFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog01, misc1: 0, misc2: 0),                       // State.Ifog
-        new MobjStateDef(number: 143, sprite: Sprite.IFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog02, misc1: 0, misc2: 0),                       // State.Ifog01
-        new MobjStateDef(number: 144, sprite: Sprite.IFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog2, misc1: 0, misc2: 0),                        // State.Ifog02
-        new MobjStateDef(number: 145, sprite: Sprite.IFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog3, misc1: 0, misc2: 0),                        // State.Ifog2
-        new MobjStateDef(number: 146, sprite: Sprite.IFOG, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog4, misc1: 0, misc2: 0),                        // State.Ifog3
-        new MobjStateDef(number: 147, sprite: Sprite.IFOG, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog5, misc1: 0, misc2: 0),                        // State.Ifog4
-        new MobjStateDef(number: 148, sprite: Sprite.IFOG, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Ifog5
-        new MobjStateDef(number: 149, sprite: Sprite.PLAY, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Play
-        new MobjStateDef(number: 150, sprite: Sprite.PLAY, frame: 0, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun2, misc1: 0, misc2: 0),                         // State.PlayRun1
-        new MobjStateDef(number: 151, sprite: Sprite.PLAY, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun3, misc1: 0, misc2: 0),                         // State.PlayRun2
-        new MobjStateDef(number: 152, sprite: Sprite.PLAY, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun4, misc1: 0, misc2: 0),                         // State.PlayRun3
-        new MobjStateDef(number: 153, sprite: Sprite.PLAY, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun1, misc1: 0, misc2: 0),                         // State.PlayRun4
-        new MobjStateDef(number: 154, sprite: Sprite.PLAY, frame: 4, tics: 12, playerAction: null, mobjAction: null, next: MobjState.Play, misc1: 0, misc2: 0),                            // State.PlayAtk1
-        new MobjStateDef(number: 155, sprite: Sprite.PLAY, frame: 32773, tics: 6, playerAction: null, mobjAction: null, next: MobjState.PlayAtk1, misc1: 0, misc2: 0),                     // State.PlayAtk2
-        new MobjStateDef(number: 156, sprite: Sprite.PLAY, frame: 6, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayPain2, misc1: 0, misc2: 0),                        // State.PlayPain
-        new MobjStateDef(number: 157, sprite: Sprite.PLAY, frame: 6, tics: 4, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.Play, misc1: 0, misc2: 0),                 // State.PlayPain2
-        new MobjStateDef(number: 158, sprite: Sprite.PLAY, frame: 7, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie2, misc1: 0, misc2: 0),                        // State.PlayDie1
-        new MobjStateDef(number: 159, sprite: Sprite.PLAY, frame: 8, tics: 10, playerAction: null, mobjAction: MobjActions.PlayerScream, next: MobjState.PlayDie3, misc1: 0, misc2: 0),    // State.PlayDie2
-        new MobjStateDef(number: 160, sprite: Sprite.PLAY, frame: 9, tics: 10, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PlayDie4, misc1: 0, misc2: 0),            // State.PlayDie3
-        new MobjStateDef(number: 161, sprite: Sprite.PLAY, frame: 10, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie5, misc1: 0, misc2: 0),                       // State.PlayDie4
-        new MobjStateDef(number: 162, sprite: Sprite.PLAY, frame: 11, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie6, misc1: 0, misc2: 0),                       // State.PlayDie5
-        new MobjStateDef(number: 163, sprite: Sprite.PLAY, frame: 12, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie7, misc1: 0, misc2: 0),                       // State.PlayDie6
-        new MobjStateDef(number: 164, sprite: Sprite.PLAY, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PlayDie7
-        new MobjStateDef(number: 165, sprite: Sprite.PLAY, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie2, misc1: 0, misc2: 0),                       // State.PlayXdie1
-        new MobjStateDef(number: 166, sprite: Sprite.PLAY, frame: 15, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.PlayXdie3, misc1: 0, misc2: 0),        // State.PlayXdie2
-        new MobjStateDef(number: 167, sprite: Sprite.PLAY, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PlayXdie4, misc1: 0, misc2: 0),           // State.PlayXdie3
-        new MobjStateDef(number: 168, sprite: Sprite.PLAY, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie5, misc1: 0, misc2: 0),                       // State.PlayXdie4
-        new MobjStateDef(number: 169, sprite: Sprite.PLAY, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie6, misc1: 0, misc2: 0),                       // State.PlayXdie5
-        new MobjStateDef(number: 170, sprite: Sprite.PLAY, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie7, misc1: 0, misc2: 0),                       // State.PlayXdie6
-        new MobjStateDef(number: 171, sprite: Sprite.PLAY, frame: 20, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie8, misc1: 0, misc2: 0),                       // State.PlayXdie7
-        new MobjStateDef(number: 172, sprite: Sprite.PLAY, frame: 21, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie9, misc1: 0, misc2: 0),                       // State.PlayXdie8
-        new MobjStateDef(number: 173, sprite: Sprite.PLAY, frame: 22, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PlayXdie9
-        new MobjStateDef(number: 174, sprite: Sprite.POSS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.PossStnd2, misc1: 0, misc2: 0),           // State.PossStnd
-        new MobjStateDef(number: 175, sprite: Sprite.POSS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.PossStnd, misc1: 0, misc2: 0),            // State.PossStnd2
-        new MobjStateDef(number: 176, sprite: Sprite.POSS, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun2, misc1: 0, misc2: 0),            // State.PossRun1
-        new MobjStateDef(number: 177, sprite: Sprite.POSS, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun3, misc1: 0, misc2: 0),            // State.PossRun2
-        new MobjStateDef(number: 178, sprite: Sprite.POSS, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun4, misc1: 0, misc2: 0),            // State.PossRun3
-        new MobjStateDef(number: 179, sprite: Sprite.POSS, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun5, misc1: 0, misc2: 0),            // State.PossRun4
-        new MobjStateDef(number: 180, sprite: Sprite.POSS, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun6, misc1: 0, misc2: 0),            // State.PossRun5
-        new MobjStateDef(number: 181, sprite: Sprite.POSS, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun7, misc1: 0, misc2: 0),            // State.PossRun6
-        new MobjStateDef(number: 182, sprite: Sprite.POSS, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun8, misc1: 0, misc2: 0),            // State.PossRun7
-        new MobjStateDef(number: 183, sprite: Sprite.POSS, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun1, misc1: 0, misc2: 0),            // State.PossRun8
-        new MobjStateDef(number: 184, sprite: Sprite.POSS, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PossAtk2, misc1: 0, misc2: 0),      // State.PossAtk1
-        new MobjStateDef(number: 185, sprite: Sprite.POSS, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.PosAttack, next: MobjState.PossAtk3, misc1: 0, misc2: 0),        // State.PossAtk2
-        new MobjStateDef(number: 186, sprite: Sprite.POSS, frame: 4, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PossRun1, misc1: 0, misc2: 0),                         // State.PossAtk3
-        new MobjStateDef(number: 187, sprite: Sprite.POSS, frame: 6, tics: 3, playerAction: null, mobjAction: null, next: MobjState.PossPain2, misc1: 0, misc2: 0),                        // State.PossPain
-        new MobjStateDef(number: 188, sprite: Sprite.POSS, frame: 6, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.PossRun1, misc1: 0, misc2: 0),             // State.PossPain2
-        new MobjStateDef(number: 189, sprite: Sprite.POSS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossDie2, misc1: 0, misc2: 0),                         // State.PossDie1
-        new MobjStateDef(number: 190, sprite: Sprite.POSS, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.PossDie3, misc1: 0, misc2: 0),           // State.PossDie2
-        new MobjStateDef(number: 191, sprite: Sprite.POSS, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PossDie4, misc1: 0, misc2: 0),             // State.PossDie3
-        new MobjStateDef(number: 192, sprite: Sprite.POSS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossDie5, misc1: 0, misc2: 0),                        // State.PossDie4
-        new MobjStateDef(number: 193, sprite: Sprite.POSS, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PossDie5
-        new MobjStateDef(number: 194, sprite: Sprite.POSS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie2, misc1: 0, misc2: 0),                       // State.PossXdie1
-        new MobjStateDef(number: 195, sprite: Sprite.POSS, frame: 13, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.PossXdie3, misc1: 0, misc2: 0),        // State.PossXdie2
-        new MobjStateDef(number: 196, sprite: Sprite.POSS, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PossXdie4, misc1: 0, misc2: 0),           // State.PossXdie3
-        new MobjStateDef(number: 197, sprite: Sprite.POSS, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie5, misc1: 0, misc2: 0),                       // State.PossXdie4
-        new MobjStateDef(number: 198, sprite: Sprite.POSS, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie6, misc1: 0, misc2: 0),                       // State.PossXdie5
-        new MobjStateDef(number: 199, sprite: Sprite.POSS, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie7, misc1: 0, misc2: 0),                       // State.PossXdie6
-        new MobjStateDef(number: 200, sprite: Sprite.POSS, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie8, misc1: 0, misc2: 0),                       // State.PossXdie7
-        new MobjStateDef(number: 201, sprite: Sprite.POSS, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie9, misc1: 0, misc2: 0),                       // State.PossXdie8
-        new MobjStateDef(number: 202, sprite: Sprite.POSS, frame: 20, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PossXdie9
-        new MobjStateDef(number: 203, sprite: Sprite.POSS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRaise2, misc1: 0, misc2: 0),                      // State.PossRaise1
-        new MobjStateDef(number: 204, sprite: Sprite.POSS, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRaise3, misc1: 0, misc2: 0),                       // State.PossRaise2
-        new MobjStateDef(number: 205, sprite: Sprite.POSS, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRaise4, misc1: 0, misc2: 0),                       // State.PossRaise3
-        new MobjStateDef(number: 206, sprite: Sprite.POSS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRun1, misc1: 0, misc2: 0),                         // State.PossRaise4
-        new MobjStateDef(number: 207, sprite: Sprite.SPOS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SposStnd2, misc1: 0, misc2: 0),           // State.SposStnd
-        new MobjStateDef(number: 208, sprite: Sprite.SPOS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SposStnd, misc1: 0, misc2: 0),            // State.SposStnd2
-        new MobjStateDef(number: 209, sprite: Sprite.SPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun2, misc1: 0, misc2: 0),            // State.SposRun1
-        new MobjStateDef(number: 210, sprite: Sprite.SPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun3, misc1: 0, misc2: 0),            // State.SposRun2
-        new MobjStateDef(number: 211, sprite: Sprite.SPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun4, misc1: 0, misc2: 0),            // State.SposRun3
-        new MobjStateDef(number: 212, sprite: Sprite.SPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun5, misc1: 0, misc2: 0),            // State.SposRun4
-        new MobjStateDef(number: 213, sprite: Sprite.SPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun6, misc1: 0, misc2: 0),            // State.SposRun5
-        new MobjStateDef(number: 214, sprite: Sprite.SPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun7, misc1: 0, misc2: 0),            // State.SposRun6
-        new MobjStateDef(number: 215, sprite: Sprite.SPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun8, misc1: 0, misc2: 0),            // State.SposRun7
-        new MobjStateDef(number: 216, sprite: Sprite.SPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun1, misc1: 0, misc2: 0),            // State.SposRun8
-        new MobjStateDef(number: 217, sprite: Sprite.SPOS, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SposAtk2, misc1: 0, misc2: 0),      // State.SposAtk1
-        new MobjStateDef(number: 218, sprite: Sprite.SPOS, frame: 32773, tics: 10, playerAction: null, mobjAction: MobjActions.SPosAttack, next: MobjState.SposAtk3, misc1: 0, misc2: 0),  // State.SposAtk2
-        new MobjStateDef(number: 219, sprite: Sprite.SPOS, frame: 4, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SposRun1, misc1: 0, misc2: 0),                        // State.SposAtk3
-        new MobjStateDef(number: 220, sprite: Sprite.SPOS, frame: 6, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SposPain2, misc1: 0, misc2: 0),                        // State.SposPain
-        new MobjStateDef(number: 221, sprite: Sprite.SPOS, frame: 6, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SposRun1, misc1: 0, misc2: 0),             // State.SposPain2
-        new MobjStateDef(number: 222, sprite: Sprite.SPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposDie2, misc1: 0, misc2: 0),                         // State.SposDie1
-        new MobjStateDef(number: 223, sprite: Sprite.SPOS, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SposDie3, misc1: 0, misc2: 0),           // State.SposDie2
-        new MobjStateDef(number: 224, sprite: Sprite.SPOS, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SposDie4, misc1: 0, misc2: 0),             // State.SposDie3
-        new MobjStateDef(number: 225, sprite: Sprite.SPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposDie5, misc1: 0, misc2: 0),                        // State.SposDie4
-        new MobjStateDef(number: 226, sprite: Sprite.SPOS, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SposDie5
-        new MobjStateDef(number: 227, sprite: Sprite.SPOS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie2, misc1: 0, misc2: 0),                       // State.SposXdie1
-        new MobjStateDef(number: 228, sprite: Sprite.SPOS, frame: 13, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.SposXdie3, misc1: 0, misc2: 0),        // State.SposXdie2
-        new MobjStateDef(number: 229, sprite: Sprite.SPOS, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SposXdie4, misc1: 0, misc2: 0),           // State.SposXdie3
-        new MobjStateDef(number: 230, sprite: Sprite.SPOS, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie5, misc1: 0, misc2: 0),                       // State.SposXdie4
-        new MobjStateDef(number: 231, sprite: Sprite.SPOS, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie6, misc1: 0, misc2: 0),                       // State.SposXdie5
-        new MobjStateDef(number: 232, sprite: Sprite.SPOS, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie7, misc1: 0, misc2: 0),                       // State.SposXdie6
-        new MobjStateDef(number: 233, sprite: Sprite.SPOS, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie8, misc1: 0, misc2: 0),                       // State.SposXdie7
-        new MobjStateDef(number: 234, sprite: Sprite.SPOS, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie9, misc1: 0, misc2: 0),                       // State.SposXdie8
-        new MobjStateDef(number: 235, sprite: Sprite.SPOS, frame: 20, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SposXdie9
-        new MobjStateDef(number: 236, sprite: Sprite.SPOS, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise2, misc1: 0, misc2: 0),                      // State.SposRaise1
-        new MobjStateDef(number: 237, sprite: Sprite.SPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise3, misc1: 0, misc2: 0),                      // State.SposRaise2
-        new MobjStateDef(number: 238, sprite: Sprite.SPOS, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise4, misc1: 0, misc2: 0),                       // State.SposRaise3
-        new MobjStateDef(number: 239, sprite: Sprite.SPOS, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise5, misc1: 0, misc2: 0),                       // State.SposRaise4
-        new MobjStateDef(number: 240, sprite: Sprite.SPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRun1, misc1: 0, misc2: 0),                         // State.SposRaise5
-        new MobjStateDef(number: 241, sprite: Sprite.VILE, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.VileStnd2, misc1: 0, misc2: 0),           // State.VileStnd
-        new MobjStateDef(number: 242, sprite: Sprite.VILE, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.VileStnd, misc1: 0, misc2: 0),            // State.VileStnd2
-        new MobjStateDef(number: 243, sprite: Sprite.VILE, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun2, misc1: 0, misc2: 0),        // State.VileRun1
-        new MobjStateDef(number: 244, sprite: Sprite.VILE, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun3, misc1: 0, misc2: 0),        // State.VileRun2
-        new MobjStateDef(number: 245, sprite: Sprite.VILE, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun4, misc1: 0, misc2: 0),        // State.VileRun3
-        new MobjStateDef(number: 246, sprite: Sprite.VILE, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun5, misc1: 0, misc2: 0),        // State.VileRun4
-        new MobjStateDef(number: 247, sprite: Sprite.VILE, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun6, misc1: 0, misc2: 0),        // State.VileRun5
-        new MobjStateDef(number: 248, sprite: Sprite.VILE, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun7, misc1: 0, misc2: 0),        // State.VileRun6
-        new MobjStateDef(number: 249, sprite: Sprite.VILE, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun8, misc1: 0, misc2: 0),        // State.VileRun7
-        new MobjStateDef(number: 250, sprite: Sprite.VILE, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun9, misc1: 0, misc2: 0),        // State.VileRun8
-        new MobjStateDef(number: 251, sprite: Sprite.VILE, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun10, misc1: 0, misc2: 0),       // State.VileRun9
-        new MobjStateDef(number: 252, sprite: Sprite.VILE, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun11, misc1: 0, misc2: 0),       // State.VileRun10
-        new MobjStateDef(number: 253, sprite: Sprite.VILE, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun12, misc1: 0, misc2: 0),       // State.VileRun11
-        new MobjStateDef(number: 254, sprite: Sprite.VILE, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun1, misc1: 0, misc2: 0),        // State.VileRun12
-        new MobjStateDef(number: 255, sprite: Sprite.VILE, frame: 32774, tics: 0, playerAction: null, mobjAction: MobjActions.VileStart, next: MobjState.VileAtk2, misc1: 0, misc2: 0),    // State.VileAtk1
-        new MobjStateDef(number: 256, sprite: Sprite.VILE, frame: 32774, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk3, misc1: 0, misc2: 0),  // State.VileAtk2
-        new MobjStateDef(number: 257, sprite: Sprite.VILE, frame: 32775, tics: 8, playerAction: null, mobjAction: MobjActions.VileTarget, next: MobjState.VileAtk4, misc1: 0, misc2: 0),   // State.VileAtk3
-        new MobjStateDef(number: 258, sprite: Sprite.VILE, frame: 32776, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk5, misc1: 0, misc2: 0),   // State.VileAtk4
-        new MobjStateDef(number: 259, sprite: Sprite.VILE, frame: 32777, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk6, misc1: 0, misc2: 0),   // State.VileAtk5
-        new MobjStateDef(number: 260, sprite: Sprite.VILE, frame: 32778, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk7, misc1: 0, misc2: 0),   // State.VileAtk6
-        new MobjStateDef(number: 261, sprite: Sprite.VILE, frame: 32779, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk8, misc1: 0, misc2: 0),   // State.VileAtk7
-        new MobjStateDef(number: 262, sprite: Sprite.VILE, frame: 32780, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk9, misc1: 0, misc2: 0),   // State.VileAtk8
-        new MobjStateDef(number: 263, sprite: Sprite.VILE, frame: 32781, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk10, misc1: 0, misc2: 0),  // State.VileAtk9
-        new MobjStateDef(number: 264, sprite: Sprite.VILE, frame: 32782, tics: 8, playerAction: null, mobjAction: MobjActions.VileAttack, next: MobjState.VileAtk11, misc1: 0, misc2: 0),  // State.VileAtk10
-        new MobjStateDef(number: 265, sprite: Sprite.VILE, frame: 32783, tics: 20, playerAction: null, mobjAction: null, next: MobjState.VileRun1, misc1: 0, misc2: 0),                    // State.VileAtk11
-        new MobjStateDef(number: 266, sprite: Sprite.VILE, frame: 32794, tics: 10, playerAction: null, mobjAction: null, next: MobjState.VileHeal2, misc1: 0, misc2: 0),                   // State.VileHeal1
-        new MobjStateDef(number: 267, sprite: Sprite.VILE, frame: 32795, tics: 10, playerAction: null, mobjAction: null, next: MobjState.VileHeal3, misc1: 0, misc2: 0),                   // State.VileHeal2
-        new MobjStateDef(number: 268, sprite: Sprite.VILE, frame: 32796, tics: 10, playerAction: null, mobjAction: null, next: MobjState.VileRun1, misc1: 0, misc2: 0),                    // State.VileHeal3
-        new MobjStateDef(number: 269, sprite: Sprite.VILE, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.VilePain2, misc1: 0, misc2: 0),                       // State.VilePain
-        new MobjStateDef(number: 270, sprite: Sprite.VILE, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.VileRun1, misc1: 0, misc2: 0),            // State.VilePain2
-        new MobjStateDef(number: 271, sprite: Sprite.VILE, frame: 16, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie2, misc1: 0, misc2: 0),                        // State.VileDie1
-        new MobjStateDef(number: 272, sprite: Sprite.VILE, frame: 17, tics: 7, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.VileDie3, misc1: 0, misc2: 0),          // State.VileDie2
-        new MobjStateDef(number: 273, sprite: Sprite.VILE, frame: 18, tics: 7, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.VileDie4, misc1: 0, misc2: 0),            // State.VileDie3
-        new MobjStateDef(number: 274, sprite: Sprite.VILE, frame: 19, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie5, misc1: 0, misc2: 0),                        // State.VileDie4
-        new MobjStateDef(number: 275, sprite: Sprite.VILE, frame: 20, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie6, misc1: 0, misc2: 0),                        // State.VileDie5
-        new MobjStateDef(number: 276, sprite: Sprite.VILE, frame: 21, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie7, misc1: 0, misc2: 0),                        // State.VileDie6
-        new MobjStateDef(number: 277, sprite: Sprite.VILE, frame: 22, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie8, misc1: 0, misc2: 0),                        // State.VileDie7
-        new MobjStateDef(number: 278, sprite: Sprite.VILE, frame: 23, tics: 5, playerAction: null, mobjAction: null, next: MobjState.VileDie9, misc1: 0, misc2: 0),                        // State.VileDie8
-        new MobjStateDef(number: 279, sprite: Sprite.VILE, frame: 24, tics: 5, playerAction: null, mobjAction: null, next: MobjState.VileDie10, misc1: 0, misc2: 0),                       // State.VileDie9
-        new MobjStateDef(number: 280, sprite: Sprite.VILE, frame: 25, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.VileDie10
-        new MobjStateDef(number: 281, sprite: Sprite.FIRE, frame: 32768, tics: 2, playerAction: null, mobjAction: MobjActions.StartFire, next: MobjState.Fire2, misc1: 0, misc2: 0),       // State.Fire1
-        new MobjStateDef(number: 282, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire3, misc1: 0, misc2: 0),            // State.Fire2
-        new MobjStateDef(number: 283, sprite: Sprite.FIRE, frame: 32768, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire4, misc1: 0, misc2: 0),            // State.Fire3
-        new MobjStateDef(number: 284, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire5, misc1: 0, misc2: 0),            // State.Fire4
-        new MobjStateDef(number: 285, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.FireCrackle, next: MobjState.Fire6, misc1: 0, misc2: 0),     // State.Fire5
-        new MobjStateDef(number: 286, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire7, misc1: 0, misc2: 0),            // State.Fire6
-        new MobjStateDef(number: 287, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire8, misc1: 0, misc2: 0),            // State.Fire7
-        new MobjStateDef(number: 288, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire9, misc1: 0, misc2: 0),            // State.Fire8
-        new MobjStateDef(number: 289, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire10, misc1: 0, misc2: 0),           // State.Fire9
-        new MobjStateDef(number: 290, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire11, misc1: 0, misc2: 0),           // State.Fire10
-        new MobjStateDef(number: 291, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire12, misc1: 0, misc2: 0),           // State.Fire11
-        new MobjStateDef(number: 292, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire13, misc1: 0, misc2: 0),           // State.Fire12
-        new MobjStateDef(number: 293, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire14, misc1: 0, misc2: 0),           // State.Fire13
-        new MobjStateDef(number: 294, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire15, misc1: 0, misc2: 0),           // State.Fire14
-        new MobjStateDef(number: 295, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire16, misc1: 0, misc2: 0),           // State.Fire15
-        new MobjStateDef(number: 296, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire17, misc1: 0, misc2: 0),           // State.Fire16
-        new MobjStateDef(number: 297, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire18, misc1: 0, misc2: 0),           // State.Fire17
-        new MobjStateDef(number: 298, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire19, misc1: 0, misc2: 0),           // State.Fire18
-        new MobjStateDef(number: 299, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.FireCrackle, next: MobjState.Fire20, misc1: 0, misc2: 0),    // State.Fire19
-        new MobjStateDef(number: 300, sprite: Sprite.FIRE, frame: 32773, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire21, misc1: 0, misc2: 0),           // State.Fire20
-        new MobjStateDef(number: 301, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire22, misc1: 0, misc2: 0),           // State.Fire21
-        new MobjStateDef(number: 302, sprite: Sprite.FIRE, frame: 32773, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire23, misc1: 0, misc2: 0),           // State.Fire22
-        new MobjStateDef(number: 303, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire24, misc1: 0, misc2: 0),           // State.Fire23
-        new MobjStateDef(number: 304, sprite: Sprite.FIRE, frame: 32773, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire25, misc1: 0, misc2: 0),           // State.Fire24
-        new MobjStateDef(number: 305, sprite: Sprite.FIRE, frame: 32774, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire26, misc1: 0, misc2: 0),           // State.Fire25
-        new MobjStateDef(number: 306, sprite: Sprite.FIRE, frame: 32775, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire27, misc1: 0, misc2: 0),           // State.Fire26
-        new MobjStateDef(number: 307, sprite: Sprite.FIRE, frame: 32774, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire28, misc1: 0, misc2: 0),           // State.Fire27
-        new MobjStateDef(number: 308, sprite: Sprite.FIRE, frame: 32775, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire29, misc1: 0, misc2: 0),           // State.Fire28
-        new MobjStateDef(number: 309, sprite: Sprite.FIRE, frame: 32774, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire30, misc1: 0, misc2: 0),           // State.Fire29
-        new MobjStateDef(number: 310, sprite: Sprite.FIRE, frame: 32775, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Null, misc1: 0, misc2: 0),             // State.Fire30
-        new MobjStateDef(number: 311, sprite: Sprite.PUFF, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke2, misc1: 0, misc2: 0),                           // State.Smoke1
-        new MobjStateDef(number: 312, sprite: Sprite.PUFF, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke3, misc1: 0, misc2: 0),                           // State.Smoke2
-        new MobjStateDef(number: 313, sprite: Sprite.PUFF, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke4, misc1: 0, misc2: 0),                           // State.Smoke3
-        new MobjStateDef(number: 314, sprite: Sprite.PUFF, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke5, misc1: 0, misc2: 0),                           // State.Smoke4
-        new MobjStateDef(number: 315, sprite: Sprite.PUFF, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                             // State.Smoke5
-        new MobjStateDef(number: 316, sprite: Sprite.FATB, frame: 32768, tics: 2, playerAction: null, mobjAction: MobjActions.Tracer, next: MobjState.Tracer2, misc1: 0, misc2: 0),        // State.Tracer
-        new MobjStateDef(number: 317, sprite: Sprite.FATB, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Tracer, next: MobjState.Tracer, misc1: 0, misc2: 0),         // State.Tracer2
-        new MobjStateDef(number: 318, sprite: Sprite.FBXP, frame: 32768, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Traceexp2, misc1: 0, misc2: 0),                    // State.Traceexp1
-        new MobjStateDef(number: 319, sprite: Sprite.FBXP, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Traceexp3, misc1: 0, misc2: 0),                    // State.Traceexp2
-        new MobjStateDef(number: 320, sprite: Sprite.FBXP, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Traceexp3
-        new MobjStateDef(number: 321, sprite: Sprite.SKEL, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkelStnd2, misc1: 0, misc2: 0),           // State.SkelStnd
-        new MobjStateDef(number: 322, sprite: Sprite.SKEL, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkelStnd, misc1: 0, misc2: 0),            // State.SkelStnd2
-        new MobjStateDef(number: 323, sprite: Sprite.SKEL, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun2, misc1: 0, misc2: 0),            // State.SkelRun1
-        new MobjStateDef(number: 324, sprite: Sprite.SKEL, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun3, misc1: 0, misc2: 0),            // State.SkelRun2
-        new MobjStateDef(number: 325, sprite: Sprite.SKEL, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun4, misc1: 0, misc2: 0),            // State.SkelRun3
-        new MobjStateDef(number: 326, sprite: Sprite.SKEL, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun5, misc1: 0, misc2: 0),            // State.SkelRun4
-        new MobjStateDef(number: 327, sprite: Sprite.SKEL, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun6, misc1: 0, misc2: 0),            // State.SkelRun5
-        new MobjStateDef(number: 328, sprite: Sprite.SKEL, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun7, misc1: 0, misc2: 0),            // State.SkelRun6
-        new MobjStateDef(number: 329, sprite: Sprite.SKEL, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun8, misc1: 0, misc2: 0),            // State.SkelRun7
-        new MobjStateDef(number: 330, sprite: Sprite.SKEL, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun9, misc1: 0, misc2: 0),            // State.SkelRun8
-        new MobjStateDef(number: 331, sprite: Sprite.SKEL, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun10, misc1: 0, misc2: 0),           // State.SkelRun9
-        new MobjStateDef(number: 332, sprite: Sprite.SKEL, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun11, misc1: 0, misc2: 0),           // State.SkelRun10
-        new MobjStateDef(number: 333, sprite: Sprite.SKEL, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun12, misc1: 0, misc2: 0),           // State.SkelRun11
-        new MobjStateDef(number: 334, sprite: Sprite.SKEL, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun1, misc1: 0, misc2: 0),            // State.SkelRun12
-        new MobjStateDef(number: 335, sprite: Sprite.SKEL, frame: 6, tics: 0, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelFist2, misc1: 0, misc2: 0),      // State.SkelFist1
-        new MobjStateDef(number: 336, sprite: Sprite.SKEL, frame: 6, tics: 6, playerAction: null, mobjAction: MobjActions.SkelWhoosh, next: MobjState.SkelFist3, misc1: 0, misc2: 0),      // State.SkelFist2
-        new MobjStateDef(number: 337, sprite: Sprite.SKEL, frame: 7, tics: 6, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelFist4, misc1: 0, misc2: 0),      // State.SkelFist3
-        new MobjStateDef(number: 338, sprite: Sprite.SKEL, frame: 8, tics: 6, playerAction: null, mobjAction: MobjActions.SkelFist, next: MobjState.SkelRun1, misc1: 0, misc2: 0),         // State.SkelFist4
-        new MobjStateDef(number: 339, sprite: Sprite.SKEL, frame: 32777, tics: 0, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelMiss2, misc1: 0, misc2: 0),  // State.SkelMiss1
-        new MobjStateDef(number: 340, sprite: Sprite.SKEL, frame: 32777, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelMiss3, misc1: 0, misc2: 0), // State.SkelMiss2
-        new MobjStateDef(number: 341, sprite: Sprite.SKEL, frame: 10, tics: 10, playerAction: null, mobjAction: MobjActions.SkelMissile, next: MobjState.SkelMiss4, misc1: 0, misc2: 0),   // State.SkelMiss3
-        new MobjStateDef(number: 342, sprite: Sprite.SKEL, frame: 10, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelRun1, misc1: 0, misc2: 0),     // State.SkelMiss4
-        new MobjStateDef(number: 343, sprite: Sprite.SKEL, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelPain2, misc1: 0, misc2: 0),                       // State.SkelPain
-        new MobjStateDef(number: 344, sprite: Sprite.SKEL, frame: 11, tics: 5, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SkelRun1, misc1: 0, misc2: 0),            // State.SkelPain2
-        new MobjStateDef(number: 345, sprite: Sprite.SKEL, frame: 11, tics: 7, playerAction: null, mobjAction: null, next: MobjState.SkelDie2, misc1: 0, misc2: 0),                        // State.SkelDie1
-        new MobjStateDef(number: 346, sprite: Sprite.SKEL, frame: 12, tics: 7, playerAction: null, mobjAction: null, next: MobjState.SkelDie3, misc1: 0, misc2: 0),                        // State.SkelDie2
-        new MobjStateDef(number: 347, sprite: Sprite.SKEL, frame: 13, tics: 7, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SkelDie4, misc1: 0, misc2: 0),          // State.SkelDie3
-        new MobjStateDef(number: 348, sprite: Sprite.SKEL, frame: 14, tics: 7, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SkelDie5, misc1: 0, misc2: 0),            // State.SkelDie4
-        new MobjStateDef(number: 349, sprite: Sprite.SKEL, frame: 15, tics: 7, playerAction: null, mobjAction: null, next: MobjState.SkelDie6, misc1: 0, misc2: 0),                        // State.SkelDie5
-        new MobjStateDef(number: 350, sprite: Sprite.SKEL, frame: 16, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SkelDie6
-        new MobjStateDef(number: 351, sprite: Sprite.SKEL, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise2, misc1: 0, misc2: 0),                      // State.SkelRaise1
-        new MobjStateDef(number: 352, sprite: Sprite.SKEL, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise3, misc1: 0, misc2: 0),                      // State.SkelRaise2
-        new MobjStateDef(number: 353, sprite: Sprite.SKEL, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise4, misc1: 0, misc2: 0),                      // State.SkelRaise3
-        new MobjStateDef(number: 354, sprite: Sprite.SKEL, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise5, misc1: 0, misc2: 0),                      // State.SkelRaise4
-        new MobjStateDef(number: 355, sprite: Sprite.SKEL, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise6, misc1: 0, misc2: 0),                      // State.SkelRaise5
-        new MobjStateDef(number: 356, sprite: Sprite.SKEL, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRun1, misc1: 0, misc2: 0),                        // State.SkelRaise6
-        new MobjStateDef(number: 357, sprite: Sprite.MANF, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Fatshot2, misc1: 0, misc2: 0),                     // State.Fatshot1
-        new MobjStateDef(number: 358, sprite: Sprite.MANF, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Fatshot1, misc1: 0, misc2: 0),                     // State.Fatshot2
-        new MobjStateDef(number: 359, sprite: Sprite.MISL, frame: 32769, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Fatshotx2, misc1: 0, misc2: 0),                    // State.Fatshotx1
-        new MobjStateDef(number: 360, sprite: Sprite.MISL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Fatshotx3, misc1: 0, misc2: 0),                    // State.Fatshotx2
-        new MobjStateDef(number: 361, sprite: Sprite.MISL, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Fatshotx3
-        new MobjStateDef(number: 362, sprite: Sprite.FATT, frame: 0, tics: 15, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.FattStnd2, misc1: 0, misc2: 0),           // State.FattStnd
-        new MobjStateDef(number: 363, sprite: Sprite.FATT, frame: 1, tics: 15, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.FattStnd, misc1: 0, misc2: 0),            // State.FattStnd2
-        new MobjStateDef(number: 364, sprite: Sprite.FATT, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun2, misc1: 0, misc2: 0),            // State.FattRun1
-        new MobjStateDef(number: 365, sprite: Sprite.FATT, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun3, misc1: 0, misc2: 0),            // State.FattRun2
-        new MobjStateDef(number: 366, sprite: Sprite.FATT, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun4, misc1: 0, misc2: 0),            // State.FattRun3
-        new MobjStateDef(number: 367, sprite: Sprite.FATT, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun5, misc1: 0, misc2: 0),            // State.FattRun4
-        new MobjStateDef(number: 368, sprite: Sprite.FATT, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun6, misc1: 0, misc2: 0),            // State.FattRun5
-        new MobjStateDef(number: 369, sprite: Sprite.FATT, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun7, misc1: 0, misc2: 0),            // State.FattRun6
-        new MobjStateDef(number: 370, sprite: Sprite.FATT, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun8, misc1: 0, misc2: 0),            // State.FattRun7
-        new MobjStateDef(number: 371, sprite: Sprite.FATT, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun9, misc1: 0, misc2: 0),            // State.FattRun8
-        new MobjStateDef(number: 372, sprite: Sprite.FATT, frame: 4, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun10, misc1: 0, misc2: 0),           // State.FattRun9
-        new MobjStateDef(number: 373, sprite: Sprite.FATT, frame: 4, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun11, misc1: 0, misc2: 0),           // State.FattRun10
-        new MobjStateDef(number: 374, sprite: Sprite.FATT, frame: 5, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun12, misc1: 0, misc2: 0),           // State.FattRun11
-        new MobjStateDef(number: 375, sprite: Sprite.FATT, frame: 5, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun1, misc1: 0, misc2: 0),            // State.FattRun12
-        new MobjStateDef(number: 376, sprite: Sprite.FATT, frame: 6, tics: 20, playerAction: null, mobjAction: MobjActions.FatRaise, next: MobjState.FattAtk2, misc1: 0, misc2: 0),        // State.FattAtk1
-        new MobjStateDef(number: 377, sprite: Sprite.FATT, frame: 32775, tics: 10, playerAction: null, mobjAction: MobjActions.FatAttack1, next: MobjState.FattAtk3, misc1: 0, misc2: 0),  // State.FattAtk2
-        new MobjStateDef(number: 378, sprite: Sprite.FATT, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk4, misc1: 0, misc2: 0),       // State.FattAtk3
-        new MobjStateDef(number: 379, sprite: Sprite.FATT, frame: 6, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk5, misc1: 0, misc2: 0),       // State.FattAtk4
-        new MobjStateDef(number: 380, sprite: Sprite.FATT, frame: 32775, tics: 10, playerAction: null, mobjAction: MobjActions.FatAttack2, next: MobjState.FattAtk6, misc1: 0, misc2: 0),  // State.FattAtk5
-        new MobjStateDef(number: 381, sprite: Sprite.FATT, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk7, misc1: 0, misc2: 0),       // State.FattAtk6
-        new MobjStateDef(number: 382, sprite: Sprite.FATT, frame: 6, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk8, misc1: 0, misc2: 0),       // State.FattAtk7
-        new MobjStateDef(number: 383, sprite: Sprite.FATT, frame: 32775, tics: 10, playerAction: null, mobjAction: MobjActions.FatAttack3, next: MobjState.FattAtk9, misc1: 0, misc2: 0),  // State.FattAtk8
-        new MobjStateDef(number: 384, sprite: Sprite.FATT, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk10, misc1: 0, misc2: 0),      // State.FattAtk9
-        new MobjStateDef(number: 385, sprite: Sprite.FATT, frame: 6, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattRun1, misc1: 0, misc2: 0),       // State.FattAtk10
-        new MobjStateDef(number: 386, sprite: Sprite.FATT, frame: 9, tics: 3, playerAction: null, mobjAction: null, next: MobjState.FattPain2, misc1: 0, misc2: 0),                        // State.FattPain
-        new MobjStateDef(number: 387, sprite: Sprite.FATT, frame: 9, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.FattRun1, misc1: 0, misc2: 0),             // State.FattPain2
-        new MobjStateDef(number: 388, sprite: Sprite.FATT, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie2, misc1: 0, misc2: 0),                        // State.FattDie1
-        new MobjStateDef(number: 389, sprite: Sprite.FATT, frame: 11, tics: 6, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.FattDie3, misc1: 0, misc2: 0),          // State.FattDie2
-        new MobjStateDef(number: 390, sprite: Sprite.FATT, frame: 12, tics: 6, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.FattDie4, misc1: 0, misc2: 0),            // State.FattDie3
-        new MobjStateDef(number: 391, sprite: Sprite.FATT, frame: 13, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie5, misc1: 0, misc2: 0),                        // State.FattDie4
-        new MobjStateDef(number: 392, sprite: Sprite.FATT, frame: 14, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie6, misc1: 0, misc2: 0),                        // State.FattDie5
-        new MobjStateDef(number: 393, sprite: Sprite.FATT, frame: 15, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie7, misc1: 0, misc2: 0),                        // State.FattDie6
-        new MobjStateDef(number: 394, sprite: Sprite.FATT, frame: 16, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie8, misc1: 0, misc2: 0),                        // State.FattDie7
-        new MobjStateDef(number: 395, sprite: Sprite.FATT, frame: 17, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie9, misc1: 0, misc2: 0),                        // State.FattDie8
-        new MobjStateDef(number: 396, sprite: Sprite.FATT, frame: 18, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie10, misc1: 0, misc2: 0),                       // State.FattDie9
-        new MobjStateDef(number: 397, sprite: Sprite.FATT, frame: 19, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.FattDie10
-        new MobjStateDef(number: 398, sprite: Sprite.FATT, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise2, misc1: 0, misc2: 0),                      // State.FattRaise1
-        new MobjStateDef(number: 399, sprite: Sprite.FATT, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise3, misc1: 0, misc2: 0),                      // State.FattRaise2
-        new MobjStateDef(number: 400, sprite: Sprite.FATT, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise4, misc1: 0, misc2: 0),                      // State.FattRaise3
-        new MobjStateDef(number: 401, sprite: Sprite.FATT, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise5, misc1: 0, misc2: 0),                      // State.FattRaise4
-        new MobjStateDef(number: 402, sprite: Sprite.FATT, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise6, misc1: 0, misc2: 0),                      // State.FattRaise5
-        new MobjStateDef(number: 403, sprite: Sprite.FATT, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise7, misc1: 0, misc2: 0),                      // State.FattRaise6
-        new MobjStateDef(number: 404, sprite: Sprite.FATT, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise8, misc1: 0, misc2: 0),                      // State.FattRaise7
-        new MobjStateDef(number: 405, sprite: Sprite.FATT, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRun1, misc1: 0, misc2: 0),                        // State.FattRaise8
-        new MobjStateDef(number: 406, sprite: Sprite.CPOS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CposStnd2, misc1: 0, misc2: 0),           // State.CposStnd
-        new MobjStateDef(number: 407, sprite: Sprite.CPOS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CposStnd, misc1: 0, misc2: 0),            // State.CposStnd2
-        new MobjStateDef(number: 408, sprite: Sprite.CPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun2, misc1: 0, misc2: 0),            // State.CposRun1
-        new MobjStateDef(number: 409, sprite: Sprite.CPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun3, misc1: 0, misc2: 0),            // State.CposRun2
-        new MobjStateDef(number: 410, sprite: Sprite.CPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun4, misc1: 0, misc2: 0),            // State.CposRun3
-        new MobjStateDef(number: 411, sprite: Sprite.CPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun5, misc1: 0, misc2: 0),            // State.CposRun4
-        new MobjStateDef(number: 412, sprite: Sprite.CPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun6, misc1: 0, misc2: 0),            // State.CposRun5
-        new MobjStateDef(number: 413, sprite: Sprite.CPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun7, misc1: 0, misc2: 0),            // State.CposRun6
-        new MobjStateDef(number: 414, sprite: Sprite.CPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun8, misc1: 0, misc2: 0),            // State.CposRun7
-        new MobjStateDef(number: 415, sprite: Sprite.CPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun1, misc1: 0, misc2: 0),            // State.CposRun8
-        new MobjStateDef(number: 416, sprite: Sprite.CPOS, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CposAtk2, misc1: 0, misc2: 0),      // State.CposAtk1
-        new MobjStateDef(number: 417, sprite: Sprite.CPOS, frame: 32773, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.CposAtk3, misc1: 0, misc2: 0),   // State.CposAtk2
-        new MobjStateDef(number: 418, sprite: Sprite.CPOS, frame: 32772, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.CposAtk4, misc1: 0, misc2: 0),   // State.CposAtk3
-        new MobjStateDef(number: 419, sprite: Sprite.CPOS, frame: 5, tics: 1, playerAction: null, mobjAction: MobjActions.CPosRefire, next: MobjState.CposAtk2, misc1: 0, misc2: 0),       // State.CposAtk4
-        new MobjStateDef(number: 420, sprite: Sprite.CPOS, frame: 6, tics: 3, playerAction: null, mobjAction: null, next: MobjState.CposPain2, misc1: 0, misc2: 0),                        // State.CposPain
-        new MobjStateDef(number: 421, sprite: Sprite.CPOS, frame: 6, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.CposRun1, misc1: 0, misc2: 0),             // State.CposPain2
-        new MobjStateDef(number: 422, sprite: Sprite.CPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie2, misc1: 0, misc2: 0),                         // State.CposDie1
-        new MobjStateDef(number: 423, sprite: Sprite.CPOS, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.CposDie3, misc1: 0, misc2: 0),           // State.CposDie2
-        new MobjStateDef(number: 424, sprite: Sprite.CPOS, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.CposDie4, misc1: 0, misc2: 0),             // State.CposDie3
-        new MobjStateDef(number: 425, sprite: Sprite.CPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie5, misc1: 0, misc2: 0),                        // State.CposDie4
-        new MobjStateDef(number: 426, sprite: Sprite.CPOS, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie6, misc1: 0, misc2: 0),                        // State.CposDie5
-        new MobjStateDef(number: 427, sprite: Sprite.CPOS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie7, misc1: 0, misc2: 0),                        // State.CposDie6
-        new MobjStateDef(number: 428, sprite: Sprite.CPOS, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.CposDie7
-        new MobjStateDef(number: 429, sprite: Sprite.CPOS, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposXdie2, misc1: 0, misc2: 0),                       // State.CposXdie1
-        new MobjStateDef(number: 430, sprite: Sprite.CPOS, frame: 15, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.CposXdie3, misc1: 0, misc2: 0),        // State.CposXdie2
-        new MobjStateDef(number: 431, sprite: Sprite.CPOS, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.CposXdie4, misc1: 0, misc2: 0),           // State.CposXdie3
-        new MobjStateDef(number: 432, sprite: Sprite.CPOS, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposXdie5, misc1: 0, misc2: 0),                       // State.CposXdie4
-        new MobjStateDef(number: 433, sprite: Sprite.CPOS, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposXdie6, misc1: 0, misc2: 0),                       // State.CposXdie5
-        new MobjStateDef(number: 434, sprite: Sprite.CPOS, frame: 19, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.CposXdie6
-        new MobjStateDef(number: 435, sprite: Sprite.CPOS, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise2, misc1: 0, misc2: 0),                      // State.CposRaise1
-        new MobjStateDef(number: 436, sprite: Sprite.CPOS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise3, misc1: 0, misc2: 0),                      // State.CposRaise2
-        new MobjStateDef(number: 437, sprite: Sprite.CPOS, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise4, misc1: 0, misc2: 0),                      // State.CposRaise3
-        new MobjStateDef(number: 438, sprite: Sprite.CPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise5, misc1: 0, misc2: 0),                      // State.CposRaise4
-        new MobjStateDef(number: 439, sprite: Sprite.CPOS, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise6, misc1: 0, misc2: 0),                       // State.CposRaise5
-        new MobjStateDef(number: 440, sprite: Sprite.CPOS, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise7, misc1: 0, misc2: 0),                       // State.CposRaise6
-        new MobjStateDef(number: 441, sprite: Sprite.CPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRun1, misc1: 0, misc2: 0),                         // State.CposRaise7
-        new MobjStateDef(number: 442, sprite: Sprite.TROO, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.TrooStnd2, misc1: 0, misc2: 0),           // State.TrooStnd
-        new MobjStateDef(number: 443, sprite: Sprite.TROO, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.TrooStnd, misc1: 0, misc2: 0),            // State.TrooStnd2
-        new MobjStateDef(number: 444, sprite: Sprite.TROO, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun2, misc1: 0, misc2: 0),            // State.TrooRun1
-        new MobjStateDef(number: 445, sprite: Sprite.TROO, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun3, misc1: 0, misc2: 0),            // State.TrooRun2
-        new MobjStateDef(number: 446, sprite: Sprite.TROO, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun4, misc1: 0, misc2: 0),            // State.TrooRun3
-        new MobjStateDef(number: 447, sprite: Sprite.TROO, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun5, misc1: 0, misc2: 0),            // State.TrooRun4
-        new MobjStateDef(number: 448, sprite: Sprite.TROO, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun6, misc1: 0, misc2: 0),            // State.TrooRun5
-        new MobjStateDef(number: 449, sprite: Sprite.TROO, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun7, misc1: 0, misc2: 0),            // State.TrooRun6
-        new MobjStateDef(number: 450, sprite: Sprite.TROO, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun8, misc1: 0, misc2: 0),            // State.TrooRun7
-        new MobjStateDef(number: 451, sprite: Sprite.TROO, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun1, misc1: 0, misc2: 0),            // State.TrooRun8
-        new MobjStateDef(number: 452, sprite: Sprite.TROO, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.TrooAtk2, misc1: 0, misc2: 0),       // State.TrooAtk1
-        new MobjStateDef(number: 453, sprite: Sprite.TROO, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.TrooAtk3, misc1: 0, misc2: 0),       // State.TrooAtk2
-        new MobjStateDef(number: 454, sprite: Sprite.TROO, frame: 6, tics: 6, playerAction: null, mobjAction: MobjActions.TroopAttack, next: MobjState.TrooRun1, misc1: 0, misc2: 0),      // State.TrooAtk3
-        new MobjStateDef(number: 455, sprite: Sprite.TROO, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.TrooPain2, misc1: 0, misc2: 0),                        // State.TrooPain
-        new MobjStateDef(number: 456, sprite: Sprite.TROO, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.TrooRun1, misc1: 0, misc2: 0),             // State.TrooPain2
-        new MobjStateDef(number: 457, sprite: Sprite.TROO, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.TrooDie2, misc1: 0, misc2: 0),                         // State.TrooDie1
-        new MobjStateDef(number: 458, sprite: Sprite.TROO, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.TrooDie3, misc1: 0, misc2: 0),           // State.TrooDie2
-        new MobjStateDef(number: 459, sprite: Sprite.TROO, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooDie4, misc1: 0, misc2: 0),                        // State.TrooDie3
-        new MobjStateDef(number: 460, sprite: Sprite.TROO, frame: 11, tics: 6, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.TrooDie5, misc1: 0, misc2: 0),            // State.TrooDie4
-        new MobjStateDef(number: 461, sprite: Sprite.TROO, frame: 12, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.TrooDie5
-        new MobjStateDef(number: 462, sprite: Sprite.TROO, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie2, misc1: 0, misc2: 0),                       // State.TrooXdie1
-        new MobjStateDef(number: 463, sprite: Sprite.TROO, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.TrooXdie3, misc1: 0, misc2: 0),        // State.TrooXdie2
-        new MobjStateDef(number: 464, sprite: Sprite.TROO, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie4, misc1: 0, misc2: 0),                       // State.TrooXdie3
-        new MobjStateDef(number: 465, sprite: Sprite.TROO, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.TrooXdie5, misc1: 0, misc2: 0),           // State.TrooXdie4
-        new MobjStateDef(number: 466, sprite: Sprite.TROO, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie6, misc1: 0, misc2: 0),                       // State.TrooXdie5
-        new MobjStateDef(number: 467, sprite: Sprite.TROO, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie7, misc1: 0, misc2: 0),                       // State.TrooXdie6
-        new MobjStateDef(number: 468, sprite: Sprite.TROO, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie8, misc1: 0, misc2: 0),                       // State.TrooXdie7
-        new MobjStateDef(number: 469, sprite: Sprite.TROO, frame: 20, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.TrooXdie8
-        new MobjStateDef(number: 470, sprite: Sprite.TROO, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.TrooRaise2, misc1: 0, misc2: 0),                      // State.TrooRaise1
-        new MobjStateDef(number: 471, sprite: Sprite.TROO, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.TrooRaise3, misc1: 0, misc2: 0),                      // State.TrooRaise2
-        new MobjStateDef(number: 472, sprite: Sprite.TROO, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooRaise4, misc1: 0, misc2: 0),                      // State.TrooRaise3
-        new MobjStateDef(number: 473, sprite: Sprite.TROO, frame: 9, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooRaise5, misc1: 0, misc2: 0),                       // State.TrooRaise4
-        new MobjStateDef(number: 474, sprite: Sprite.TROO, frame: 8, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooRun1, misc1: 0, misc2: 0),                         // State.TrooRaise5
-        new MobjStateDef(number: 475, sprite: Sprite.SARG, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SargStnd2, misc1: 0, misc2: 0),           // State.SargStnd
-        new MobjStateDef(number: 476, sprite: Sprite.SARG, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SargStnd, misc1: 0, misc2: 0),            // State.SargStnd2
-        new MobjStateDef(number: 477, sprite: Sprite.SARG, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun2, misc1: 0, misc2: 0),            // State.SargRun1
-        new MobjStateDef(number: 478, sprite: Sprite.SARG, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun3, misc1: 0, misc2: 0),            // State.SargRun2
-        new MobjStateDef(number: 479, sprite: Sprite.SARG, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun4, misc1: 0, misc2: 0),            // State.SargRun3
-        new MobjStateDef(number: 480, sprite: Sprite.SARG, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun5, misc1: 0, misc2: 0),            // State.SargRun4
-        new MobjStateDef(number: 481, sprite: Sprite.SARG, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun6, misc1: 0, misc2: 0),            // State.SargRun5
-        new MobjStateDef(number: 482, sprite: Sprite.SARG, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun7, misc1: 0, misc2: 0),            // State.SargRun6
-        new MobjStateDef(number: 483, sprite: Sprite.SARG, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun8, misc1: 0, misc2: 0),            // State.SargRun7
-        new MobjStateDef(number: 484, sprite: Sprite.SARG, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun1, misc1: 0, misc2: 0),            // State.SargRun8
-        new MobjStateDef(number: 485, sprite: Sprite.SARG, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SargAtk2, misc1: 0, misc2: 0),       // State.SargAtk1
-        new MobjStateDef(number: 486, sprite: Sprite.SARG, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SargAtk3, misc1: 0, misc2: 0),       // State.SargAtk2
-        new MobjStateDef(number: 487, sprite: Sprite.SARG, frame: 6, tics: 8, playerAction: null, mobjAction: MobjActions.SargAttack, next: MobjState.SargRun1, misc1: 0, misc2: 0),       // State.SargAtk3
-        new MobjStateDef(number: 488, sprite: Sprite.SARG, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.SargPain2, misc1: 0, misc2: 0),                        // State.SargPain
-        new MobjStateDef(number: 489, sprite: Sprite.SARG, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SargRun1, misc1: 0, misc2: 0),             // State.SargPain2
-        new MobjStateDef(number: 490, sprite: Sprite.SARG, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.SargDie2, misc1: 0, misc2: 0),                         // State.SargDie1
-        new MobjStateDef(number: 491, sprite: Sprite.SARG, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SargDie3, misc1: 0, misc2: 0),           // State.SargDie2
-        new MobjStateDef(number: 492, sprite: Sprite.SARG, frame: 10, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SargDie4, misc1: 0, misc2: 0),                        // State.SargDie3
-        new MobjStateDef(number: 493, sprite: Sprite.SARG, frame: 11, tics: 4, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SargDie5, misc1: 0, misc2: 0),            // State.SargDie4
-        new MobjStateDef(number: 494, sprite: Sprite.SARG, frame: 12, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SargDie6, misc1: 0, misc2: 0),                        // State.SargDie5
-        new MobjStateDef(number: 495, sprite: Sprite.SARG, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SargDie6
-        new MobjStateDef(number: 496, sprite: Sprite.SARG, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise2, misc1: 0, misc2: 0),                      // State.SargRaise1
-        new MobjStateDef(number: 497, sprite: Sprite.SARG, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise3, misc1: 0, misc2: 0),                      // State.SargRaise2
-        new MobjStateDef(number: 498, sprite: Sprite.SARG, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise4, misc1: 0, misc2: 0),                      // State.SargRaise3
-        new MobjStateDef(number: 499, sprite: Sprite.SARG, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise5, misc1: 0, misc2: 0),                      // State.SargRaise4
-        new MobjStateDef(number: 500, sprite: Sprite.SARG, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise6, misc1: 0, misc2: 0),                       // State.SargRaise5
-        new MobjStateDef(number: 501, sprite: Sprite.SARG, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRun1, misc1: 0, misc2: 0),                         // State.SargRaise6
-        new MobjStateDef(number: 502, sprite: Sprite.HEAD, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.HeadStnd, misc1: 0, misc2: 0),            // State.HeadStnd
-        new MobjStateDef(number: 503, sprite: Sprite.HEAD, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.HeadRun1, misc1: 0, misc2: 0),            // State.HeadRun1
-        new MobjStateDef(number: 504, sprite: Sprite.HEAD, frame: 1, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.HeadAtk2, misc1: 0, misc2: 0),       // State.HeadAtk1
-        new MobjStateDef(number: 505, sprite: Sprite.HEAD, frame: 2, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.HeadAtk3, misc1: 0, misc2: 0),       // State.HeadAtk2
-        new MobjStateDef(number: 506, sprite: Sprite.HEAD, frame: 32771, tics: 5, playerAction: null, mobjAction: MobjActions.HeadAttack, next: MobjState.HeadRun1, misc1: 0, misc2: 0),   // State.HeadAtk3
-        new MobjStateDef(number: 507, sprite: Sprite.HEAD, frame: 4, tics: 3, playerAction: null, mobjAction: null, next: MobjState.HeadPain2, misc1: 0, misc2: 0),                        // State.HeadPain
-        new MobjStateDef(number: 508, sprite: Sprite.HEAD, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.HeadPain3, misc1: 0, misc2: 0),            // State.HeadPain2
-        new MobjStateDef(number: 509, sprite: Sprite.HEAD, frame: 5, tics: 6, playerAction: null, mobjAction: null, next: MobjState.HeadRun1, misc1: 0, misc2: 0),                         // State.HeadPain3
-        new MobjStateDef(number: 510, sprite: Sprite.HEAD, frame: 6, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadDie2, misc1: 0, misc2: 0),                         // State.HeadDie1
-        new MobjStateDef(number: 511, sprite: Sprite.HEAD, frame: 7, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.HeadDie3, misc1: 0, misc2: 0),           // State.HeadDie2
-        new MobjStateDef(number: 512, sprite: Sprite.HEAD, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadDie4, misc1: 0, misc2: 0),                         // State.HeadDie3
-        new MobjStateDef(number: 513, sprite: Sprite.HEAD, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadDie5, misc1: 0, misc2: 0),                         // State.HeadDie4
-        new MobjStateDef(number: 514, sprite: Sprite.HEAD, frame: 10, tics: 8, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.HeadDie6, misc1: 0, misc2: 0),            // State.HeadDie5
-        new MobjStateDef(number: 515, sprite: Sprite.HEAD, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.HeadDie6
-        new MobjStateDef(number: 516, sprite: Sprite.HEAD, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise2, misc1: 0, misc2: 0),                      // State.HeadRaise1
-        new MobjStateDef(number: 517, sprite: Sprite.HEAD, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise3, misc1: 0, misc2: 0),                      // State.HeadRaise2
-        new MobjStateDef(number: 518, sprite: Sprite.HEAD, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise4, misc1: 0, misc2: 0),                       // State.HeadRaise3
-        new MobjStateDef(number: 519, sprite: Sprite.HEAD, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise5, misc1: 0, misc2: 0),                       // State.HeadRaise4
-        new MobjStateDef(number: 520, sprite: Sprite.HEAD, frame: 7, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise6, misc1: 0, misc2: 0),                       // State.HeadRaise5
-        new MobjStateDef(number: 521, sprite: Sprite.HEAD, frame: 6, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRun1, misc1: 0, misc2: 0),                         // State.HeadRaise6
-        new MobjStateDef(number: 522, sprite: Sprite.BAL7, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Brball2, misc1: 0, misc2: 0),                      // State.Brball1
-        new MobjStateDef(number: 523, sprite: Sprite.BAL7, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Brball1, misc1: 0, misc2: 0),                      // State.Brball2
-        new MobjStateDef(number: 524, sprite: Sprite.BAL7, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Brballx2, misc1: 0, misc2: 0),                     // State.Brballx1
-        new MobjStateDef(number: 525, sprite: Sprite.BAL7, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Brballx3, misc1: 0, misc2: 0),                     // State.Brballx2
-        new MobjStateDef(number: 526, sprite: Sprite.BAL7, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Brballx3
-        new MobjStateDef(number: 527, sprite: Sprite.BOSS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BossStnd2, misc1: 0, misc2: 0),           // State.BossStnd
-        new MobjStateDef(number: 528, sprite: Sprite.BOSS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BossStnd, misc1: 0, misc2: 0),            // State.BossStnd2
-        new MobjStateDef(number: 529, sprite: Sprite.BOSS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun2, misc1: 0, misc2: 0),            // State.BossRun1
-        new MobjStateDef(number: 530, sprite: Sprite.BOSS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun3, misc1: 0, misc2: 0),            // State.BossRun2
-        new MobjStateDef(number: 531, sprite: Sprite.BOSS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun4, misc1: 0, misc2: 0),            // State.BossRun3
-        new MobjStateDef(number: 532, sprite: Sprite.BOSS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun5, misc1: 0, misc2: 0),            // State.BossRun4
-        new MobjStateDef(number: 533, sprite: Sprite.BOSS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun6, misc1: 0, misc2: 0),            // State.BossRun5
-        new MobjStateDef(number: 534, sprite: Sprite.BOSS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun7, misc1: 0, misc2: 0),            // State.BossRun6
-        new MobjStateDef(number: 535, sprite: Sprite.BOSS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun8, misc1: 0, misc2: 0),            // State.BossRun7
-        new MobjStateDef(number: 536, sprite: Sprite.BOSS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun1, misc1: 0, misc2: 0),            // State.BossRun8
-        new MobjStateDef(number: 537, sprite: Sprite.BOSS, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.BossAtk2, misc1: 0, misc2: 0),       // State.BossAtk1
-        new MobjStateDef(number: 538, sprite: Sprite.BOSS, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.BossAtk3, misc1: 0, misc2: 0),       // State.BossAtk2
-        new MobjStateDef(number: 539, sprite: Sprite.BOSS, frame: 6, tics: 8, playerAction: null, mobjAction: MobjActions.BruisAttack, next: MobjState.BossRun1, misc1: 0, misc2: 0),      // State.BossAtk3
-        new MobjStateDef(number: 540, sprite: Sprite.BOSS, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.BossPain2, misc1: 0, misc2: 0),                        // State.BossPain
-        new MobjStateDef(number: 541, sprite: Sprite.BOSS, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.BossRun1, misc1: 0, misc2: 0),             // State.BossPain2
-        new MobjStateDef(number: 542, sprite: Sprite.BOSS, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie2, misc1: 0, misc2: 0),                         // State.BossDie1
-        new MobjStateDef(number: 543, sprite: Sprite.BOSS, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.BossDie3, misc1: 0, misc2: 0),           // State.BossDie2
-        new MobjStateDef(number: 544, sprite: Sprite.BOSS, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie4, misc1: 0, misc2: 0),                        // State.BossDie3
-        new MobjStateDef(number: 545, sprite: Sprite.BOSS, frame: 11, tics: 8, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.BossDie5, misc1: 0, misc2: 0),            // State.BossDie4
-        new MobjStateDef(number: 546, sprite: Sprite.BOSS, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie6, misc1: 0, misc2: 0),                        // State.BossDie5
-        new MobjStateDef(number: 547, sprite: Sprite.BOSS, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie7, misc1: 0, misc2: 0),                        // State.BossDie6
-        new MobjStateDef(number: 548, sprite: Sprite.BOSS, frame: 14, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.BossDie7
-        new MobjStateDef(number: 549, sprite: Sprite.BOSS, frame: 14, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise2, misc1: 0, misc2: 0),                      // State.BossRaise1
-        new MobjStateDef(number: 550, sprite: Sprite.BOSS, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise3, misc1: 0, misc2: 0),                      // State.BossRaise2
-        new MobjStateDef(number: 551, sprite: Sprite.BOSS, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise4, misc1: 0, misc2: 0),                      // State.BossRaise3
-        new MobjStateDef(number: 552, sprite: Sprite.BOSS, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise5, misc1: 0, misc2: 0),                      // State.BossRaise4
-        new MobjStateDef(number: 553, sprite: Sprite.BOSS, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise6, misc1: 0, misc2: 0),                      // State.BossRaise5
-        new MobjStateDef(number: 554, sprite: Sprite.BOSS, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise7, misc1: 0, misc2: 0),                       // State.BossRaise6
-        new MobjStateDef(number: 555, sprite: Sprite.BOSS, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRun1, misc1: 0, misc2: 0),                         // State.BossRaise7
-        new MobjStateDef(number: 556, sprite: Sprite.BOS2, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.Bos2Stnd2, misc1: 0, misc2: 0),           // State.Bos2Stnd
-        new MobjStateDef(number: 557, sprite: Sprite.BOS2, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.Bos2Stnd, misc1: 0, misc2: 0),            // State.Bos2Stnd2
-        new MobjStateDef(number: 558, sprite: Sprite.BOS2, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run2, misc1: 0, misc2: 0),            // State.Bos2Run1
-        new MobjStateDef(number: 559, sprite: Sprite.BOS2, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run3, misc1: 0, misc2: 0),            // State.Bos2Run2
-        new MobjStateDef(number: 560, sprite: Sprite.BOS2, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run4, misc1: 0, misc2: 0),            // State.Bos2Run3
-        new MobjStateDef(number: 561, sprite: Sprite.BOS2, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run5, misc1: 0, misc2: 0),            // State.Bos2Run4
-        new MobjStateDef(number: 562, sprite: Sprite.BOS2, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run6, misc1: 0, misc2: 0),            // State.Bos2Run5
-        new MobjStateDef(number: 563, sprite: Sprite.BOS2, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run7, misc1: 0, misc2: 0),            // State.Bos2Run6
-        new MobjStateDef(number: 564, sprite: Sprite.BOS2, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run8, misc1: 0, misc2: 0),            // State.Bos2Run7
-        new MobjStateDef(number: 565, sprite: Sprite.BOS2, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),            // State.Bos2Run8
-        new MobjStateDef(number: 566, sprite: Sprite.BOS2, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.Bos2Atk2, misc1: 0, misc2: 0),       // State.Bos2Atk1
-        new MobjStateDef(number: 567, sprite: Sprite.BOS2, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.Bos2Atk3, misc1: 0, misc2: 0),       // State.Bos2Atk2
-        new MobjStateDef(number: 568, sprite: Sprite.BOS2, frame: 6, tics: 8, playerAction: null, mobjAction: MobjActions.BruisAttack, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),      // State.Bos2Atk3
-        new MobjStateDef(number: 569, sprite: Sprite.BOS2, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.Bos2Pain2, misc1: 0, misc2: 0),                        // State.Bos2Pain
-        new MobjStateDef(number: 570, sprite: Sprite.BOS2, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),             // State.Bos2Pain2
-        new MobjStateDef(number: 571, sprite: Sprite.BOS2, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die2, misc1: 0, misc2: 0),                         // State.Bos2Die1
-        new MobjStateDef(number: 572, sprite: Sprite.BOS2, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.Bos2Die3, misc1: 0, misc2: 0),           // State.Bos2Die2
-        new MobjStateDef(number: 573, sprite: Sprite.BOS2, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die4, misc1: 0, misc2: 0),                        // State.Bos2Die3
-        new MobjStateDef(number: 574, sprite: Sprite.BOS2, frame: 11, tics: 8, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.Bos2Die5, misc1: 0, misc2: 0),            // State.Bos2Die4
-        new MobjStateDef(number: 575, sprite: Sprite.BOS2, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die6, misc1: 0, misc2: 0),                        // State.Bos2Die5
-        new MobjStateDef(number: 576, sprite: Sprite.BOS2, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die7, misc1: 0, misc2: 0),                        // State.Bos2Die6
-        new MobjStateDef(number: 577, sprite: Sprite.BOS2, frame: 14, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Bos2Die7
-        new MobjStateDef(number: 578, sprite: Sprite.BOS2, frame: 14, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise2, misc1: 0, misc2: 0),                      // State.Bos2Raise1
-        new MobjStateDef(number: 579, sprite: Sprite.BOS2, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise3, misc1: 0, misc2: 0),                      // State.Bos2Raise2
-        new MobjStateDef(number: 580, sprite: Sprite.BOS2, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise4, misc1: 0, misc2: 0),                      // State.Bos2Raise3
-        new MobjStateDef(number: 581, sprite: Sprite.BOS2, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise5, misc1: 0, misc2: 0),                      // State.Bos2Raise4
-        new MobjStateDef(number: 582, sprite: Sprite.BOS2, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise6, misc1: 0, misc2: 0),                      // State.Bos2Raise5
-        new MobjStateDef(number: 583, sprite: Sprite.BOS2, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise7, misc1: 0, misc2: 0),                       // State.Bos2Raise6
-        new MobjStateDef(number: 584, sprite: Sprite.BOS2, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),                         // State.Bos2Raise7
-        new MobjStateDef(number: 585, sprite: Sprite.SKUL, frame: 32768, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkullStnd2, misc1: 0, misc2: 0),      // State.SkullStnd
-        new MobjStateDef(number: 586, sprite: Sprite.SKUL, frame: 32769, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkullStnd, misc1: 0, misc2: 0),       // State.SkullStnd2
-        new MobjStateDef(number: 587, sprite: Sprite.SKUL, frame: 32768, tics: 6, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkullRun2, misc1: 0, misc2: 0),       // State.SkullRun1
-        new MobjStateDef(number: 588, sprite: Sprite.SKUL, frame: 32769, tics: 6, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkullRun1, misc1: 0, misc2: 0),       // State.SkullRun2
-        new MobjStateDef(number: 589, sprite: Sprite.SKUL, frame: 32770, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkullAtk2, misc1: 0, misc2: 0), // State.SkullAtk1
-        new MobjStateDef(number: 590, sprite: Sprite.SKUL, frame: 32771, tics: 4, playerAction: null, mobjAction: MobjActions.SkullAttack, next: MobjState.SkullAtk3, misc1: 0, misc2: 0), // State.SkullAtk2
-        new MobjStateDef(number: 591, sprite: Sprite.SKUL, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SkullAtk4, misc1: 0, misc2: 0),                    // State.SkullAtk3
-        new MobjStateDef(number: 592, sprite: Sprite.SKUL, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SkullAtk3, misc1: 0, misc2: 0),                    // State.SkullAtk4
-        new MobjStateDef(number: 593, sprite: Sprite.SKUL, frame: 32772, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SkullPain2, misc1: 0, misc2: 0),                   // State.SkullPain
-        new MobjStateDef(number: 594, sprite: Sprite.SKUL, frame: 32772, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SkullRun1, misc1: 0, misc2: 0),        // State.SkullPain2
-        new MobjStateDef(number: 595, sprite: Sprite.SKUL, frame: 32773, tics: 6, playerAction: null, mobjAction: null, next: MobjState.SkullDie2, misc1: 0, misc2: 0),                    // State.SkullDie1
-        new MobjStateDef(number: 596, sprite: Sprite.SKUL, frame: 32774, tics: 6, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SkullDie3, misc1: 0, misc2: 0),      // State.SkullDie2
-        new MobjStateDef(number: 597, sprite: Sprite.SKUL, frame: 32775, tics: 6, playerAction: null, mobjAction: null, next: MobjState.SkullDie4, misc1: 0, misc2: 0),                    // State.SkullDie3
-        new MobjStateDef(number: 598, sprite: Sprite.SKUL, frame: 32776, tics: 6, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SkullDie5, misc1: 0, misc2: 0),        // State.SkullDie4
-        new MobjStateDef(number: 599, sprite: Sprite.SKUL, frame: 9, tics: 6, playerAction: null, mobjAction: null, next: MobjState.SkullDie6, misc1: 0, misc2: 0),                        // State.SkullDie5
-        new MobjStateDef(number: 600, sprite: Sprite.SKUL, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.SkullDie6
-        new MobjStateDef(number: 601, sprite: Sprite.SPID, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SpidStnd2, misc1: 0, misc2: 0),           // State.SpidStnd
-        new MobjStateDef(number: 602, sprite: Sprite.SPID, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SpidStnd, misc1: 0, misc2: 0),            // State.SpidStnd2
-        new MobjStateDef(number: 603, sprite: Sprite.SPID, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.SpidRun2, misc1: 0, misc2: 0),            // State.SpidRun1
-        new MobjStateDef(number: 604, sprite: Sprite.SPID, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun3, misc1: 0, misc2: 0),            // State.SpidRun2
-        new MobjStateDef(number: 605, sprite: Sprite.SPID, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun4, misc1: 0, misc2: 0),            // State.SpidRun3
-        new MobjStateDef(number: 606, sprite: Sprite.SPID, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun5, misc1: 0, misc2: 0),            // State.SpidRun4
-        new MobjStateDef(number: 607, sprite: Sprite.SPID, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.SpidRun6, misc1: 0, misc2: 0),            // State.SpidRun5
-        new MobjStateDef(number: 608, sprite: Sprite.SPID, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun7, misc1: 0, misc2: 0),            // State.SpidRun6
-        new MobjStateDef(number: 609, sprite: Sprite.SPID, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun8, misc1: 0, misc2: 0),            // State.SpidRun7
-        new MobjStateDef(number: 610, sprite: Sprite.SPID, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun9, misc1: 0, misc2: 0),            // State.SpidRun8
-        new MobjStateDef(number: 611, sprite: Sprite.SPID, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.SpidRun10, misc1: 0, misc2: 0),           // State.SpidRun9
-        new MobjStateDef(number: 612, sprite: Sprite.SPID, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun11, misc1: 0, misc2: 0),           // State.SpidRun10
-        new MobjStateDef(number: 613, sprite: Sprite.SPID, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun12, misc1: 0, misc2: 0),           // State.SpidRun11
-        new MobjStateDef(number: 614, sprite: Sprite.SPID, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun1, misc1: 0, misc2: 0),            // State.SpidRun12
-        new MobjStateDef(number: 615, sprite: Sprite.SPID, frame: 32768, tics: 20, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SpidAtk2, misc1: 0, misc2: 0),  // State.SpidAtk1
-        new MobjStateDef(number: 616, sprite: Sprite.SPID, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.SPosAttack, next: MobjState.SpidAtk3, misc1: 0, misc2: 0),   // State.SpidAtk2
-        new MobjStateDef(number: 617, sprite: Sprite.SPID, frame: 32775, tics: 4, playerAction: null, mobjAction: MobjActions.SPosAttack, next: MobjState.SpidAtk4, misc1: 0, misc2: 0),   // State.SpidAtk3
-        new MobjStateDef(number: 618, sprite: Sprite.SPID, frame: 32775, tics: 1, playerAction: null, mobjAction: MobjActions.SpidRefire, next: MobjState.SpidAtk2, misc1: 0, misc2: 0),   // State.SpidAtk4
-        new MobjStateDef(number: 619, sprite: Sprite.SPID, frame: 8, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SpidPain2, misc1: 0, misc2: 0),                        // State.SpidPain
-        new MobjStateDef(number: 620, sprite: Sprite.SPID, frame: 8, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SpidRun1, misc1: 0, misc2: 0),             // State.SpidPain2
-        new MobjStateDef(number: 621, sprite: Sprite.SPID, frame: 9, tics: 20, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SpidDie2, misc1: 0, misc2: 0),          // State.SpidDie1
-        new MobjStateDef(number: 622, sprite: Sprite.SPID, frame: 10, tics: 10, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SpidDie3, misc1: 0, misc2: 0),           // State.SpidDie2
-        new MobjStateDef(number: 623, sprite: Sprite.SPID, frame: 11, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie4, misc1: 0, misc2: 0),                       // State.SpidDie3
-        new MobjStateDef(number: 624, sprite: Sprite.SPID, frame: 12, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie5, misc1: 0, misc2: 0),                       // State.SpidDie4
-        new MobjStateDef(number: 625, sprite: Sprite.SPID, frame: 13, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie6, misc1: 0, misc2: 0),                       // State.SpidDie5
-        new MobjStateDef(number: 626, sprite: Sprite.SPID, frame: 14, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie7, misc1: 0, misc2: 0),                       // State.SpidDie6
-        new MobjStateDef(number: 627, sprite: Sprite.SPID, frame: 15, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie8, misc1: 0, misc2: 0),                       // State.SpidDie7
-        new MobjStateDef(number: 628, sprite: Sprite.SPID, frame: 16, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie9, misc1: 0, misc2: 0),                       // State.SpidDie8
-        new MobjStateDef(number: 629, sprite: Sprite.SPID, frame: 17, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie10, misc1: 0, misc2: 0),                      // State.SpidDie9
-        new MobjStateDef(number: 630, sprite: Sprite.SPID, frame: 18, tics: 30, playerAction: null, mobjAction: null, next: MobjState.SpidDie11, misc1: 0, misc2: 0),                      // State.SpidDie10
-        new MobjStateDef(number: 631, sprite: Sprite.SPID, frame: 18, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.SpidDie11
-        new MobjStateDef(number: 632, sprite: Sprite.BSPI, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BspiStnd2, misc1: 0, misc2: 0),           // State.BspiStnd
-        new MobjStateDef(number: 633, sprite: Sprite.BSPI, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BspiStnd, misc1: 0, misc2: 0),            // State.BspiStnd2
-        new MobjStateDef(number: 634, sprite: Sprite.BSPI, frame: 0, tics: 20, playerAction: null, mobjAction: null, next: MobjState.BspiRun1, misc1: 0, misc2: 0),                        // State.BspiSight
-        new MobjStateDef(number: 635, sprite: Sprite.BSPI, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.BabyMetal, next: MobjState.BspiRun2, misc1: 0, misc2: 0),        // State.BspiRun1
-        new MobjStateDef(number: 636, sprite: Sprite.BSPI, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun3, misc1: 0, misc2: 0),            // State.BspiRun2
-        new MobjStateDef(number: 637, sprite: Sprite.BSPI, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun4, misc1: 0, misc2: 0),            // State.BspiRun3
-        new MobjStateDef(number: 638, sprite: Sprite.BSPI, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun5, misc1: 0, misc2: 0),            // State.BspiRun4
-        new MobjStateDef(number: 639, sprite: Sprite.BSPI, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun6, misc1: 0, misc2: 0),            // State.BspiRun5
-        new MobjStateDef(number: 640, sprite: Sprite.BSPI, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun7, misc1: 0, misc2: 0),            // State.BspiRun6
-        new MobjStateDef(number: 641, sprite: Sprite.BSPI, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.BabyMetal, next: MobjState.BspiRun8, misc1: 0, misc2: 0),        // State.BspiRun7
-        new MobjStateDef(number: 642, sprite: Sprite.BSPI, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun9, misc1: 0, misc2: 0),            // State.BspiRun8
-        new MobjStateDef(number: 643, sprite: Sprite.BSPI, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun10, misc1: 0, misc2: 0),           // State.BspiRun9
-        new MobjStateDef(number: 644, sprite: Sprite.BSPI, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun11, misc1: 0, misc2: 0),           // State.BspiRun10
-        new MobjStateDef(number: 645, sprite: Sprite.BSPI, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun12, misc1: 0, misc2: 0),           // State.BspiRun11
-        new MobjStateDef(number: 646, sprite: Sprite.BSPI, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun1, misc1: 0, misc2: 0),            // State.BspiRun12
-        new MobjStateDef(number: 647, sprite: Sprite.BSPI, frame: 32768, tics: 20, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.BspiAtk2, misc1: 0, misc2: 0),  // State.BspiAtk1
-        new MobjStateDef(number: 648, sprite: Sprite.BSPI, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.BspiAttack, next: MobjState.BspiAtk3, misc1: 0, misc2: 0),   // State.BspiAtk2
-        new MobjStateDef(number: 649, sprite: Sprite.BSPI, frame: 32775, tics: 4, playerAction: null, mobjAction: null, next: MobjState.BspiAtk4, misc1: 0, misc2: 0),                     // State.BspiAtk3
-        new MobjStateDef(number: 650, sprite: Sprite.BSPI, frame: 32775, tics: 1, playerAction: null, mobjAction: MobjActions.SpidRefire, next: MobjState.BspiAtk2, misc1: 0, misc2: 0),   // State.BspiAtk4
-        new MobjStateDef(number: 651, sprite: Sprite.BSPI, frame: 8, tics: 3, playerAction: null, mobjAction: null, next: MobjState.BspiPain2, misc1: 0, misc2: 0),                        // State.BspiPain
-        new MobjStateDef(number: 652, sprite: Sprite.BSPI, frame: 8, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.BspiRun1, misc1: 0, misc2: 0),             // State.BspiPain2
-        new MobjStateDef(number: 653, sprite: Sprite.BSPI, frame: 9, tics: 20, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.BspiDie2, misc1: 0, misc2: 0),          // State.BspiDie1
-        new MobjStateDef(number: 654, sprite: Sprite.BSPI, frame: 10, tics: 7, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.BspiDie3, misc1: 0, misc2: 0),            // State.BspiDie2
-        new MobjStateDef(number: 655, sprite: Sprite.BSPI, frame: 11, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie4, misc1: 0, misc2: 0),                        // State.BspiDie3
-        new MobjStateDef(number: 656, sprite: Sprite.BSPI, frame: 12, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie5, misc1: 0, misc2: 0),                        // State.BspiDie4
-        new MobjStateDef(number: 657, sprite: Sprite.BSPI, frame: 13, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie6, misc1: 0, misc2: 0),                        // State.BspiDie5
-        new MobjStateDef(number: 658, sprite: Sprite.BSPI, frame: 14, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie7, misc1: 0, misc2: 0),                        // State.BspiDie6
-        new MobjStateDef(number: 659, sprite: Sprite.BSPI, frame: 15, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.BspiDie7
-        new MobjStateDef(number: 660, sprite: Sprite.BSPI, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise2, misc1: 0, misc2: 0),                      // State.BspiRaise1
-        new MobjStateDef(number: 661, sprite: Sprite.BSPI, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise3, misc1: 0, misc2: 0),                      // State.BspiRaise2
-        new MobjStateDef(number: 662, sprite: Sprite.BSPI, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise4, misc1: 0, misc2: 0),                      // State.BspiRaise3
-        new MobjStateDef(number: 663, sprite: Sprite.BSPI, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise5, misc1: 0, misc2: 0),                      // State.BspiRaise4
-        new MobjStateDef(number: 664, sprite: Sprite.BSPI, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise6, misc1: 0, misc2: 0),                      // State.BspiRaise5
-        new MobjStateDef(number: 665, sprite: Sprite.BSPI, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise7, misc1: 0, misc2: 0),                      // State.BspiRaise6
-        new MobjStateDef(number: 666, sprite: Sprite.BSPI, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRun1, misc1: 0, misc2: 0),                         // State.BspiRaise7
-        new MobjStateDef(number: 667, sprite: Sprite.APLS, frame: 32768, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlaz2, misc1: 0, misc2: 0),                   // State.ArachPlaz
-        new MobjStateDef(number: 668, sprite: Sprite.APLS, frame: 32769, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlaz, misc1: 0, misc2: 0),                    // State.ArachPlaz2
-        new MobjStateDef(number: 669, sprite: Sprite.APBX, frame: 32768, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex2, misc1: 0, misc2: 0),                   // State.ArachPlex
-        new MobjStateDef(number: 670, sprite: Sprite.APBX, frame: 32769, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex3, misc1: 0, misc2: 0),                   // State.ArachPlex2
-        new MobjStateDef(number: 671, sprite: Sprite.APBX, frame: 32770, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex4, misc1: 0, misc2: 0),                   // State.ArachPlex3
-        new MobjStateDef(number: 672, sprite: Sprite.APBX, frame: 32771, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex5, misc1: 0, misc2: 0),                   // State.ArachPlex4
-        new MobjStateDef(number: 673, sprite: Sprite.APBX, frame: 32772, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.ArachPlex5
-        new MobjStateDef(number: 674, sprite: Sprite.CYBR, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CyberStnd2, misc1: 0, misc2: 0),          // State.CyberStnd
-        new MobjStateDef(number: 675, sprite: Sprite.CYBR, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CyberStnd, misc1: 0, misc2: 0),           // State.CyberStnd2
-        new MobjStateDef(number: 676, sprite: Sprite.CYBR, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Hoof, next: MobjState.CyberRun2, misc1: 0, misc2: 0),            // State.CyberRun1
-        new MobjStateDef(number: 677, sprite: Sprite.CYBR, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun3, misc1: 0, misc2: 0),           // State.CyberRun2
-        new MobjStateDef(number: 678, sprite: Sprite.CYBR, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun4, misc1: 0, misc2: 0),           // State.CyberRun3
-        new MobjStateDef(number: 679, sprite: Sprite.CYBR, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun5, misc1: 0, misc2: 0),           // State.CyberRun4
-        new MobjStateDef(number: 680, sprite: Sprite.CYBR, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun6, misc1: 0, misc2: 0),           // State.CyberRun5
-        new MobjStateDef(number: 681, sprite: Sprite.CYBR, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun7, misc1: 0, misc2: 0),           // State.CyberRun6
-        new MobjStateDef(number: 682, sprite: Sprite.CYBR, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.CyberRun8, misc1: 0, misc2: 0),           // State.CyberRun7
-        new MobjStateDef(number: 683, sprite: Sprite.CYBR, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun1, misc1: 0, misc2: 0),           // State.CyberRun8
-        new MobjStateDef(number: 684, sprite: Sprite.CYBR, frame: 4, tics: 6, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CyberAtk2, misc1: 0, misc2: 0),      // State.CyberAtk1
-        new MobjStateDef(number: 685, sprite: Sprite.CYBR, frame: 5, tics: 12, playerAction: null, mobjAction: MobjActions.CyberAttack, next: MobjState.CyberAtk3, misc1: 0, misc2: 0),    // State.CyberAtk2
-        new MobjStateDef(number: 686, sprite: Sprite.CYBR, frame: 4, tics: 12, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CyberAtk4, misc1: 0, misc2: 0),     // State.CyberAtk3
-        new MobjStateDef(number: 687, sprite: Sprite.CYBR, frame: 5, tics: 12, playerAction: null, mobjAction: MobjActions.CyberAttack, next: MobjState.CyberAtk5, misc1: 0, misc2: 0),    // State.CyberAtk4
-        new MobjStateDef(number: 688, sprite: Sprite.CYBR, frame: 4, tics: 12, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CyberAtk6, misc1: 0, misc2: 0),     // State.CyberAtk5
-        new MobjStateDef(number: 689, sprite: Sprite.CYBR, frame: 5, tics: 12, playerAction: null, mobjAction: MobjActions.CyberAttack, next: MobjState.CyberRun1, misc1: 0, misc2: 0),    // State.CyberAtk6
-        new MobjStateDef(number: 690, sprite: Sprite.CYBR, frame: 6, tics: 10, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.CyberRun1, misc1: 0, misc2: 0),           // State.CyberPain
-        new MobjStateDef(number: 691, sprite: Sprite.CYBR, frame: 7, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie2, misc1: 0, misc2: 0),                       // State.CyberDie1
-        new MobjStateDef(number: 692, sprite: Sprite.CYBR, frame: 8, tics: 10, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.CyberDie3, misc1: 0, misc2: 0),         // State.CyberDie2
-        new MobjStateDef(number: 693, sprite: Sprite.CYBR, frame: 9, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie4, misc1: 0, misc2: 0),                       // State.CyberDie3
-        new MobjStateDef(number: 694, sprite: Sprite.CYBR, frame: 10, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie5, misc1: 0, misc2: 0),                      // State.CyberDie4
-        new MobjStateDef(number: 695, sprite: Sprite.CYBR, frame: 11, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie6, misc1: 0, misc2: 0),                      // State.CyberDie5
-        new MobjStateDef(number: 696, sprite: Sprite.CYBR, frame: 12, tics: 10, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.CyberDie7, misc1: 0, misc2: 0),          // State.CyberDie6
-        new MobjStateDef(number: 697, sprite: Sprite.CYBR, frame: 13, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie8, misc1: 0, misc2: 0),                      // State.CyberDie7
-        new MobjStateDef(number: 698, sprite: Sprite.CYBR, frame: 14, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie9, misc1: 0, misc2: 0),                      // State.CyberDie8
-        new MobjStateDef(number: 699, sprite: Sprite.CYBR, frame: 15, tics: 30, playerAction: null, mobjAction: null, next: MobjState.CyberDie10, misc1: 0, misc2: 0),                     // State.CyberDie9
-        new MobjStateDef(number: 700, sprite: Sprite.CYBR, frame: 15, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.CyberDie10
-        new MobjStateDef(number: 701, sprite: Sprite.PAIN, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.PainStnd, misc1: 0, misc2: 0),            // State.PainStnd
-        new MobjStateDef(number: 702, sprite: Sprite.PAIN, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun2, misc1: 0, misc2: 0),            // State.PainRun1
-        new MobjStateDef(number: 703, sprite: Sprite.PAIN, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun3, misc1: 0, misc2: 0),            // State.PainRun2
-        new MobjStateDef(number: 704, sprite: Sprite.PAIN, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun4, misc1: 0, misc2: 0),            // State.PainRun3
-        new MobjStateDef(number: 705, sprite: Sprite.PAIN, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun5, misc1: 0, misc2: 0),            // State.PainRun4
-        new MobjStateDef(number: 706, sprite: Sprite.PAIN, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun6, misc1: 0, misc2: 0),            // State.PainRun5
-        new MobjStateDef(number: 707, sprite: Sprite.PAIN, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun1, misc1: 0, misc2: 0),            // State.PainRun6
-        new MobjStateDef(number: 708, sprite: Sprite.PAIN, frame: 3, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PainAtk2, misc1: 0, misc2: 0),       // State.PainAtk1
-        new MobjStateDef(number: 709, sprite: Sprite.PAIN, frame: 4, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PainAtk3, misc1: 0, misc2: 0),       // State.PainAtk2
-        new MobjStateDef(number: 710, sprite: Sprite.PAIN, frame: 32773, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PainAtk4, misc1: 0, misc2: 0),   // State.PainAtk3
-        new MobjStateDef(number: 711, sprite: Sprite.PAIN, frame: 32773, tics: 0, playerAction: null, mobjAction: MobjActions.PainAttack, next: MobjState.PainRun1, misc1: 0, misc2: 0),   // State.PainAtk4
-        new MobjStateDef(number: 712, sprite: Sprite.PAIN, frame: 6, tics: 6, playerAction: null, mobjAction: null, next: MobjState.PainPain2, misc1: 0, misc2: 0),                        // State.PainPain
-        new MobjStateDef(number: 713, sprite: Sprite.PAIN, frame: 6, tics: 6, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.PainRun1, misc1: 0, misc2: 0),             // State.PainPain2
-        new MobjStateDef(number: 714, sprite: Sprite.PAIN, frame: 32775, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainDie2, misc1: 0, misc2: 0),                     // State.PainDie1
-        new MobjStateDef(number: 715, sprite: Sprite.PAIN, frame: 32776, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.PainDie3, misc1: 0, misc2: 0),       // State.PainDie2
-        new MobjStateDef(number: 716, sprite: Sprite.PAIN, frame: 32777, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainDie4, misc1: 0, misc2: 0),                     // State.PainDie3
-        new MobjStateDef(number: 717, sprite: Sprite.PAIN, frame: 32778, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainDie5, misc1: 0, misc2: 0),                     // State.PainDie4
-        new MobjStateDef(number: 718, sprite: Sprite.PAIN, frame: 32779, tics: 8, playerAction: null, mobjAction: MobjActions.PainDie, next: MobjState.PainDie6, misc1: 0, misc2: 0),      // State.PainDie5
-        new MobjStateDef(number: 719, sprite: Sprite.PAIN, frame: 32780, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.PainDie6
-        new MobjStateDef(number: 720, sprite: Sprite.PAIN, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise2, misc1: 0, misc2: 0),                      // State.PainRaise1
-        new MobjStateDef(number: 721, sprite: Sprite.PAIN, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise3, misc1: 0, misc2: 0),                      // State.PainRaise2
-        new MobjStateDef(number: 722, sprite: Sprite.PAIN, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise4, misc1: 0, misc2: 0),                      // State.PainRaise3
-        new MobjStateDef(number: 723, sprite: Sprite.PAIN, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise5, misc1: 0, misc2: 0),                       // State.PainRaise4
-        new MobjStateDef(number: 724, sprite: Sprite.PAIN, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise6, misc1: 0, misc2: 0),                       // State.PainRaise5
-        new MobjStateDef(number: 725, sprite: Sprite.PAIN, frame: 7, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRun1, misc1: 0, misc2: 0),                         // State.PainRaise6
-        new MobjStateDef(number: 726, sprite: Sprite.SSWV, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SswvStnd2, misc1: 0, misc2: 0),           // State.SswvStnd
-        new MobjStateDef(number: 727, sprite: Sprite.SSWV, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SswvStnd, misc1: 0, misc2: 0),            // State.SswvStnd2
-        new MobjStateDef(number: 728, sprite: Sprite.SSWV, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun2, misc1: 0, misc2: 0),            // State.SswvRun1
-        new MobjStateDef(number: 729, sprite: Sprite.SSWV, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun3, misc1: 0, misc2: 0),            // State.SswvRun2
-        new MobjStateDef(number: 730, sprite: Sprite.SSWV, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun4, misc1: 0, misc2: 0),            // State.SswvRun3
-        new MobjStateDef(number: 731, sprite: Sprite.SSWV, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun5, misc1: 0, misc2: 0),            // State.SswvRun4
-        new MobjStateDef(number: 732, sprite: Sprite.SSWV, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun6, misc1: 0, misc2: 0),            // State.SswvRun5
-        new MobjStateDef(number: 733, sprite: Sprite.SSWV, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun7, misc1: 0, misc2: 0),            // State.SswvRun6
-        new MobjStateDef(number: 734, sprite: Sprite.SSWV, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun8, misc1: 0, misc2: 0),            // State.SswvRun7
-        new MobjStateDef(number: 735, sprite: Sprite.SSWV, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun1, misc1: 0, misc2: 0),            // State.SswvRun8
-        new MobjStateDef(number: 736, sprite: Sprite.SSWV, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SswvAtk2, misc1: 0, misc2: 0),      // State.SswvAtk1
-        new MobjStateDef(number: 737, sprite: Sprite.SSWV, frame: 5, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SswvAtk3, misc1: 0, misc2: 0),      // State.SswvAtk2
-        new MobjStateDef(number: 738, sprite: Sprite.SSWV, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.SswvAtk4, misc1: 0, misc2: 0),   // State.SswvAtk3
-        new MobjStateDef(number: 739, sprite: Sprite.SSWV, frame: 5, tics: 6, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SswvAtk5, misc1: 0, misc2: 0),       // State.SswvAtk4
-        new MobjStateDef(number: 740, sprite: Sprite.SSWV, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.SswvAtk6, misc1: 0, misc2: 0),   // State.SswvAtk5
-        new MobjStateDef(number: 741, sprite: Sprite.SSWV, frame: 5, tics: 1, playerAction: null, mobjAction: MobjActions.CPosRefire, next: MobjState.SswvAtk2, misc1: 0, misc2: 0),       // State.SswvAtk6
-        new MobjStateDef(number: 742, sprite: Sprite.SSWV, frame: 7, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SswvPain2, misc1: 0, misc2: 0),                        // State.SswvPain
-        new MobjStateDef(number: 743, sprite: Sprite.SSWV, frame: 7, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SswvRun1, misc1: 0, misc2: 0),             // State.SswvPain2
-        new MobjStateDef(number: 744, sprite: Sprite.SSWV, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvDie2, misc1: 0, misc2: 0),                         // State.SswvDie1
-        new MobjStateDef(number: 745, sprite: Sprite.SSWV, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SswvDie3, misc1: 0, misc2: 0),           // State.SswvDie2
-        new MobjStateDef(number: 746, sprite: Sprite.SSWV, frame: 10, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SswvDie4, misc1: 0, misc2: 0),            // State.SswvDie3
-        new MobjStateDef(number: 747, sprite: Sprite.SSWV, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvDie5, misc1: 0, misc2: 0),                        // State.SswvDie4
-        new MobjStateDef(number: 748, sprite: Sprite.SSWV, frame: 12, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SswvDie5
-        new MobjStateDef(number: 749, sprite: Sprite.SSWV, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie2, misc1: 0, misc2: 0),                       // State.SswvXdie1
-        new MobjStateDef(number: 750, sprite: Sprite.SSWV, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.SswvXdie3, misc1: 0, misc2: 0),        // State.SswvXdie2
-        new MobjStateDef(number: 751, sprite: Sprite.SSWV, frame: 15, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SswvXdie4, misc1: 0, misc2: 0),           // State.SswvXdie3
-        new MobjStateDef(number: 752, sprite: Sprite.SSWV, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie5, misc1: 0, misc2: 0),                       // State.SswvXdie4
-        new MobjStateDef(number: 753, sprite: Sprite.SSWV, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie6, misc1: 0, misc2: 0),                       // State.SswvXdie5
-        new MobjStateDef(number: 754, sprite: Sprite.SSWV, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie7, misc1: 0, misc2: 0),                       // State.SswvXdie6
-        new MobjStateDef(number: 755, sprite: Sprite.SSWV, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie8, misc1: 0, misc2: 0),                       // State.SswvXdie7
-        new MobjStateDef(number: 756, sprite: Sprite.SSWV, frame: 20, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie9, misc1: 0, misc2: 0),                       // State.SswvXdie8
-        new MobjStateDef(number: 757, sprite: Sprite.SSWV, frame: 21, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SswvXdie9
-        new MobjStateDef(number: 758, sprite: Sprite.SSWV, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise2, misc1: 0, misc2: 0),                      // State.SswvRaise1
-        new MobjStateDef(number: 759, sprite: Sprite.SSWV, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise3, misc1: 0, misc2: 0),                      // State.SswvRaise2
-        new MobjStateDef(number: 760, sprite: Sprite.SSWV, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise4, misc1: 0, misc2: 0),                      // State.SswvRaise3
-        new MobjStateDef(number: 761, sprite: Sprite.SSWV, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise5, misc1: 0, misc2: 0),                       // State.SswvRaise4
-        new MobjStateDef(number: 762, sprite: Sprite.SSWV, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRun1, misc1: 0, misc2: 0),                         // State.SswvRaise5
-        new MobjStateDef(number: 763, sprite: Sprite.KEEN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Keenstnd, misc1: 0, misc2: 0),                        // State.Keenstnd
-        new MobjStateDef(number: 764, sprite: Sprite.KEEN, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen2, misc1: 0, misc2: 0),                        // State.Commkeen
-        new MobjStateDef(number: 765, sprite: Sprite.KEEN, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen3, misc1: 0, misc2: 0),                        // State.Commkeen2
-        new MobjStateDef(number: 766, sprite: Sprite.KEEN, frame: 2, tics: 6, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.Commkeen4, misc1: 0, misc2: 0),          // State.Commkeen3
-        new MobjStateDef(number: 767, sprite: Sprite.KEEN, frame: 3, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen5, misc1: 0, misc2: 0),                        // State.Commkeen4
-        new MobjStateDef(number: 768, sprite: Sprite.KEEN, frame: 4, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen6, misc1: 0, misc2: 0),                        // State.Commkeen5
-        new MobjStateDef(number: 769, sprite: Sprite.KEEN, frame: 5, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen7, misc1: 0, misc2: 0),                        // State.Commkeen6
-        new MobjStateDef(number: 770, sprite: Sprite.KEEN, frame: 6, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen8, misc1: 0, misc2: 0),                        // State.Commkeen7
-        new MobjStateDef(number: 771, sprite: Sprite.KEEN, frame: 7, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen9, misc1: 0, misc2: 0),                        // State.Commkeen8
-        new MobjStateDef(number: 772, sprite: Sprite.KEEN, frame: 8, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen10, misc1: 0, misc2: 0),                       // State.Commkeen9
-        new MobjStateDef(number: 773, sprite: Sprite.KEEN, frame: 9, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen11, misc1: 0, misc2: 0),                       // State.Commkeen10
-        new MobjStateDef(number: 774, sprite: Sprite.KEEN, frame: 10, tics: 6, playerAction: null, mobjAction: MobjActions.KeenDie, next: MobjState.Commkeen12, misc1: 0, misc2: 0),       // State.Commkeen11
-        new MobjStateDef(number: 775, sprite: Sprite.KEEN, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Commkeen12
-        new MobjStateDef(number: 776, sprite: Sprite.KEEN, frame: 12, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Keenpain2, misc1: 0, misc2: 0),                       // State.Keenpain
-        new MobjStateDef(number: 777, sprite: Sprite.KEEN, frame: 12, tics: 8, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.Keenstnd, misc1: 0, misc2: 0),            // State.Keenpain2
-        new MobjStateDef(number: 778, sprite: Sprite.BBRN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Brain
-        new MobjStateDef(number: 779, sprite: Sprite.BBRN, frame: 1, tics: 36, playerAction: null, mobjAction: MobjActions.BrainPain, next: MobjState.Brain, misc1: 0, misc2: 0),          // State.BrainPain
-        new MobjStateDef(number: 780, sprite: Sprite.BBRN, frame: 0, tics: 100, playerAction: null, mobjAction: MobjActions.BrainScream, next: MobjState.BrainDie2, misc1: 0, misc2: 0),   // State.BrainDie1
-        new MobjStateDef(number: 781, sprite: Sprite.BBRN, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.BrainDie3, misc1: 0, misc2: 0),                       // State.BrainDie2
-        new MobjStateDef(number: 782, sprite: Sprite.BBRN, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.BrainDie4, misc1: 0, misc2: 0),                       // State.BrainDie3
-        new MobjStateDef(number: 783, sprite: Sprite.BBRN, frame: 0, tics: -1, playerAction: null, mobjAction: MobjActions.BrainDie, next: MobjState.Null, misc1: 0, misc2: 0),            // State.BrainDie4
-        new MobjStateDef(number: 784, sprite: Sprite.SSWV, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.Braineye, misc1: 0, misc2: 0),            // State.Braineye
-        new MobjStateDef(number: 785, sprite: Sprite.SSWV, frame: 0, tics: 181, playerAction: null, mobjAction: MobjActions.BrainAwake, next: MobjState.Braineye1, misc1: 0, misc2: 0),    // State.Braineyesee
-        new MobjStateDef(number: 786, sprite: Sprite.SSWV, frame: 0, tics: 150, playerAction: null, mobjAction: MobjActions.BrainSpit, next: MobjState.Braineye1, misc1: 0, misc2: 0),     // State.Braineye1
-        new MobjStateDef(number: 787, sprite: Sprite.BOSF, frame: 32768, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnSound, next: MobjState.Spawn2, misc1: 0, misc2: 0),     // State.Spawn1
-        new MobjStateDef(number: 788, sprite: Sprite.BOSF, frame: 32769, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnFly, next: MobjState.Spawn3, misc1: 0, misc2: 0),       // State.Spawn2
-        new MobjStateDef(number: 789, sprite: Sprite.BOSF, frame: 32770, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnFly, next: MobjState.Spawn4, misc1: 0, misc2: 0),       // State.Spawn3
-        new MobjStateDef(number: 790, sprite: Sprite.BOSF, frame: 32771, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnFly, next: MobjState.Spawn1, misc1: 0, misc2: 0),       // State.Spawn4
-        new MobjStateDef(number: 791, sprite: Sprite.FIRE, frame: 32768, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire2, misc1: 0, misc2: 0),       // State.Spawnfire1
-        new MobjStateDef(number: 792, sprite: Sprite.FIRE, frame: 32769, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire3, misc1: 0, misc2: 0),       // State.Spawnfire2
-        new MobjStateDef(number: 793, sprite: Sprite.FIRE, frame: 32770, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire4, misc1: 0, misc2: 0),       // State.Spawnfire3
-        new MobjStateDef(number: 794, sprite: Sprite.FIRE, frame: 32771, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire5, misc1: 0, misc2: 0),       // State.Spawnfire4
-        new MobjStateDef(number: 795, sprite: Sprite.FIRE, frame: 32772, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire6, misc1: 0, misc2: 0),       // State.Spawnfire5
-        new MobjStateDef(number: 796, sprite: Sprite.FIRE, frame: 32773, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire7, misc1: 0, misc2: 0),       // State.Spawnfire6
-        new MobjStateDef(number: 797, sprite: Sprite.FIRE, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire8, misc1: 0, misc2: 0),       // State.Spawnfire7
-        new MobjStateDef(number: 798, sprite: Sprite.FIRE, frame: 32775, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Null, misc1: 0, misc2: 0),             // State.Spawnfire8
-        new MobjStateDef(number: 799, sprite: Sprite.MISL, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Brainexplode2, misc1: 0, misc2: 0),               // State.Brainexplode1
-        new MobjStateDef(number: 800, sprite: Sprite.MISL, frame: 32770, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Brainexplode3, misc1: 0, misc2: 0),               // State.Brainexplode2
-        new MobjStateDef(number: 801, sprite: Sprite.MISL, frame: 32771, tics: 10, playerAction: null, mobjAction: MobjActions.BrainExplode, next: MobjState.Null, misc1: 0, misc2: 0),    // State.Brainexplode3
-        new MobjStateDef(number: 802, sprite: Sprite.ARM1, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Arm1A, misc1: 0, misc2: 0),                            // State.Arm1
-        new MobjStateDef(number: 803, sprite: Sprite.ARM1, frame: 32769, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Arm1, misc1: 0, misc2: 0),                         // State.Arm1A
-        new MobjStateDef(number: 804, sprite: Sprite.ARM2, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Arm2A, misc1: 0, misc2: 0),                            // State.Arm2
-        new MobjStateDef(number: 805, sprite: Sprite.ARM2, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Arm2, misc1: 0, misc2: 0),                         // State.Arm2A
-        new MobjStateDef(number: 806, sprite: Sprite.BAR1, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bar2, misc1: 0, misc2: 0),                             // State.Bar1
-        new MobjStateDef(number: 807, sprite: Sprite.BAR1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bar1, misc1: 0, misc2: 0),                             // State.Bar2
-        new MobjStateDef(number: 808, sprite: Sprite.BEXP, frame: 32768, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Bexp2, misc1: 0, misc2: 0),                        // State.Bexp
-        new MobjStateDef(number: 809, sprite: Sprite.BEXP, frame: 32769, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.Bexp3, misc1: 0, misc2: 0),          // State.Bexp2
-        new MobjStateDef(number: 810, sprite: Sprite.BEXP, frame: 32770, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Bexp4, misc1: 0, misc2: 0),                        // State.Bexp3
-        new MobjStateDef(number: 811, sprite: Sprite.BEXP, frame: 32771, tics: 10, playerAction: null, mobjAction: MobjActions.Explode, next: MobjState.Bexp5, misc1: 0, misc2: 0),        // State.Bexp4
-        new MobjStateDef(number: 812, sprite: Sprite.BEXP, frame: 32772, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Bexp5
-        new MobjStateDef(number: 813, sprite: Sprite.FCAN, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bbar2, misc1: 0, misc2: 0),                        // State.Bbar1
-        new MobjStateDef(number: 814, sprite: Sprite.FCAN, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bbar3, misc1: 0, misc2: 0),                        // State.Bbar2
-        new MobjStateDef(number: 815, sprite: Sprite.FCAN, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bbar1, misc1: 0, misc2: 0),                        // State.Bbar3
-        new MobjStateDef(number: 816, sprite: Sprite.BON1, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1A, misc1: 0, misc2: 0),                            // State.Bon1
-        new MobjStateDef(number: 817, sprite: Sprite.BON1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1B, misc1: 0, misc2: 0),                            // State.Bon1A
-        new MobjStateDef(number: 818, sprite: Sprite.BON1, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1C, misc1: 0, misc2: 0),                            // State.Bon1B
-        new MobjStateDef(number: 819, sprite: Sprite.BON1, frame: 3, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1D, misc1: 0, misc2: 0),                            // State.Bon1C
-        new MobjStateDef(number: 820, sprite: Sprite.BON1, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1E, misc1: 0, misc2: 0),                            // State.Bon1D
-        new MobjStateDef(number: 821, sprite: Sprite.BON1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1, misc1: 0, misc2: 0),                             // State.Bon1E
-        new MobjStateDef(number: 822, sprite: Sprite.BON2, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2A, misc1: 0, misc2: 0),                            // State.Bon2
-        new MobjStateDef(number: 823, sprite: Sprite.BON2, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2B, misc1: 0, misc2: 0),                            // State.Bon2A
-        new MobjStateDef(number: 824, sprite: Sprite.BON2, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2C, misc1: 0, misc2: 0),                            // State.Bon2B
-        new MobjStateDef(number: 825, sprite: Sprite.BON2, frame: 3, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2D, misc1: 0, misc2: 0),                            // State.Bon2C
-        new MobjStateDef(number: 826, sprite: Sprite.BON2, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2E, misc1: 0, misc2: 0),                            // State.Bon2D
-        new MobjStateDef(number: 827, sprite: Sprite.BON2, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2, misc1: 0, misc2: 0),                             // State.Bon2E
-        new MobjStateDef(number: 828, sprite: Sprite.BKEY, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bkey2, misc1: 0, misc2: 0),                           // State.Bkey
-        new MobjStateDef(number: 829, sprite: Sprite.BKEY, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bkey, misc1: 0, misc2: 0),                        // State.Bkey2
-        new MobjStateDef(number: 830, sprite: Sprite.RKEY, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rkey2, misc1: 0, misc2: 0),                           // State.Rkey
-        new MobjStateDef(number: 831, sprite: Sprite.RKEY, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rkey, misc1: 0, misc2: 0),                        // State.Rkey2
-        new MobjStateDef(number: 832, sprite: Sprite.YKEY, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Ykey2, misc1: 0, misc2: 0),                           // State.Ykey
-        new MobjStateDef(number: 833, sprite: Sprite.YKEY, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Ykey, misc1: 0, misc2: 0),                        // State.Ykey2
-        new MobjStateDef(number: 834, sprite: Sprite.BSKU, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bskull2, misc1: 0, misc2: 0),                         // State.Bskull
-        new MobjStateDef(number: 835, sprite: Sprite.BSKU, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bskull, misc1: 0, misc2: 0),                      // State.Bskull2
-        new MobjStateDef(number: 836, sprite: Sprite.RSKU, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rskull2, misc1: 0, misc2: 0),                         // State.Rskull
-        new MobjStateDef(number: 837, sprite: Sprite.RSKU, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rskull, misc1: 0, misc2: 0),                      // State.Rskull2
-        new MobjStateDef(number: 838, sprite: Sprite.YSKU, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Yskull2, misc1: 0, misc2: 0),                         // State.Yskull
-        new MobjStateDef(number: 839, sprite: Sprite.YSKU, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Yskull, misc1: 0, misc2: 0),                      // State.Yskull2
-        new MobjStateDef(number: 840, sprite: Sprite.STIM, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Stim
-        new MobjStateDef(number: 841, sprite: Sprite.MEDI, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Medi
-        new MobjStateDef(number: 842, sprite: Sprite.SOUL, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul2, misc1: 0, misc2: 0),                        // State.Soul
-        new MobjStateDef(number: 843, sprite: Sprite.SOUL, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul3, misc1: 0, misc2: 0),                        // State.Soul2
-        new MobjStateDef(number: 844, sprite: Sprite.SOUL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul4, misc1: 0, misc2: 0),                        // State.Soul3
-        new MobjStateDef(number: 845, sprite: Sprite.SOUL, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul5, misc1: 0, misc2: 0),                        // State.Soul4
-        new MobjStateDef(number: 846, sprite: Sprite.SOUL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul6, misc1: 0, misc2: 0),                        // State.Soul5
-        new MobjStateDef(number: 847, sprite: Sprite.SOUL, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul, misc1: 0, misc2: 0),                         // State.Soul6
-        new MobjStateDef(number: 848, sprite: Sprite.PINV, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv2, misc1: 0, misc2: 0),                        // State.Pinv
-        new MobjStateDef(number: 849, sprite: Sprite.PINV, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv3, misc1: 0, misc2: 0),                        // State.Pinv2
-        new MobjStateDef(number: 850, sprite: Sprite.PINV, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv4, misc1: 0, misc2: 0),                        // State.Pinv3
-        new MobjStateDef(number: 851, sprite: Sprite.PINV, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv, misc1: 0, misc2: 0),                         // State.Pinv4
-        new MobjStateDef(number: 852, sprite: Sprite.PSTR, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Pstr
-        new MobjStateDef(number: 853, sprite: Sprite.PINS, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins2, misc1: 0, misc2: 0),                        // State.Pins
-        new MobjStateDef(number: 854, sprite: Sprite.PINS, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins3, misc1: 0, misc2: 0),                        // State.Pins2
-        new MobjStateDef(number: 855, sprite: Sprite.PINS, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins4, misc1: 0, misc2: 0),                        // State.Pins3
-        new MobjStateDef(number: 856, sprite: Sprite.PINS, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins, misc1: 0, misc2: 0),                         // State.Pins4
-        new MobjStateDef(number: 857, sprite: Sprite.MEGA, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega2, misc1: 0, misc2: 0),                        // State.Mega
-        new MobjStateDef(number: 858, sprite: Sprite.MEGA, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega3, misc1: 0, misc2: 0),                        // State.Mega2
-        new MobjStateDef(number: 859, sprite: Sprite.MEGA, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega4, misc1: 0, misc2: 0),                        // State.Mega3
-        new MobjStateDef(number: 860, sprite: Sprite.MEGA, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega, misc1: 0, misc2: 0),                         // State.Mega4
-        new MobjStateDef(number: 861, sprite: Sprite.SUIT, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Suit
-        new MobjStateDef(number: 862, sprite: Sprite.PMAP, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap2, misc1: 0, misc2: 0),                        // State.Pmap
-        new MobjStateDef(number: 863, sprite: Sprite.PMAP, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap3, misc1: 0, misc2: 0),                        // State.Pmap2
-        new MobjStateDef(number: 864, sprite: Sprite.PMAP, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap4, misc1: 0, misc2: 0),                        // State.Pmap3
-        new MobjStateDef(number: 865, sprite: Sprite.PMAP, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap5, misc1: 0, misc2: 0),                        // State.Pmap4
-        new MobjStateDef(number: 866, sprite: Sprite.PMAP, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap6, misc1: 0, misc2: 0),                        // State.Pmap5
-        new MobjStateDef(number: 867, sprite: Sprite.PMAP, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap, misc1: 0, misc2: 0),                         // State.Pmap6
-        new MobjStateDef(number: 868, sprite: Sprite.PVIS, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pvis2, misc1: 0, misc2: 0),                        // State.Pvis
-        new MobjStateDef(number: 869, sprite: Sprite.PVIS, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pvis, misc1: 0, misc2: 0),                             // State.Pvis2
-        new MobjStateDef(number: 870, sprite: Sprite.CLIP, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Clip
-        new MobjStateDef(number: 871, sprite: Sprite.AMMO, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Ammo
-        new MobjStateDef(number: 872, sprite: Sprite.ROCK, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Rock
-        new MobjStateDef(number: 873, sprite: Sprite.BROK, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Brok
-        new MobjStateDef(number: 874, sprite: Sprite.CELL, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Cell
-        new MobjStateDef(number: 875, sprite: Sprite.CELP, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Celp
-        new MobjStateDef(number: 876, sprite: Sprite.SHEL, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shel
-        new MobjStateDef(number: 877, sprite: Sprite.SBOX, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Sbox
-        new MobjStateDef(number: 878, sprite: Sprite.BPAK, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Bpak
-        new MobjStateDef(number: 879, sprite: Sprite.BFUG, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Bfug
-        new MobjStateDef(number: 880, sprite: Sprite.MGUN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Mgun
-        new MobjStateDef(number: 881, sprite: Sprite.CSAW, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Csaw
-        new MobjStateDef(number: 882, sprite: Sprite.LAUN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Laun
-        new MobjStateDef(number: 883, sprite: Sprite.PLAS, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Plas
-        new MobjStateDef(number: 884, sprite: Sprite.SHOT, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shot
-        new MobjStateDef(number: 885, sprite: Sprite.SGN2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shot2
-        new MobjStateDef(number: 886, sprite: Sprite.COLU, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Colu
-        new MobjStateDef(number: 887, sprite: Sprite.SMT2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Stalag
-        new MobjStateDef(number: 888, sprite: Sprite.GOR1, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch2, misc1: 0, misc2: 0),                   // State.Bloodytwitch
-        new MobjStateDef(number: 889, sprite: Sprite.GOR1, frame: 1, tics: 15, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch3, misc1: 0, misc2: 0),                   // State.Bloodytwitch2
-        new MobjStateDef(number: 890, sprite: Sprite.GOR1, frame: 2, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch4, misc1: 0, misc2: 0),                    // State.Bloodytwitch3
-        new MobjStateDef(number: 891, sprite: Sprite.GOR1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch, misc1: 0, misc2: 0),                     // State.Bloodytwitch4
-        new MobjStateDef(number: 892, sprite: Sprite.PLAY, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Deadtorso
-        new MobjStateDef(number: 893, sprite: Sprite.PLAY, frame: 18, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Deadbottom
-        new MobjStateDef(number: 894, sprite: Sprite.POL2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Headsonstick
-        new MobjStateDef(number: 895, sprite: Sprite.POL5, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Gibs
-        new MobjStateDef(number: 896, sprite: Sprite.POL4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Headonastick
-        new MobjStateDef(number: 897, sprite: Sprite.POL3, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Headcandles2, misc1: 0, misc2: 0),                 // State.Headcandles
-        new MobjStateDef(number: 898, sprite: Sprite.POL3, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Headcandles, misc1: 0, misc2: 0),                  // State.Headcandles2
-        new MobjStateDef(number: 899, sprite: Sprite.POL1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Deadstick
-        new MobjStateDef(number: 900, sprite: Sprite.POL6, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Livestick2, misc1: 0, misc2: 0),                       // State.Livestick
-        new MobjStateDef(number: 901, sprite: Sprite.POL6, frame: 1, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Livestick, misc1: 0, misc2: 0),                        // State.Livestick2
-        new MobjStateDef(number: 902, sprite: Sprite.GOR2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat2
-        new MobjStateDef(number: 903, sprite: Sprite.GOR3, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat3
-        new MobjStateDef(number: 904, sprite: Sprite.GOR4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat4
-        new MobjStateDef(number: 905, sprite: Sprite.GOR5, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat5
-        new MobjStateDef(number: 906, sprite: Sprite.SMIT, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Stalagtite
-        new MobjStateDef(number: 907, sprite: Sprite.COL1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Tallgrncol
-        new MobjStateDef(number: 908, sprite: Sprite.COL2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shrtgrncol
-        new MobjStateDef(number: 909, sprite: Sprite.COL3, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Tallredcol
-        new MobjStateDef(number: 910, sprite: Sprite.COL4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shrtredcol
-        new MobjStateDef(number: 911, sprite: Sprite.CAND, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Candlestik
-        new MobjStateDef(number: 912, sprite: Sprite.CBRA, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Candelabra
-        new MobjStateDef(number: 913, sprite: Sprite.COL6, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Skullcol
-        new MobjStateDef(number: 914, sprite: Sprite.TRE1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Torchtree
-        new MobjStateDef(number: 915, sprite: Sprite.TRE2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Bigtree
-        new MobjStateDef(number: 916, sprite: Sprite.ELEC, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Techpillar
-        new MobjStateDef(number: 917, sprite: Sprite.CEYE, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye2, misc1: 0, misc2: 0),                     // State.Evileye
-        new MobjStateDef(number: 918, sprite: Sprite.CEYE, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye3, misc1: 0, misc2: 0),                     // State.Evileye2
-        new MobjStateDef(number: 919, sprite: Sprite.CEYE, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye4, misc1: 0, misc2: 0),                     // State.Evileye3
-        new MobjStateDef(number: 920, sprite: Sprite.CEYE, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye, misc1: 0, misc2: 0),                      // State.Evileye4
-        new MobjStateDef(number: 921, sprite: Sprite.FSKU, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Floatskull2, misc1: 0, misc2: 0),                  // State.Floatskull
-        new MobjStateDef(number: 922, sprite: Sprite.FSKU, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Floatskull3, misc1: 0, misc2: 0),                  // State.Floatskull2
-        new MobjStateDef(number: 923, sprite: Sprite.FSKU, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Floatskull, misc1: 0, misc2: 0),                   // State.Floatskull3
-        new MobjStateDef(number: 924, sprite: Sprite.COL5, frame: 0, tics: 14, playerAction: null, mobjAction: null, next: MobjState.Heartcol2, misc1: 0, misc2: 0),                       // State.Heartcol
-        new MobjStateDef(number: 925, sprite: Sprite.COL5, frame: 1, tics: 14, playerAction: null, mobjAction: null, next: MobjState.Heartcol, misc1: 0, misc2: 0),                        // State.Heartcol2
-        new MobjStateDef(number: 926, sprite: Sprite.TBLU, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch2, misc1: 0, misc2: 0),                   // State.Bluetorch
-        new MobjStateDef(number: 927, sprite: Sprite.TBLU, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch3, misc1: 0, misc2: 0),                   // State.Bluetorch2
-        new MobjStateDef(number: 928, sprite: Sprite.TBLU, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch4, misc1: 0, misc2: 0),                   // State.Bluetorch3
-        new MobjStateDef(number: 929, sprite: Sprite.TBLU, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch, misc1: 0, misc2: 0),                    // State.Bluetorch4
-        new MobjStateDef(number: 930, sprite: Sprite.TGRN, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch2, misc1: 0, misc2: 0),                  // State.Greentorch
-        new MobjStateDef(number: 931, sprite: Sprite.TGRN, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch3, misc1: 0, misc2: 0),                  // State.Greentorch2
-        new MobjStateDef(number: 932, sprite: Sprite.TGRN, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch4, misc1: 0, misc2: 0),                  // State.Greentorch3
-        new MobjStateDef(number: 933, sprite: Sprite.TGRN, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch, misc1: 0, misc2: 0),                   // State.Greentorch4
-        new MobjStateDef(number: 934, sprite: Sprite.TRED, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch2, misc1: 0, misc2: 0),                    // State.Redtorch
-        new MobjStateDef(number: 935, sprite: Sprite.TRED, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch3, misc1: 0, misc2: 0),                    // State.Redtorch2
-        new MobjStateDef(number: 936, sprite: Sprite.TRED, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch4, misc1: 0, misc2: 0),                    // State.Redtorch3
-        new MobjStateDef(number: 937, sprite: Sprite.TRED, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch, misc1: 0, misc2: 0),                     // State.Redtorch4
-        new MobjStateDef(number: 938, sprite: Sprite.SMBT, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt2, misc1: 0, misc2: 0),                  // State.Btorchshrt
-        new MobjStateDef(number: 939, sprite: Sprite.SMBT, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt3, misc1: 0, misc2: 0),                  // State.Btorchshrt2
-        new MobjStateDef(number: 940, sprite: Sprite.SMBT, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt4, misc1: 0, misc2: 0),                  // State.Btorchshrt3
-        new MobjStateDef(number: 941, sprite: Sprite.SMBT, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt, misc1: 0, misc2: 0),                   // State.Btorchshrt4
-        new MobjStateDef(number: 942, sprite: Sprite.SMGT, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt2, misc1: 0, misc2: 0),                  // State.Gtorchshrt
-        new MobjStateDef(number: 943, sprite: Sprite.SMGT, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt3, misc1: 0, misc2: 0),                  // State.Gtorchshrt2
-        new MobjStateDef(number: 944, sprite: Sprite.SMGT, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt4, misc1: 0, misc2: 0),                  // State.Gtorchshrt3
-        new MobjStateDef(number: 945, sprite: Sprite.SMGT, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt, misc1: 0, misc2: 0),                   // State.Gtorchshrt4
-        new MobjStateDef(number: 946, sprite: Sprite.SMRT, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt2, misc1: 0, misc2: 0),                  // State.Rtorchshrt
-        new MobjStateDef(number: 947, sprite: Sprite.SMRT, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt3, misc1: 0, misc2: 0),                  // State.Rtorchshrt2
-        new MobjStateDef(number: 948, sprite: Sprite.SMRT, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt4, misc1: 0, misc2: 0),                  // State.Rtorchshrt3
-        new MobjStateDef(number: 949, sprite: Sprite.SMRT, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt, misc1: 0, misc2: 0),                   // State.Rtorchshrt4
-        new MobjStateDef(number: 950, sprite: Sprite.HDB1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangnoguts
-        new MobjStateDef(number: 951, sprite: Sprite.HDB2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangbnobrain
-        new MobjStateDef(number: 952, sprite: Sprite.HDB3, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtlookdn
-        new MobjStateDef(number: 953, sprite: Sprite.HDB4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtskull
-        new MobjStateDef(number: 954, sprite: Sprite.HDB5, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtlookup
-        new MobjStateDef(number: 955, sprite: Sprite.HDB6, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtnobrain
-        new MobjStateDef(number: 956, sprite: Sprite.POB1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Colongibs
-        new MobjStateDef(number: 957, sprite: Sprite.POB2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Smallpool
-        new MobjStateDef(number: 958, sprite: Sprite.BRS1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Brainstem
-        new MobjStateDef(number: 959, sprite: Sprite.TLMP, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp2, misc1: 0, misc2: 0),                    // State.Techlamp
-        new MobjStateDef(number: 960, sprite: Sprite.TLMP, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp3, misc1: 0, misc2: 0),                    // State.Techlamp2
-        new MobjStateDef(number: 961, sprite: Sprite.TLMP, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp4, misc1: 0, misc2: 0),                    // State.Techlamp3
-        new MobjStateDef(number: 962, sprite: Sprite.TLMP, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp, misc1: 0, misc2: 0),                     // State.Techlamp4
-        new MobjStateDef(number: 963, sprite: Sprite.TLP2, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp2, misc1: 0, misc2: 0),                   // State.Tech2Lamp
-        new MobjStateDef(number: 964, sprite: Sprite.TLP2, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp3, misc1: 0, misc2: 0),                   // State.Tech2Lamp2
-        new MobjStateDef(number: 965, sprite: Sprite.TLP2, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp4, misc1: 0, misc2: 0),                   // State.Tech2Lamp3
-        new MobjStateDef(number: 966, sprite: Sprite.TLP2, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp, misc1: 0, misc2: 0)                     // State.Tech2Lamp4
+        new(number: 0, sprite: Sprite.TROO, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                              // State.Null
+        new(number: 1, sprite: Sprite.SHTG, frame: 4, tics: 0, playerAction: PlayerActions.Light0, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),               // State.Lightdone
+        new(number: 2, sprite: Sprite.PUNG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Punch, misc1: 0, misc2: 0),         // State.Punch
+        new(number: 3, sprite: Sprite.PUNG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Punchdown, misc1: 0, misc2: 0),           // State.Punchdown
+        new(number: 4, sprite: Sprite.PUNG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Punchup, misc1: 0, misc2: 0),             // State.Punchup
+        new(number: 5, sprite: Sprite.PUNG, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Punch2, misc1: 0, misc2: 0),                             // State.Punch1
+        new(number: 6, sprite: Sprite.PUNG, frame: 2, tics: 4, playerAction: PlayerActions.Punch, mobjAction: null, next: MobjState.Punch3, misc1: 0, misc2: 0),              // State.Punch2
+        new(number: 7, sprite: Sprite.PUNG, frame: 3, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Punch4, misc1: 0, misc2: 0),                             // State.Punch3
+        new(number: 8, sprite: Sprite.PUNG, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Punch5, misc1: 0, misc2: 0),                             // State.Punch4
+        new(number: 9, sprite: Sprite.PUNG, frame: 1, tics: 5, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Punch, misc1: 0, misc2: 0),              // State.Punch5
+        new(number: 10, sprite: Sprite.PISG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Pistol, misc1: 0, misc2: 0),       // State.Pistol
+        new(number: 11, sprite: Sprite.PISG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Pistoldown, misc1: 0, misc2: 0),         // State.Pistoldown
+        new(number: 12, sprite: Sprite.PISG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Pistolup, misc1: 0, misc2: 0),           // State.Pistolup
+        new(number: 13, sprite: Sprite.PISG, frame: 0, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Pistol2, misc1: 0, misc2: 0),                           // State.Pistol1
+        new(number: 14, sprite: Sprite.PISG, frame: 1, tics: 6, playerAction: PlayerActions.FirePistol, mobjAction: null, next: MobjState.Pistol3, misc1: 0, misc2: 0),       // State.Pistol2
+        new(number: 15, sprite: Sprite.PISG, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Pistol4, misc1: 0, misc2: 0),                           // State.Pistol3
+        new(number: 16, sprite: Sprite.PISG, frame: 1, tics: 5, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Pistol, misc1: 0, misc2: 0),            // State.Pistol4
+        new(number: 17, sprite: Sprite.PISF, frame: 32768, tics: 7, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Pistolflash
+        new(number: 18, sprite: Sprite.SHTG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Sgun, misc1: 0, misc2: 0),         // State.Sgun
+        new(number: 19, sprite: Sprite.SHTG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Sgundown, misc1: 0, misc2: 0),           // State.Sgundown
+        new(number: 20, sprite: Sprite.SHTG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Sgunup, misc1: 0, misc2: 0),             // State.Sgunup
+        new(number: 21, sprite: Sprite.SHTG, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Sgun2, misc1: 0, misc2: 0),                             // State.Sgun1
+        new(number: 22, sprite: Sprite.SHTG, frame: 0, tics: 7, playerAction: PlayerActions.FireShotgun, mobjAction: null, next: MobjState.Sgun3, misc1: 0, misc2: 0),        // State.Sgun2
+        new(number: 23, sprite: Sprite.SHTG, frame: 1, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun4, misc1: 0, misc2: 0),                             // State.Sgun3
+        new(number: 24, sprite: Sprite.SHTG, frame: 2, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun5, misc1: 0, misc2: 0),                             // State.Sgun4
+        new(number: 25, sprite: Sprite.SHTG, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Sgun6, misc1: 0, misc2: 0),                             // State.Sgun5
+        new(number: 26, sprite: Sprite.SHTG, frame: 2, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun7, misc1: 0, misc2: 0),                             // State.Sgun6
+        new(number: 27, sprite: Sprite.SHTG, frame: 1, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Sgun8, misc1: 0, misc2: 0),                             // State.Sgun7
+        new(number: 28, sprite: Sprite.SHTG, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Sgun9, misc1: 0, misc2: 0),                             // State.Sgun8
+        new(number: 29, sprite: Sprite.SHTG, frame: 0, tics: 7, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Sgun, misc1: 0, misc2: 0),              // State.Sgun9
+        new(number: 30, sprite: Sprite.SHTF, frame: 32768, tics: 4, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Sgunflash2, misc1: 0, misc2: 0),    // State.Sgunflash1
+        new(number: 31, sprite: Sprite.SHTF, frame: 32769, tics: 3, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Sgunflash2
+        new(number: 32, sprite: Sprite.SHT2, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Dsgun, misc1: 0, misc2: 0),        // State.Dsgun
+        new(number: 33, sprite: Sprite.SHT2, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Dsgundown, misc1: 0, misc2: 0),          // State.Dsgundown
+        new(number: 34, sprite: Sprite.SHT2, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Dsgunup, misc1: 0, misc2: 0),            // State.Dsgunup
+        new(number: 35, sprite: Sprite.SHT2, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Dsgun2, misc1: 0, misc2: 0),                            // State.Dsgun1
+        new(number: 36, sprite: Sprite.SHT2, frame: 0, tics: 7, playerAction: PlayerActions.FireShotgun2, mobjAction: null, next: MobjState.Dsgun3, misc1: 0, misc2: 0),      // State.Dsgun2
+        new(number: 37, sprite: Sprite.SHT2, frame: 1, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Dsgun4, misc1: 0, misc2: 0),                            // State.Dsgun3
+        new(number: 38, sprite: Sprite.SHT2, frame: 2, tics: 7, playerAction: PlayerActions.CheckReload, mobjAction: null, next: MobjState.Dsgun5, misc1: 0, misc2: 0),       // State.Dsgun4
+        new(number: 39, sprite: Sprite.SHT2, frame: 3, tics: 7, playerAction: PlayerActions.OpenShotgun2, mobjAction: null, next: MobjState.Dsgun6, misc1: 0, misc2: 0),      // State.Dsgun5
+        new(number: 40, sprite: Sprite.SHT2, frame: 4, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Dsgun7, misc1: 0, misc2: 0),                            // State.Dsgun6
+        new(number: 41, sprite: Sprite.SHT2, frame: 5, tics: 7, playerAction: PlayerActions.LoadShotgun2, mobjAction: null, next: MobjState.Dsgun8, misc1: 0, misc2: 0),      // State.Dsgun7
+        new(number: 42, sprite: Sprite.SHT2, frame: 6, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Dsgun9, misc1: 0, misc2: 0),                            // State.Dsgun8
+        new(number: 43, sprite: Sprite.SHT2, frame: 7, tics: 6, playerAction: PlayerActions.CloseShotgun2, mobjAction: null, next: MobjState.Dsgun10, misc1: 0, misc2: 0),    // State.Dsgun9
+        new(number: 44, sprite: Sprite.SHT2, frame: 0, tics: 5, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Dsgun, misc1: 0, misc2: 0),             // State.Dsgun10
+        new(number: 45, sprite: Sprite.SHT2, frame: 1, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Dsnr2, misc1: 0, misc2: 0),                             // State.Dsnr1
+        new(number: 46, sprite: Sprite.SHT2, frame: 0, tics: 3, playerAction: null, mobjAction: null, next: MobjState.Dsgundown, misc1: 0, misc2: 0),                         // State.Dsnr2
+        new(number: 47, sprite: Sprite.SHT2, frame: 32776, tics: 5, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Dsgunflash2, misc1: 0, misc2: 0),   // State.Dsgunflash1
+        new(number: 48, sprite: Sprite.SHT2, frame: 32777, tics: 4, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Dsgunflash2
+        new(number: 49, sprite: Sprite.CHGG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Chain, misc1: 0, misc2: 0),        // State.Chain
+        new(number: 50, sprite: Sprite.CHGG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Chaindown, misc1: 0, misc2: 0),          // State.Chaindown
+        new(number: 51, sprite: Sprite.CHGG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Chainup, misc1: 0, misc2: 0),            // State.Chainup
+        new(number: 52, sprite: Sprite.CHGG, frame: 0, tics: 4, playerAction: PlayerActions.FireCGun, mobjAction: null, next: MobjState.Chain2, misc1: 0, misc2: 0),          // State.Chain1
+        new(number: 53, sprite: Sprite.CHGG, frame: 1, tics: 4, playerAction: PlayerActions.FireCGun, mobjAction: null, next: MobjState.Chain3, misc1: 0, misc2: 0),          // State.Chain2
+        new(number: 54, sprite: Sprite.CHGG, frame: 1, tics: 0, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Chain, misc1: 0, misc2: 0),             // State.Chain3
+        new(number: 55, sprite: Sprite.CHGF, frame: 32768, tics: 5, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Chainflash1
+        new(number: 56, sprite: Sprite.CHGF, frame: 32769, tics: 5, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Chainflash2
+        new(number: 57, sprite: Sprite.MISG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Missile, misc1: 0, misc2: 0),      // State.Missile
+        new(number: 58, sprite: Sprite.MISG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Missiledown, misc1: 0, misc2: 0),        // State.Missiledown
+        new(number: 59, sprite: Sprite.MISG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Missileup, misc1: 0, misc2: 0),          // State.Missileup
+        new(number: 60, sprite: Sprite.MISG, frame: 1, tics: 8, playerAction: PlayerActions.GunFlash, mobjAction: null, next: MobjState.Missile2, misc1: 0, misc2: 0),        // State.Missile1
+        new(number: 61, sprite: Sprite.MISG, frame: 1, tics: 12, playerAction: PlayerActions.FireMissile, mobjAction: null, next: MobjState.Missile3, misc1: 0, misc2: 0),    // State.Missile2
+        new(number: 62, sprite: Sprite.MISG, frame: 1, tics: 0, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Missile, misc1: 0, misc2: 0),           // State.Missile3
+        new(number: 63, sprite: Sprite.MISF, frame: 32768, tics: 3, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Missileflash2, misc1: 0, misc2: 0), // State.Missileflash1
+        new(number: 64, sprite: Sprite.MISF, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Missileflash3, misc1: 0, misc2: 0),                 // State.Missileflash2
+        new(number: 65, sprite: Sprite.MISF, frame: 32770, tics: 4, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Missileflash4, misc1: 0, misc2: 0), // State.Missileflash3
+        new(number: 66, sprite: Sprite.MISF, frame: 32771, tics: 4, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Missileflash4
+        new(number: 67, sprite: Sprite.SAWG, frame: 2, tics: 4, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Sawb, misc1: 0, misc2: 0),         // State.Saw
+        new(number: 68, sprite: Sprite.SAWG, frame: 3, tics: 4, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Saw, misc1: 0, misc2: 0),          // State.Sawb
+        new(number: 69, sprite: Sprite.SAWG, frame: 2, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Sawdown, misc1: 0, misc2: 0),            // State.Sawdown
+        new(number: 70, sprite: Sprite.SAWG, frame: 2, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Sawup, misc1: 0, misc2: 0),              // State.Sawup
+        new(number: 71, sprite: Sprite.SAWG, frame: 0, tics: 4, playerAction: PlayerActions.Saw, mobjAction: null, next: MobjState.Saw2, misc1: 0, misc2: 0),                 // State.Saw1
+        new(number: 72, sprite: Sprite.SAWG, frame: 1, tics: 4, playerAction: PlayerActions.Saw, mobjAction: null, next: MobjState.Saw3, misc1: 0, misc2: 0),                 // State.Saw2
+        new(number: 73, sprite: Sprite.SAWG, frame: 1, tics: 0, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Saw, misc1: 0, misc2: 0),               // State.Saw3
+        new(number: 74, sprite: Sprite.PLSG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Plasma, misc1: 0, misc2: 0),       // State.Plasma
+        new(number: 75, sprite: Sprite.PLSG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Plasmadown, misc1: 0, misc2: 0),         // State.Plasmadown
+        new(number: 76, sprite: Sprite.PLSG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Plasmaup, misc1: 0, misc2: 0),           // State.Plasmaup
+        new(number: 77, sprite: Sprite.PLSG, frame: 0, tics: 3, playerAction: PlayerActions.FirePlasma, mobjAction: null, next: MobjState.Plasma2, misc1: 0, misc2: 0),       // State.Plasma1
+        new(number: 78, sprite: Sprite.PLSG, frame: 1, tics: 20, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Plasma, misc1: 0, misc2: 0),           // State.Plasma2
+        new(number: 79, sprite: Sprite.PLSF, frame: 32768, tics: 4, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Plasmaflash1
+        new(number: 80, sprite: Sprite.PLSF, frame: 32769, tics: 4, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Plasmaflash2
+        new(number: 81, sprite: Sprite.BFGG, frame: 0, tics: 1, playerAction: PlayerActions.WeaponReady, mobjAction: null, next: MobjState.Bfg, misc1: 0, misc2: 0),          // State.Bfg
+        new(number: 82, sprite: Sprite.BFGG, frame: 0, tics: 1, playerAction: PlayerActions.Lower, mobjAction: null, next: MobjState.Bfgdown, misc1: 0, misc2: 0),            // State.Bfgdown
+        new(number: 83, sprite: Sprite.BFGG, frame: 0, tics: 1, playerAction: PlayerActions.Raise, mobjAction: null, next: MobjState.Bfgup, misc1: 0, misc2: 0),              // State.Bfgup
+        new(number: 84, sprite: Sprite.BFGG, frame: 0, tics: 20, playerAction: PlayerActions.BFGsound, mobjAction: null, next: MobjState.Bfg2, misc1: 0, misc2: 0),           // State.Bfg1
+        new(number: 85, sprite: Sprite.BFGG, frame: 1, tics: 10, playerAction: PlayerActions.GunFlash, mobjAction: null, next: MobjState.Bfg3, misc1: 0, misc2: 0),           // State.Bfg2
+        new(number: 86, sprite: Sprite.BFGG, frame: 1, tics: 10, playerAction: PlayerActions.FireBFG, mobjAction: null, next: MobjState.Bfg4, misc1: 0, misc2: 0),            // State.Bfg3
+        new(number: 87, sprite: Sprite.BFGG, frame: 1, tics: 20, playerAction: PlayerActions.ReFire, mobjAction: null, next: MobjState.Bfg, misc1: 0, misc2: 0),              // State.Bfg4
+        new(number: 88, sprite: Sprite.BFGF, frame: 32768, tics: 11, playerAction: PlayerActions.Light1, mobjAction: null, next: MobjState.Bfgflash2, misc1: 0, misc2: 0),    // State.Bfgflash1
+        new(number: 89, sprite: Sprite.BFGF, frame: 32769, tics: 6, playerAction: PlayerActions.Light2, mobjAction: null, next: MobjState.Lightdone, misc1: 0, misc2: 0),     // State.Bfgflash2
+        new(number: 90, sprite: Sprite.BLUD, frame: 2, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Blood2, misc1: 0, misc2: 0),                            // State.Blood1
+        new(number: 91, sprite: Sprite.BLUD, frame: 1, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Blood3, misc1: 0, misc2: 0),                            // State.Blood2
+        new(number: 92, sprite: Sprite.BLUD, frame: 0, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                              // State.Blood3
+        new(number: 93, sprite: Sprite.PUFF, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Puff2, misc1: 0, misc2: 0),                         // State.Puff1
+        new(number: 94, sprite: Sprite.PUFF, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Puff3, misc1: 0, misc2: 0),                             // State.Puff2
+        new(number: 95, sprite: Sprite.PUFF, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Puff4, misc1: 0, misc2: 0),                             // State.Puff3
+        new(number: 96, sprite: Sprite.PUFF, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                              // State.Puff4
+        new(number: 97, sprite: Sprite.BAL1, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tball2, misc1: 0, misc2: 0),                        // State.Tball1
+        new(number: 98, sprite: Sprite.BAL1, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tball1, misc1: 0, misc2: 0),                        // State.Tball2
+        new(number: 99, sprite: Sprite.BAL1, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tballx2, misc1: 0, misc2: 0),                       // State.Tballx1
+        new(number: 100, sprite: Sprite.BAL1, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tballx3, misc1: 0, misc2: 0),                      // State.Tballx2
+        new(number: 101, sprite: Sprite.BAL1, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Tballx3
+        new(number: 102, sprite: Sprite.BAL2, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rball2, misc1: 0, misc2: 0),                       // State.Rball1
+        new(number: 103, sprite: Sprite.BAL2, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rball1, misc1: 0, misc2: 0),                       // State.Rball2
+        new(number: 104, sprite: Sprite.BAL2, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Rballx2, misc1: 0, misc2: 0),                      // State.Rballx1
+        new(number: 105, sprite: Sprite.BAL2, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Rballx3, misc1: 0, misc2: 0),                      // State.Rballx2
+        new(number: 106, sprite: Sprite.BAL2, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Rballx3
+        new(number: 107, sprite: Sprite.PLSS, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Plasball2, misc1: 0, misc2: 0),                    // State.Plasball
+        new(number: 108, sprite: Sprite.PLSS, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Plasball, misc1: 0, misc2: 0),                     // State.Plasball2
+        new(number: 109, sprite: Sprite.PLSE, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp2, misc1: 0, misc2: 0),                     // State.Plasexp
+        new(number: 110, sprite: Sprite.PLSE, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp3, misc1: 0, misc2: 0),                     // State.Plasexp2
+        new(number: 111, sprite: Sprite.PLSE, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp4, misc1: 0, misc2: 0),                     // State.Plasexp3
+        new(number: 112, sprite: Sprite.PLSE, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Plasexp5, misc1: 0, misc2: 0),                     // State.Plasexp4
+        new(number: 113, sprite: Sprite.PLSE, frame: 32772, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Plasexp5
+        new(number: 114, sprite: Sprite.MISL, frame: 32768, tics: 1, playerAction: null, mobjAction: null, next: MobjState.Rocket, misc1: 0, misc2: 0),                       // State.Rocket
+        new(number: 115, sprite: Sprite.BFS1, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bfgshot2, misc1: 0, misc2: 0),                     // State.Bfgshot
+        new(number: 116, sprite: Sprite.BFS1, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bfgshot, misc1: 0, misc2: 0),                      // State.Bfgshot2
+        new(number: 117, sprite: Sprite.BFE1, frame: 32768, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland2, misc1: 0, misc2: 0),                     // State.Bfgland
+        new(number: 118, sprite: Sprite.BFE1, frame: 32769, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland3, misc1: 0, misc2: 0),                     // State.Bfgland2
+        new(number: 119, sprite: Sprite.BFE1, frame: 32770, tics: 8, playerAction: null, mobjAction: MobjActions.BFGSpray, next: MobjState.Bfgland4, misc1: 0, misc2: 0),     // State.Bfgland3
+        new(number: 120, sprite: Sprite.BFE1, frame: 32771, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland5, misc1: 0, misc2: 0),                     // State.Bfgland4
+        new(number: 121, sprite: Sprite.BFE1, frame: 32772, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgland6, misc1: 0, misc2: 0),                     // State.Bfgland5
+        new(number: 122, sprite: Sprite.BFE1, frame: 32773, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Bfgland6
+        new(number: 123, sprite: Sprite.BFE2, frame: 32768, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgexp2, misc1: 0, misc2: 0),                      // State.Bfgexp
+        new(number: 124, sprite: Sprite.BFE2, frame: 32769, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgexp3, misc1: 0, misc2: 0),                      // State.Bfgexp2
+        new(number: 125, sprite: Sprite.BFE2, frame: 32770, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bfgexp4, misc1: 0, misc2: 0),                      // State.Bfgexp3
+        new(number: 126, sprite: Sprite.BFE2, frame: 32771, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Bfgexp4
+        new(number: 127, sprite: Sprite.MISL, frame: 32769, tics: 8, playerAction: null, mobjAction: MobjActions.Explode, next: MobjState.Explode2, misc1: 0, misc2: 0),      // State.Explode1
+        new(number: 128, sprite: Sprite.MISL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Explode3, misc1: 0, misc2: 0),                     // State.Explode2
+        new(number: 129, sprite: Sprite.MISL, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Explode3
+        new(number: 130, sprite: Sprite.TFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog01, misc1: 0, misc2: 0),                       // State.Tfog
+        new(number: 131, sprite: Sprite.TFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog02, misc1: 0, misc2: 0),                       // State.Tfog01
+        new(number: 132, sprite: Sprite.TFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog2, misc1: 0, misc2: 0),                        // State.Tfog02
+        new(number: 133, sprite: Sprite.TFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog3, misc1: 0, misc2: 0),                        // State.Tfog2
+        new(number: 134, sprite: Sprite.TFOG, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog4, misc1: 0, misc2: 0),                        // State.Tfog3
+        new(number: 135, sprite: Sprite.TFOG, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog5, misc1: 0, misc2: 0),                        // State.Tfog4
+        new(number: 136, sprite: Sprite.TFOG, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog6, misc1: 0, misc2: 0),                        // State.Tfog5
+        new(number: 137, sprite: Sprite.TFOG, frame: 32773, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog7, misc1: 0, misc2: 0),                        // State.Tfog6
+        new(number: 138, sprite: Sprite.TFOG, frame: 32774, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog8, misc1: 0, misc2: 0),                        // State.Tfog7
+        new(number: 139, sprite: Sprite.TFOG, frame: 32775, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog9, misc1: 0, misc2: 0),                        // State.Tfog8
+        new(number: 140, sprite: Sprite.TFOG, frame: 32776, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Tfog10, misc1: 0, misc2: 0),                       // State.Tfog9
+        new(number: 141, sprite: Sprite.TFOG, frame: 32777, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Tfog10
+        new(number: 142, sprite: Sprite.IFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog01, misc1: 0, misc2: 0),                       // State.Ifog
+        new(number: 143, sprite: Sprite.IFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog02, misc1: 0, misc2: 0),                       // State.Ifog01
+        new(number: 144, sprite: Sprite.IFOG, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog2, misc1: 0, misc2: 0),                        // State.Ifog02
+        new(number: 145, sprite: Sprite.IFOG, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog3, misc1: 0, misc2: 0),                        // State.Ifog2
+        new(number: 146, sprite: Sprite.IFOG, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog4, misc1: 0, misc2: 0),                        // State.Ifog3
+        new(number: 147, sprite: Sprite.IFOG, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Ifog5, misc1: 0, misc2: 0),                        // State.Ifog4
+        new(number: 148, sprite: Sprite.IFOG, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Ifog5
+        new(number: 149, sprite: Sprite.PLAY, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Play
+        new(number: 150, sprite: Sprite.PLAY, frame: 0, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun2, misc1: 0, misc2: 0),                         // State.PlayRun1
+        new(number: 151, sprite: Sprite.PLAY, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun3, misc1: 0, misc2: 0),                         // State.PlayRun2
+        new(number: 152, sprite: Sprite.PLAY, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun4, misc1: 0, misc2: 0),                         // State.PlayRun3
+        new(number: 153, sprite: Sprite.PLAY, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayRun1, misc1: 0, misc2: 0),                         // State.PlayRun4
+        new(number: 154, sprite: Sprite.PLAY, frame: 4, tics: 12, playerAction: null, mobjAction: null, next: MobjState.Play, misc1: 0, misc2: 0),                            // State.PlayAtk1
+        new(number: 155, sprite: Sprite.PLAY, frame: 32773, tics: 6, playerAction: null, mobjAction: null, next: MobjState.PlayAtk1, misc1: 0, misc2: 0),                     // State.PlayAtk2
+        new(number: 156, sprite: Sprite.PLAY, frame: 6, tics: 4, playerAction: null, mobjAction: null, next: MobjState.PlayPain2, misc1: 0, misc2: 0),                        // State.PlayPain
+        new(number: 157, sprite: Sprite.PLAY, frame: 6, tics: 4, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.Play, misc1: 0, misc2: 0),                 // State.PlayPain2
+        new(number: 158, sprite: Sprite.PLAY, frame: 7, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie2, misc1: 0, misc2: 0),                        // State.PlayDie1
+        new(number: 159, sprite: Sprite.PLAY, frame: 8, tics: 10, playerAction: null, mobjAction: MobjActions.PlayerScream, next: MobjState.PlayDie3, misc1: 0, misc2: 0),    // State.PlayDie2
+        new(number: 160, sprite: Sprite.PLAY, frame: 9, tics: 10, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PlayDie4, misc1: 0, misc2: 0),            // State.PlayDie3
+        new(number: 161, sprite: Sprite.PLAY, frame: 10, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie5, misc1: 0, misc2: 0),                       // State.PlayDie4
+        new(number: 162, sprite: Sprite.PLAY, frame: 11, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie6, misc1: 0, misc2: 0),                       // State.PlayDie5
+        new(number: 163, sprite: Sprite.PLAY, frame: 12, tics: 10, playerAction: null, mobjAction: null, next: MobjState.PlayDie7, misc1: 0, misc2: 0),                       // State.PlayDie6
+        new(number: 164, sprite: Sprite.PLAY, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PlayDie7
+        new(number: 165, sprite: Sprite.PLAY, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie2, misc1: 0, misc2: 0),                       // State.PlayXdie1
+        new(number: 166, sprite: Sprite.PLAY, frame: 15, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.PlayXdie3, misc1: 0, misc2: 0),        // State.PlayXdie2
+        new(number: 167, sprite: Sprite.PLAY, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PlayXdie4, misc1: 0, misc2: 0),           // State.PlayXdie3
+        new(number: 168, sprite: Sprite.PLAY, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie5, misc1: 0, misc2: 0),                       // State.PlayXdie4
+        new(number: 169, sprite: Sprite.PLAY, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie6, misc1: 0, misc2: 0),                       // State.PlayXdie5
+        new(number: 170, sprite: Sprite.PLAY, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie7, misc1: 0, misc2: 0),                       // State.PlayXdie6
+        new(number: 171, sprite: Sprite.PLAY, frame: 20, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie8, misc1: 0, misc2: 0),                       // State.PlayXdie7
+        new(number: 172, sprite: Sprite.PLAY, frame: 21, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PlayXdie9, misc1: 0, misc2: 0),                       // State.PlayXdie8
+        new(number: 173, sprite: Sprite.PLAY, frame: 22, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PlayXdie9
+        new(number: 174, sprite: Sprite.POSS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.PossStnd2, misc1: 0, misc2: 0),           // State.PossStnd
+        new(number: 175, sprite: Sprite.POSS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.PossStnd, misc1: 0, misc2: 0),            // State.PossStnd2
+        new(number: 176, sprite: Sprite.POSS, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun2, misc1: 0, misc2: 0),            // State.PossRun1
+        new(number: 177, sprite: Sprite.POSS, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun3, misc1: 0, misc2: 0),            // State.PossRun2
+        new(number: 178, sprite: Sprite.POSS, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun4, misc1: 0, misc2: 0),            // State.PossRun3
+        new(number: 179, sprite: Sprite.POSS, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun5, misc1: 0, misc2: 0),            // State.PossRun4
+        new(number: 180, sprite: Sprite.POSS, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun6, misc1: 0, misc2: 0),            // State.PossRun5
+        new(number: 181, sprite: Sprite.POSS, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun7, misc1: 0, misc2: 0),            // State.PossRun6
+        new(number: 182, sprite: Sprite.POSS, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun8, misc1: 0, misc2: 0),            // State.PossRun7
+        new(number: 183, sprite: Sprite.POSS, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PossRun1, misc1: 0, misc2: 0),            // State.PossRun8
+        new(number: 184, sprite: Sprite.POSS, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PossAtk2, misc1: 0, misc2: 0),      // State.PossAtk1
+        new(number: 185, sprite: Sprite.POSS, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.PosAttack, next: MobjState.PossAtk3, misc1: 0, misc2: 0),        // State.PossAtk2
+        new(number: 186, sprite: Sprite.POSS, frame: 4, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PossRun1, misc1: 0, misc2: 0),                         // State.PossAtk3
+        new(number: 187, sprite: Sprite.POSS, frame: 6, tics: 3, playerAction: null, mobjAction: null, next: MobjState.PossPain2, misc1: 0, misc2: 0),                        // State.PossPain
+        new(number: 188, sprite: Sprite.POSS, frame: 6, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.PossRun1, misc1: 0, misc2: 0),             // State.PossPain2
+        new(number: 189, sprite: Sprite.POSS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossDie2, misc1: 0, misc2: 0),                         // State.PossDie1
+        new(number: 190, sprite: Sprite.POSS, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.PossDie3, misc1: 0, misc2: 0),           // State.PossDie2
+        new(number: 191, sprite: Sprite.POSS, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PossDie4, misc1: 0, misc2: 0),             // State.PossDie3
+        new(number: 192, sprite: Sprite.POSS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossDie5, misc1: 0, misc2: 0),                        // State.PossDie4
+        new(number: 193, sprite: Sprite.POSS, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PossDie5
+        new(number: 194, sprite: Sprite.POSS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie2, misc1: 0, misc2: 0),                       // State.PossXdie1
+        new(number: 195, sprite: Sprite.POSS, frame: 13, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.PossXdie3, misc1: 0, misc2: 0),        // State.PossXdie2
+        new(number: 196, sprite: Sprite.POSS, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.PossXdie4, misc1: 0, misc2: 0),           // State.PossXdie3
+        new(number: 197, sprite: Sprite.POSS, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie5, misc1: 0, misc2: 0),                       // State.PossXdie4
+        new(number: 198, sprite: Sprite.POSS, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie6, misc1: 0, misc2: 0),                       // State.PossXdie5
+        new(number: 199, sprite: Sprite.POSS, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie7, misc1: 0, misc2: 0),                       // State.PossXdie6
+        new(number: 200, sprite: Sprite.POSS, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie8, misc1: 0, misc2: 0),                       // State.PossXdie7
+        new(number: 201, sprite: Sprite.POSS, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossXdie9, misc1: 0, misc2: 0),                       // State.PossXdie8
+        new(number: 202, sprite: Sprite.POSS, frame: 20, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.PossXdie9
+        new(number: 203, sprite: Sprite.POSS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRaise2, misc1: 0, misc2: 0),                      // State.PossRaise1
+        new(number: 204, sprite: Sprite.POSS, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRaise3, misc1: 0, misc2: 0),                       // State.PossRaise2
+        new(number: 205, sprite: Sprite.POSS, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRaise4, misc1: 0, misc2: 0),                       // State.PossRaise3
+        new(number: 206, sprite: Sprite.POSS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.PossRun1, misc1: 0, misc2: 0),                         // State.PossRaise4
+        new(number: 207, sprite: Sprite.SPOS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SposStnd2, misc1: 0, misc2: 0),           // State.SposStnd
+        new(number: 208, sprite: Sprite.SPOS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SposStnd, misc1: 0, misc2: 0),            // State.SposStnd2
+        new(number: 209, sprite: Sprite.SPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun2, misc1: 0, misc2: 0),            // State.SposRun1
+        new(number: 210, sprite: Sprite.SPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun3, misc1: 0, misc2: 0),            // State.SposRun2
+        new(number: 211, sprite: Sprite.SPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun4, misc1: 0, misc2: 0),            // State.SposRun3
+        new(number: 212, sprite: Sprite.SPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun5, misc1: 0, misc2: 0),            // State.SposRun4
+        new(number: 213, sprite: Sprite.SPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun6, misc1: 0, misc2: 0),            // State.SposRun5
+        new(number: 214, sprite: Sprite.SPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun7, misc1: 0, misc2: 0),            // State.SposRun6
+        new(number: 215, sprite: Sprite.SPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun8, misc1: 0, misc2: 0),            // State.SposRun7
+        new(number: 216, sprite: Sprite.SPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SposRun1, misc1: 0, misc2: 0),            // State.SposRun8
+        new(number: 217, sprite: Sprite.SPOS, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SposAtk2, misc1: 0, misc2: 0),      // State.SposAtk1
+        new(number: 218, sprite: Sprite.SPOS, frame: 32773, tics: 10, playerAction: null, mobjAction: MobjActions.SPosAttack, next: MobjState.SposAtk3, misc1: 0, misc2: 0),  // State.SposAtk2
+        new(number: 219, sprite: Sprite.SPOS, frame: 4, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SposRun1, misc1: 0, misc2: 0),                        // State.SposAtk3
+        new(number: 220, sprite: Sprite.SPOS, frame: 6, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SposPain2, misc1: 0, misc2: 0),                        // State.SposPain
+        new(number: 221, sprite: Sprite.SPOS, frame: 6, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SposRun1, misc1: 0, misc2: 0),             // State.SposPain2
+        new(number: 222, sprite: Sprite.SPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposDie2, misc1: 0, misc2: 0),                         // State.SposDie1
+        new(number: 223, sprite: Sprite.SPOS, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SposDie3, misc1: 0, misc2: 0),           // State.SposDie2
+        new(number: 224, sprite: Sprite.SPOS, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SposDie4, misc1: 0, misc2: 0),             // State.SposDie3
+        new(number: 225, sprite: Sprite.SPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposDie5, misc1: 0, misc2: 0),                        // State.SposDie4
+        new(number: 226, sprite: Sprite.SPOS, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SposDie5
+        new(number: 227, sprite: Sprite.SPOS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie2, misc1: 0, misc2: 0),                       // State.SposXdie1
+        new(number: 228, sprite: Sprite.SPOS, frame: 13, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.SposXdie3, misc1: 0, misc2: 0),        // State.SposXdie2
+        new(number: 229, sprite: Sprite.SPOS, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SposXdie4, misc1: 0, misc2: 0),           // State.SposXdie3
+        new(number: 230, sprite: Sprite.SPOS, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie5, misc1: 0, misc2: 0),                       // State.SposXdie4
+        new(number: 231, sprite: Sprite.SPOS, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie6, misc1: 0, misc2: 0),                       // State.SposXdie5
+        new(number: 232, sprite: Sprite.SPOS, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie7, misc1: 0, misc2: 0),                       // State.SposXdie6
+        new(number: 233, sprite: Sprite.SPOS, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie8, misc1: 0, misc2: 0),                       // State.SposXdie7
+        new(number: 234, sprite: Sprite.SPOS, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposXdie9, misc1: 0, misc2: 0),                       // State.SposXdie8
+        new(number: 235, sprite: Sprite.SPOS, frame: 20, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SposXdie9
+        new(number: 236, sprite: Sprite.SPOS, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise2, misc1: 0, misc2: 0),                      // State.SposRaise1
+        new(number: 237, sprite: Sprite.SPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise3, misc1: 0, misc2: 0),                      // State.SposRaise2
+        new(number: 238, sprite: Sprite.SPOS, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise4, misc1: 0, misc2: 0),                       // State.SposRaise3
+        new(number: 239, sprite: Sprite.SPOS, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRaise5, misc1: 0, misc2: 0),                       // State.SposRaise4
+        new(number: 240, sprite: Sprite.SPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SposRun1, misc1: 0, misc2: 0),                         // State.SposRaise5
+        new(number: 241, sprite: Sprite.VILE, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.VileStnd2, misc1: 0, misc2: 0),           // State.VileStnd
+        new(number: 242, sprite: Sprite.VILE, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.VileStnd, misc1: 0, misc2: 0),            // State.VileStnd2
+        new(number: 243, sprite: Sprite.VILE, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun2, misc1: 0, misc2: 0),        // State.VileRun1
+        new(number: 244, sprite: Sprite.VILE, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun3, misc1: 0, misc2: 0),        // State.VileRun2
+        new(number: 245, sprite: Sprite.VILE, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun4, misc1: 0, misc2: 0),        // State.VileRun3
+        new(number: 246, sprite: Sprite.VILE, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun5, misc1: 0, misc2: 0),        // State.VileRun4
+        new(number: 247, sprite: Sprite.VILE, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun6, misc1: 0, misc2: 0),        // State.VileRun5
+        new(number: 248, sprite: Sprite.VILE, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun7, misc1: 0, misc2: 0),        // State.VileRun6
+        new(number: 249, sprite: Sprite.VILE, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun8, misc1: 0, misc2: 0),        // State.VileRun7
+        new(number: 250, sprite: Sprite.VILE, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun9, misc1: 0, misc2: 0),        // State.VileRun8
+        new(number: 251, sprite: Sprite.VILE, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun10, misc1: 0, misc2: 0),       // State.VileRun9
+        new(number: 252, sprite: Sprite.VILE, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun11, misc1: 0, misc2: 0),       // State.VileRun10
+        new(number: 253, sprite: Sprite.VILE, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun12, misc1: 0, misc2: 0),       // State.VileRun11
+        new(number: 254, sprite: Sprite.VILE, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.VileChase, next: MobjState.VileRun1, misc1: 0, misc2: 0),        // State.VileRun12
+        new(number: 255, sprite: Sprite.VILE, frame: 32774, tics: 0, playerAction: null, mobjAction: MobjActions.VileStart, next: MobjState.VileAtk2, misc1: 0, misc2: 0),    // State.VileAtk1
+        new(number: 256, sprite: Sprite.VILE, frame: 32774, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk3, misc1: 0, misc2: 0),  // State.VileAtk2
+        new(number: 257, sprite: Sprite.VILE, frame: 32775, tics: 8, playerAction: null, mobjAction: MobjActions.VileTarget, next: MobjState.VileAtk4, misc1: 0, misc2: 0),   // State.VileAtk3
+        new(number: 258, sprite: Sprite.VILE, frame: 32776, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk5, misc1: 0, misc2: 0),   // State.VileAtk4
+        new(number: 259, sprite: Sprite.VILE, frame: 32777, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk6, misc1: 0, misc2: 0),   // State.VileAtk5
+        new(number: 260, sprite: Sprite.VILE, frame: 32778, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk7, misc1: 0, misc2: 0),   // State.VileAtk6
+        new(number: 261, sprite: Sprite.VILE, frame: 32779, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk8, misc1: 0, misc2: 0),   // State.VileAtk7
+        new(number: 262, sprite: Sprite.VILE, frame: 32780, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk9, misc1: 0, misc2: 0),   // State.VileAtk8
+        new(number: 263, sprite: Sprite.VILE, frame: 32781, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.VileAtk10, misc1: 0, misc2: 0),  // State.VileAtk9
+        new(number: 264, sprite: Sprite.VILE, frame: 32782, tics: 8, playerAction: null, mobjAction: MobjActions.VileAttack, next: MobjState.VileAtk11, misc1: 0, misc2: 0),  // State.VileAtk10
+        new(number: 265, sprite: Sprite.VILE, frame: 32783, tics: 20, playerAction: null, mobjAction: null, next: MobjState.VileRun1, misc1: 0, misc2: 0),                    // State.VileAtk11
+        new(number: 266, sprite: Sprite.VILE, frame: 32794, tics: 10, playerAction: null, mobjAction: null, next: MobjState.VileHeal2, misc1: 0, misc2: 0),                   // State.VileHeal1
+        new(number: 267, sprite: Sprite.VILE, frame: 32795, tics: 10, playerAction: null, mobjAction: null, next: MobjState.VileHeal3, misc1: 0, misc2: 0),                   // State.VileHeal2
+        new(number: 268, sprite: Sprite.VILE, frame: 32796, tics: 10, playerAction: null, mobjAction: null, next: MobjState.VileRun1, misc1: 0, misc2: 0),                    // State.VileHeal3
+        new(number: 269, sprite: Sprite.VILE, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.VilePain2, misc1: 0, misc2: 0),                       // State.VilePain
+        new(number: 270, sprite: Sprite.VILE, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.VileRun1, misc1: 0, misc2: 0),            // State.VilePain2
+        new(number: 271, sprite: Sprite.VILE, frame: 16, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie2, misc1: 0, misc2: 0),                        // State.VileDie1
+        new(number: 272, sprite: Sprite.VILE, frame: 17, tics: 7, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.VileDie3, misc1: 0, misc2: 0),          // State.VileDie2
+        new(number: 273, sprite: Sprite.VILE, frame: 18, tics: 7, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.VileDie4, misc1: 0, misc2: 0),            // State.VileDie3
+        new(number: 274, sprite: Sprite.VILE, frame: 19, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie5, misc1: 0, misc2: 0),                        // State.VileDie4
+        new(number: 275, sprite: Sprite.VILE, frame: 20, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie6, misc1: 0, misc2: 0),                        // State.VileDie5
+        new(number: 276, sprite: Sprite.VILE, frame: 21, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie7, misc1: 0, misc2: 0),                        // State.VileDie6
+        new(number: 277, sprite: Sprite.VILE, frame: 22, tics: 7, playerAction: null, mobjAction: null, next: MobjState.VileDie8, misc1: 0, misc2: 0),                        // State.VileDie7
+        new(number: 278, sprite: Sprite.VILE, frame: 23, tics: 5, playerAction: null, mobjAction: null, next: MobjState.VileDie9, misc1: 0, misc2: 0),                        // State.VileDie8
+        new(number: 279, sprite: Sprite.VILE, frame: 24, tics: 5, playerAction: null, mobjAction: null, next: MobjState.VileDie10, misc1: 0, misc2: 0),                       // State.VileDie9
+        new(number: 280, sprite: Sprite.VILE, frame: 25, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.VileDie10
+        new(number: 281, sprite: Sprite.FIRE, frame: 32768, tics: 2, playerAction: null, mobjAction: MobjActions.StartFire, next: MobjState.Fire2, misc1: 0, misc2: 0),       // State.Fire1
+        new(number: 282, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire3, misc1: 0, misc2: 0),            // State.Fire2
+        new(number: 283, sprite: Sprite.FIRE, frame: 32768, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire4, misc1: 0, misc2: 0),            // State.Fire3
+        new(number: 284, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire5, misc1: 0, misc2: 0),            // State.Fire4
+        new(number: 285, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.FireCrackle, next: MobjState.Fire6, misc1: 0, misc2: 0),     // State.Fire5
+        new(number: 286, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire7, misc1: 0, misc2: 0),            // State.Fire6
+        new(number: 287, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire8, misc1: 0, misc2: 0),            // State.Fire7
+        new(number: 288, sprite: Sprite.FIRE, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire9, misc1: 0, misc2: 0),            // State.Fire8
+        new(number: 289, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire10, misc1: 0, misc2: 0),           // State.Fire9
+        new(number: 290, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire11, misc1: 0, misc2: 0),           // State.Fire10
+        new(number: 291, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire12, misc1: 0, misc2: 0),           // State.Fire11
+        new(number: 292, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire13, misc1: 0, misc2: 0),           // State.Fire12
+        new(number: 293, sprite: Sprite.FIRE, frame: 32770, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire14, misc1: 0, misc2: 0),           // State.Fire13
+        new(number: 294, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire15, misc1: 0, misc2: 0),           // State.Fire14
+        new(number: 295, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire16, misc1: 0, misc2: 0),           // State.Fire15
+        new(number: 296, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire17, misc1: 0, misc2: 0),           // State.Fire16
+        new(number: 297, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire18, misc1: 0, misc2: 0),           // State.Fire17
+        new(number: 298, sprite: Sprite.FIRE, frame: 32771, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire19, misc1: 0, misc2: 0),           // State.Fire18
+        new(number: 299, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.FireCrackle, next: MobjState.Fire20, misc1: 0, misc2: 0),    // State.Fire19
+        new(number: 300, sprite: Sprite.FIRE, frame: 32773, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire21, misc1: 0, misc2: 0),           // State.Fire20
+        new(number: 301, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire22, misc1: 0, misc2: 0),           // State.Fire21
+        new(number: 302, sprite: Sprite.FIRE, frame: 32773, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire23, misc1: 0, misc2: 0),           // State.Fire22
+        new(number: 303, sprite: Sprite.FIRE, frame: 32772, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire24, misc1: 0, misc2: 0),           // State.Fire23
+        new(number: 304, sprite: Sprite.FIRE, frame: 32773, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire25, misc1: 0, misc2: 0),           // State.Fire24
+        new(number: 305, sprite: Sprite.FIRE, frame: 32774, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire26, misc1: 0, misc2: 0),           // State.Fire25
+        new(number: 306, sprite: Sprite.FIRE, frame: 32775, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire27, misc1: 0, misc2: 0),           // State.Fire26
+        new(number: 307, sprite: Sprite.FIRE, frame: 32774, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire28, misc1: 0, misc2: 0),           // State.Fire27
+        new(number: 308, sprite: Sprite.FIRE, frame: 32775, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire29, misc1: 0, misc2: 0),           // State.Fire28
+        new(number: 309, sprite: Sprite.FIRE, frame: 32774, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Fire30, misc1: 0, misc2: 0),           // State.Fire29
+        new(number: 310, sprite: Sprite.FIRE, frame: 32775, tics: 2, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Null, misc1: 0, misc2: 0),             // State.Fire30
+        new(number: 311, sprite: Sprite.PUFF, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke2, misc1: 0, misc2: 0),                           // State.Smoke1
+        new(number: 312, sprite: Sprite.PUFF, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke3, misc1: 0, misc2: 0),                           // State.Smoke2
+        new(number: 313, sprite: Sprite.PUFF, frame: 1, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke4, misc1: 0, misc2: 0),                           // State.Smoke3
+        new(number: 314, sprite: Sprite.PUFF, frame: 2, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Smoke5, misc1: 0, misc2: 0),                           // State.Smoke4
+        new(number: 315, sprite: Sprite.PUFF, frame: 3, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                             // State.Smoke5
+        new(number: 316, sprite: Sprite.FATB, frame: 32768, tics: 2, playerAction: null, mobjAction: MobjActions.Tracer, next: MobjState.Tracer2, misc1: 0, misc2: 0),        // State.Tracer
+        new(number: 317, sprite: Sprite.FATB, frame: 32769, tics: 2, playerAction: null, mobjAction: MobjActions.Tracer, next: MobjState.Tracer, misc1: 0, misc2: 0),         // State.Tracer2
+        new(number: 318, sprite: Sprite.FBXP, frame: 32768, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Traceexp2, misc1: 0, misc2: 0),                    // State.Traceexp1
+        new(number: 319, sprite: Sprite.FBXP, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Traceexp3, misc1: 0, misc2: 0),                    // State.Traceexp2
+        new(number: 320, sprite: Sprite.FBXP, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Traceexp3
+        new(number: 321, sprite: Sprite.SKEL, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkelStnd2, misc1: 0, misc2: 0),           // State.SkelStnd
+        new(number: 322, sprite: Sprite.SKEL, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkelStnd, misc1: 0, misc2: 0),            // State.SkelStnd2
+        new(number: 323, sprite: Sprite.SKEL, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun2, misc1: 0, misc2: 0),            // State.SkelRun1
+        new(number: 324, sprite: Sprite.SKEL, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun3, misc1: 0, misc2: 0),            // State.SkelRun2
+        new(number: 325, sprite: Sprite.SKEL, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun4, misc1: 0, misc2: 0),            // State.SkelRun3
+        new(number: 326, sprite: Sprite.SKEL, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun5, misc1: 0, misc2: 0),            // State.SkelRun4
+        new(number: 327, sprite: Sprite.SKEL, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun6, misc1: 0, misc2: 0),            // State.SkelRun5
+        new(number: 328, sprite: Sprite.SKEL, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun7, misc1: 0, misc2: 0),            // State.SkelRun6
+        new(number: 329, sprite: Sprite.SKEL, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun8, misc1: 0, misc2: 0),            // State.SkelRun7
+        new(number: 330, sprite: Sprite.SKEL, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun9, misc1: 0, misc2: 0),            // State.SkelRun8
+        new(number: 331, sprite: Sprite.SKEL, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun10, misc1: 0, misc2: 0),           // State.SkelRun9
+        new(number: 332, sprite: Sprite.SKEL, frame: 4, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun11, misc1: 0, misc2: 0),           // State.SkelRun10
+        new(number: 333, sprite: Sprite.SKEL, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun12, misc1: 0, misc2: 0),           // State.SkelRun11
+        new(number: 334, sprite: Sprite.SKEL, frame: 5, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkelRun1, misc1: 0, misc2: 0),            // State.SkelRun12
+        new(number: 335, sprite: Sprite.SKEL, frame: 6, tics: 0, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelFist2, misc1: 0, misc2: 0),      // State.SkelFist1
+        new(number: 336, sprite: Sprite.SKEL, frame: 6, tics: 6, playerAction: null, mobjAction: MobjActions.SkelWhoosh, next: MobjState.SkelFist3, misc1: 0, misc2: 0),      // State.SkelFist2
+        new(number: 337, sprite: Sprite.SKEL, frame: 7, tics: 6, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelFist4, misc1: 0, misc2: 0),      // State.SkelFist3
+        new(number: 338, sprite: Sprite.SKEL, frame: 8, tics: 6, playerAction: null, mobjAction: MobjActions.SkelFist, next: MobjState.SkelRun1, misc1: 0, misc2: 0),         // State.SkelFist4
+        new(number: 339, sprite: Sprite.SKEL, frame: 32777, tics: 0, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelMiss2, misc1: 0, misc2: 0),  // State.SkelMiss1
+        new(number: 340, sprite: Sprite.SKEL, frame: 32777, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelMiss3, misc1: 0, misc2: 0), // State.SkelMiss2
+        new(number: 341, sprite: Sprite.SKEL, frame: 10, tics: 10, playerAction: null, mobjAction: MobjActions.SkelMissile, next: MobjState.SkelMiss4, misc1: 0, misc2: 0),   // State.SkelMiss3
+        new(number: 342, sprite: Sprite.SKEL, frame: 10, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkelRun1, misc1: 0, misc2: 0),     // State.SkelMiss4
+        new(number: 343, sprite: Sprite.SKEL, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelPain2, misc1: 0, misc2: 0),                       // State.SkelPain
+        new(number: 344, sprite: Sprite.SKEL, frame: 11, tics: 5, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SkelRun1, misc1: 0, misc2: 0),            // State.SkelPain2
+        new(number: 345, sprite: Sprite.SKEL, frame: 11, tics: 7, playerAction: null, mobjAction: null, next: MobjState.SkelDie2, misc1: 0, misc2: 0),                        // State.SkelDie1
+        new(number: 346, sprite: Sprite.SKEL, frame: 12, tics: 7, playerAction: null, mobjAction: null, next: MobjState.SkelDie3, misc1: 0, misc2: 0),                        // State.SkelDie2
+        new(number: 347, sprite: Sprite.SKEL, frame: 13, tics: 7, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SkelDie4, misc1: 0, misc2: 0),          // State.SkelDie3
+        new(number: 348, sprite: Sprite.SKEL, frame: 14, tics: 7, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SkelDie5, misc1: 0, misc2: 0),            // State.SkelDie4
+        new(number: 349, sprite: Sprite.SKEL, frame: 15, tics: 7, playerAction: null, mobjAction: null, next: MobjState.SkelDie6, misc1: 0, misc2: 0),                        // State.SkelDie5
+        new(number: 350, sprite: Sprite.SKEL, frame: 16, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SkelDie6
+        new(number: 351, sprite: Sprite.SKEL, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise2, misc1: 0, misc2: 0),                      // State.SkelRaise1
+        new(number: 352, sprite: Sprite.SKEL, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise3, misc1: 0, misc2: 0),                      // State.SkelRaise2
+        new(number: 353, sprite: Sprite.SKEL, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise4, misc1: 0, misc2: 0),                      // State.SkelRaise3
+        new(number: 354, sprite: Sprite.SKEL, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise5, misc1: 0, misc2: 0),                      // State.SkelRaise4
+        new(number: 355, sprite: Sprite.SKEL, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRaise6, misc1: 0, misc2: 0),                      // State.SkelRaise5
+        new(number: 356, sprite: Sprite.SKEL, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SkelRun1, misc1: 0, misc2: 0),                        // State.SkelRaise6
+        new(number: 357, sprite: Sprite.MANF, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Fatshot2, misc1: 0, misc2: 0),                     // State.Fatshot1
+        new(number: 358, sprite: Sprite.MANF, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Fatshot1, misc1: 0, misc2: 0),                     // State.Fatshot2
+        new(number: 359, sprite: Sprite.MISL, frame: 32769, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Fatshotx2, misc1: 0, misc2: 0),                    // State.Fatshotx1
+        new(number: 360, sprite: Sprite.MISL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Fatshotx3, misc1: 0, misc2: 0),                    // State.Fatshotx2
+        new(number: 361, sprite: Sprite.MISL, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Fatshotx3
+        new(number: 362, sprite: Sprite.FATT, frame: 0, tics: 15, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.FattStnd2, misc1: 0, misc2: 0),           // State.FattStnd
+        new(number: 363, sprite: Sprite.FATT, frame: 1, tics: 15, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.FattStnd, misc1: 0, misc2: 0),            // State.FattStnd2
+        new(number: 364, sprite: Sprite.FATT, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun2, misc1: 0, misc2: 0),            // State.FattRun1
+        new(number: 365, sprite: Sprite.FATT, frame: 0, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun3, misc1: 0, misc2: 0),            // State.FattRun2
+        new(number: 366, sprite: Sprite.FATT, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun4, misc1: 0, misc2: 0),            // State.FattRun3
+        new(number: 367, sprite: Sprite.FATT, frame: 1, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun5, misc1: 0, misc2: 0),            // State.FattRun4
+        new(number: 368, sprite: Sprite.FATT, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun6, misc1: 0, misc2: 0),            // State.FattRun5
+        new(number: 369, sprite: Sprite.FATT, frame: 2, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun7, misc1: 0, misc2: 0),            // State.FattRun6
+        new(number: 370, sprite: Sprite.FATT, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun8, misc1: 0, misc2: 0),            // State.FattRun7
+        new(number: 371, sprite: Sprite.FATT, frame: 3, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun9, misc1: 0, misc2: 0),            // State.FattRun8
+        new(number: 372, sprite: Sprite.FATT, frame: 4, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun10, misc1: 0, misc2: 0),           // State.FattRun9
+        new(number: 373, sprite: Sprite.FATT, frame: 4, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun11, misc1: 0, misc2: 0),           // State.FattRun10
+        new(number: 374, sprite: Sprite.FATT, frame: 5, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun12, misc1: 0, misc2: 0),           // State.FattRun11
+        new(number: 375, sprite: Sprite.FATT, frame: 5, tics: 4, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.FattRun1, misc1: 0, misc2: 0),            // State.FattRun12
+        new(number: 376, sprite: Sprite.FATT, frame: 6, tics: 20, playerAction: null, mobjAction: MobjActions.FatRaise, next: MobjState.FattAtk2, misc1: 0, misc2: 0),        // State.FattAtk1
+        new(number: 377, sprite: Sprite.FATT, frame: 32775, tics: 10, playerAction: null, mobjAction: MobjActions.FatAttack1, next: MobjState.FattAtk3, misc1: 0, misc2: 0),  // State.FattAtk2
+        new(number: 378, sprite: Sprite.FATT, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk4, misc1: 0, misc2: 0),       // State.FattAtk3
+        new(number: 379, sprite: Sprite.FATT, frame: 6, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk5, misc1: 0, misc2: 0),       // State.FattAtk4
+        new(number: 380, sprite: Sprite.FATT, frame: 32775, tics: 10, playerAction: null, mobjAction: MobjActions.FatAttack2, next: MobjState.FattAtk6, misc1: 0, misc2: 0),  // State.FattAtk5
+        new(number: 381, sprite: Sprite.FATT, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk7, misc1: 0, misc2: 0),       // State.FattAtk6
+        new(number: 382, sprite: Sprite.FATT, frame: 6, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk8, misc1: 0, misc2: 0),       // State.FattAtk7
+        new(number: 383, sprite: Sprite.FATT, frame: 32775, tics: 10, playerAction: null, mobjAction: MobjActions.FatAttack3, next: MobjState.FattAtk9, misc1: 0, misc2: 0),  // State.FattAtk8
+        new(number: 384, sprite: Sprite.FATT, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattAtk10, misc1: 0, misc2: 0),      // State.FattAtk9
+        new(number: 385, sprite: Sprite.FATT, frame: 6, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.FattRun1, misc1: 0, misc2: 0),       // State.FattAtk10
+        new(number: 386, sprite: Sprite.FATT, frame: 9, tics: 3, playerAction: null, mobjAction: null, next: MobjState.FattPain2, misc1: 0, misc2: 0),                        // State.FattPain
+        new(number: 387, sprite: Sprite.FATT, frame: 9, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.FattRun1, misc1: 0, misc2: 0),             // State.FattPain2
+        new(number: 388, sprite: Sprite.FATT, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie2, misc1: 0, misc2: 0),                        // State.FattDie1
+        new(number: 389, sprite: Sprite.FATT, frame: 11, tics: 6, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.FattDie3, misc1: 0, misc2: 0),          // State.FattDie2
+        new(number: 390, sprite: Sprite.FATT, frame: 12, tics: 6, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.FattDie4, misc1: 0, misc2: 0),            // State.FattDie3
+        new(number: 391, sprite: Sprite.FATT, frame: 13, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie5, misc1: 0, misc2: 0),                        // State.FattDie4
+        new(number: 392, sprite: Sprite.FATT, frame: 14, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie6, misc1: 0, misc2: 0),                        // State.FattDie5
+        new(number: 393, sprite: Sprite.FATT, frame: 15, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie7, misc1: 0, misc2: 0),                        // State.FattDie6
+        new(number: 394, sprite: Sprite.FATT, frame: 16, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie8, misc1: 0, misc2: 0),                        // State.FattDie7
+        new(number: 395, sprite: Sprite.FATT, frame: 17, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie9, misc1: 0, misc2: 0),                        // State.FattDie8
+        new(number: 396, sprite: Sprite.FATT, frame: 18, tics: 6, playerAction: null, mobjAction: null, next: MobjState.FattDie10, misc1: 0, misc2: 0),                       // State.FattDie9
+        new(number: 397, sprite: Sprite.FATT, frame: 19, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.FattDie10
+        new(number: 398, sprite: Sprite.FATT, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise2, misc1: 0, misc2: 0),                      // State.FattRaise1
+        new(number: 399, sprite: Sprite.FATT, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise3, misc1: 0, misc2: 0),                      // State.FattRaise2
+        new(number: 400, sprite: Sprite.FATT, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise4, misc1: 0, misc2: 0),                      // State.FattRaise3
+        new(number: 401, sprite: Sprite.FATT, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise5, misc1: 0, misc2: 0),                      // State.FattRaise4
+        new(number: 402, sprite: Sprite.FATT, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise6, misc1: 0, misc2: 0),                      // State.FattRaise5
+        new(number: 403, sprite: Sprite.FATT, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise7, misc1: 0, misc2: 0),                      // State.FattRaise6
+        new(number: 404, sprite: Sprite.FATT, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRaise8, misc1: 0, misc2: 0),                      // State.FattRaise7
+        new(number: 405, sprite: Sprite.FATT, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.FattRun1, misc1: 0, misc2: 0),                        // State.FattRaise8
+        new(number: 406, sprite: Sprite.CPOS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CposStnd2, misc1: 0, misc2: 0),           // State.CposStnd
+        new(number: 407, sprite: Sprite.CPOS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CposStnd, misc1: 0, misc2: 0),            // State.CposStnd2
+        new(number: 408, sprite: Sprite.CPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun2, misc1: 0, misc2: 0),            // State.CposRun1
+        new(number: 409, sprite: Sprite.CPOS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun3, misc1: 0, misc2: 0),            // State.CposRun2
+        new(number: 410, sprite: Sprite.CPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun4, misc1: 0, misc2: 0),            // State.CposRun3
+        new(number: 411, sprite: Sprite.CPOS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun5, misc1: 0, misc2: 0),            // State.CposRun4
+        new(number: 412, sprite: Sprite.CPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun6, misc1: 0, misc2: 0),            // State.CposRun5
+        new(number: 413, sprite: Sprite.CPOS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun7, misc1: 0, misc2: 0),            // State.CposRun6
+        new(number: 414, sprite: Sprite.CPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun8, misc1: 0, misc2: 0),            // State.CposRun7
+        new(number: 415, sprite: Sprite.CPOS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CposRun1, misc1: 0, misc2: 0),            // State.CposRun8
+        new(number: 416, sprite: Sprite.CPOS, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CposAtk2, misc1: 0, misc2: 0),      // State.CposAtk1
+        new(number: 417, sprite: Sprite.CPOS, frame: 32773, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.CposAtk3, misc1: 0, misc2: 0),   // State.CposAtk2
+        new(number: 418, sprite: Sprite.CPOS, frame: 32772, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.CposAtk4, misc1: 0, misc2: 0),   // State.CposAtk3
+        new(number: 419, sprite: Sprite.CPOS, frame: 5, tics: 1, playerAction: null, mobjAction: MobjActions.CPosRefire, next: MobjState.CposAtk2, misc1: 0, misc2: 0),       // State.CposAtk4
+        new(number: 420, sprite: Sprite.CPOS, frame: 6, tics: 3, playerAction: null, mobjAction: null, next: MobjState.CposPain2, misc1: 0, misc2: 0),                        // State.CposPain
+        new(number: 421, sprite: Sprite.CPOS, frame: 6, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.CposRun1, misc1: 0, misc2: 0),             // State.CposPain2
+        new(number: 422, sprite: Sprite.CPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie2, misc1: 0, misc2: 0),                         // State.CposDie1
+        new(number: 423, sprite: Sprite.CPOS, frame: 8, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.CposDie3, misc1: 0, misc2: 0),           // State.CposDie2
+        new(number: 424, sprite: Sprite.CPOS, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.CposDie4, misc1: 0, misc2: 0),             // State.CposDie3
+        new(number: 425, sprite: Sprite.CPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie5, misc1: 0, misc2: 0),                        // State.CposDie4
+        new(number: 426, sprite: Sprite.CPOS, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie6, misc1: 0, misc2: 0),                        // State.CposDie5
+        new(number: 427, sprite: Sprite.CPOS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposDie7, misc1: 0, misc2: 0),                        // State.CposDie6
+        new(number: 428, sprite: Sprite.CPOS, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.CposDie7
+        new(number: 429, sprite: Sprite.CPOS, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposXdie2, misc1: 0, misc2: 0),                       // State.CposXdie1
+        new(number: 430, sprite: Sprite.CPOS, frame: 15, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.CposXdie3, misc1: 0, misc2: 0),        // State.CposXdie2
+        new(number: 431, sprite: Sprite.CPOS, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.CposXdie4, misc1: 0, misc2: 0),           // State.CposXdie3
+        new(number: 432, sprite: Sprite.CPOS, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposXdie5, misc1: 0, misc2: 0),                       // State.CposXdie4
+        new(number: 433, sprite: Sprite.CPOS, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposXdie6, misc1: 0, misc2: 0),                       // State.CposXdie5
+        new(number: 434, sprite: Sprite.CPOS, frame: 19, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.CposXdie6
+        new(number: 435, sprite: Sprite.CPOS, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise2, misc1: 0, misc2: 0),                      // State.CposRaise1
+        new(number: 436, sprite: Sprite.CPOS, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise3, misc1: 0, misc2: 0),                      // State.CposRaise2
+        new(number: 437, sprite: Sprite.CPOS, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise4, misc1: 0, misc2: 0),                      // State.CposRaise3
+        new(number: 438, sprite: Sprite.CPOS, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise5, misc1: 0, misc2: 0),                      // State.CposRaise4
+        new(number: 439, sprite: Sprite.CPOS, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise6, misc1: 0, misc2: 0),                       // State.CposRaise5
+        new(number: 440, sprite: Sprite.CPOS, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRaise7, misc1: 0, misc2: 0),                       // State.CposRaise6
+        new(number: 441, sprite: Sprite.CPOS, frame: 7, tics: 5, playerAction: null, mobjAction: null, next: MobjState.CposRun1, misc1: 0, misc2: 0),                         // State.CposRaise7
+        new(number: 442, sprite: Sprite.TROO, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.TrooStnd2, misc1: 0, misc2: 0),           // State.TrooStnd
+        new(number: 443, sprite: Sprite.TROO, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.TrooStnd, misc1: 0, misc2: 0),            // State.TrooStnd2
+        new(number: 444, sprite: Sprite.TROO, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun2, misc1: 0, misc2: 0),            // State.TrooRun1
+        new(number: 445, sprite: Sprite.TROO, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun3, misc1: 0, misc2: 0),            // State.TrooRun2
+        new(number: 446, sprite: Sprite.TROO, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun4, misc1: 0, misc2: 0),            // State.TrooRun3
+        new(number: 447, sprite: Sprite.TROO, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun5, misc1: 0, misc2: 0),            // State.TrooRun4
+        new(number: 448, sprite: Sprite.TROO, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun6, misc1: 0, misc2: 0),            // State.TrooRun5
+        new(number: 449, sprite: Sprite.TROO, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun7, misc1: 0, misc2: 0),            // State.TrooRun6
+        new(number: 450, sprite: Sprite.TROO, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun8, misc1: 0, misc2: 0),            // State.TrooRun7
+        new(number: 451, sprite: Sprite.TROO, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.TrooRun1, misc1: 0, misc2: 0),            // State.TrooRun8
+        new(number: 452, sprite: Sprite.TROO, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.TrooAtk2, misc1: 0, misc2: 0),       // State.TrooAtk1
+        new(number: 453, sprite: Sprite.TROO, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.TrooAtk3, misc1: 0, misc2: 0),       // State.TrooAtk2
+        new(number: 454, sprite: Sprite.TROO, frame: 6, tics: 6, playerAction: null, mobjAction: MobjActions.TroopAttack, next: MobjState.TrooRun1, misc1: 0, misc2: 0),      // State.TrooAtk3
+        new(number: 455, sprite: Sprite.TROO, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.TrooPain2, misc1: 0, misc2: 0),                        // State.TrooPain
+        new(number: 456, sprite: Sprite.TROO, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.TrooRun1, misc1: 0, misc2: 0),             // State.TrooPain2
+        new(number: 457, sprite: Sprite.TROO, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.TrooDie2, misc1: 0, misc2: 0),                         // State.TrooDie1
+        new(number: 458, sprite: Sprite.TROO, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.TrooDie3, misc1: 0, misc2: 0),           // State.TrooDie2
+        new(number: 459, sprite: Sprite.TROO, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooDie4, misc1: 0, misc2: 0),                        // State.TrooDie3
+        new(number: 460, sprite: Sprite.TROO, frame: 11, tics: 6, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.TrooDie5, misc1: 0, misc2: 0),            // State.TrooDie4
+        new(number: 461, sprite: Sprite.TROO, frame: 12, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.TrooDie5
+        new(number: 462, sprite: Sprite.TROO, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie2, misc1: 0, misc2: 0),                       // State.TrooXdie1
+        new(number: 463, sprite: Sprite.TROO, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.TrooXdie3, misc1: 0, misc2: 0),        // State.TrooXdie2
+        new(number: 464, sprite: Sprite.TROO, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie4, misc1: 0, misc2: 0),                       // State.TrooXdie3
+        new(number: 465, sprite: Sprite.TROO, frame: 16, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.TrooXdie5, misc1: 0, misc2: 0),           // State.TrooXdie4
+        new(number: 466, sprite: Sprite.TROO, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie6, misc1: 0, misc2: 0),                       // State.TrooXdie5
+        new(number: 467, sprite: Sprite.TROO, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie7, misc1: 0, misc2: 0),                       // State.TrooXdie6
+        new(number: 468, sprite: Sprite.TROO, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.TrooXdie8, misc1: 0, misc2: 0),                       // State.TrooXdie7
+        new(number: 469, sprite: Sprite.TROO, frame: 20, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.TrooXdie8
+        new(number: 470, sprite: Sprite.TROO, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.TrooRaise2, misc1: 0, misc2: 0),                      // State.TrooRaise1
+        new(number: 471, sprite: Sprite.TROO, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.TrooRaise3, misc1: 0, misc2: 0),                      // State.TrooRaise2
+        new(number: 472, sprite: Sprite.TROO, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooRaise4, misc1: 0, misc2: 0),                      // State.TrooRaise3
+        new(number: 473, sprite: Sprite.TROO, frame: 9, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooRaise5, misc1: 0, misc2: 0),                       // State.TrooRaise4
+        new(number: 474, sprite: Sprite.TROO, frame: 8, tics: 6, playerAction: null, mobjAction: null, next: MobjState.TrooRun1, misc1: 0, misc2: 0),                         // State.TrooRaise5
+        new(number: 475, sprite: Sprite.SARG, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SargStnd2, misc1: 0, misc2: 0),           // State.SargStnd
+        new(number: 476, sprite: Sprite.SARG, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SargStnd, misc1: 0, misc2: 0),            // State.SargStnd2
+        new(number: 477, sprite: Sprite.SARG, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun2, misc1: 0, misc2: 0),            // State.SargRun1
+        new(number: 478, sprite: Sprite.SARG, frame: 0, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun3, misc1: 0, misc2: 0),            // State.SargRun2
+        new(number: 479, sprite: Sprite.SARG, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun4, misc1: 0, misc2: 0),            // State.SargRun3
+        new(number: 480, sprite: Sprite.SARG, frame: 1, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun5, misc1: 0, misc2: 0),            // State.SargRun4
+        new(number: 481, sprite: Sprite.SARG, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun6, misc1: 0, misc2: 0),            // State.SargRun5
+        new(number: 482, sprite: Sprite.SARG, frame: 2, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun7, misc1: 0, misc2: 0),            // State.SargRun6
+        new(number: 483, sprite: Sprite.SARG, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun8, misc1: 0, misc2: 0),            // State.SargRun7
+        new(number: 484, sprite: Sprite.SARG, frame: 3, tics: 2, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SargRun1, misc1: 0, misc2: 0),            // State.SargRun8
+        new(number: 485, sprite: Sprite.SARG, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SargAtk2, misc1: 0, misc2: 0),       // State.SargAtk1
+        new(number: 486, sprite: Sprite.SARG, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SargAtk3, misc1: 0, misc2: 0),       // State.SargAtk2
+        new(number: 487, sprite: Sprite.SARG, frame: 6, tics: 8, playerAction: null, mobjAction: MobjActions.SargAttack, next: MobjState.SargRun1, misc1: 0, misc2: 0),       // State.SargAtk3
+        new(number: 488, sprite: Sprite.SARG, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.SargPain2, misc1: 0, misc2: 0),                        // State.SargPain
+        new(number: 489, sprite: Sprite.SARG, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SargRun1, misc1: 0, misc2: 0),             // State.SargPain2
+        new(number: 490, sprite: Sprite.SARG, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.SargDie2, misc1: 0, misc2: 0),                         // State.SargDie1
+        new(number: 491, sprite: Sprite.SARG, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SargDie3, misc1: 0, misc2: 0),           // State.SargDie2
+        new(number: 492, sprite: Sprite.SARG, frame: 10, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SargDie4, misc1: 0, misc2: 0),                        // State.SargDie3
+        new(number: 493, sprite: Sprite.SARG, frame: 11, tics: 4, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SargDie5, misc1: 0, misc2: 0),            // State.SargDie4
+        new(number: 494, sprite: Sprite.SARG, frame: 12, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SargDie6, misc1: 0, misc2: 0),                        // State.SargDie5
+        new(number: 495, sprite: Sprite.SARG, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SargDie6
+        new(number: 496, sprite: Sprite.SARG, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise2, misc1: 0, misc2: 0),                      // State.SargRaise1
+        new(number: 497, sprite: Sprite.SARG, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise3, misc1: 0, misc2: 0),                      // State.SargRaise2
+        new(number: 498, sprite: Sprite.SARG, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise4, misc1: 0, misc2: 0),                      // State.SargRaise3
+        new(number: 499, sprite: Sprite.SARG, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise5, misc1: 0, misc2: 0),                      // State.SargRaise4
+        new(number: 500, sprite: Sprite.SARG, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRaise6, misc1: 0, misc2: 0),                       // State.SargRaise5
+        new(number: 501, sprite: Sprite.SARG, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SargRun1, misc1: 0, misc2: 0),                         // State.SargRaise6
+        new(number: 502, sprite: Sprite.HEAD, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.HeadStnd, misc1: 0, misc2: 0),            // State.HeadStnd
+        new(number: 503, sprite: Sprite.HEAD, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.HeadRun1, misc1: 0, misc2: 0),            // State.HeadRun1
+        new(number: 504, sprite: Sprite.HEAD, frame: 1, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.HeadAtk2, misc1: 0, misc2: 0),       // State.HeadAtk1
+        new(number: 505, sprite: Sprite.HEAD, frame: 2, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.HeadAtk3, misc1: 0, misc2: 0),       // State.HeadAtk2
+        new(number: 506, sprite: Sprite.HEAD, frame: 32771, tics: 5, playerAction: null, mobjAction: MobjActions.HeadAttack, next: MobjState.HeadRun1, misc1: 0, misc2: 0),   // State.HeadAtk3
+        new(number: 507, sprite: Sprite.HEAD, frame: 4, tics: 3, playerAction: null, mobjAction: null, next: MobjState.HeadPain2, misc1: 0, misc2: 0),                        // State.HeadPain
+        new(number: 508, sprite: Sprite.HEAD, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.HeadPain3, misc1: 0, misc2: 0),            // State.HeadPain2
+        new(number: 509, sprite: Sprite.HEAD, frame: 5, tics: 6, playerAction: null, mobjAction: null, next: MobjState.HeadRun1, misc1: 0, misc2: 0),                         // State.HeadPain3
+        new(number: 510, sprite: Sprite.HEAD, frame: 6, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadDie2, misc1: 0, misc2: 0),                         // State.HeadDie1
+        new(number: 511, sprite: Sprite.HEAD, frame: 7, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.HeadDie3, misc1: 0, misc2: 0),           // State.HeadDie2
+        new(number: 512, sprite: Sprite.HEAD, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadDie4, misc1: 0, misc2: 0),                         // State.HeadDie3
+        new(number: 513, sprite: Sprite.HEAD, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadDie5, misc1: 0, misc2: 0),                         // State.HeadDie4
+        new(number: 514, sprite: Sprite.HEAD, frame: 10, tics: 8, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.HeadDie6, misc1: 0, misc2: 0),            // State.HeadDie5
+        new(number: 515, sprite: Sprite.HEAD, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.HeadDie6
+        new(number: 516, sprite: Sprite.HEAD, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise2, misc1: 0, misc2: 0),                      // State.HeadRaise1
+        new(number: 517, sprite: Sprite.HEAD, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise3, misc1: 0, misc2: 0),                      // State.HeadRaise2
+        new(number: 518, sprite: Sprite.HEAD, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise4, misc1: 0, misc2: 0),                       // State.HeadRaise3
+        new(number: 519, sprite: Sprite.HEAD, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise5, misc1: 0, misc2: 0),                       // State.HeadRaise4
+        new(number: 520, sprite: Sprite.HEAD, frame: 7, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRaise6, misc1: 0, misc2: 0),                       // State.HeadRaise5
+        new(number: 521, sprite: Sprite.HEAD, frame: 6, tics: 8, playerAction: null, mobjAction: null, next: MobjState.HeadRun1, misc1: 0, misc2: 0),                         // State.HeadRaise6
+        new(number: 522, sprite: Sprite.BAL7, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Brball2, misc1: 0, misc2: 0),                      // State.Brball1
+        new(number: 523, sprite: Sprite.BAL7, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Brball1, misc1: 0, misc2: 0),                      // State.Brball2
+        new(number: 524, sprite: Sprite.BAL7, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Brballx2, misc1: 0, misc2: 0),                     // State.Brballx1
+        new(number: 525, sprite: Sprite.BAL7, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Brballx3, misc1: 0, misc2: 0),                     // State.Brballx2
+        new(number: 526, sprite: Sprite.BAL7, frame: 32772, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.Brballx3
+        new(number: 527, sprite: Sprite.BOSS, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BossStnd2, misc1: 0, misc2: 0),           // State.BossStnd
+        new(number: 528, sprite: Sprite.BOSS, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BossStnd, misc1: 0, misc2: 0),            // State.BossStnd2
+        new(number: 529, sprite: Sprite.BOSS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun2, misc1: 0, misc2: 0),            // State.BossRun1
+        new(number: 530, sprite: Sprite.BOSS, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun3, misc1: 0, misc2: 0),            // State.BossRun2
+        new(number: 531, sprite: Sprite.BOSS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun4, misc1: 0, misc2: 0),            // State.BossRun3
+        new(number: 532, sprite: Sprite.BOSS, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun5, misc1: 0, misc2: 0),            // State.BossRun4
+        new(number: 533, sprite: Sprite.BOSS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun6, misc1: 0, misc2: 0),            // State.BossRun5
+        new(number: 534, sprite: Sprite.BOSS, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun7, misc1: 0, misc2: 0),            // State.BossRun6
+        new(number: 535, sprite: Sprite.BOSS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun8, misc1: 0, misc2: 0),            // State.BossRun7
+        new(number: 536, sprite: Sprite.BOSS, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BossRun1, misc1: 0, misc2: 0),            // State.BossRun8
+        new(number: 537, sprite: Sprite.BOSS, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.BossAtk2, misc1: 0, misc2: 0),       // State.BossAtk1
+        new(number: 538, sprite: Sprite.BOSS, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.BossAtk3, misc1: 0, misc2: 0),       // State.BossAtk2
+        new(number: 539, sprite: Sprite.BOSS, frame: 6, tics: 8, playerAction: null, mobjAction: MobjActions.BruisAttack, next: MobjState.BossRun1, misc1: 0, misc2: 0),      // State.BossAtk3
+        new(number: 540, sprite: Sprite.BOSS, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.BossPain2, misc1: 0, misc2: 0),                        // State.BossPain
+        new(number: 541, sprite: Sprite.BOSS, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.BossRun1, misc1: 0, misc2: 0),             // State.BossPain2
+        new(number: 542, sprite: Sprite.BOSS, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie2, misc1: 0, misc2: 0),                         // State.BossDie1
+        new(number: 543, sprite: Sprite.BOSS, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.BossDie3, misc1: 0, misc2: 0),           // State.BossDie2
+        new(number: 544, sprite: Sprite.BOSS, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie4, misc1: 0, misc2: 0),                        // State.BossDie3
+        new(number: 545, sprite: Sprite.BOSS, frame: 11, tics: 8, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.BossDie5, misc1: 0, misc2: 0),            // State.BossDie4
+        new(number: 546, sprite: Sprite.BOSS, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie6, misc1: 0, misc2: 0),                        // State.BossDie5
+        new(number: 547, sprite: Sprite.BOSS, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossDie7, misc1: 0, misc2: 0),                        // State.BossDie6
+        new(number: 548, sprite: Sprite.BOSS, frame: 14, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.BossDie7
+        new(number: 549, sprite: Sprite.BOSS, frame: 14, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise2, misc1: 0, misc2: 0),                      // State.BossRaise1
+        new(number: 550, sprite: Sprite.BOSS, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise3, misc1: 0, misc2: 0),                      // State.BossRaise2
+        new(number: 551, sprite: Sprite.BOSS, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise4, misc1: 0, misc2: 0),                      // State.BossRaise3
+        new(number: 552, sprite: Sprite.BOSS, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise5, misc1: 0, misc2: 0),                      // State.BossRaise4
+        new(number: 553, sprite: Sprite.BOSS, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise6, misc1: 0, misc2: 0),                      // State.BossRaise5
+        new(number: 554, sprite: Sprite.BOSS, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRaise7, misc1: 0, misc2: 0),                       // State.BossRaise6
+        new(number: 555, sprite: Sprite.BOSS, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.BossRun1, misc1: 0, misc2: 0),                         // State.BossRaise7
+        new(number: 556, sprite: Sprite.BOS2, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.Bos2Stnd2, misc1: 0, misc2: 0),           // State.Bos2Stnd
+        new(number: 557, sprite: Sprite.BOS2, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.Bos2Stnd, misc1: 0, misc2: 0),            // State.Bos2Stnd2
+        new(number: 558, sprite: Sprite.BOS2, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run2, misc1: 0, misc2: 0),            // State.Bos2Run1
+        new(number: 559, sprite: Sprite.BOS2, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run3, misc1: 0, misc2: 0),            // State.Bos2Run2
+        new(number: 560, sprite: Sprite.BOS2, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run4, misc1: 0, misc2: 0),            // State.Bos2Run3
+        new(number: 561, sprite: Sprite.BOS2, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run5, misc1: 0, misc2: 0),            // State.Bos2Run4
+        new(number: 562, sprite: Sprite.BOS2, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run6, misc1: 0, misc2: 0),            // State.Bos2Run5
+        new(number: 563, sprite: Sprite.BOS2, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run7, misc1: 0, misc2: 0),            // State.Bos2Run6
+        new(number: 564, sprite: Sprite.BOS2, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run8, misc1: 0, misc2: 0),            // State.Bos2Run7
+        new(number: 565, sprite: Sprite.BOS2, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),            // State.Bos2Run8
+        new(number: 566, sprite: Sprite.BOS2, frame: 4, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.Bos2Atk2, misc1: 0, misc2: 0),       // State.Bos2Atk1
+        new(number: 567, sprite: Sprite.BOS2, frame: 5, tics: 8, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.Bos2Atk3, misc1: 0, misc2: 0),       // State.Bos2Atk2
+        new(number: 568, sprite: Sprite.BOS2, frame: 6, tics: 8, playerAction: null, mobjAction: MobjActions.BruisAttack, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),      // State.Bos2Atk3
+        new(number: 569, sprite: Sprite.BOS2, frame: 7, tics: 2, playerAction: null, mobjAction: null, next: MobjState.Bos2Pain2, misc1: 0, misc2: 0),                        // State.Bos2Pain
+        new(number: 570, sprite: Sprite.BOS2, frame: 7, tics: 2, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),             // State.Bos2Pain2
+        new(number: 571, sprite: Sprite.BOS2, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die2, misc1: 0, misc2: 0),                         // State.Bos2Die1
+        new(number: 572, sprite: Sprite.BOS2, frame: 9, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.Bos2Die3, misc1: 0, misc2: 0),           // State.Bos2Die2
+        new(number: 573, sprite: Sprite.BOS2, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die4, misc1: 0, misc2: 0),                        // State.Bos2Die3
+        new(number: 574, sprite: Sprite.BOS2, frame: 11, tics: 8, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.Bos2Die5, misc1: 0, misc2: 0),            // State.Bos2Die4
+        new(number: 575, sprite: Sprite.BOS2, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die6, misc1: 0, misc2: 0),                        // State.Bos2Die5
+        new(number: 576, sprite: Sprite.BOS2, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Die7, misc1: 0, misc2: 0),                        // State.Bos2Die6
+        new(number: 577, sprite: Sprite.BOS2, frame: 14, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Bos2Die7
+        new(number: 578, sprite: Sprite.BOS2, frame: 14, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise2, misc1: 0, misc2: 0),                      // State.Bos2Raise1
+        new(number: 579, sprite: Sprite.BOS2, frame: 13, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise3, misc1: 0, misc2: 0),                      // State.Bos2Raise2
+        new(number: 580, sprite: Sprite.BOS2, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise4, misc1: 0, misc2: 0),                      // State.Bos2Raise3
+        new(number: 581, sprite: Sprite.BOS2, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise5, misc1: 0, misc2: 0),                      // State.Bos2Raise4
+        new(number: 582, sprite: Sprite.BOS2, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise6, misc1: 0, misc2: 0),                      // State.Bos2Raise5
+        new(number: 583, sprite: Sprite.BOS2, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Raise7, misc1: 0, misc2: 0),                       // State.Bos2Raise6
+        new(number: 584, sprite: Sprite.BOS2, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bos2Run1, misc1: 0, misc2: 0),                         // State.Bos2Raise7
+        new(number: 585, sprite: Sprite.SKUL, frame: 32768, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkullStnd2, misc1: 0, misc2: 0),      // State.SkullStnd
+        new(number: 586, sprite: Sprite.SKUL, frame: 32769, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SkullStnd, misc1: 0, misc2: 0),       // State.SkullStnd2
+        new(number: 587, sprite: Sprite.SKUL, frame: 32768, tics: 6, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkullRun2, misc1: 0, misc2: 0),       // State.SkullRun1
+        new(number: 588, sprite: Sprite.SKUL, frame: 32769, tics: 6, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SkullRun1, misc1: 0, misc2: 0),       // State.SkullRun2
+        new(number: 589, sprite: Sprite.SKUL, frame: 32770, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SkullAtk2, misc1: 0, misc2: 0), // State.SkullAtk1
+        new(number: 590, sprite: Sprite.SKUL, frame: 32771, tics: 4, playerAction: null, mobjAction: MobjActions.SkullAttack, next: MobjState.SkullAtk3, misc1: 0, misc2: 0), // State.SkullAtk2
+        new(number: 591, sprite: Sprite.SKUL, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SkullAtk4, misc1: 0, misc2: 0),                    // State.SkullAtk3
+        new(number: 592, sprite: Sprite.SKUL, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.SkullAtk3, misc1: 0, misc2: 0),                    // State.SkullAtk4
+        new(number: 593, sprite: Sprite.SKUL, frame: 32772, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SkullPain2, misc1: 0, misc2: 0),                   // State.SkullPain
+        new(number: 594, sprite: Sprite.SKUL, frame: 32772, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SkullRun1, misc1: 0, misc2: 0),        // State.SkullPain2
+        new(number: 595, sprite: Sprite.SKUL, frame: 32773, tics: 6, playerAction: null, mobjAction: null, next: MobjState.SkullDie2, misc1: 0, misc2: 0),                    // State.SkullDie1
+        new(number: 596, sprite: Sprite.SKUL, frame: 32774, tics: 6, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SkullDie3, misc1: 0, misc2: 0),      // State.SkullDie2
+        new(number: 597, sprite: Sprite.SKUL, frame: 32775, tics: 6, playerAction: null, mobjAction: null, next: MobjState.SkullDie4, misc1: 0, misc2: 0),                    // State.SkullDie3
+        new(number: 598, sprite: Sprite.SKUL, frame: 32776, tics: 6, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SkullDie5, misc1: 0, misc2: 0),        // State.SkullDie4
+        new(number: 599, sprite: Sprite.SKUL, frame: 9, tics: 6, playerAction: null, mobjAction: null, next: MobjState.SkullDie6, misc1: 0, misc2: 0),                        // State.SkullDie5
+        new(number: 600, sprite: Sprite.SKUL, frame: 10, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.SkullDie6
+        new(number: 601, sprite: Sprite.SPID, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SpidStnd2, misc1: 0, misc2: 0),           // State.SpidStnd
+        new(number: 602, sprite: Sprite.SPID, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SpidStnd, misc1: 0, misc2: 0),            // State.SpidStnd2
+        new(number: 603, sprite: Sprite.SPID, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.SpidRun2, misc1: 0, misc2: 0),            // State.SpidRun1
+        new(number: 604, sprite: Sprite.SPID, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun3, misc1: 0, misc2: 0),            // State.SpidRun2
+        new(number: 605, sprite: Sprite.SPID, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun4, misc1: 0, misc2: 0),            // State.SpidRun3
+        new(number: 606, sprite: Sprite.SPID, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun5, misc1: 0, misc2: 0),            // State.SpidRun4
+        new(number: 607, sprite: Sprite.SPID, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.SpidRun6, misc1: 0, misc2: 0),            // State.SpidRun5
+        new(number: 608, sprite: Sprite.SPID, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun7, misc1: 0, misc2: 0),            // State.SpidRun6
+        new(number: 609, sprite: Sprite.SPID, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun8, misc1: 0, misc2: 0),            // State.SpidRun7
+        new(number: 610, sprite: Sprite.SPID, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun9, misc1: 0, misc2: 0),            // State.SpidRun8
+        new(number: 611, sprite: Sprite.SPID, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.SpidRun10, misc1: 0, misc2: 0),           // State.SpidRun9
+        new(number: 612, sprite: Sprite.SPID, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun11, misc1: 0, misc2: 0),           // State.SpidRun10
+        new(number: 613, sprite: Sprite.SPID, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun12, misc1: 0, misc2: 0),           // State.SpidRun11
+        new(number: 614, sprite: Sprite.SPID, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SpidRun1, misc1: 0, misc2: 0),            // State.SpidRun12
+        new(number: 615, sprite: Sprite.SPID, frame: 32768, tics: 20, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SpidAtk2, misc1: 0, misc2: 0),  // State.SpidAtk1
+        new(number: 616, sprite: Sprite.SPID, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.SPosAttack, next: MobjState.SpidAtk3, misc1: 0, misc2: 0),   // State.SpidAtk2
+        new(number: 617, sprite: Sprite.SPID, frame: 32775, tics: 4, playerAction: null, mobjAction: MobjActions.SPosAttack, next: MobjState.SpidAtk4, misc1: 0, misc2: 0),   // State.SpidAtk3
+        new(number: 618, sprite: Sprite.SPID, frame: 32775, tics: 1, playerAction: null, mobjAction: MobjActions.SpidRefire, next: MobjState.SpidAtk2, misc1: 0, misc2: 0),   // State.SpidAtk4
+        new(number: 619, sprite: Sprite.SPID, frame: 8, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SpidPain2, misc1: 0, misc2: 0),                        // State.SpidPain
+        new(number: 620, sprite: Sprite.SPID, frame: 8, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SpidRun1, misc1: 0, misc2: 0),             // State.SpidPain2
+        new(number: 621, sprite: Sprite.SPID, frame: 9, tics: 20, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SpidDie2, misc1: 0, misc2: 0),          // State.SpidDie1
+        new(number: 622, sprite: Sprite.SPID, frame: 10, tics: 10, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SpidDie3, misc1: 0, misc2: 0),           // State.SpidDie2
+        new(number: 623, sprite: Sprite.SPID, frame: 11, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie4, misc1: 0, misc2: 0),                       // State.SpidDie3
+        new(number: 624, sprite: Sprite.SPID, frame: 12, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie5, misc1: 0, misc2: 0),                       // State.SpidDie4
+        new(number: 625, sprite: Sprite.SPID, frame: 13, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie6, misc1: 0, misc2: 0),                       // State.SpidDie5
+        new(number: 626, sprite: Sprite.SPID, frame: 14, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie7, misc1: 0, misc2: 0),                       // State.SpidDie6
+        new(number: 627, sprite: Sprite.SPID, frame: 15, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie8, misc1: 0, misc2: 0),                       // State.SpidDie7
+        new(number: 628, sprite: Sprite.SPID, frame: 16, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie9, misc1: 0, misc2: 0),                       // State.SpidDie8
+        new(number: 629, sprite: Sprite.SPID, frame: 17, tics: 10, playerAction: null, mobjAction: null, next: MobjState.SpidDie10, misc1: 0, misc2: 0),                      // State.SpidDie9
+        new(number: 630, sprite: Sprite.SPID, frame: 18, tics: 30, playerAction: null, mobjAction: null, next: MobjState.SpidDie11, misc1: 0, misc2: 0),                      // State.SpidDie10
+        new(number: 631, sprite: Sprite.SPID, frame: 18, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.SpidDie11
+        new(number: 632, sprite: Sprite.BSPI, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BspiStnd2, misc1: 0, misc2: 0),           // State.BspiStnd
+        new(number: 633, sprite: Sprite.BSPI, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.BspiStnd, misc1: 0, misc2: 0),            // State.BspiStnd2
+        new(number: 634, sprite: Sprite.BSPI, frame: 0, tics: 20, playerAction: null, mobjAction: null, next: MobjState.BspiRun1, misc1: 0, misc2: 0),                        // State.BspiSight
+        new(number: 635, sprite: Sprite.BSPI, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.BabyMetal, next: MobjState.BspiRun2, misc1: 0, misc2: 0),        // State.BspiRun1
+        new(number: 636, sprite: Sprite.BSPI, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun3, misc1: 0, misc2: 0),            // State.BspiRun2
+        new(number: 637, sprite: Sprite.BSPI, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun4, misc1: 0, misc2: 0),            // State.BspiRun3
+        new(number: 638, sprite: Sprite.BSPI, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun5, misc1: 0, misc2: 0),            // State.BspiRun4
+        new(number: 639, sprite: Sprite.BSPI, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun6, misc1: 0, misc2: 0),            // State.BspiRun5
+        new(number: 640, sprite: Sprite.BSPI, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun7, misc1: 0, misc2: 0),            // State.BspiRun6
+        new(number: 641, sprite: Sprite.BSPI, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.BabyMetal, next: MobjState.BspiRun8, misc1: 0, misc2: 0),        // State.BspiRun7
+        new(number: 642, sprite: Sprite.BSPI, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun9, misc1: 0, misc2: 0),            // State.BspiRun8
+        new(number: 643, sprite: Sprite.BSPI, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun10, misc1: 0, misc2: 0),           // State.BspiRun9
+        new(number: 644, sprite: Sprite.BSPI, frame: 4, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun11, misc1: 0, misc2: 0),           // State.BspiRun10
+        new(number: 645, sprite: Sprite.BSPI, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun12, misc1: 0, misc2: 0),           // State.BspiRun11
+        new(number: 646, sprite: Sprite.BSPI, frame: 5, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.BspiRun1, misc1: 0, misc2: 0),            // State.BspiRun12
+        new(number: 647, sprite: Sprite.BSPI, frame: 32768, tics: 20, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.BspiAtk2, misc1: 0, misc2: 0),  // State.BspiAtk1
+        new(number: 648, sprite: Sprite.BSPI, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.BspiAttack, next: MobjState.BspiAtk3, misc1: 0, misc2: 0),   // State.BspiAtk2
+        new(number: 649, sprite: Sprite.BSPI, frame: 32775, tics: 4, playerAction: null, mobjAction: null, next: MobjState.BspiAtk4, misc1: 0, misc2: 0),                     // State.BspiAtk3
+        new(number: 650, sprite: Sprite.BSPI, frame: 32775, tics: 1, playerAction: null, mobjAction: MobjActions.SpidRefire, next: MobjState.BspiAtk2, misc1: 0, misc2: 0),   // State.BspiAtk4
+        new(number: 651, sprite: Sprite.BSPI, frame: 8, tics: 3, playerAction: null, mobjAction: null, next: MobjState.BspiPain2, misc1: 0, misc2: 0),                        // State.BspiPain
+        new(number: 652, sprite: Sprite.BSPI, frame: 8, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.BspiRun1, misc1: 0, misc2: 0),             // State.BspiPain2
+        new(number: 653, sprite: Sprite.BSPI, frame: 9, tics: 20, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.BspiDie2, misc1: 0, misc2: 0),          // State.BspiDie1
+        new(number: 654, sprite: Sprite.BSPI, frame: 10, tics: 7, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.BspiDie3, misc1: 0, misc2: 0),            // State.BspiDie2
+        new(number: 655, sprite: Sprite.BSPI, frame: 11, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie4, misc1: 0, misc2: 0),                        // State.BspiDie3
+        new(number: 656, sprite: Sprite.BSPI, frame: 12, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie5, misc1: 0, misc2: 0),                        // State.BspiDie4
+        new(number: 657, sprite: Sprite.BSPI, frame: 13, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie6, misc1: 0, misc2: 0),                        // State.BspiDie5
+        new(number: 658, sprite: Sprite.BSPI, frame: 14, tics: 7, playerAction: null, mobjAction: null, next: MobjState.BspiDie7, misc1: 0, misc2: 0),                        // State.BspiDie6
+        new(number: 659, sprite: Sprite.BSPI, frame: 15, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.BspiDie7
+        new(number: 660, sprite: Sprite.BSPI, frame: 15, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise2, misc1: 0, misc2: 0),                      // State.BspiRaise1
+        new(number: 661, sprite: Sprite.BSPI, frame: 14, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise3, misc1: 0, misc2: 0),                      // State.BspiRaise2
+        new(number: 662, sprite: Sprite.BSPI, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise4, misc1: 0, misc2: 0),                      // State.BspiRaise3
+        new(number: 663, sprite: Sprite.BSPI, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise5, misc1: 0, misc2: 0),                      // State.BspiRaise4
+        new(number: 664, sprite: Sprite.BSPI, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise6, misc1: 0, misc2: 0),                      // State.BspiRaise5
+        new(number: 665, sprite: Sprite.BSPI, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRaise7, misc1: 0, misc2: 0),                      // State.BspiRaise6
+        new(number: 666, sprite: Sprite.BSPI, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.BspiRun1, misc1: 0, misc2: 0),                         // State.BspiRaise7
+        new(number: 667, sprite: Sprite.APLS, frame: 32768, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlaz2, misc1: 0, misc2: 0),                   // State.ArachPlaz
+        new(number: 668, sprite: Sprite.APLS, frame: 32769, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlaz, misc1: 0, misc2: 0),                    // State.ArachPlaz2
+        new(number: 669, sprite: Sprite.APBX, frame: 32768, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex2, misc1: 0, misc2: 0),                   // State.ArachPlex
+        new(number: 670, sprite: Sprite.APBX, frame: 32769, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex3, misc1: 0, misc2: 0),                   // State.ArachPlex2
+        new(number: 671, sprite: Sprite.APBX, frame: 32770, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex4, misc1: 0, misc2: 0),                   // State.ArachPlex3
+        new(number: 672, sprite: Sprite.APBX, frame: 32771, tics: 5, playerAction: null, mobjAction: null, next: MobjState.ArachPlex5, misc1: 0, misc2: 0),                   // State.ArachPlex4
+        new(number: 673, sprite: Sprite.APBX, frame: 32772, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.ArachPlex5
+        new(number: 674, sprite: Sprite.CYBR, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CyberStnd2, misc1: 0, misc2: 0),          // State.CyberStnd
+        new(number: 675, sprite: Sprite.CYBR, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.CyberStnd, misc1: 0, misc2: 0),           // State.CyberStnd2
+        new(number: 676, sprite: Sprite.CYBR, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Hoof, next: MobjState.CyberRun2, misc1: 0, misc2: 0),            // State.CyberRun1
+        new(number: 677, sprite: Sprite.CYBR, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun3, misc1: 0, misc2: 0),           // State.CyberRun2
+        new(number: 678, sprite: Sprite.CYBR, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun4, misc1: 0, misc2: 0),           // State.CyberRun3
+        new(number: 679, sprite: Sprite.CYBR, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun5, misc1: 0, misc2: 0),           // State.CyberRun4
+        new(number: 680, sprite: Sprite.CYBR, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun6, misc1: 0, misc2: 0),           // State.CyberRun5
+        new(number: 681, sprite: Sprite.CYBR, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun7, misc1: 0, misc2: 0),           // State.CyberRun6
+        new(number: 682, sprite: Sprite.CYBR, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Metal, next: MobjState.CyberRun8, misc1: 0, misc2: 0),           // State.CyberRun7
+        new(number: 683, sprite: Sprite.CYBR, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.CyberRun1, misc1: 0, misc2: 0),           // State.CyberRun8
+        new(number: 684, sprite: Sprite.CYBR, frame: 4, tics: 6, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CyberAtk2, misc1: 0, misc2: 0),      // State.CyberAtk1
+        new(number: 685, sprite: Sprite.CYBR, frame: 5, tics: 12, playerAction: null, mobjAction: MobjActions.CyberAttack, next: MobjState.CyberAtk3, misc1: 0, misc2: 0),    // State.CyberAtk2
+        new(number: 686, sprite: Sprite.CYBR, frame: 4, tics: 12, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CyberAtk4, misc1: 0, misc2: 0),     // State.CyberAtk3
+        new(number: 687, sprite: Sprite.CYBR, frame: 5, tics: 12, playerAction: null, mobjAction: MobjActions.CyberAttack, next: MobjState.CyberAtk5, misc1: 0, misc2: 0),    // State.CyberAtk4
+        new(number: 688, sprite: Sprite.CYBR, frame: 4, tics: 12, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.CyberAtk6, misc1: 0, misc2: 0),     // State.CyberAtk5
+        new(number: 689, sprite: Sprite.CYBR, frame: 5, tics: 12, playerAction: null, mobjAction: MobjActions.CyberAttack, next: MobjState.CyberRun1, misc1: 0, misc2: 0),    // State.CyberAtk6
+        new(number: 690, sprite: Sprite.CYBR, frame: 6, tics: 10, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.CyberRun1, misc1: 0, misc2: 0),           // State.CyberPain
+        new(number: 691, sprite: Sprite.CYBR, frame: 7, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie2, misc1: 0, misc2: 0),                       // State.CyberDie1
+        new(number: 692, sprite: Sprite.CYBR, frame: 8, tics: 10, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.CyberDie3, misc1: 0, misc2: 0),         // State.CyberDie2
+        new(number: 693, sprite: Sprite.CYBR, frame: 9, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie4, misc1: 0, misc2: 0),                       // State.CyberDie3
+        new(number: 694, sprite: Sprite.CYBR, frame: 10, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie5, misc1: 0, misc2: 0),                      // State.CyberDie4
+        new(number: 695, sprite: Sprite.CYBR, frame: 11, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie6, misc1: 0, misc2: 0),                      // State.CyberDie5
+        new(number: 696, sprite: Sprite.CYBR, frame: 12, tics: 10, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.CyberDie7, misc1: 0, misc2: 0),          // State.CyberDie6
+        new(number: 697, sprite: Sprite.CYBR, frame: 13, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie8, misc1: 0, misc2: 0),                      // State.CyberDie7
+        new(number: 698, sprite: Sprite.CYBR, frame: 14, tics: 10, playerAction: null, mobjAction: null, next: MobjState.CyberDie9, misc1: 0, misc2: 0),                      // State.CyberDie8
+        new(number: 699, sprite: Sprite.CYBR, frame: 15, tics: 30, playerAction: null, mobjAction: null, next: MobjState.CyberDie10, misc1: 0, misc2: 0),                     // State.CyberDie9
+        new(number: 700, sprite: Sprite.CYBR, frame: 15, tics: -1, playerAction: null, mobjAction: MobjActions.BossDeath, next: MobjState.Null, misc1: 0, misc2: 0),          // State.CyberDie10
+        new(number: 701, sprite: Sprite.PAIN, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.PainStnd, misc1: 0, misc2: 0),            // State.PainStnd
+        new(number: 702, sprite: Sprite.PAIN, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun2, misc1: 0, misc2: 0),            // State.PainRun1
+        new(number: 703, sprite: Sprite.PAIN, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun3, misc1: 0, misc2: 0),            // State.PainRun2
+        new(number: 704, sprite: Sprite.PAIN, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun4, misc1: 0, misc2: 0),            // State.PainRun3
+        new(number: 705, sprite: Sprite.PAIN, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun5, misc1: 0, misc2: 0),            // State.PainRun4
+        new(number: 706, sprite: Sprite.PAIN, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun6, misc1: 0, misc2: 0),            // State.PainRun5
+        new(number: 707, sprite: Sprite.PAIN, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.PainRun1, misc1: 0, misc2: 0),            // State.PainRun6
+        new(number: 708, sprite: Sprite.PAIN, frame: 3, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PainAtk2, misc1: 0, misc2: 0),       // State.PainAtk1
+        new(number: 709, sprite: Sprite.PAIN, frame: 4, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PainAtk3, misc1: 0, misc2: 0),       // State.PainAtk2
+        new(number: 710, sprite: Sprite.PAIN, frame: 32773, tics: 5, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.PainAtk4, misc1: 0, misc2: 0),   // State.PainAtk3
+        new(number: 711, sprite: Sprite.PAIN, frame: 32773, tics: 0, playerAction: null, mobjAction: MobjActions.PainAttack, next: MobjState.PainRun1, misc1: 0, misc2: 0),   // State.PainAtk4
+        new(number: 712, sprite: Sprite.PAIN, frame: 6, tics: 6, playerAction: null, mobjAction: null, next: MobjState.PainPain2, misc1: 0, misc2: 0),                        // State.PainPain
+        new(number: 713, sprite: Sprite.PAIN, frame: 6, tics: 6, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.PainRun1, misc1: 0, misc2: 0),             // State.PainPain2
+        new(number: 714, sprite: Sprite.PAIN, frame: 32775, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainDie2, misc1: 0, misc2: 0),                     // State.PainDie1
+        new(number: 715, sprite: Sprite.PAIN, frame: 32776, tics: 8, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.PainDie3, misc1: 0, misc2: 0),       // State.PainDie2
+        new(number: 716, sprite: Sprite.PAIN, frame: 32777, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainDie4, misc1: 0, misc2: 0),                     // State.PainDie3
+        new(number: 717, sprite: Sprite.PAIN, frame: 32778, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainDie5, misc1: 0, misc2: 0),                     // State.PainDie4
+        new(number: 718, sprite: Sprite.PAIN, frame: 32779, tics: 8, playerAction: null, mobjAction: MobjActions.PainDie, next: MobjState.PainDie6, misc1: 0, misc2: 0),      // State.PainDie5
+        new(number: 719, sprite: Sprite.PAIN, frame: 32780, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                         // State.PainDie6
+        new(number: 720, sprite: Sprite.PAIN, frame: 12, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise2, misc1: 0, misc2: 0),                      // State.PainRaise1
+        new(number: 721, sprite: Sprite.PAIN, frame: 11, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise3, misc1: 0, misc2: 0),                      // State.PainRaise2
+        new(number: 722, sprite: Sprite.PAIN, frame: 10, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise4, misc1: 0, misc2: 0),                      // State.PainRaise3
+        new(number: 723, sprite: Sprite.PAIN, frame: 9, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise5, misc1: 0, misc2: 0),                       // State.PainRaise4
+        new(number: 724, sprite: Sprite.PAIN, frame: 8, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRaise6, misc1: 0, misc2: 0),                       // State.PainRaise5
+        new(number: 725, sprite: Sprite.PAIN, frame: 7, tics: 8, playerAction: null, mobjAction: null, next: MobjState.PainRun1, misc1: 0, misc2: 0),                         // State.PainRaise6
+        new(number: 726, sprite: Sprite.SSWV, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SswvStnd2, misc1: 0, misc2: 0),           // State.SswvStnd
+        new(number: 727, sprite: Sprite.SSWV, frame: 1, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.SswvStnd, misc1: 0, misc2: 0),            // State.SswvStnd2
+        new(number: 728, sprite: Sprite.SSWV, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun2, misc1: 0, misc2: 0),            // State.SswvRun1
+        new(number: 729, sprite: Sprite.SSWV, frame: 0, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun3, misc1: 0, misc2: 0),            // State.SswvRun2
+        new(number: 730, sprite: Sprite.SSWV, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun4, misc1: 0, misc2: 0),            // State.SswvRun3
+        new(number: 731, sprite: Sprite.SSWV, frame: 1, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun5, misc1: 0, misc2: 0),            // State.SswvRun4
+        new(number: 732, sprite: Sprite.SSWV, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun6, misc1: 0, misc2: 0),            // State.SswvRun5
+        new(number: 733, sprite: Sprite.SSWV, frame: 2, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun7, misc1: 0, misc2: 0),            // State.SswvRun6
+        new(number: 734, sprite: Sprite.SSWV, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun8, misc1: 0, misc2: 0),            // State.SswvRun7
+        new(number: 735, sprite: Sprite.SSWV, frame: 3, tics: 3, playerAction: null, mobjAction: MobjActions.Chase, next: MobjState.SswvRun1, misc1: 0, misc2: 0),            // State.SswvRun8
+        new(number: 736, sprite: Sprite.SSWV, frame: 4, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SswvAtk2, misc1: 0, misc2: 0),      // State.SswvAtk1
+        new(number: 737, sprite: Sprite.SSWV, frame: 5, tics: 10, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SswvAtk3, misc1: 0, misc2: 0),      // State.SswvAtk2
+        new(number: 738, sprite: Sprite.SSWV, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.SswvAtk4, misc1: 0, misc2: 0),   // State.SswvAtk3
+        new(number: 739, sprite: Sprite.SSWV, frame: 5, tics: 6, playerAction: null, mobjAction: MobjActions.FaceTarget, next: MobjState.SswvAtk5, misc1: 0, misc2: 0),       // State.SswvAtk4
+        new(number: 740, sprite: Sprite.SSWV, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.CPosAttack, next: MobjState.SswvAtk6, misc1: 0, misc2: 0),   // State.SswvAtk5
+        new(number: 741, sprite: Sprite.SSWV, frame: 5, tics: 1, playerAction: null, mobjAction: MobjActions.CPosRefire, next: MobjState.SswvAtk2, misc1: 0, misc2: 0),       // State.SswvAtk6
+        new(number: 742, sprite: Sprite.SSWV, frame: 7, tics: 3, playerAction: null, mobjAction: null, next: MobjState.SswvPain2, misc1: 0, misc2: 0),                        // State.SswvPain
+        new(number: 743, sprite: Sprite.SSWV, frame: 7, tics: 3, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.SswvRun1, misc1: 0, misc2: 0),             // State.SswvPain2
+        new(number: 744, sprite: Sprite.SSWV, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvDie2, misc1: 0, misc2: 0),                         // State.SswvDie1
+        new(number: 745, sprite: Sprite.SSWV, frame: 9, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.SswvDie3, misc1: 0, misc2: 0),           // State.SswvDie2
+        new(number: 746, sprite: Sprite.SSWV, frame: 10, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SswvDie4, misc1: 0, misc2: 0),            // State.SswvDie3
+        new(number: 747, sprite: Sprite.SSWV, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvDie5, misc1: 0, misc2: 0),                        // State.SswvDie4
+        new(number: 748, sprite: Sprite.SSWV, frame: 12, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SswvDie5
+        new(number: 749, sprite: Sprite.SSWV, frame: 13, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie2, misc1: 0, misc2: 0),                       // State.SswvXdie1
+        new(number: 750, sprite: Sprite.SSWV, frame: 14, tics: 5, playerAction: null, mobjAction: MobjActions.XScream, next: MobjState.SswvXdie3, misc1: 0, misc2: 0),        // State.SswvXdie2
+        new(number: 751, sprite: Sprite.SSWV, frame: 15, tics: 5, playerAction: null, mobjAction: MobjActions.Fall, next: MobjState.SswvXdie4, misc1: 0, misc2: 0),           // State.SswvXdie3
+        new(number: 752, sprite: Sprite.SSWV, frame: 16, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie5, misc1: 0, misc2: 0),                       // State.SswvXdie4
+        new(number: 753, sprite: Sprite.SSWV, frame: 17, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie6, misc1: 0, misc2: 0),                       // State.SswvXdie5
+        new(number: 754, sprite: Sprite.SSWV, frame: 18, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie7, misc1: 0, misc2: 0),                       // State.SswvXdie6
+        new(number: 755, sprite: Sprite.SSWV, frame: 19, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie8, misc1: 0, misc2: 0),                       // State.SswvXdie7
+        new(number: 756, sprite: Sprite.SSWV, frame: 20, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvXdie9, misc1: 0, misc2: 0),                       // State.SswvXdie8
+        new(number: 757, sprite: Sprite.SSWV, frame: 21, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.SswvXdie9
+        new(number: 758, sprite: Sprite.SSWV, frame: 12, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise2, misc1: 0, misc2: 0),                      // State.SswvRaise1
+        new(number: 759, sprite: Sprite.SSWV, frame: 11, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise3, misc1: 0, misc2: 0),                      // State.SswvRaise2
+        new(number: 760, sprite: Sprite.SSWV, frame: 10, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise4, misc1: 0, misc2: 0),                      // State.SswvRaise3
+        new(number: 761, sprite: Sprite.SSWV, frame: 9, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRaise5, misc1: 0, misc2: 0),                       // State.SswvRaise4
+        new(number: 762, sprite: Sprite.SSWV, frame: 8, tics: 5, playerAction: null, mobjAction: null, next: MobjState.SswvRun1, misc1: 0, misc2: 0),                         // State.SswvRaise5
+        new(number: 763, sprite: Sprite.KEEN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Keenstnd, misc1: 0, misc2: 0),                        // State.Keenstnd
+        new(number: 764, sprite: Sprite.KEEN, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen2, misc1: 0, misc2: 0),                        // State.Commkeen
+        new(number: 765, sprite: Sprite.KEEN, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen3, misc1: 0, misc2: 0),                        // State.Commkeen2
+        new(number: 766, sprite: Sprite.KEEN, frame: 2, tics: 6, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.Commkeen4, misc1: 0, misc2: 0),          // State.Commkeen3
+        new(number: 767, sprite: Sprite.KEEN, frame: 3, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen5, misc1: 0, misc2: 0),                        // State.Commkeen4
+        new(number: 768, sprite: Sprite.KEEN, frame: 4, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen6, misc1: 0, misc2: 0),                        // State.Commkeen5
+        new(number: 769, sprite: Sprite.KEEN, frame: 5, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen7, misc1: 0, misc2: 0),                        // State.Commkeen6
+        new(number: 770, sprite: Sprite.KEEN, frame: 6, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen8, misc1: 0, misc2: 0),                        // State.Commkeen7
+        new(number: 771, sprite: Sprite.KEEN, frame: 7, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen9, misc1: 0, misc2: 0),                        // State.Commkeen8
+        new(number: 772, sprite: Sprite.KEEN, frame: 8, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen10, misc1: 0, misc2: 0),                       // State.Commkeen9
+        new(number: 773, sprite: Sprite.KEEN, frame: 9, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Commkeen11, misc1: 0, misc2: 0),                       // State.Commkeen10
+        new(number: 774, sprite: Sprite.KEEN, frame: 10, tics: 6, playerAction: null, mobjAction: MobjActions.KeenDie, next: MobjState.Commkeen12, misc1: 0, misc2: 0),       // State.Commkeen11
+        new(number: 775, sprite: Sprite.KEEN, frame: 11, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Commkeen12
+        new(number: 776, sprite: Sprite.KEEN, frame: 12, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Keenpain2, misc1: 0, misc2: 0),                       // State.Keenpain
+        new(number: 777, sprite: Sprite.KEEN, frame: 12, tics: 8, playerAction: null, mobjAction: MobjActions.Pain, next: MobjState.Keenstnd, misc1: 0, misc2: 0),            // State.Keenpain2
+        new(number: 778, sprite: Sprite.BBRN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Brain
+        new(number: 779, sprite: Sprite.BBRN, frame: 1, tics: 36, playerAction: null, mobjAction: MobjActions.BrainPain, next: MobjState.Brain, misc1: 0, misc2: 0),          // State.BrainPain
+        new(number: 780, sprite: Sprite.BBRN, frame: 0, tics: 100, playerAction: null, mobjAction: MobjActions.BrainScream, next: MobjState.BrainDie2, misc1: 0, misc2: 0),   // State.BrainDie1
+        new(number: 781, sprite: Sprite.BBRN, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.BrainDie3, misc1: 0, misc2: 0),                       // State.BrainDie2
+        new(number: 782, sprite: Sprite.BBRN, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.BrainDie4, misc1: 0, misc2: 0),                       // State.BrainDie3
+        new(number: 783, sprite: Sprite.BBRN, frame: 0, tics: -1, playerAction: null, mobjAction: MobjActions.BrainDie, next: MobjState.Null, misc1: 0, misc2: 0),            // State.BrainDie4
+        new(number: 784, sprite: Sprite.SSWV, frame: 0, tics: 10, playerAction: null, mobjAction: MobjActions.Look, next: MobjState.Braineye, misc1: 0, misc2: 0),            // State.Braineye
+        new(number: 785, sprite: Sprite.SSWV, frame: 0, tics: 181, playerAction: null, mobjAction: MobjActions.BrainAwake, next: MobjState.Braineye1, misc1: 0, misc2: 0),    // State.Braineyesee
+        new(number: 786, sprite: Sprite.SSWV, frame: 0, tics: 150, playerAction: null, mobjAction: MobjActions.BrainSpit, next: MobjState.Braineye1, misc1: 0, misc2: 0),     // State.Braineye1
+        new(number: 787, sprite: Sprite.BOSF, frame: 32768, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnSound, next: MobjState.Spawn2, misc1: 0, misc2: 0),     // State.Spawn1
+        new(number: 788, sprite: Sprite.BOSF, frame: 32769, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnFly, next: MobjState.Spawn3, misc1: 0, misc2: 0),       // State.Spawn2
+        new(number: 789, sprite: Sprite.BOSF, frame: 32770, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnFly, next: MobjState.Spawn4, misc1: 0, misc2: 0),       // State.Spawn3
+        new(number: 790, sprite: Sprite.BOSF, frame: 32771, tics: 3, playerAction: null, mobjAction: MobjActions.SpawnFly, next: MobjState.Spawn1, misc1: 0, misc2: 0),       // State.Spawn4
+        new(number: 791, sprite: Sprite.FIRE, frame: 32768, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire2, misc1: 0, misc2: 0),       // State.Spawnfire1
+        new(number: 792, sprite: Sprite.FIRE, frame: 32769, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire3, misc1: 0, misc2: 0),       // State.Spawnfire2
+        new(number: 793, sprite: Sprite.FIRE, frame: 32770, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire4, misc1: 0, misc2: 0),       // State.Spawnfire3
+        new(number: 794, sprite: Sprite.FIRE, frame: 32771, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire5, misc1: 0, misc2: 0),       // State.Spawnfire4
+        new(number: 795, sprite: Sprite.FIRE, frame: 32772, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire6, misc1: 0, misc2: 0),       // State.Spawnfire5
+        new(number: 796, sprite: Sprite.FIRE, frame: 32773, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire7, misc1: 0, misc2: 0),       // State.Spawnfire6
+        new(number: 797, sprite: Sprite.FIRE, frame: 32774, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Spawnfire8, misc1: 0, misc2: 0),       // State.Spawnfire7
+        new(number: 798, sprite: Sprite.FIRE, frame: 32775, tics: 4, playerAction: null, mobjAction: MobjActions.Fire, next: MobjState.Null, misc1: 0, misc2: 0),             // State.Spawnfire8
+        new(number: 799, sprite: Sprite.MISL, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Brainexplode2, misc1: 0, misc2: 0),               // State.Brainexplode1
+        new(number: 800, sprite: Sprite.MISL, frame: 32770, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Brainexplode3, misc1: 0, misc2: 0),               // State.Brainexplode2
+        new(number: 801, sprite: Sprite.MISL, frame: 32771, tics: 10, playerAction: null, mobjAction: MobjActions.BrainExplode, next: MobjState.Null, misc1: 0, misc2: 0),    // State.Brainexplode3
+        new(number: 802, sprite: Sprite.ARM1, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Arm1A, misc1: 0, misc2: 0),                            // State.Arm1
+        new(number: 803, sprite: Sprite.ARM1, frame: 32769, tics: 7, playerAction: null, mobjAction: null, next: MobjState.Arm1, misc1: 0, misc2: 0),                         // State.Arm1A
+        new(number: 804, sprite: Sprite.ARM2, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Arm2A, misc1: 0, misc2: 0),                            // State.Arm2
+        new(number: 805, sprite: Sprite.ARM2, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Arm2, misc1: 0, misc2: 0),                         // State.Arm2A
+        new(number: 806, sprite: Sprite.BAR1, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bar2, misc1: 0, misc2: 0),                             // State.Bar1
+        new(number: 807, sprite: Sprite.BAR1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bar1, misc1: 0, misc2: 0),                             // State.Bar2
+        new(number: 808, sprite: Sprite.BEXP, frame: 32768, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Bexp2, misc1: 0, misc2: 0),                        // State.Bexp
+        new(number: 809, sprite: Sprite.BEXP, frame: 32769, tics: 5, playerAction: null, mobjAction: MobjActions.Scream, next: MobjState.Bexp3, misc1: 0, misc2: 0),          // State.Bexp2
+        new(number: 810, sprite: Sprite.BEXP, frame: 32770, tics: 5, playerAction: null, mobjAction: null, next: MobjState.Bexp4, misc1: 0, misc2: 0),                        // State.Bexp3
+        new(number: 811, sprite: Sprite.BEXP, frame: 32771, tics: 10, playerAction: null, mobjAction: MobjActions.Explode, next: MobjState.Bexp5, misc1: 0, misc2: 0),        // State.Bexp4
+        new(number: 812, sprite: Sprite.BEXP, frame: 32772, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Bexp5
+        new(number: 813, sprite: Sprite.FCAN, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bbar2, misc1: 0, misc2: 0),                        // State.Bbar1
+        new(number: 814, sprite: Sprite.FCAN, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bbar3, misc1: 0, misc2: 0),                        // State.Bbar2
+        new(number: 815, sprite: Sprite.FCAN, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bbar1, misc1: 0, misc2: 0),                        // State.Bbar3
+        new(number: 816, sprite: Sprite.BON1, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1A, misc1: 0, misc2: 0),                            // State.Bon1
+        new(number: 817, sprite: Sprite.BON1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1B, misc1: 0, misc2: 0),                            // State.Bon1A
+        new(number: 818, sprite: Sprite.BON1, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1C, misc1: 0, misc2: 0),                            // State.Bon1B
+        new(number: 819, sprite: Sprite.BON1, frame: 3, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1D, misc1: 0, misc2: 0),                            // State.Bon1C
+        new(number: 820, sprite: Sprite.BON1, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1E, misc1: 0, misc2: 0),                            // State.Bon1D
+        new(number: 821, sprite: Sprite.BON1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon1, misc1: 0, misc2: 0),                             // State.Bon1E
+        new(number: 822, sprite: Sprite.BON2, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2A, misc1: 0, misc2: 0),                            // State.Bon2
+        new(number: 823, sprite: Sprite.BON2, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2B, misc1: 0, misc2: 0),                            // State.Bon2A
+        new(number: 824, sprite: Sprite.BON2, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2C, misc1: 0, misc2: 0),                            // State.Bon2B
+        new(number: 825, sprite: Sprite.BON2, frame: 3, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2D, misc1: 0, misc2: 0),                            // State.Bon2C
+        new(number: 826, sprite: Sprite.BON2, frame: 2, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2E, misc1: 0, misc2: 0),                            // State.Bon2D
+        new(number: 827, sprite: Sprite.BON2, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bon2, misc1: 0, misc2: 0),                             // State.Bon2E
+        new(number: 828, sprite: Sprite.BKEY, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bkey2, misc1: 0, misc2: 0),                           // State.Bkey
+        new(number: 829, sprite: Sprite.BKEY, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bkey, misc1: 0, misc2: 0),                        // State.Bkey2
+        new(number: 830, sprite: Sprite.RKEY, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rkey2, misc1: 0, misc2: 0),                           // State.Rkey
+        new(number: 831, sprite: Sprite.RKEY, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rkey, misc1: 0, misc2: 0),                        // State.Rkey2
+        new(number: 832, sprite: Sprite.YKEY, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Ykey2, misc1: 0, misc2: 0),                           // State.Ykey
+        new(number: 833, sprite: Sprite.YKEY, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Ykey, misc1: 0, misc2: 0),                        // State.Ykey2
+        new(number: 834, sprite: Sprite.BSKU, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bskull2, misc1: 0, misc2: 0),                         // State.Bskull
+        new(number: 835, sprite: Sprite.BSKU, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bskull, misc1: 0, misc2: 0),                      // State.Bskull2
+        new(number: 836, sprite: Sprite.RSKU, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rskull2, misc1: 0, misc2: 0),                         // State.Rskull
+        new(number: 837, sprite: Sprite.RSKU, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Rskull, misc1: 0, misc2: 0),                      // State.Rskull2
+        new(number: 838, sprite: Sprite.YSKU, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Yskull2, misc1: 0, misc2: 0),                         // State.Yskull
+        new(number: 839, sprite: Sprite.YSKU, frame: 32769, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Yskull, misc1: 0, misc2: 0),                      // State.Yskull2
+        new(number: 840, sprite: Sprite.STIM, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Stim
+        new(number: 841, sprite: Sprite.MEDI, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Medi
+        new(number: 842, sprite: Sprite.SOUL, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul2, misc1: 0, misc2: 0),                        // State.Soul
+        new(number: 843, sprite: Sprite.SOUL, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul3, misc1: 0, misc2: 0),                        // State.Soul2
+        new(number: 844, sprite: Sprite.SOUL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul4, misc1: 0, misc2: 0),                        // State.Soul3
+        new(number: 845, sprite: Sprite.SOUL, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul5, misc1: 0, misc2: 0),                        // State.Soul4
+        new(number: 846, sprite: Sprite.SOUL, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul6, misc1: 0, misc2: 0),                        // State.Soul5
+        new(number: 847, sprite: Sprite.SOUL, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Soul, misc1: 0, misc2: 0),                         // State.Soul6
+        new(number: 848, sprite: Sprite.PINV, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv2, misc1: 0, misc2: 0),                        // State.Pinv
+        new(number: 849, sprite: Sprite.PINV, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv3, misc1: 0, misc2: 0),                        // State.Pinv2
+        new(number: 850, sprite: Sprite.PINV, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv4, misc1: 0, misc2: 0),                        // State.Pinv3
+        new(number: 851, sprite: Sprite.PINV, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pinv, misc1: 0, misc2: 0),                         // State.Pinv4
+        new(number: 852, sprite: Sprite.PSTR, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Pstr
+        new(number: 853, sprite: Sprite.PINS, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins2, misc1: 0, misc2: 0),                        // State.Pins
+        new(number: 854, sprite: Sprite.PINS, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins3, misc1: 0, misc2: 0),                        // State.Pins2
+        new(number: 855, sprite: Sprite.PINS, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins4, misc1: 0, misc2: 0),                        // State.Pins3
+        new(number: 856, sprite: Sprite.PINS, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pins, misc1: 0, misc2: 0),                         // State.Pins4
+        new(number: 857, sprite: Sprite.MEGA, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega2, misc1: 0, misc2: 0),                        // State.Mega
+        new(number: 858, sprite: Sprite.MEGA, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega3, misc1: 0, misc2: 0),                        // State.Mega2
+        new(number: 859, sprite: Sprite.MEGA, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega4, misc1: 0, misc2: 0),                        // State.Mega3
+        new(number: 860, sprite: Sprite.MEGA, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Mega, misc1: 0, misc2: 0),                         // State.Mega4
+        new(number: 861, sprite: Sprite.SUIT, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Suit
+        new(number: 862, sprite: Sprite.PMAP, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap2, misc1: 0, misc2: 0),                        // State.Pmap
+        new(number: 863, sprite: Sprite.PMAP, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap3, misc1: 0, misc2: 0),                        // State.Pmap2
+        new(number: 864, sprite: Sprite.PMAP, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap4, misc1: 0, misc2: 0),                        // State.Pmap3
+        new(number: 865, sprite: Sprite.PMAP, frame: 32771, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap5, misc1: 0, misc2: 0),                        // State.Pmap4
+        new(number: 866, sprite: Sprite.PMAP, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap6, misc1: 0, misc2: 0),                        // State.Pmap5
+        new(number: 867, sprite: Sprite.PMAP, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pmap, misc1: 0, misc2: 0),                         // State.Pmap6
+        new(number: 868, sprite: Sprite.PVIS, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pvis2, misc1: 0, misc2: 0),                        // State.Pvis
+        new(number: 869, sprite: Sprite.PVIS, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Pvis, misc1: 0, misc2: 0),                             // State.Pvis2
+        new(number: 870, sprite: Sprite.CLIP, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Clip
+        new(number: 871, sprite: Sprite.AMMO, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Ammo
+        new(number: 872, sprite: Sprite.ROCK, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Rock
+        new(number: 873, sprite: Sprite.BROK, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Brok
+        new(number: 874, sprite: Sprite.CELL, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Cell
+        new(number: 875, sprite: Sprite.CELP, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Celp
+        new(number: 876, sprite: Sprite.SHEL, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shel
+        new(number: 877, sprite: Sprite.SBOX, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Sbox
+        new(number: 878, sprite: Sprite.BPAK, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Bpak
+        new(number: 879, sprite: Sprite.BFUG, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Bfug
+        new(number: 880, sprite: Sprite.MGUN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Mgun
+        new(number: 881, sprite: Sprite.CSAW, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Csaw
+        new(number: 882, sprite: Sprite.LAUN, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Laun
+        new(number: 883, sprite: Sprite.PLAS, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Plas
+        new(number: 884, sprite: Sprite.SHOT, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shot
+        new(number: 885, sprite: Sprite.SGN2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shot2
+        new(number: 886, sprite: Sprite.COLU, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Colu
+        new(number: 887, sprite: Sprite.SMT2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Stalag
+        new(number: 888, sprite: Sprite.GOR1, frame: 0, tics: 10, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch2, misc1: 0, misc2: 0),                   // State.Bloodytwitch
+        new(number: 889, sprite: Sprite.GOR1, frame: 1, tics: 15, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch3, misc1: 0, misc2: 0),                   // State.Bloodytwitch2
+        new(number: 890, sprite: Sprite.GOR1, frame: 2, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch4, misc1: 0, misc2: 0),                    // State.Bloodytwitch3
+        new(number: 891, sprite: Sprite.GOR1, frame: 1, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Bloodytwitch, misc1: 0, misc2: 0),                     // State.Bloodytwitch4
+        new(number: 892, sprite: Sprite.PLAY, frame: 13, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Deadtorso
+        new(number: 893, sprite: Sprite.PLAY, frame: 18, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                           // State.Deadbottom
+        new(number: 894, sprite: Sprite.POL2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Headsonstick
+        new(number: 895, sprite: Sprite.POL5, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Gibs
+        new(number: 896, sprite: Sprite.POL4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Headonastick
+        new(number: 897, sprite: Sprite.POL3, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Headcandles2, misc1: 0, misc2: 0),                 // State.Headcandles
+        new(number: 898, sprite: Sprite.POL3, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Headcandles, misc1: 0, misc2: 0),                  // State.Headcandles2
+        new(number: 899, sprite: Sprite.POL1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Deadstick
+        new(number: 900, sprite: Sprite.POL6, frame: 0, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Livestick2, misc1: 0, misc2: 0),                       // State.Livestick
+        new(number: 901, sprite: Sprite.POL6, frame: 1, tics: 8, playerAction: null, mobjAction: null, next: MobjState.Livestick, misc1: 0, misc2: 0),                        // State.Livestick2
+        new(number: 902, sprite: Sprite.GOR2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat2
+        new(number: 903, sprite: Sprite.GOR3, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat3
+        new(number: 904, sprite: Sprite.GOR4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat4
+        new(number: 905, sprite: Sprite.GOR5, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Meat5
+        new(number: 906, sprite: Sprite.SMIT, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Stalagtite
+        new(number: 907, sprite: Sprite.COL1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Tallgrncol
+        new(number: 908, sprite: Sprite.COL2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shrtgrncol
+        new(number: 909, sprite: Sprite.COL3, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Tallredcol
+        new(number: 910, sprite: Sprite.COL4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Shrtredcol
+        new(number: 911, sprite: Sprite.CAND, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Candlestik
+        new(number: 912, sprite: Sprite.CBRA, frame: 32768, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                        // State.Candelabra
+        new(number: 913, sprite: Sprite.COL6, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Skullcol
+        new(number: 914, sprite: Sprite.TRE1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Torchtree
+        new(number: 915, sprite: Sprite.TRE2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Bigtree
+        new(number: 916, sprite: Sprite.ELEC, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Techpillar
+        new(number: 917, sprite: Sprite.CEYE, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye2, misc1: 0, misc2: 0),                     // State.Evileye
+        new(number: 918, sprite: Sprite.CEYE, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye3, misc1: 0, misc2: 0),                     // State.Evileye2
+        new(number: 919, sprite: Sprite.CEYE, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye4, misc1: 0, misc2: 0),                     // State.Evileye3
+        new(number: 920, sprite: Sprite.CEYE, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Evileye, misc1: 0, misc2: 0),                      // State.Evileye4
+        new(number: 921, sprite: Sprite.FSKU, frame: 32768, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Floatskull2, misc1: 0, misc2: 0),                  // State.Floatskull
+        new(number: 922, sprite: Sprite.FSKU, frame: 32769, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Floatskull3, misc1: 0, misc2: 0),                  // State.Floatskull2
+        new(number: 923, sprite: Sprite.FSKU, frame: 32770, tics: 6, playerAction: null, mobjAction: null, next: MobjState.Floatskull, misc1: 0, misc2: 0),                   // State.Floatskull3
+        new(number: 924, sprite: Sprite.COL5, frame: 0, tics: 14, playerAction: null, mobjAction: null, next: MobjState.Heartcol2, misc1: 0, misc2: 0),                       // State.Heartcol
+        new(number: 925, sprite: Sprite.COL5, frame: 1, tics: 14, playerAction: null, mobjAction: null, next: MobjState.Heartcol, misc1: 0, misc2: 0),                        // State.Heartcol2
+        new(number: 926, sprite: Sprite.TBLU, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch2, misc1: 0, misc2: 0),                   // State.Bluetorch
+        new(number: 927, sprite: Sprite.TBLU, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch3, misc1: 0, misc2: 0),                   // State.Bluetorch2
+        new(number: 928, sprite: Sprite.TBLU, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch4, misc1: 0, misc2: 0),                   // State.Bluetorch3
+        new(number: 929, sprite: Sprite.TBLU, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Bluetorch, misc1: 0, misc2: 0),                    // State.Bluetorch4
+        new(number: 930, sprite: Sprite.TGRN, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch2, misc1: 0, misc2: 0),                  // State.Greentorch
+        new(number: 931, sprite: Sprite.TGRN, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch3, misc1: 0, misc2: 0),                  // State.Greentorch2
+        new(number: 932, sprite: Sprite.TGRN, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch4, misc1: 0, misc2: 0),                  // State.Greentorch3
+        new(number: 933, sprite: Sprite.TGRN, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Greentorch, misc1: 0, misc2: 0),                   // State.Greentorch4
+        new(number: 934, sprite: Sprite.TRED, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch2, misc1: 0, misc2: 0),                    // State.Redtorch
+        new(number: 935, sprite: Sprite.TRED, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch3, misc1: 0, misc2: 0),                    // State.Redtorch2
+        new(number: 936, sprite: Sprite.TRED, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch4, misc1: 0, misc2: 0),                    // State.Redtorch3
+        new(number: 937, sprite: Sprite.TRED, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Redtorch, misc1: 0, misc2: 0),                     // State.Redtorch4
+        new(number: 938, sprite: Sprite.SMBT, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt2, misc1: 0, misc2: 0),                  // State.Btorchshrt
+        new(number: 939, sprite: Sprite.SMBT, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt3, misc1: 0, misc2: 0),                  // State.Btorchshrt2
+        new(number: 940, sprite: Sprite.SMBT, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt4, misc1: 0, misc2: 0),                  // State.Btorchshrt3
+        new(number: 941, sprite: Sprite.SMBT, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Btorchshrt, misc1: 0, misc2: 0),                   // State.Btorchshrt4
+        new(number: 942, sprite: Sprite.SMGT, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt2, misc1: 0, misc2: 0),                  // State.Gtorchshrt
+        new(number: 943, sprite: Sprite.SMGT, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt3, misc1: 0, misc2: 0),                  // State.Gtorchshrt2
+        new(number: 944, sprite: Sprite.SMGT, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt4, misc1: 0, misc2: 0),                  // State.Gtorchshrt3
+        new(number: 945, sprite: Sprite.SMGT, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Gtorchshrt, misc1: 0, misc2: 0),                   // State.Gtorchshrt4
+        new(number: 946, sprite: Sprite.SMRT, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt2, misc1: 0, misc2: 0),                  // State.Rtorchshrt
+        new(number: 947, sprite: Sprite.SMRT, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt3, misc1: 0, misc2: 0),                  // State.Rtorchshrt2
+        new(number: 948, sprite: Sprite.SMRT, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt4, misc1: 0, misc2: 0),                  // State.Rtorchshrt3
+        new(number: 949, sprite: Sprite.SMRT, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Rtorchshrt, misc1: 0, misc2: 0),                   // State.Rtorchshrt4
+        new(number: 950, sprite: Sprite.HDB1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangnoguts
+        new(number: 951, sprite: Sprite.HDB2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangbnobrain
+        new(number: 952, sprite: Sprite.HDB3, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtlookdn
+        new(number: 953, sprite: Sprite.HDB4, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtskull
+        new(number: 954, sprite: Sprite.HDB5, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtlookup
+        new(number: 955, sprite: Sprite.HDB6, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Hangtnobrain
+        new(number: 956, sprite: Sprite.POB1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Colongibs
+        new(number: 957, sprite: Sprite.POB2, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Smallpool
+        new(number: 958, sprite: Sprite.BRS1, frame: 0, tics: -1, playerAction: null, mobjAction: null, next: MobjState.Null, misc1: 0, misc2: 0),                            // State.Brainstem
+        new(number: 959, sprite: Sprite.TLMP, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp2, misc1: 0, misc2: 0),                    // State.Techlamp
+        new(number: 960, sprite: Sprite.TLMP, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp3, misc1: 0, misc2: 0),                    // State.Techlamp2
+        new(number: 961, sprite: Sprite.TLMP, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp4, misc1: 0, misc2: 0),                    // State.Techlamp3
+        new(number: 962, sprite: Sprite.TLMP, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Techlamp, misc1: 0, misc2: 0),                     // State.Techlamp4
+        new(number: 963, sprite: Sprite.TLP2, frame: 32768, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp2, misc1: 0, misc2: 0),                   // State.Tech2Lamp
+        new(number: 964, sprite: Sprite.TLP2, frame: 32769, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp3, misc1: 0, misc2: 0),                   // State.Tech2Lamp2
+        new(number: 965, sprite: Sprite.TLP2, frame: 32770, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp4, misc1: 0, misc2: 0),                   // State.Tech2Lamp3
+        new(number: 966, sprite: Sprite.TLP2, frame: 32771, tics: 4, playerAction: null, mobjAction: null, next: MobjState.Tech2Lamp, misc1: 0, misc2: 0)                     // State.Tech2Lamp4
     ];
 }
