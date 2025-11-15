@@ -55,7 +55,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     private readonly SpriteRender spriteRender;
     private readonly WeaponRender weaponRender;
 
-    private readonly FuzzEffects fuzzEffects;
+    private int fuzzEffectPos;
     private readonly ColorTranslation colorTranslation;
     private readonly WindowBorder windowBorder;
 
@@ -82,7 +82,6 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         this.spriteRender = new SpriteRender();
         this.weaponRender = new WeaponRender();
 
-        this.fuzzEffects = new FuzzEffects();
         this.colorTranslation = new ColorTranslation();
         this.colorTranslation.InitTranslations();
 
@@ -1646,8 +1645,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         for (var pos = pos1; pos <= pos2; pos++)
         {
-            var fuzzEffect = fuzzEffects.GetAndIncrementPosition();
-            screenData[pos] = mapSpan[screenData[pos + fuzzEffect]];
+            var fuzz = FuzzEffectsExtensions.GetAndIncrementPosition(ref fuzzEffectPos);
+            screenData[pos] = mapSpan[screenData[pos + fuzz]];
         }
     }
 

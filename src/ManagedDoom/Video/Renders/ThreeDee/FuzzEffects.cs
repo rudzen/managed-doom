@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
 
-public sealed class FuzzEffects
+public static class FuzzEffectsExtensions
 {
     private static readonly sbyte[] FuzzTable =
     [
@@ -31,16 +31,14 @@ public sealed class FuzzEffects
         1, 1, -1, 1, 1, -1, 1
     ];
 
-    private int _fuzzPos;
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public sbyte GetAndIncrementPosition()
+    public static sbyte GetAndIncrementPosition(ref int fuzzEffectsPos)
     {
-        var current = FuzzTable[_fuzzPos];
+        var current = FuzzTable[fuzzEffectsPos];
 
-        ++_fuzzPos;
-        if (_fuzzPos == FuzzTable.Length)
-            _fuzzPos = 0;
+        ++fuzzEffectsPos;
+        if (fuzzEffectsPos == FuzzTable.Length)
+            fuzzEffectsPos = 0;
 
         return current;
     }
