@@ -22,38 +22,49 @@ namespace ManagedDoom.Video.Renders.ThreeDee;
 
 public sealed class ColorTranslation
 {
-    private readonly byte[] greenToGray;
-    private readonly byte[] greenToBrown;
-    private readonly byte[] greenToRed;
+    public const int TranslationChunkSize = 256;
+    public const int GrayIndexStart = 0;
+    public const int BrownIndexStart = TranslationChunkSize;
+    public const int RedIndexStart = TranslationChunkSize * 2;
+    private const int TranslationSize = TranslationChunkSize * 3;
 
-    public ColorTranslation()
+    public readonly byte[] TranslationTable = new byte[TranslationSize];
+}
+
+public static class ColorTranslationExtensions
+{
+    extension(ColorTranslation translation)
     {
-        greenToGray = new byte[256];
-        greenToBrown = new byte[256];
-        greenToRed = new byte[256];
-        for (var i = 0; i < 256; i++)
+        public void InitTranslations()
         {
-            greenToGray[i] = (byte)i;
-            greenToBrown[i] = (byte)i;
-            greenToRed[i] = (byte)i;
+            var greenToGray = translation.TranslationTable.AsSpan(ColorTranslation.GrayIndexStart, ColorTranslation.TranslationChunkSize);
+            var greenToBrown = translation.TranslationTable.AsSpan(ColorTranslation.BrownIndexStart, ColorTranslation.TranslationChunkSize);
+            var greenToRed = translation.TranslationTable.AsSpan(ColorTranslation.RedIndexStart, ColorTranslation.TranslationChunkSize);
+
+            for (var i = 0; i < ColorTranslation.TranslationChunkSize; i++)
+            {
+                greenToGray[i] = (byte)i;
+                greenToBrown[i] = (byte)i;
+                greenToRed[i] = (byte)i;
+            }
+
+            for (var i = 112; i < 128; i++)
+            {
+                greenToGray[i] -= 16;
+                greenToBrown[i] -= 48;
+                greenToRed[i] -= 80;
+            }
         }
 
-        for (var i = 112; i < 128; i++)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<byte> GetTranslation(MobjFlags flags)
         {
-            greenToGray[i] -= 16;
-            greenToBrown[i] -= 48;
-            greenToRed[i] -= 80;
+            return ((int)(flags & MobjFlags.Translation) >> (int)MobjFlags.TransShift) switch
+            {
+                1 => translation.TranslationTable.AsSpan(ColorTranslation.GrayIndexStart, 256),
+                2 => translation.TranslationTable.AsSpan(ColorTranslation.BrownIndexStart, 256),
+                _ => translation.TranslationTable.AsSpan(ColorTranslation.RedIndexStart, 256)
+            };
         }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<byte> GetTranslation(MobjFlags flags)
-    {
-        return ((int)(flags & MobjFlags.Translation) >> (int)MobjFlags.TransShift) switch
-        {
-            1 => greenToGray.AsSpan(),
-            2 => greenToBrown.AsSpan(),
-            _ => greenToRed.AsSpan()
-        };
     }
 }

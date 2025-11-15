@@ -84,6 +84,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         this.fuzzEffects = new FuzzEffects();
         this.colorTranslation = new ColorTranslation();
+        this.colorTranslation.InitTranslations();
 
         this.windowBorder = new WindowBorder(content.Wad, flats);
 
