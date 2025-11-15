@@ -55,9 +55,11 @@ public sealed class RenderingHistory
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset(WindowSettings windowSettings)
     {
-        Array.Fill(ClipData, (short)-1, 0, windowSettings.WindowWidth);
+        const short clipDataDefaultValue = -1;
+        var clipData = ClipData.AsSpan();
+        clipData[..windowSettings.WindowWidth].Fill(clipDataDefaultValue);
+        clipData.Slice(windowSettings.WindowWidth, windowSettings.WindowWidth).Fill((short)windowSettings.WindowHeight);
         NegOneArray = 0;
-        Array.Fill(ClipData, (short)windowSettings.WindowHeight, windowSettings.WindowWidth, windowSettings.WindowWidth);
         WindowHeightArray = windowSettings.WindowWidth;
     }
 
@@ -65,8 +67,8 @@ public sealed class RenderingHistory
     public void Clear(WindowSettings windowSettings)
     {
         const short upperClipDefaultValue = -1;
-        Array.Fill(UpperClip, upperClipDefaultValue, 0, windowSettings.WindowWidth);
-        Array.Fill(LowerClip, (short)windowSettings.WindowHeight, 0, windowSettings.WindowWidth);
+        UpperClip.AsSpan(0, windowSettings.WindowWidth).Fill(upperClipDefaultValue);
+        LowerClip.AsSpan(0, windowSettings.WindowWidth).Fill((short)windowSettings.WindowHeight);
 
         ClipRanges[0].First = -0x7fffffff;
         ClipRanges[0].Last = -1;
@@ -81,26 +83,14 @@ public sealed class RenderingHistory
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool VisualRangeExceeded()
-    {
-        return VisWallRangeCount == VisWallRanges.Length;
-    }
+    public bool VisualRangeExceeded() => VisWallRangeCount == VisWallRanges.Length;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsClipIntoBufferSufficient(int range)
-    {
-        return ClipDataLength + 3 * range >= ClipData.Length;
-    }
+    public bool IsClipIntoBufferSufficient(int range) => ClipDataLength + 3 * range >= ClipData.Length;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref VisWallRange GetAndIncrementVisWallRange()
-    {
-        return ref VisWallRanges[VisWallRangeCount++];
-    }
+    public ref VisWallRange GetAndIncrementVisWallRange() => ref VisWallRanges[VisWallRangeCount++];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<VisWallRange> GetCurrentVisWallRanges()
-    {
-        return VisWallRanges.AsSpan(0, VisWallRangeCount);
-    }
+    public ReadOnlySpan<VisWallRange> GetCurrentVisWallRanges() => VisWallRanges.AsSpan(0, VisWallRangeCount);
 }

@@ -298,7 +298,7 @@ public sealed class DoomGame
             if (player is { InGame: true, PlayerState: PlayerState.Dead })
                 player.PlayerState = PlayerState.Reborn;
 
-            Array.Clear(player.Frags, 0, player.Frags.Length);
+            player.Frags.AsSpan().Clear();
         }
 
         Intermission = null;
@@ -461,7 +461,7 @@ public sealed class DoomGame
             imInfo.PlayerScores[i].ItemCount = players[i].ItemCount;
             imInfo.PlayerScores[i].SecretCount = players[i].SecretCount;
             imInfo.PlayerScores[i].Time = World.LevelTime;
-            Array.Copy(players[i].Frags, imInfo.PlayerScores[i].Frags, Player.MaxPlayerCount);
+            players[i].Frags.AsSpan().CopyTo(imInfo.PlayerScores[i].Frags);
         }
 
         State = GameState.Intermission;

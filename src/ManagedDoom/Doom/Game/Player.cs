@@ -198,18 +198,18 @@ public sealed class Player
         ArmorPoints = 0;
         ArmorType = 0;
 
-        Array.Clear(Powers);
+        Powers.AsSpan().Clear();
         Cards = CardType.None;
         Backpack = false;
 
-        Array.Clear(Frags);
+        Frags.AsSpan().Clear();
 
         ReadyWeapon = WeaponTypes.Fist;
         PendingWeapon = WeaponTypes.Fist;
         WeaponOwned = WeaponTypes.None;
 
-        Array.Clear(Ammo);
-        Array.Clear(MaxAmmo);
+        Ammo.AsSpan().Clear();
+        MaxAmmo.AsSpan().Clear();
 
         UseDown = false;
         AttackDown = false;
@@ -261,7 +261,7 @@ public sealed class Player
         ArmorPoints = 0;
         ArmorType = 0;
 
-        Array.Clear(Powers);
+        Powers.AsSpan().Clear();
         Cards = CardType.None;
         Backpack = false;
 
@@ -269,12 +269,11 @@ public sealed class Player
         PendingWeapon = WeaponTypes.Pistol;
         WeaponOwned = WeaponTypes.Fist | WeaponTypes.Pistol;
 
-        Array.Clear(Ammo);
-        Array.Clear(MaxAmmo);
+        Ammo.AsSpan().Clear();
+        MaxAmmo.AsSpan().Clear();
 
         Ammo[AmmoType.Clip] = DoomInfo.DeHackEdConst.InitialBullets;
-        for (var i = 0; i < AmmoType.Count; i++)
-            MaxAmmo[i] = AmmoType.AmmoMax[i];
+        AmmoType.AmmoMax.AsSpan().CopyTo(MaxAmmo);
 
         // Don't do anything immediately.
         UseDown = true;
@@ -310,12 +309,11 @@ public sealed class Player
 
     public void FinishLevel()
     {
-        Array.Clear(Powers);
+        Powers.AsSpan().Clear();
         Cards = CardType.None;
 
         // Cancel invisibility.
-        if (Mobj is not null)
-            Mobj.Flags &= ~MobjFlags.Shadow;
+        Mobj?.Flags &= ~MobjFlags.Shadow;
 
         // Cancel gun flashes.
         ExtraLight = 0;

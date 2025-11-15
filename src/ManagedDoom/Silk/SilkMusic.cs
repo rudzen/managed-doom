@@ -309,7 +309,7 @@ public sealed class SilkMusic : IMusic
 
         private void Reset()
         {
-            Array.Fill(lastVolume, 0);
+            lastVolume.AsSpan().Clear();
             p = scoreStart;
             delay = 0;
         }

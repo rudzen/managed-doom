@@ -213,9 +213,7 @@ public sealed class Renderer : IRenderer
                 if (config.VideoDisplayMessage || ReferenceEquals(consolePlayer.Message, (string)DoomInfo.Strings.MSGOFF))
                 {
                     if (consolePlayer.MessageTime > 0)
-                    {
                         screen.DrawText(consolePlayer.Message!, 0, 7 * scale, scale);
-                    }
                 }
 
                 break;
@@ -288,7 +286,11 @@ public sealed class Renderer : IRenderer
 
                 var srcPos = screenHeight * x;
                 var dstPos = screenHeight * x + y;
-                Array.Copy(wipeBuffer, srcPos, screen.Data, dstPos, copyLength);
+
+                // copy wipe buffer
+                var source = wipeBuffer.AsSpan(srcPos, copyLength);
+                var dest = screen.Data.AsSpan(dstPos, copyLength);
+                source.CopyTo(dest);
             }
         }
 
@@ -298,10 +300,7 @@ public sealed class Renderer : IRenderer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void InitializeWipe()
-    {
-        Array.Copy(screen.Data, wipeBuffer, screen.Data.Length);
-    }
+    public void InitializeWipe() => screen.Data.AsSpan().CopyTo(wipeBuffer);
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void WriteData(ReadOnlySpan<uint> colors, Span<byte> destination)

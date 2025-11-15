@@ -1201,7 +1201,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         if (((visWallRange.Silhouette & Silhouette.Upper) != 0 ||
              drawMaskedTexture) && visWallRange.UpperClip == -1)
         {
-            Array.Copy(renderingHistory.UpperClip, x1, renderingHistory.ClipData, renderingHistory.ClipDataLength, range);
+            // copy upper clip
+            var source = renderingHistory.UpperClip.AsSpan(x1, range);
+            var dest = renderingHistory.ClipData.AsSpan(renderingHistory.ClipDataLength, range);
+            source.CopyTo(dest);
+
             visWallRange.UpperClip = renderingHistory.ClipDataLength - x1;
             renderingHistory.ClipDataLength += range;
         }
@@ -1209,7 +1213,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         if (((visWallRange.Silhouette & Silhouette.Lower) != 0 ||
              drawMaskedTexture) && visWallRange.LowerClip == -1)
         {
-            Array.Copy(renderingHistory.LowerClip, x1, renderingHistory.ClipData, renderingHistory.ClipDataLength, range);
+            // copy lower clip
+            var source = renderingHistory.LowerClip.AsSpan(x1, range);
+            var dest = renderingHistory.ClipData.AsSpan(renderingHistory.ClipDataLength, range);
+            source.CopyTo(dest);
+
             visWallRange.LowerClip = renderingHistory.ClipDataLength - x1;
             renderingHistory.ClipDataLength += range;
         }
