@@ -91,7 +91,7 @@ public sealed class Doom
 
         Game = new DoomGame(content, Options);
 
-        WipeEffect = WipeEffect.CreateInstance(video.WipeBandCount, video.WipeHeight);
+        WipeEffect = WipeEffect.Create(video.WipeBandCount, video.WipeHeight);
         Wiping = false;
 
         State = DoomState.None;

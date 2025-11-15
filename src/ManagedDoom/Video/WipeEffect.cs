@@ -36,7 +36,7 @@ public sealed class WipeEffect
         random = new DoomRandom(DateTime.Now.Millisecond);
     }
 
-    public static WipeEffect CreateInstance(int width, int height)
+    public static WipeEffect Create(int width, int height)
     {
         return new WipeEffect(width, height);
     }
