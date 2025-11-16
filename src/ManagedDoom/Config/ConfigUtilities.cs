@@ -65,7 +65,7 @@ public static class ConfigUtilities
         return iwadNames.Any(wadFile => string.Equals(name, wadFile, StringComparison.OrdinalIgnoreCase));
     }
 
-    public static IEnumerable<string> GetWadPaths(ICommandLineArgs args)
+    public static IEnumerable<string> GetWadPaths(CommandLineArgs args)
     {
         if (args.Iwad.Present)
             yield return args.Iwad.Value!;

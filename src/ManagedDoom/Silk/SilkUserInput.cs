@@ -46,7 +46,7 @@ public sealed class SilkUserInput : IUserInput
     private Vector2 mousePrevXy;
     private Vector2 mouseDeltaXy;
 
-    public SilkUserInput(ConfigValues config, IWindow window, SilkDoom silkDoom, ICommandLineArgs args)
+    public SilkUserInput(ConfigValues config, IWindow window, SilkDoom silkDoom, CommandLineArgs args)
     {
         try
         {
@@ -177,15 +177,8 @@ public sealed class SilkUserInput : IUserInput
         else
             command.AngleTurn -= (short)(mx * 0x8);
 
-        if (forward > PlayerBehavior.MaxMove)
-            forward = PlayerBehavior.MaxMove;
-        else if (forward < -PlayerBehavior.MaxMove)
-            forward = -PlayerBehavior.MaxMove;
-
-        if (side > PlayerBehavior.MaxMove)
-            side = PlayerBehavior.MaxMove;
-        else if (side < -PlayerBehavior.MaxMove)
-            side = -PlayerBehavior.MaxMove;
+        forward = Math.Clamp(forward, -PlayerBehavior.MaxMove, PlayerBehavior.MaxMove);
+        side = Math.Clamp(side, -PlayerBehavior.MaxMove, PlayerBehavior.MaxMove);
 
         command.ForwardMove += (sbyte)forward;
         command.SideMove += (sbyte)side;

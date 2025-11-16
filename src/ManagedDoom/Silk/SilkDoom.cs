@@ -31,12 +31,12 @@ namespace ManagedDoom.Silk;
 
 public sealed partial class SilkDoom
 {
-    private readonly ICommandLineArgs args;
+    private readonly CommandLineArgs args;
 
     private readonly SilkConfig silkConfig;
 
     private readonly IGameContent gameContent;
-    private readonly IRenderer renderer;
+    private readonly Renderer renderer;
 
     private readonly IWindow window;
     private GL? openGl;
@@ -57,11 +57,11 @@ public sealed partial class SilkDoom
     private long fpsStamp;
 
     public SilkDoom(
-        ICommandLineArgs args,
+        CommandLineArgs args,
         IGameContent gameContent,
         SilkConfig silkConfig,
         WindowFactory windowFactory,
-        IRenderer renderer,
+        Renderer renderer,
         AudioFactory audioFactory
     )
     {

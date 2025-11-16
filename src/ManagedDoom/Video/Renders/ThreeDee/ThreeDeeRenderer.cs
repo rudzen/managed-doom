@@ -1661,7 +1661,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawSkyColumn(int x, int y1, int y2)
     {
-        var angle = (viewAngle + wallRender.XToAngle[x]).Data >> SkyRender.angleToSkyShift;
+        var angle = (viewAngle + wallRender.XToAngle[x]).Data >> SkyRender.AngleToSkyShift;
         var skyTexture = world!.Map.SkyTexture;
         var mask = skyTexture.Width - 1;
         var source = skyTexture.Composite.Columns[angle & mask];

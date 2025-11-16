@@ -18,8 +18,21 @@ namespace ManagedDoom.Config;
 
 public readonly record struct Arg(bool Present);
 
-public readonly record struct Arg<T>(T? Value)
+public readonly record struct Arg<T>
 {
-    public static Arg<T> Empty => new(default!);
-    public bool Present => Value is not null;
+    public readonly bool Present;
+    public readonly T? Value;
+
+    public Arg(T value, bool present) : this()
+    {
+        Present = present;
+        Value = value;
+    }
+}
+
+public static class ArgExtensions
+{
+    public static Arg<T> Success<T>(T value) => new(value, true);
+
+    public static Arg<T> Failure<T>() => new(default!, false);
 }

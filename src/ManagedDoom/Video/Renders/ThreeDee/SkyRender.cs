@@ -21,7 +21,7 @@ namespace ManagedDoom.Video.Renders.ThreeDee;
 
 public sealed class SkyRender
 {
-    public const int angleToSkyShift = 22;
+    public const int AngleToSkyShift = 22;
     public Fixed SkyTextureAlt { get; } = Fixed.FromInt(100);
     public Fixed SkyInvScale { get; private set; } = Fixed.Zero;
 

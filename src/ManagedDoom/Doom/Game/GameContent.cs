@@ -33,7 +33,7 @@ public sealed class GameContent : IGameContent
         Animation = new TextureAnimation(Textures, Flats);
     }
 
-    public GameContent(ICommandLineArgs args)
+    public GameContent(CommandLineArgs args)
     {
         Wad = new Wad.Wad(ConfigUtilities.GetWadPaths(args));
 

@@ -77,7 +77,7 @@ public sealed class RenderingHistory
 
         ClipRangeCount = 2;
 
-        ClipDataLength = 2 * windowSettings.WindowWidth;
+        ClipDataLength = windowSettings.WindowWidth << 1;
 
         VisWallRangeCount = 0;
     }

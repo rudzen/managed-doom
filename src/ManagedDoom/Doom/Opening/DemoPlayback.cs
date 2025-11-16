@@ -31,7 +31,7 @@ public sealed class DemoPlayback
     private readonly Stopwatch stopwatch;
     private int frameCount;
 
-    public DemoPlayback(ICommandLineArgs args, IGameContent content, GameOptions options, string demoName)
+    public DemoPlayback(CommandLineArgs args, IGameContent content, GameOptions options, string demoName)
     {
         if (File.Exists(demoName))
             demo = new Demo(demoName);

@@ -38,7 +38,7 @@ public static class DeHackEd
 
     private static SourcePointTable[]? sourcePointerTable;
 
-    public static void Initialize(ICommandLineArgs args, Wad.Wad wad)
+    public static void Initialize(CommandLineArgs args, Wad.Wad wad)
     {
         if (args.Deh.Present)
             ReadFiles(args.Deh.Value!);

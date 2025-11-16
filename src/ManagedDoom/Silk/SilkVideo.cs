@@ -29,7 +29,7 @@ namespace ManagedDoom.Silk;
 
 public sealed class SilkVideo : IVideo
 {
-    private readonly IRenderer renderer;
+    private readonly Renderer renderer;
 
     private GraphicsDevice? device;
 
@@ -45,7 +45,7 @@ public sealed class SilkVideo : IVideo
     private int silkWindowWidth;
     private int silkWindowHeight;
 
-    public SilkVideo(ConfigValues config, IRenderer renderer, IWindow window, GL gl)
+    public SilkVideo(ConfigValues config, Renderer renderer, IWindow window, GL gl)
     {
         Console.Write("Initialize video: ");
         var start = Stopwatch.GetTimestamp();

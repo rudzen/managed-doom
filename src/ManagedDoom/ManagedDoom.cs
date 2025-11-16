@@ -49,11 +49,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<OpenGlFactory>();
 
               // command line args
-              services.AddSingleton(_ =>
-              {
-                  ICommandLineArgs commandLineArgs = new CommandLineArgs(args);
-                  return commandLineArgs;
-              });
+              services.AddSingleton(_ => new CommandLineArgs(args));
 
               // configuration
               services.AddSingleton(_ =>
@@ -69,7 +65,7 @@ await Host.CreateDefaultBuilder(args)
 
                 // game content
               services.AddSingleton<DrawScreen>();
-              services.AddSingleton<IRenderer, Renderer>();
+              services.AddSingleton<Renderer>();
               services.AddSingleton<MenuRenderer>();
               services.AddSingleton<IThreeDeeRenderer, ThreeDeeRenderer>();
               services.AddSingleton<StatusBarRenderer>();

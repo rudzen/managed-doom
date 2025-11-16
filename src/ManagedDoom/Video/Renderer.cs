@@ -30,7 +30,7 @@ using ManagedDoom.Video.Renders.ThreeDee;
 
 namespace ManagedDoom.Video;
 
-public sealed class Renderer : IRenderer
+public sealed class Renderer
 {
     private static readonly double[] gammaCorrectionParameters =
     [
@@ -346,7 +346,6 @@ public sealed class Renderer : IRenderer
     private static int GetPaletteNumberCount(Player player)
     {
         var count = player.DamageCount;
-
         var strengthPower = player.Powers[PowerType.Strength];
 
         if (strengthPower == 0)

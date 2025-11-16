@@ -33,7 +33,7 @@ namespace ManagedDoom.Doom;
 
 public sealed class Doom
 {
-    private readonly ICommandLineArgs args;
+    private readonly CommandLineArgs args;
     private readonly ConfigValues config;
     private readonly IGameContent content;
     private readonly IVideo video;
@@ -54,7 +54,7 @@ public sealed class Doom
     private bool mouseGrabbed;
 
     public Doom(
-        ICommandLineArgs args,
+        CommandLineArgs args,
         SilkConfig silkConfig,
         IGameContent content,
         IVideo? video,

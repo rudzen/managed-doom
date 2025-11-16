@@ -28,7 +28,7 @@ public sealed class AudioFactory
     private readonly ISound sound;
     private readonly IMusic music;
 
-    public AudioFactory(IConfig config, ICommandLineArgs args, IGameContent gameContent)
+    public AudioFactory(IConfig config, CommandLineArgs args, IGameContent gameContent)
     {
         if (!args.NoSound.Present && !(args.NoSfx.Present && args.NoMusic.Present))
         {

@@ -15,9 +15,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace ManagedDoom.Config;
 
@@ -25,7 +22,7 @@ public sealed record Warp(int Episode, int Map);
 
 // TODO (rudz) : Replace all this crap with a proper command line parser library.
 
-public sealed class CommandLineArgs : ICommandLineArgs
+public sealed class CommandLineArgs
 {
     public Arg<string> Iwad { get; }
     public Arg<string[]> File { get; }
@@ -53,8 +50,9 @@ public sealed class CommandLineArgs : ICommandLineArgs
 
     public Arg NoDeh { get; }
 
-    public CommandLineArgs(string[] args)
+    public CommandLineArgs(string[] allArgs)
     {
+        var args = allArgs.AsSpan();
         Iwad = GetString(args, "-iwad");
         File = Check(args, "-file");
         Deh = Check(args, "-deh");
@@ -82,76 +80,95 @@ public sealed class CommandLineArgs : ICommandLineArgs
 
         NoDeh = new Arg(args.Contains("-nodeh"));
 
-        // Check for drag & drop.
-        if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
-        {
-            var iwadPath = string.Empty;
-            var pwadPaths = new List<string>();
-            var dehPaths = new List<string>();
+        // Check for drag & drop (this implementation is deprecated).
 
-            foreach (var path in args)
-            {
-                var extension = Path.GetExtension(path);
-
-                if (string.Equals(extension, ".wad", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (ConfigUtilities.IsIwad(path))
-                        iwadPath = path;
-                    else
-                        pwadPaths.Add(path);
-                }
-                else if (string.Equals(extension, ".deh", StringComparison.OrdinalIgnoreCase))
-                    dehPaths.Add(path);
-            }
-
-            if (!string.IsNullOrEmpty(iwadPath))
-                Iwad = new Arg<string>(iwadPath);
-
-            if (pwadPaths.Count > 0)
-                File = new Arg<string[]>([.. pwadPaths]);
-
-            if (dehPaths.Count > 0)
-                Deh = new Arg<string[]>([.. dehPaths]);
-        }
+        // if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
+        // {
+        //     var iwadPath = string.Empty;
+        //     var pwadPaths = new List<string>();
+        //     var dehPaths = new List<string>();
+        //
+        //     foreach (var path in args)
+        //     {
+        //         var extension = Path.GetExtension(path);
+        //
+        //         if (string.Equals(extension, ".wad", StringComparison.OrdinalIgnoreCase))
+        //         {
+        //             if (ConfigUtilities.IsIwad(path))
+        //                 iwadPath = path;
+        //             else
+        //                 pwadPaths.Add(path);
+        //         }
+        //         else if (string.Equals(extension, ".deh", StringComparison.OrdinalIgnoreCase))
+        //             dehPaths.Add(path);
+        //     }
+        //
+        //     if (!string.IsNullOrEmpty(iwadPath))
+        //         Iwad = new Arg<string>(iwadPath);
+        //
+        //     if (pwadPaths.Count > 0)
+        //         File = new Arg<string[]>([.. pwadPaths]);
+        //
+        //     if (dehPaths.Count > 0)
+        //         Deh = new Arg<string[]>([.. dehPaths]);
+        // }
     }
 
-    private static Arg<string[]> Check(string[] args, string value)
+    private static Arg<string[]> Check(ReadOnlySpan<string> args, string value)
     {
         var values = GetValues(args, value);
-        return values.Length >= 1 ? new Arg<string[]>(values) : Arg<string[]>.Empty;
+        return values.Length >= 1
+            ? ArgExtensions.Success(values.ToArray())
+            : ArgExtensions.Failure<string[]>();
     }
 
-    private static Arg<Warp> Check_warp(string[] args)
+    private static Arg<Warp> Check_warp(ReadOnlySpan<string> args)
     {
         var values = GetValues(args, "-warp");
+        if (values.Length > 2)
+            values = values[..2];
+
         return values.Length switch
         {
-            1 when int.TryParse(values[0], out var map)                                             => new Arg<Warp>(new Warp(1, map)),
-            2 when int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map) => new Arg<Warp>(new Warp(episode, map)),
-            _                                                                                       => Arg<Warp>.Empty
+            1 when int.TryParse(values[0], out var map)                                             => ArgExtensions.Success(new Warp(1, map)),
+            2 when int.TryParse(values[0], out var episode) && int.TryParse(values[1], out var map) => ArgExtensions.Success(new Warp(episode, map)),
+            _                                                                                       => ArgExtensions.Failure<Warp>()
         };
     }
 
-    private static Arg<string> GetString(string[] args, string name)
+    private static Arg<string> GetString(ReadOnlySpan<string> args, string name)
     {
         var values = GetValues(args, name);
-        return values.Length == 1 ? new Arg<string>(values[0]) : Arg<string>.Empty;
+        return values.Length == 1
+            ? ArgExtensions.Success(values[0])
+            : ArgExtensions.Failure<string>();
     }
 
-    private static Arg<int> GetInt(string[] args, string name)
+    private static Arg<int> GetInt(ReadOnlySpan<string> args, string name)
     {
         var values = GetValues(args, name);
         return values.Length == 1 && int.TryParse(values[0], out var result)
-            ? new Arg<int>(result)
-            : Arg<int>.Empty;
+            ? ArgExtensions.Success(result)
+            : ArgExtensions.Failure<int>();
     }
 
-    private static string[] GetValues(string[] args, string name)
+    private static ReadOnlySpan<string> GetValues(ReadOnlySpan<string> args, string name)
     {
-        return args
-               .SkipWhile(arg => arg != name)
-               .Skip(1)
-               .TakeWhile(arg => arg[0] != '-')
-               .ToArray();
+        var startIndex = args.IndexOf(name);
+
+        if (startIndex == -1 || startIndex == args.Length - 1)
+            return [];
+
+        var begin = startIndex + 1;
+        var end = begin;
+
+        while (end < args.Length && args[end][0] != '-')
+            end++;
+
+        // hack to only read the first iwad after -iwad
+        if (name == "-iwad" && end > begin + 1)
+            end = begin + 1;
+
+        return args.Slice(begin, end - begin);
     }
 }

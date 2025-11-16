@@ -48,7 +48,7 @@ public sealed class ThingAllocation
     private void InitSpawnMapThing()
     {
         playerStarts = new MapThing[Player.MaxPlayerCount];
-        deathmatchStarts = new List<MapThing>();
+        deathmatchStarts = [];
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public sealed class ThingAllocation
         {
             var playerNumber = mt.Type - 1;
 
-            // This check is neccesary in Plutonia MAP12,
+            // This check is necessary in Plutonia MAP12,
             // which contains an unknown thing with type 0.
             if (playerNumber < 0)
                 return;

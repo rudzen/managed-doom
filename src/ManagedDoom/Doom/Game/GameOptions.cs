@@ -25,7 +25,7 @@ namespace ManagedDoom.Doom.Game;
 
 public sealed class GameOptions : IGameOptions
 {
-    public GameOptions(ICommandLineArgs args, IGameContent content) : this()
+    public GameOptions(CommandLineArgs args, IGameContent content) : this()
     {
         NetGame = args.SoloNet.Present;
         GameVersion = content.Wad.GameVersion;
