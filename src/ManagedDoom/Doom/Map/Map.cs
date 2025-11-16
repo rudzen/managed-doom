@@ -31,7 +31,7 @@ public sealed class Map
 {
     private readonly World.World world;
 
-    public Map(IGameContent resources, World.World world)
+    public Map(GameContent resources, World.World world)
         : this(resources.Wad, resources.Textures, resources.Flats, resources.Animation, world)
     {
     }
@@ -191,7 +191,7 @@ public sealed class Map
         Bgm.E1M9  // Tim        e4m9
     ];
 
-    public static Bgm GetMapBgm(IGameOptions options)
+    public static Bgm GetMapBgm(GameOptions options)
     {
         if (options.GameMode == GameMode.Commercial)
             return Bgm.RUNNIN + options.Map - 1;

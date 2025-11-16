@@ -35,7 +35,7 @@ public sealed class Finale
 
     private UpdateResult updateResult;
 
-    public Finale(IGameOptions options)
+    public Finale(GameOptions options)
     {
         this.Options = options;
 
@@ -164,7 +164,7 @@ public sealed class Finale
         TheEndIndex = 0;
     }
 
-    public IGameOptions Options { get; }
+    public GameOptions Options { get; }
     public string Flat { get; }
     public string Text { get; }
     public int Count { get; private set; }

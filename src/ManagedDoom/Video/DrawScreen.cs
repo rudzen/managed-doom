@@ -28,9 +28,9 @@ public sealed class DrawScreen
 {
     private readonly Patch?[] chars;
 
-    public DrawScreen(IGameContent gameContent, SilkConfig silkConfig)
+    public DrawScreen(GameContent gameContent, SilkConfig silkConfig)
     {
-        var (width, height) = silkConfig.Config.Values.VideoHighResolution ? (640, 400) : (320, 200);
+        var (width, height) = silkConfig.DoomConfig.Values.VideoHighResolution ? (640, 400) : (320, 200);
 
         this.Width = width;
         this.Height = height;

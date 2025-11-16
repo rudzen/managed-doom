@@ -21,13 +21,13 @@ using System.Text.Json;
 
 namespace ManagedDoom.Config;
 
-public sealed class Config : IConfig
+public sealed class DoomConfig
 {
     public ConfigValues Values { get; } = null!;
 
     public bool IsRestoredFromFile { get; }
 
-    public Config(string path)
+    public DoomConfig(string path)
     {
         try
         {

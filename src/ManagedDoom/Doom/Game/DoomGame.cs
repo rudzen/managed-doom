@@ -25,7 +25,7 @@ namespace ManagedDoom.Doom.Game;
 
 public sealed class DoomGame
 {
-    private readonly IGameContent content;
+    private readonly GameContent content;
 
     private GameAction gameAction;
 
@@ -45,7 +45,7 @@ public sealed class DoomGame
         WorldDone
     }
 
-    public DoomGame(IGameContent content, IGameOptions options)
+    public DoomGame(GameContent content, GameOptions options)
     {
         this.content = content;
         this.Options = options;
@@ -55,7 +55,7 @@ public sealed class DoomGame
         GameTic = 0;
     }
 
-    public IGameOptions Options { get; }
+    public GameOptions Options { get; }
 
     public GameState State { get; private set; }
 

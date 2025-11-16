@@ -21,7 +21,7 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class PatchCache(IGameContent content) : IPatchCache
+public sealed class PatchCache(GameContent content) : IPatchCache
 {
     private readonly Wad.Wad wad = content.Wad;
     private readonly Dictionary<string, Patch> cache = new(32);

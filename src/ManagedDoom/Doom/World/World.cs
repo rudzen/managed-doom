@@ -39,7 +39,7 @@ public sealed class World
 
     private readonly Cheat cheat;
 
-    public World(IGameContent resources, IGameOptions options, DoomGame? game)
+    public World(GameContent resources, GameOptions options, DoomGame? game)
     {
         this.Options = options;
         this.Game = game;
@@ -112,7 +112,7 @@ public sealed class World
         options.Music.StartMusic(ManagedDoom.Doom.Map.Map.GetMapBgm(options), PlayMode.Loop);
     }
 
-    public IGameOptions Options { get; }
+    public GameOptions Options { get; }
 
     public DoomGame? Game { get; }
 

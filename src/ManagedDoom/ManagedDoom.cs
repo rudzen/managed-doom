@@ -52,11 +52,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton(_ => new CommandLineArgs(args));
 
               // configuration
-              services.AddSingleton(_ =>
-              {
-                  IConfig config = new Config(ConfigUtilities.GetConfigPath());
-                  return config;
-              });
+              services.AddSingleton(_ => new DoomConfig(ConfigUtilities.GetConfigPath()));
 
               // game fundamentals
               services.AddSingleton<SilkConfig>();
@@ -73,7 +69,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<OpeningSequenceRenderer>();
               services.AddSingleton<AutoMapRenderer>();
               services.AddSingleton<FinaleRenderer>();
-              services.AddSingleton<IGameContent, GameContent>();
+              services.AddSingleton<GameContent>();
               services.AddSingleton<IPatchCache, PatchCache>();
 
               services.AddHostedService<DoomHost>();

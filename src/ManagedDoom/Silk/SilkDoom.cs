@@ -35,7 +35,7 @@ public sealed partial class SilkDoom
 
     private readonly SilkConfig silkConfig;
 
-    private readonly IGameContent gameContent;
+    private readonly GameContent gameContent;
     private readonly Renderer renderer;
 
     private readonly IWindow window;
@@ -58,7 +58,7 @@ public sealed partial class SilkDoom
 
     public SilkDoom(
         CommandLineArgs args,
-        IGameContent gameContent,
+        GameContent gameContent,
         SilkConfig silkConfig,
         WindowFactory windowFactory,
         Renderer renderer,
@@ -116,11 +116,11 @@ public sealed partial class SilkDoom
 
         window.SwapBuffers();
 
-        video = new SilkVideo(silkConfig.Config.Values, renderer, window, openGl!);
-        userInput = new SilkUserInput(silkConfig.Config.Values, window, this, args);
+        video = new SilkVideo(silkConfig.DoomConfig.Values, renderer, window, openGl!);
+        userInput = new SilkUserInput(silkConfig.DoomConfig.Values, window, this, args);
         doom = new Doom.Doom(args, silkConfig, gameContent, video, audioFactory, userInput);
 
-        fpsScale = args.TimeDemo.Present ? 1 : silkConfig.Config.Values.VideoFpsScale;
+        fpsScale = args.TimeDemo.Present ? 1 : silkConfig.DoomConfig.Values.VideoFpsScale;
         frameCount = -1;
         fpsStamp = Stopwatch.GetTimestamp();
     }
@@ -190,7 +190,7 @@ public sealed partial class SilkDoom
         }
 
         if (!args.TimeDemo.Present)
-            silkConfig.Config.Save(ConfigUtilities.GetConfigPath());
+            silkConfig.DoomConfig.Save(ConfigUtilities.GetConfigPath());
     }
 
     public void KeyDown(Key key)

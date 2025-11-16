@@ -94,7 +94,7 @@ public sealed class AutoMapRenderer
 
     private float zoom;
 
-    public AutoMapRenderer(IGameContent gameContent, DrawScreen screen)
+    public AutoMapRenderer(GameContent gameContent, DrawScreen screen)
     {
         this.screen = screen;
 

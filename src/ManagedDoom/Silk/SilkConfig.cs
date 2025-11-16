@@ -32,25 +32,25 @@ public sealed class SilkConfig
     private const int MaxScreenSize = 9;
     private const int MaxGammaCorrectionLevel = 11;
 
-    public SilkConfig(IConfig config)
+    public SilkConfig(DoomConfig doomConfig)
     {
-        Config = config;
+        DoomConfig = doomConfig;
 
-        if (!Config.IsRestoredFromFile)
+        if (!DoomConfig.IsRestoredFromFile)
         {
             var vm = GetDefaultVideoMode();
-            Config.Values.VideoScreenWidth = vm.Resolution!.Value.X;
-            Config.Values.VideoScreenHeight = vm.Resolution.Value.Y;
+            DoomConfig.Values.VideoScreenWidth = vm.Resolution!.Value.X;
+            DoomConfig.Values.VideoScreenHeight = vm.Resolution.Value.Y;
         }
 
-        config.Values.VideoScreenWidth = Math.Clamp(config.Values.VideoScreenWidth, MinScreenWidth, MaxScreenWidth);
-        config.Values.VideoScreenHeight = Math.Clamp(config.Values.VideoScreenHeight, MinScreenHeight, MaxScreenHeight);
+        doomConfig.Values.VideoScreenWidth = Math.Clamp(doomConfig.Values.VideoScreenWidth, MinScreenWidth, MaxScreenWidth);
+        doomConfig.Values.VideoScreenHeight = Math.Clamp(doomConfig.Values.VideoScreenHeight, MinScreenHeight, MaxScreenHeight);
 
-        config.Values.VideoGameScreenSize = Math.Clamp(config.Values.VideoGameScreenSize, 0, MaxScreenSize);
-        config.Values.VideoGammaCorrection = Math.Clamp(config.Values.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
+        doomConfig.Values.VideoGameScreenSize = Math.Clamp(doomConfig.Values.VideoGameScreenSize, 0, MaxScreenSize);
+        doomConfig.Values.VideoGammaCorrection = Math.Clamp(doomConfig.Values.VideoGammaCorrection, 0, MaxGammaCorrectionLevel);
     }
 
-    public IConfig Config { get; }
+    public DoomConfig DoomConfig { get; }
 
     private static VideoMode GetDefaultVideoMode()
     {

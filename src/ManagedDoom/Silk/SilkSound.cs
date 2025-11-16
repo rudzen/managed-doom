@@ -60,7 +60,7 @@ public sealed class SilkSound : ISound
     private long lastUpdate;
 
     [SkipLocalsInit]
-    public SilkSound(ConfigValues config, IGameContent content, AudioDevice device)
+    public SilkSound(ConfigValues config, GameContent content, AudioDevice device)
     {
         try
         {

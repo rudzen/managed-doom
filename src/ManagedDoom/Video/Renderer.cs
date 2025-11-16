@@ -69,7 +69,7 @@ public sealed class Renderer
 
     public Renderer(
         SilkConfig silkConfig,
-        IGameContent content,
+        GameContent content,
         DrawScreen drawScreen,
         MenuRenderer menuRenderer,
         IThreeDeeRenderer threeDeeRenderer,
@@ -79,7 +79,7 @@ public sealed class Renderer
         AutoMapRenderer autoMapRenderer,
         FinaleRenderer finaleRenderer)
     {
-        this.config = silkConfig.Config.Values;
+        this.config = silkConfig.DoomConfig.Values;
 
         this.palette = content.Palette;
 

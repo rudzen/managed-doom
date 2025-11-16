@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
@@ -33,7 +34,7 @@ public sealed class WipeEffect
     {
         Y = new short[width];
         this.height = height;
-        random = new DoomRandom(DateTime.Now.Millisecond);
+        random = new DoomRandom(Stopwatch.GetTimestamp());
     }
 
     public static WipeEffect Create(int width, int height)

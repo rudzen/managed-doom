@@ -35,7 +35,7 @@ public sealed class Doom
 {
     private readonly CommandLineArgs args;
     private readonly ConfigValues config;
-    private readonly IGameContent content;
+    private readonly GameContent content;
     private readonly IVideo video;
     private readonly ISound sound;
     private readonly IUserInput userInput;
@@ -56,7 +56,7 @@ public sealed class Doom
     public Doom(
         CommandLineArgs args,
         SilkConfig silkConfig,
-        IGameContent content,
+        GameContent content,
         IVideo? video,
         AudioFactory audioFactory,
         IUserInput? userInput)
@@ -65,7 +65,7 @@ public sealed class Doom
         userInput ??= NullUserInput.GetInstance();
 
         this.args = args;
-        this.config = silkConfig.Config.Values;
+        this.config = silkConfig.DoomConfig.Values;
         this.content = content;
         this.video = video;
         this.sound = audioFactory.GetSound();

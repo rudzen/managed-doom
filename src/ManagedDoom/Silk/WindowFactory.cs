@@ -24,13 +24,13 @@ public sealed class WindowFactory
 {
     private readonly IWindow window;
 
-    public WindowFactory(IConfig config)
+    public WindowFactory(DoomConfig doomConfig)
     {
         var windowOptions = WindowOptions.Default;
-        windowOptions.Size = new Vector2D<int>(config.Values.VideoScreenWidth, config.Values.VideoScreenHeight);
+        windowOptions.Size = new Vector2D<int>(doomConfig.Values.VideoScreenWidth, doomConfig.Values.VideoScreenHeight);
         windowOptions.Title = ApplicationInfo.Title;
-        windowOptions.VSync = config.Values.VideoVsync;
-        windowOptions.WindowState = config.Values.VideoFullscreen ? WindowState.Fullscreen : WindowState.Normal;
+        windowOptions.VSync = doomConfig.Values.VideoVsync;
+        windowOptions.WindowState = doomConfig.Values.VideoFullscreen ? WindowState.Fullscreen : WindowState.Normal;
         window = Window.Create(windowOptions);
     }
 

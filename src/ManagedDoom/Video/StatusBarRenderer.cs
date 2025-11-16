@@ -114,7 +114,7 @@ public sealed class StatusBarRenderer
 
     private readonly MultIconWidget[] weapons;
 
-    public StatusBarRenderer(IGameContent gameContent, DrawScreen screen)
+    public StatusBarRenderer(GameContent gameContent, DrawScreen screen)
     {
         this.screen = screen;
 

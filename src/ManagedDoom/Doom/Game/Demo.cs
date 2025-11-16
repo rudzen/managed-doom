@@ -61,7 +61,7 @@ public sealed class Demo
     {
     }
 
-    public IGameOptions Options { get; }
+    public GameOptions Options { get; }
 
     public bool ReadCmd(ReadOnlySpan<TicCommand> cmds)
     {

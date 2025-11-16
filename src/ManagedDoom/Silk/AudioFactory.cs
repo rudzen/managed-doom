@@ -28,15 +28,15 @@ public sealed class AudioFactory
     private readonly ISound sound;
     private readonly IMusic music;
 
-    public AudioFactory(IConfig config, CommandLineArgs args, IGameContent gameContent)
+    public AudioFactory(DoomConfig doomConfig, CommandLineArgs args, GameContent gameContent)
     {
         if (!args.NoSound.Present && !(args.NoSfx.Present && args.NoMusic.Present))
         {
             var audioDevice = new AudioDevice();
             if (!args.NoSfx.Present)
-                sound = new SilkSound(config.Values, gameContent, audioDevice);
+                sound = new SilkSound(doomConfig.Values, gameContent, audioDevice);
             if (!args.NoMusic.Present)
-                music = GetMusicInstance(config.Values, gameContent, audioDevice) ?? NullMusic.GetInstance();
+                music = GetMusicInstance(doomConfig.Values, gameContent, audioDevice) ?? NullMusic.GetInstance();
         }
         else
         {
@@ -49,7 +49,7 @@ public sealed class AudioFactory
 
     public IMusic GetMusic() => music;
 
-    private static SilkMusic? GetMusicInstance(ConfigValues configValues, IGameContent content, AudioDevice device)
+    private static SilkMusic? GetMusicInstance(ConfigValues configValues, GameContent content, AudioDevice device)
     {
         var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, configValues.AudioSoundfont);
         if (File.Exists(sfPath))

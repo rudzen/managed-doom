@@ -48,9 +48,9 @@ public sealed class DoomRandom
         index = 0;
     }
 
-    public DoomRandom(int seed)
+    public DoomRandom(long seed)
     {
-        index = seed & 0xff;
+        index = (int)(seed & 0xff);
     }
 
     public int Next()

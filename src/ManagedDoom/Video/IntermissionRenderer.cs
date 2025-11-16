@@ -98,7 +98,7 @@ public sealed class IntermissionRenderer
             doom2Levels[m] = $"CWILV{m:00}";
     }
 
-    public IntermissionRenderer(IGameContent gameContent, IPatchCache patchCache, DrawScreen screen)
+    public IntermissionRenderer(GameContent gameContent, IPatchCache patchCache, DrawScreen screen)
     {
         this.screen = screen;
         this.cache = patchCache;

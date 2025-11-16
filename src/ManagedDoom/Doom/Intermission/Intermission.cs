@@ -54,7 +54,7 @@ public sealed class Intermission
 
     private bool completed;
 
-    public Intermission(IGameOptions options, IntermissionInfo info)
+    public Intermission(GameOptions options, IntermissionInfo info)
     {
         this.Options = options;
         this.Info = info;
@@ -82,7 +82,7 @@ public sealed class Intermission
         completed = false;
     }
 
-    public IGameOptions Options { get; }
+    public GameOptions Options { get; }
     public IntermissionInfo Info { get; }
     public IntermissionState State { get; private set; }
     public IReadOnlyList<int> KillCount => killCount;

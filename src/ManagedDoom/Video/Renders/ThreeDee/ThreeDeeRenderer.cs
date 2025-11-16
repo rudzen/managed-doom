@@ -59,7 +59,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
     private readonly ColorTranslation colorTranslation;
     private readonly WindowBorder windowBorder;
 
-    public ThreeDeeRenderer(IGameContent content, DrawScreen screen, SilkConfig silkConfig)
+    public ThreeDeeRenderer(GameContent content, DrawScreen screen, SilkConfig silkConfig)
     {
         colorMap = content.ColorMap;
         textures = content.Textures;
@@ -72,7 +72,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         screenData = screen.Data;
         drawScale = screenWidth / 320;
 
-        this.windowSize = silkConfig.Config.Values.VideoGameScreenSize;
+        this.windowSize = silkConfig.DoomConfig.Values.VideoGameScreenSize;
 
         this.wallRender = new WallRender(screenWidth);
         this.planeRender = new PlaneRender(screenWidth, screenHeight);

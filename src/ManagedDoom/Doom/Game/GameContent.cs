@@ -14,13 +14,14 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Graphics.Dummy;
 
 namespace ManagedDoom.Doom.Game;
 
-public sealed class GameContent : IGameContent
+public sealed class GameContent : IDisposable
 {
     private GameContent(string[] wadPaths)
     {

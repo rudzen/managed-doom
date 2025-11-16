@@ -23,9 +23,9 @@ using ManagedDoom.Video;
 
 namespace ManagedDoom.Doom.Game;
 
-public sealed class GameOptions : IGameOptions
+public sealed class GameOptions
 {
-    public GameOptions(CommandLineArgs args, IGameContent content) : this()
+    public GameOptions(CommandLineArgs args, GameContent content) : this()
     {
         NetGame = args.SoloNet.Present;
         GameVersion = content.Wad.GameVersion;
@@ -68,7 +68,7 @@ public sealed class GameOptions : IGameOptions
         UserInput = NullUserInput.GetInstance();
     }
     
-    public static IGameOptions CreateDefault()
+    public static GameOptions CreateDefault()
     {
         return new GameOptions();
     }
