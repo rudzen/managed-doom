@@ -158,7 +158,7 @@ public sealed class Hitscan
 
             var mc = world.MapCollision;
 
-            // Crosses a two sided line.
+            // Crosses a two-sided line.
             mc.LineOpening(line);
 
             var dist = currentRange * intercept.Frac;
@@ -227,7 +227,7 @@ public sealed class Hitscan
 
         {
             // Shoot a thing.
-            var thing = intercept.Thing;
+            var thing = intercept.Thing!;
             // Can't shoot self.
             if (thing == currentShooter)
                 return true;
@@ -294,10 +294,13 @@ public sealed class Hitscan
         LineTarget = null;
 
         world.PathTraversal.PathTraverse(
-            shooter.X, shooter.Y,
-            targetX, targetY,
-            PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
-            aimTraverseFunc);
+            x1: shooter.X,
+            y1: shooter.Y,
+            x2: targetX,
+            y2: targetY,
+            flags: PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
+            trav: aimTraverseFunc
+        );
 
         return LineTarget is not null ? currentAimSlope : Fixed.Zero;
     }
@@ -318,10 +321,13 @@ public sealed class Hitscan
         var targetY = shooter.Y + range.ToIntFloor() * Trig.Sin(angle);
 
         world.PathTraversal.PathTraverse(
-            shooter.X, shooter.Y,
-            targetX, targetY,
-            PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
-            shootTraverseFunc);
+            x1: shooter.X,
+            y1: shooter.Y,
+            x2: targetX,
+            y2: targetY,
+            flags: PathTraverseFlags.AddLines | PathTraverseFlags.AddThings,
+            trav: shootTraverseFunc
+        );
     }
 
     /// <summary>
@@ -361,9 +367,9 @@ public sealed class Hitscan
         if (thing.Tics < 1)
             thing.Tics = 1;
 
-        if (damage is <= 12 and >= 9)
-            thing.SetState(MobjState.Blood2);
-        else if (damage < 9)
+        if (damage < 9)
             thing.SetState(MobjState.Blood3);
+        else if (damage <= 12)
+            thing.SetState(MobjState.Blood2);
     }
 }

@@ -20,6 +20,7 @@ using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Intermission;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.Game;
 
@@ -500,7 +501,8 @@ public sealed class DoomGame
             _                  => System.Math.Clamp(episode, 1, 4)
         };
 
-        var maxMap = Options.GameMode == GameMode.Commercial ? 32 : 9;
+        Span<int> maxMapCap = [9, 32];
+        var maxMap = maxMapCap[(Options.GameMode == GameMode.Commercial).AsByte()];
         Options.Map = System.Math.Clamp(map, 1, maxMap);
 
         Options.Random.Clear();
@@ -512,12 +514,12 @@ public sealed class DoomGame
         DoLoadLevel();
     }
 
-    public bool DoEvent(in DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         return State switch
         {
-            GameState.Level  => World.DoEvent(in e),
-            GameState.Finale => Finale.DoEvent(in e),
+            GameState.Level  => World.DoEvent(e),
+            GameState.Finale => Finale.DoEvent(e),
             _                => false
         };
     }

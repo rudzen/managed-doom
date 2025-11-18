@@ -195,11 +195,13 @@ public sealed partial class SilkDoom
 
     public void KeyDown(Key key)
     {
-        doom!.PostEvent(new DoomEvent(EventType.KeyDown, SilkUserInput.SilkToDoom(key)));
+        var doomEvent = new DoomEvent(EventType.KeyDown, SilkUserInput.SilkToDoom(key));
+        doom!.PostEvent(doomEvent);
     }
 
     public void KeyUp(Key key)
     {
-        doom!.PostEvent(new DoomEvent(EventType.KeyUp, SilkUserInput.SilkToDoom(key)));
+        var doomEvent = new DoomEvent(EventType.KeyUp, SilkUserInput.SilkToDoom(key));
+        doom!.PostEvent(doomEvent);
     }
 }

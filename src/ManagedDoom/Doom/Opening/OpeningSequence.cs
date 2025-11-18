@@ -19,7 +19,7 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Opening;
 
-public sealed class OpeningSequence : IOpeningSequence
+public sealed class OpeningSequence
 {
     private readonly GameContent content;
     private readonly GameOptions options;

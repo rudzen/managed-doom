@@ -133,7 +133,7 @@ public sealed class ThingAllocation
         mobj.SpawnPoint = mt;
 
         if (mobj.Tics > 0)
-            mobj.Tics = 1 + (world.Random.Next() % mobj.Tics);
+            mobj.Tics = 1 + world.Random.Next() % mobj.Tics;
 
         if ((mobj.Flags & MobjFlags.CountKill) != 0)
             world.TotalKills++;
@@ -178,9 +178,7 @@ public sealed class ThingAllocation
 
         // Set color translations for player sprites.
         if (playerNumber >= 1)
-        {
             mobj.Flags |= (MobjFlags)((mt.Type - 1) << (int)MobjFlags.TransShift);
-        }
 
         mobj.Angle = mt.Angle;
         mobj.Player = player;
@@ -272,8 +270,8 @@ public sealed class ThingAllocation
 
         if ((mobj.Flags & MobjFlags.Special) != 0 &&
             (mobj.Flags & MobjFlags.Dropped) == 0 &&
-            (mobj.Type != MobjType.Inv) &&
-            (mobj.Type != MobjType.Ins))
+            mobj.Type != MobjType.Inv &&
+            mobj.Type != MobjType.Ins)
         {
             itemRespawnQue[itemQueHead] = mobj.SpawnPoint;
             itemRespawnTime[itemQueHead] = world.LevelTime;
@@ -300,20 +298,14 @@ public sealed class ThingAllocation
     /// </summary>
     private int GetMissileSpeed(MobjType type)
     {
-        if (world.Options.FastMonsters || world.Options.Skill == GameSkill.Nightmare)
-        {
-            switch (type)
-            {
-                case MobjType.Bruisershot:
-                case MobjType.Headshot:
-                case MobjType.Troopshot:
-                    return 20 * Fixed.FracUnit;
-                default:
-                    return DoomInfo.MobjInfos[(int)type].Speed;
-            }
-        }
+        if (!world.Options.FastMonsters && world.Options.Skill != GameSkill.Nightmare)
+            return DoomInfo.MobjInfos[(int)type].Speed;
 
-        return DoomInfo.MobjInfos[(int)type].Speed;
+        return type switch
+        {
+            MobjType.Bruisershot or MobjType.Headshot or MobjType.Troopshot => 20 * Fixed.FracUnit,
+            _                                                               => DoomInfo.MobjInfos[(int)type].Speed
+        };
     }
 
     /// <summary>

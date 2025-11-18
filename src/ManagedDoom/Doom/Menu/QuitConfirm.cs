@@ -66,7 +66,7 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
         text = (list[random.Next() % list.Count] + "\n\n" + DoomInfo.Strings.PRESSYN).Split('\n');
     }
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (endCount != -1)
             return true;

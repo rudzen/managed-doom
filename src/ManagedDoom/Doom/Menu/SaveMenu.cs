@@ -89,14 +89,14 @@ public sealed class SaveMenu : MenuDef
         choice = items[index];
     }
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;
 
         if (textInput is not null)
         {
-            var result = textInput.DoEvent(in e);
+            var result = textInput.DoEvent(e);
 
             switch (textInput.State)
             {

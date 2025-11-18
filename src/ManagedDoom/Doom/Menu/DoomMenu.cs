@@ -280,11 +280,11 @@ public sealed class DoomMenu
     public int Tics { get; private set; }
     public SaveSlots SaveSlots { get; }
 
-    public bool DoEvent(in DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (Active)
         {
-            if (Current.DoEvent(in e))
+            if (Current.DoEvent(e))
                 return true;
 
             if (e is { Key: DoomKey.Escape, Type: EventType.KeyDown })

@@ -30,7 +30,7 @@ public sealed class TextInput(
     public StringBuilder Text { get; } = new(initialText);
     public TextInputState State { get; private set; } = TextInputState.Typing;
 
-    public bool DoEvent(in DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         var ch = e.Key.GetChar();
         if (ch != 0)

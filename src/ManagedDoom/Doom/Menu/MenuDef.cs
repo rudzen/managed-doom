@@ -35,5 +35,5 @@ public abstract class MenuDef
     {
     }
 
-    public abstract bool DoEvent(in DoomEvent e);
+    public abstract bool DoEvent(DoomEvent e);
 }

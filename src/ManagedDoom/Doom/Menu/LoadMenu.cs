@@ -78,7 +78,7 @@ public sealed class LoadMenu : MenuDef
         choice = items[index];
     }
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

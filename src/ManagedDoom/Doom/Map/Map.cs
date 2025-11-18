@@ -79,7 +79,8 @@ public sealed class Map
                 ? DoomInfo.MapTitles.GetMapTitle(options.MissionPack, options.Map - 1)
                 : DoomInfo.MapTitles.GetMapTitle(options.Episode - 1, options.Map - 1);
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {

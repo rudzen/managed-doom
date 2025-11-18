@@ -81,8 +81,8 @@ public sealed class DemoPlayback
         return Game.Update(ticCommands);
     }
 
-    public void DoEvent(in DoomEvent e)
+    public void DoEvent(DoomEvent e)
     {
-        Game.DoEvent(in e);
+        Game.DoEvent(e);
     }
 }

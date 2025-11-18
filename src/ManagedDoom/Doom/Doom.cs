@@ -179,7 +179,7 @@ public sealed class Doom
         for (var i = 0; i < eventSpan.Length; i++)
         {
             ref var e = ref Unsafe.Add(ref eventsRef, i);
-            if (Menu.DoEvent(in e))
+            if (Menu.DoEvent(e))
                 continue;
 
             if (e.Type == EventType.KeyDown)
@@ -196,10 +196,10 @@ public sealed class Doom
                     continue;
                 }
 
-                _ = Game.DoEvent(in e);
+                _ = Game.DoEvent(e);
             }
             else if (State == DoomState.DemoPlayback && DemoPlayback is not null)
-                DemoPlayback.DoEvent(in e);
+                DemoPlayback.DoEvent(e);
         }
 
         events.Clear();
@@ -450,7 +450,7 @@ public sealed class Doom
         QuitMessage = message;
     }
 
-    public void PostEvent(in DoomEvent e)
+    public void PostEvent(DoomEvent e)
     {
         if (events.Count < 64)
             events.Add(e);
@@ -458,7 +458,7 @@ public sealed class Doom
 
     public DoomState State { get; private set; }
 
-    public IOpeningSequence Opening { get; }
+    public OpeningSequence Opening { get; }
 
     public DemoPlayback? DemoPlayback { get; private set; }
 

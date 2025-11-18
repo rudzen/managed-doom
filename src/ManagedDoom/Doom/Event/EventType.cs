@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.Doom.Event;
 
-public enum EventType
+public enum EventType : byte
 {
     KeyDown,
     KeyUp,

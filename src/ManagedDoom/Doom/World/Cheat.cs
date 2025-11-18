@@ -51,7 +51,7 @@ public sealed class Cheat(World world)
     private readonly char[] buffer = new char[maxCodeLength];
     private int p;
 
-    public bool DoEvent(in DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (e.Type == EventType.KeyDown)
         {

@@ -91,7 +91,7 @@ public static partial class SaveAndLoad
             var fileBuffer = fileData.AsSpan(0, length);
 
             // load file content
-            using (var reader = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var reader = File.Open(path, FileMode.Open, FileAccess.Read))
             {
                 var read = reader.Read(fileBuffer);
                 if (read != length)
@@ -102,7 +102,7 @@ public static partial class SaveAndLoad
             var ptr = ValidateHeader(fileBuffer);
 
             // check current position
-            if (ptr != (VersionSize + DescriptionSize))
+            if (ptr != VersionSize + DescriptionSize)
                 throw new Exception($"Invalid save file header size: {path}");
 
             Load(game, fileBuffer, ptr);

@@ -26,7 +26,7 @@ public sealed class PressAnyKey(DoomMenu menu, string text, Action? action) : Me
 
     public ReadOnlySpan<string> Text => text.AsSpan();
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

@@ -32,6 +32,12 @@ public sealed class BlockMap
 
     private readonly LineDef[] lines;
 
+    public Fixed OriginX { get; }
+    public Fixed OriginY { get; }
+    public int Width { get; }
+    public int Height { get; }
+    public Mobj?[] ThingLists { get; }
+
     private BlockMap(
         Fixed originX,
         Fixed originY,
@@ -49,12 +55,6 @@ public sealed class BlockMap
 
         ThingLists = new Mobj[width * height];
     }
-
-    public Fixed OriginX { get; }
-    public Fixed OriginY { get; }
-    public int Width { get; }
-    public int Height { get; }
-    public Mobj?[] ThingLists { get; }
 
     public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
     {

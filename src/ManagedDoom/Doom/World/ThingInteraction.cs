@@ -55,17 +55,17 @@ public sealed class ThingInteraction
             if ((target.Flags & MobjFlags.CountKill) != 0)
                 source.Player.KillCount++;
 
-            if (target.Player != null)
+            if (target.Player is not null)
                 source.Player.Frags[target.Player.Number]++;
         }
         // Count all monster deaths, even those caused by other monsters.
         else if (!world.Options.NetGame && (target.Flags & MobjFlags.CountKill) != 0)
             world.Options.Players[0].KillCount++;
 
-        if (target.Player != null)
+        if (target.Player is not null)
         {
             // Count environment kills against you.
-            if (source == null)
+            if (source is null)
                 target.Player.Frags[target.Player.Number]++;
 
             target.Flags &= ~MobjFlags.Solid;
@@ -79,10 +79,12 @@ public sealed class ThingInteraction
                 am.Close();
         }
 
-        if (target.Health < -target.Info.SpawnHealth && target.Info.XdeathState != 0)
-            target.SetState(target.Info.XdeathState);
-        else
-            target.SetState(target.Info.DeathState);
+        var targetInfo = target.Info;
+        var newTargetState = target.Health < -targetInfo.SpawnHealth && targetInfo.XdeathState != 0
+            ? targetInfo.XdeathState
+            : targetInfo.DeathState;
+
+        target.SetState(newTargetState);
 
         target.Tics -= world.Random.Next() & 3;
         if (target.Tics < 1)
@@ -128,14 +130,16 @@ public sealed class ThingInteraction
     /// </summary>
     public void DamageMobj(Mobj target, Mobj? inflictor, Mobj? source, int damage)
     {
+        var targetFlags = target.Flags;
+
         // Shouldn't happen...
-        if ((target.Flags & MobjFlags.Shootable) == 0)
+        if ((targetFlags & MobjFlags.Shootable) == 0)
             return;
 
         if (target.Health <= 0)
             return;
 
-        if ((target.Flags & MobjFlags.SkullFly) != 0)
+        if ((targetFlags & MobjFlags.SkullFly) != 0)
             target.MomX = target.MomY = target.MomZ = Fixed.Zero;
 
         var player = target.Player;
@@ -149,7 +153,7 @@ public sealed class ThingInteraction
             source is not { Player: not null } ||
             source.Player.ReadyWeapon != WeaponTypes.Chainsaw;
 
-        if (inflictor != null && (target.Flags & MobjFlags.NoClip) == 0 && notChainsawAttack)
+        if (inflictor != null && (targetFlags & MobjFlags.NoClip) == 0 && notChainsawAttack)
         {
             var ang = Geometry.PointToAngle(
                 inflictor.X,
@@ -227,7 +231,7 @@ public sealed class ThingInteraction
         }
 
         if ((world.Random.Next() < target.Info.PainChance) &&
-            (target.Flags & MobjFlags.SkullFly) == 0)
+            (targetFlags & MobjFlags.SkullFly) == 0)
         {
             // Fight back!
             target.Flags |= MobjFlags.JustHit;

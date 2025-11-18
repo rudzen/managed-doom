@@ -16,6 +16,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.Math;
 
@@ -127,7 +128,8 @@ public readonly record struct Fixed(int Data)
     // So I implemented another Abs method, which is identical to C's one.
     private static int CIntAbs(int n)
     {
-        return n < 0 ? -n : n;
+        Span<int> table = [n, -n];
+        return table[(n < 0).AsByte()];
     }
 
     private static Fixed FixedDiv2(Fixed a, Fixed b)

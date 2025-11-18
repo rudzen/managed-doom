@@ -38,7 +38,7 @@ public sealed class HelpScreen : MenuDef
         Page = pageCount - 1;
     }
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

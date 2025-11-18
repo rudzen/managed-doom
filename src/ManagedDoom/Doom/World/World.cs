@@ -272,12 +272,12 @@ public sealed class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool DoEvent(in DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (Options is { NetGame: false, DemoPlayback: false })
-            cheat.DoEvent(in e);
+            cheat.DoEvent(e);
 
-        if (AutoMap.Visible && AutoMap.DoEvent(in e))
+        if (AutoMap.Visible && AutoMap.DoEvent(e))
             return true;
 
         switch (e)

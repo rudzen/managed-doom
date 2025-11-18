@@ -103,12 +103,12 @@ public sealed class SelectableMenu : MenuDef
         Choice = items[index];
     }
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;
 
-        if (textInput is not null && HandleTextInputEvent(in e))
+        if (textInput is not null && HandleTextInputEvent(e))
             return true;
 
         switch (e.Key)
@@ -194,9 +194,9 @@ public sealed class SelectableMenu : MenuDef
         return true;
     }
 
-    private bool HandleTextInputEvent(in DoomEvent e)
+    private bool HandleTextInputEvent(DoomEvent e)
     {
-        var result = textInput!.DoEvent(in e);
+        var result = textInput!.DoEvent(e);
 
         textInput = textInput.State switch
         {

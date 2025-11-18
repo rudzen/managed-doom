@@ -413,7 +413,7 @@ public sealed class Finale
             castTics = 15;
     }
 
-    public bool DoEvent(in DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (Stage != 2)
             return false;

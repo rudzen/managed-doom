@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.UserInput;
 
-public enum DoomKey
+public enum DoomKey : sbyte
 {
     Unknown = -1,
     A = 0,

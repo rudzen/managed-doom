@@ -21,7 +21,7 @@ namespace ManagedDoom.Video;
 
 public sealed class OpeningSequenceRenderer(IPatchCache patchCache, DrawScreen screen)
 {
-    public bool Render(IOpeningSequence sequence)
+    public bool Render(OpeningSequence sequence)
     {
         var scale = screen.Width / 320;
 

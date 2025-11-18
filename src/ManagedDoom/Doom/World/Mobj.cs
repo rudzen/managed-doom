@@ -206,7 +206,7 @@ public sealed class Mobj : Thinker
 
     public int LastLook { get; set; }
 
-    public MapThing SpawnPoint { get; set; }
+    public MapThing? SpawnPoint { get; set; }
 
     public Mobj Tracer { get; set; }
 
@@ -322,7 +322,7 @@ public sealed class Mobj : Thinker
         // Somthing is occupying it's position?
         if (!World.ThingMovement.CheckPosition(this, sp.X, sp.Y))
         {
-            // No respwan.
+            // No respawn.
             return;
         }
 

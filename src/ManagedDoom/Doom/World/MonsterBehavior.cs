@@ -595,8 +595,11 @@ public sealed class MonsterBehavior
 
         actor.Flags &= ~MobjFlags.Ambush;
         actor.Angle = Geometry.PointToAngle(
-            actor.X, actor.Y,
-            actor.Target.X, actor.Target.Y);
+            fromX: actor.X,
+            fromY: actor.Y,
+            toX: actor.Target.X,
+            toY: actor.Target.Y
+        );
 
         var random = world.Random;
 
@@ -632,8 +635,9 @@ public sealed class MonsterBehavior
 
         FaceTarget(actor);
 
+        var hitScan = world.Hitscan;
         var center = actor.Angle;
-        var slope = world.Hitscan.AimLineAttack(actor, center, WeaponBehavior.MissileRange);
+        var slope = hitScan.AimLineAttack(actor, center, WeaponBehavior.MissileRange);
 
         var random = world.Random;
 
@@ -642,7 +646,7 @@ public sealed class MonsterBehavior
             var angle = center + new Angle((random.Next() - random.Next()) << 20);
             var damage = ((random.Next() % 5) + 1) * 3;
 
-            world.Hitscan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
+            hitScan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
         }
     }
 
@@ -966,27 +970,27 @@ public sealed class MonsterBehavior
             {
                 for (var by = blockY1; by <= blockY2; by++)
                 {
-                    // Call VileCheck to check whether object is a corpse that canbe raised.
-                    if (!bm.IterateThings(bx, by, VileCheck))
-                    {
-                        // Got one!
-                        var temp = actor.Target;
-                        actor.Target = vileTargetCorpse;
-                        FaceTarget(actor);
-                        actor.Target = temp;
-                        actor.SetState(MobjState.VileHeal1);
+                    // Call VileCheck to check whether object is a corpse that can be raised.
+                    if (bm.IterateThings(bx, by, VileCheck))
+                        continue;
 
-                        world.StartSound(vileTargetCorpse, Sfx.SLOP, SfxType.Misc);
+                    // Got one!
+                    var temp = actor.Target;
+                    actor.Target = vileTargetCorpse;
+                    FaceTarget(actor);
+                    actor.Target = temp;
+                    actor.SetState(MobjState.VileHeal1);
 
-                        var info = vileTargetCorpse.Info;
-                        vileTargetCorpse.SetState(info.Raisestate);
-                        vileTargetCorpse.Height <<= 2;
-                        vileTargetCorpse.Flags = info.Flags;
-                        vileTargetCorpse.Health = info.SpawnHealth;
-                        vileTargetCorpse.Target = null;
+                    world.StartSound(vileTargetCorpse, Sfx.SLOP, SfxType.Misc);
 
-                        return;
-                    }
+                    var info = vileTargetCorpse.Info;
+                    vileTargetCorpse.SetState(info.Raisestate);
+                    vileTargetCorpse.Height <<= 2;
+                    vileTargetCorpse.Flags = info.Flags;
+                    vileTargetCorpse.Health = info.SpawnHealth;
+                    vileTargetCorpse.Target = null;
+
+                    return;
                 }
             }
         }

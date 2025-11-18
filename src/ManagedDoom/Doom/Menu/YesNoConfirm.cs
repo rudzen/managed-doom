@@ -25,7 +25,7 @@ public sealed class YesNoConfirm(DoomMenu menu, string text, Action action) : Me
 {
     private readonly string[] text = text.Split('\n');
 
-    public override bool DoEvent(in DoomEvent e)
+    public override bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;
