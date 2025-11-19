@@ -23,7 +23,7 @@ namespace ManagedDoom.Doom.Math;
 
 public static class Geometry
 {
-    private const int SlopeRange = 2048;
+    private const uint SlopeRange = 2048;
     private const int SlopeBits = 11;
     private const int FracToSlopeShift = Fixed.FracBits - SlopeBits;
 
@@ -49,11 +49,7 @@ public static class Geometry
             (dx, dy) = (dy, dx);
 
         // The code below to avoid division by zero is based on Chocolate Doom's implementation.
-        Fixed frac;
-        if (dx != Fixed.Zero)
-            frac = dy / dx;
-        else
-            frac = Fixed.Zero;
+        var frac = dx != Fixed.Zero ? dy / dx : Fixed.Zero;
 
         var angle = (Trig.TanToAngle((uint)frac.Data >> FracToSlopeShift) + Angle.Ang90);
 
@@ -197,8 +193,8 @@ public static class Geometry
         if (ldy == Fixed.Zero)
             return y <= ly ? (ldx < Fixed.Zero).AsInt() : (ldx > Fixed.Zero).AsInt();
 
-        var dx = (x - lx);
-        var dy = (y - ly);
+        var dx = x - lx;
+        var dy = y - ly;
 
         // Try to quickly decide by looking at sign bits.
         if (((ldy.Data ^ ldx.Data ^ dx.Data ^ dy.Data) & 0x80000000) != 0)

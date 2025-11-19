@@ -44,8 +44,20 @@ public sealed record Seg(
         var segOffset = BitConverter.ToInt16(data.Slice(10, 2));
 
         var lineDef = lines[lineNumber];
-        var frontSide = side == 0 ? lineDef.FrontSide : lineDef.BackSide;
-        var backSide = side == 0 ? lineDef.BackSide : lineDef.FrontSide;
+
+        SideDef? frontSide;
+        SideDef? backSide;
+
+        if (side == 0)
+        {
+            frontSide = lineDef.FrontSide;
+            backSide = lineDef.BackSide;
+        }
+        else
+        {
+            frontSide = lineDef.BackSide;
+            backSide = lineDef.FrontSide;
+        }
 
         return new Seg(
             Vertex1: vertices[vertex1Number],

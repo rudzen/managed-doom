@@ -52,8 +52,7 @@ public sealed class Wad : IDisposable
             var start = Stopwatch.GetTimestamp();
 
             names = new List<string>(fileNames.Length);
-            //streams = new List<Stream>(fileNames.Length);
-            LumpInfos = fileNames.SelectMany(AddFile).ToArray();
+            LumpInfos = [ ..fileNames.SelectMany(AddFile)];
 
             var nameSpan = CollectionsMarshal.AsSpan(names);
             GameMode = GetGameMode(nameSpan);
@@ -297,9 +296,7 @@ public sealed class Wad : IDisposable
         return missionPack != default;
     }
 
-    //public LumpInfoCache LumpInfos { get; }
     public LumpInfo[] LumpInfos { get; }
-
     public GameVersion GameVersion { get; }
     public GameMode GameMode { get; }
     public MissionPack MissionPack { get; }

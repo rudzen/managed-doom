@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.Doom.Menu;
 
-public enum TextInputState
+public enum TextInputState : byte
 {
     Typing,
     Finished,

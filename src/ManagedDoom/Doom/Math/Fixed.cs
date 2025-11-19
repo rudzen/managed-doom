@@ -221,6 +221,6 @@ public readonly record struct Fixed(int Data)
 
     public override string ToString()
     {
-        return ((double)Data / FracUnit).ToString();
+        return ((double)Data / FracUnit).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 }

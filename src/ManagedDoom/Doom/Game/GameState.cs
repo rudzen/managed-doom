@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.Doom.Game;
 
-public enum GameState
+public enum GameState : byte
 {
     Level,
     Intermission,
