@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedDoom", "ManagedDoom\ManagedDoom.csproj", "{0ADDF6FA-4AF5-4A8B-BA6F-260A6F70FDD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedDoom.Tests", "ManagedDoom.Tests\ManagedDoom.Tests.csproj", "{D67FAF92-9E84-4F3B-A4F3-BD87181AE1FD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{16A60FF8-F0B4-4CD1-A3D4-4E97F6E69B8D}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedDoom.Tests", "ManagedDoom.Tests\ManagedDoom.Tests.csproj", "{19B791BB-20FD-4E9E-ADB2-694519D16798}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{0ADDF6FA-4AF5-4A8B-BA6F-260A6F70FDD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ADDF6FA-4AF5-4A8B-BA6F-260A6F70FDD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ADDF6FA-4AF5-4A8B-BA6F-260A6F70FDD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D67FAF92-9E84-4F3B-A4F3-BD87181AE1FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D67FAF92-9E84-4F3B-A4F3-BD87181AE1FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D67FAF92-9E84-4F3B-A4F3-BD87181AE1FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D67FAF92-9E84-4F3B-A4F3-BD87181AE1FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19B791BB-20FD-4E9E-ADB2-694519D16798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19B791BB-20FD-4E9E-ADB2-694519D16798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19B791BB-20FD-4E9E-ADB2-694519D16798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19B791BB-20FD-4E9E-ADB2-694519D16798}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
