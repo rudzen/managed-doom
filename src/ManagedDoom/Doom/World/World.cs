@@ -21,6 +21,7 @@ using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Silk;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.World;

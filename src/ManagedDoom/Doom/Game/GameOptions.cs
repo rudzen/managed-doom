@@ -18,6 +18,7 @@ using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Intermission;
+using ManagedDoom.Silk;
 using ManagedDoom.UserInput;
 using ManagedDoom.Video;
 
@@ -63,7 +64,7 @@ public sealed class GameOptions
         Random = new DoomRandom();
 
         Video = NullVideo.GetInstance();
-        Sound = NullSound.GetInstance();
+        Sound = SoundExtensions.CreateNull();
         Music = NullMusic.GetInstance();
         UserInput = NullUserInput.GetInstance();
     }
@@ -107,7 +108,7 @@ public sealed class GameOptions
 
     public IVideo Video { get; set; }
 
-    public ISound Sound { get; set; }
+    public Sound Sound { get; set; }
 
     public IMusic Music { get; set; }
 

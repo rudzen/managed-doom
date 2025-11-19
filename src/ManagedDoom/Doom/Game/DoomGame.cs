@@ -16,11 +16,13 @@
 
 using System;
 using System.IO;
+using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Intermission;
 using ManagedDoom.Extensions;
+using ManagedDoom.Silk;
 
 namespace ManagedDoom.Doom.Game;
 

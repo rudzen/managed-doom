@@ -18,6 +18,7 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
+using ManagedDoom.Silk;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;

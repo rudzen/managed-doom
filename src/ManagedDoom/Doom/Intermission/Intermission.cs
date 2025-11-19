@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
+using ManagedDoom.Silk;
 
 namespace ManagedDoom.Doom.Intermission;
 

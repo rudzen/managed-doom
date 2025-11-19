@@ -18,7 +18,7 @@ using System;
 
 namespace ManagedDoom.Audio;
 
-public enum PlayMode
+public enum PlayMode : byte
 {
     Once,
     Loop

@@ -37,7 +37,7 @@ public sealed class Doom
     private readonly ConfigValues config;
     private readonly GameContent content;
     private readonly IVideo video;
-    private readonly ISound sound;
+    private readonly Sound sound;
     private readonly IUserInput userInput;
 
     private readonly List<DoomEvent> events;

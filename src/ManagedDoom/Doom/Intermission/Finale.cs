@@ -20,6 +20,7 @@ using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.World;
+using ManagedDoom.Silk;
 
 namespace ManagedDoom.Doom.Intermission;
 
@@ -102,9 +103,6 @@ public sealed class Finale
                         Flat = "MFLR8_3";
                         Text = DoomInfo.Strings.E4TEXT;
                         break;
-
-                    default:
-                        break;
                 }
 
                 break;
@@ -141,9 +139,6 @@ public sealed class Finale
                     case 31:
                         Flat = "RROCK19";
                         Text = c6Text;
-                        break;
-
-                    default:
                         break;
                 }
 
@@ -238,12 +233,8 @@ public sealed class Finale
 
     private void BunnyScroll()
     {
-        Scrolled = 320 - (Count - 230) / 2;
-        if (Scrolled > 320)
-            Scrolled = 320;
-
-        if (Scrolled < 0)
-            Scrolled = 0;
+        var scrolled = 320 - (Count - 230) / 2;
+        Scrolled = System.Math.Clamp(scrolled, 0, 320);
 
         if (Count < 1130)
             return;
@@ -266,7 +257,6 @@ public sealed class Finale
             TheEndIndex = stage;
         }
     }
-
 
     private static readonly CastInfo[] castOrder =
     [
@@ -323,7 +313,7 @@ public sealed class Finale
 
         if (CastState.Tics == -1 || CastState.Next == MobjState.Null)
         {
-            // Switch from deathstate to next monster.
+            // Switch from death-state to next monster.
             castNumber++;
             castDeath = false;
             if (castNumber == castOrder.Length)
