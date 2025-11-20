@@ -21,7 +21,7 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class PatchCache(GameContent content) : IPatchCache
+public sealed class PatchCache(GameContent content)
 {
     private readonly Wad.Wad wad = content.Wad;
     private readonly Dictionary<string, Patch> cache = new(32);
@@ -33,7 +33,7 @@ public sealed class PatchCache(GameContent content) : IPatchCache
             ref var p2 = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, name, out var exists);
 
             if (exists)
-                return p2;
+                return p2!;
 
             p2 = Patch.FromWad(wad, name);
 
@@ -42,14 +42,8 @@ public sealed class PatchCache(GameContent content) : IPatchCache
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetWidth(string name)
-    {
-        return this[name].Width;
-    }
+    public int GetWidth(string name) => this[name].Width;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetHeight(string name)
-    {
-        return this[name].Height;
-    }
+    public int GetHeight(string name) => this[name].Height;
 }

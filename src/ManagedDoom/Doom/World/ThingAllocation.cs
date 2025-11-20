@@ -265,14 +265,12 @@ public sealed class ThingAllocation
     /// </summary>
     public void RemoveMobj(Mobj mobj)
     {
-        var tm = world.ThingMovement;
-
         if ((mobj.Flags & MobjFlags.Special) != 0 &&
             (mobj.Flags & MobjFlags.Dropped) == 0 &&
             mobj.Type != MobjType.Inv &&
             mobj.Type != MobjType.Ins)
         {
-            itemRespawnQue[itemQueHead] = mobj.SpawnPoint;
+            itemRespawnQue[itemQueHead] = mobj.SpawnPoint!;
             itemRespawnTime[itemQueHead] = world.LevelTime;
             itemQueHead = (itemQueHead + 1) & (itemQueSize - 1);
 
@@ -282,7 +280,7 @@ public sealed class ThingAllocation
         }
 
         // Unlink from sector and block lists.
-        tm.UnsetThingPosition(mobj);
+        world.ThingMovement.UnsetThingPosition(mobj);
 
         // Stop any playing sound.
         world.StopSound(mobj);
@@ -317,9 +315,9 @@ public sealed class ThingAllocation
             missile.Tics = 1;
 
         // Move a little forward so an angle can be computed if it immediately explodes.
-        missile.X += (missile.MomX >> 1);
-        missile.Y += (missile.MomY >> 1);
-        missile.Z += (missile.MomZ >> 1);
+        missile.X += missile.MomX >> 1;
+        missile.Y += missile.MomY >> 1;
+        missile.Z += missile.MomZ >> 1;
 
         if (!world.ThingMovement.TryMove(missile, missile.X, missile.Y))
             world.ThingInteraction.ExplodeMissile(missile);
@@ -446,7 +444,7 @@ public sealed class ThingAllocation
     /// </summary>
     public bool CheckSpot(int playerNum, MapThing mapThing)
     {
-        var players = world.Options.Players;
+        var players = world.Options.Players.AsSpan();
         var playerMobj = players[playerNum].Mobj;
 
         if (playerMobj is null)
@@ -468,11 +466,12 @@ public sealed class ThingAllocation
         if (!world.ThingMovement.CheckPosition(playerMobj, x, y))
             return false;
 
+        var bodyQueIndex = bodyQueSlot % BodyQueSize;
         // Flush an old corpse if needed.
         if (bodyQueSlot >= BodyQueSize)
-            RemoveMobj(bodyQue[bodyQueSlot % BodyQueSize]);
+            RemoveMobj(bodyQue[bodyQueIndex]);
 
-        bodyQue[bodyQueSlot % BodyQueSize] = playerMobj;
+        bodyQue[bodyQueIndex] = playerMobj;
         bodyQueSlot++;
 
         // Spawn a teleport fog.

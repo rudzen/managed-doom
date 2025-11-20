@@ -73,7 +73,7 @@ public sealed class IntermissionRenderer
     private static readonly string[][] doomLevels;
     private static readonly string[] doom2Levels;
 
-    private readonly IPatchCache cache;
+    private readonly PatchCache cache;
     private readonly Patch colon;
 
     private readonly Patch minus;
@@ -98,7 +98,7 @@ public sealed class IntermissionRenderer
             doom2Levels[m] = $"CWILV{m:00}";
     }
 
-    public IntermissionRenderer(GameContent gameContent, IPatchCache patchCache, DrawScreen screen)
+    public IntermissionRenderer(GameContent gameContent, PatchCache patchCache, DrawScreen screen)
     {
         this.screen = screen;
         this.cache = patchCache;
@@ -631,7 +631,7 @@ public sealed class IntermissionRenderer
         }
     }
 
-    private void DrawSuitablePatch(IReadOnlyList<string> candidates, int x, int y)
+    private void DrawSuitablePatch(string[] candidates, int x, int y)
     {
         var fits = false;
         var i = 0;

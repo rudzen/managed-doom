@@ -19,7 +19,7 @@ using ManagedDoom.Doom.Opening;
 
 namespace ManagedDoom.Video;
 
-public sealed class OpeningSequenceRenderer(IPatchCache patchCache, DrawScreen screen)
+public sealed class OpeningSequenceRenderer(PatchCache patchCache, DrawScreen screen)
 {
     public bool Render(OpeningSequence sequence)
     {

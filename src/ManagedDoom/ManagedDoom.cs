@@ -46,7 +46,6 @@ await Host.CreateDefaultBuilder(args)
           {
               // related to Silk.NET etc
               services.AddSingleton<WindowFactory>();
-              services.AddSingleton<OpenGlFactory>();
 
               // command line args
               services.AddSingleton(_ => new CommandLineArgs(args));
@@ -70,7 +69,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<AutoMapRenderer>();
               services.AddSingleton<FinaleRenderer>();
               services.AddSingleton<GameContent>();
-              services.AddSingleton<IPatchCache, PatchCache>();
+              services.AddSingleton<PatchCache>();
 
               services.AddHostedService<DoomHost>();
           })

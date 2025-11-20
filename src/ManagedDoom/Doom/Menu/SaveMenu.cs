@@ -14,7 +14,7 @@
 // GNU General Public License for more details.
 //
 
-using System.Collections.Generic;
+using System;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
@@ -51,10 +51,10 @@ public sealed class SaveMenu : MenuDef
         LastSaveSlot = -1;
     }
 
-    public IReadOnlyList<string> Name => name;
-    public IReadOnlyList<int> TitleX => titleX;
-    public IReadOnlyList<int> TitleY => titleY;
-    public IReadOnlyList<MenuItem> Items => items;
+    public ReadOnlySpan<string> Name => name;
+    public ReadOnlySpan<int> TitleX => titleX;
+    public ReadOnlySpan<int> TitleY => titleY;
+    public ReadOnlySpan<MenuItem> Items => items;
     public MenuItem Choice => choice;
     public int LastSaveSlot { get; private set; }
 
@@ -98,13 +98,11 @@ public sealed class SaveMenu : MenuDef
         {
             var result = textInput.DoEvent(e);
 
-            switch (textInput.State)
+            textInput = textInput.State switch
             {
-                case TextInputState.Canceled:
-                case TextInputState.Finished:
-                    textInput = null;
-                    break;
-            }
+                TextInputState.Canceled or TextInputState.Finished => null,
+                _                                                  => textInput
+            };
 
             if (result)
                 return true;

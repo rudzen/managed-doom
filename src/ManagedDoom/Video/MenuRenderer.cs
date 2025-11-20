@@ -21,7 +21,7 @@ using ManagedDoom.Doom.Menu;
 
 namespace ManagedDoom.Video;
 
-public sealed class MenuRenderer(IPatchCache patchCache, DrawScreen screen)
+public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
 {
     private static readonly char[]? cursor = ['_'];
 
@@ -78,7 +78,7 @@ public sealed class MenuRenderer(IPatchCache patchCache, DrawScreen screen)
 
     private void DrawSaveMenu(SaveMenu save)
     {
-        for (var i = 0; i < save.Name.Count; i++)
+        for (var i = 0; i < save.Name.Length; i++)
         {
             DrawMenuPatch(
                 save.Name[i],
@@ -96,7 +96,7 @@ public sealed class MenuRenderer(IPatchCache patchCache, DrawScreen screen)
 
     private void DrawLoadMenu(LoadMenu load)
     {
-        for (var i = 0; i < load.Name.Count; i++)
+        for (var i = 0; i < load.Name.Length; i++)
         {
             DrawMenuPatch(
                 load.Name[i],
