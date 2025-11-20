@@ -8,7 +8,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void NightmareTest()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DataPath, "nightmare_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -36,7 +36,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void BarrelTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "barrel_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "barrel_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -64,7 +64,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ZombiemanTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "zombieman_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "zombieman_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -92,7 +92,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ZombiemanTest2()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "zombieman_test2.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "zombieman_test2.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -120,7 +120,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ShotgunguyTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "shotgunguy_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "shotgunguy_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -148,7 +148,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ChaingunguyTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "chaingunguy_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "chaingunguy_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -176,7 +176,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ImpTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "imp_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "imp_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -204,7 +204,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void FastImpTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "imp_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_imp_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -232,7 +232,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void DemonTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "demon_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "demon_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -260,7 +260,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void FastDemonTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "demon_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_demon_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -288,7 +288,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void LostSoulTest_Final2()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "lostsoul_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "lostsoul_test_final2.lmp");
         var demo = new Demo(demoFile)
         {
@@ -322,7 +322,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void CacoDemonTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "cacodemon_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "cacodemon_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -350,7 +350,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void FastCacoDemonTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "cacodemon_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_cacodemon_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -378,7 +378,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void BaronTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "baron_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "baron_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -406,7 +406,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void FastBaronTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "baron_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fast_baron_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -434,7 +434,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void RevenantTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "revenant_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "revenant_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -462,7 +462,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void FatsoTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "fatso_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "fatso_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -490,7 +490,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ArachnotronTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "arachnotron_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "arachnotron_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -518,7 +518,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void PainElementalTest_Final2()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "painelemental_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "painelemental_test_final2.lmp");
         var demo = new Demo(demoFile)
         {
@@ -552,7 +552,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void ArchvileTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "archvile_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "archvile_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -580,7 +580,7 @@ public sealed class Monsters(WadPath wadPath) : IClassFixture<WadPath>
     public void TelefragTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "telefrag_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "telefrag_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();

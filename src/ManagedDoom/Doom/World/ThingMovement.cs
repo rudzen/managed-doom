@@ -440,19 +440,21 @@ public sealed class ThingMovement(World world)
         SetThingPosition(thing);
 
         // If any special lines were hit, do the effect.
-        if ((thing.Flags & (MobjFlags.Teleport | MobjFlags.NoClip)) == 0)
+        var specialLineHit = (thing.Flags & (MobjFlags.Teleport | MobjFlags.NoClip)) == 0;
+
+        if (!specialLineHit)
+            return true;
+
+        while (crossedSpecialCount-- > 0)
         {
-            while (crossedSpecialCount-- > 0)
+            // See if the line was crossed.
+            var line = crossedSpecials![crossedSpecialCount];
+            var newSide = Geometry.PointOnLineSide(thing.X, thing.Y, line);
+            var oldSide = Geometry.PointOnLineSide(oldX, oldY, line);
+            if (newSide != oldSide)
             {
-                // See if the line was crossed.
-                var line = crossedSpecials[crossedSpecialCount];
-                var newSide = Geometry.PointOnLineSide(thing.X, thing.Y, line);
-                var oldSide = Geometry.PointOnLineSide(oldX, oldY, line);
-                if (newSide != oldSide)
-                {
-                    if (line.Special != 0)
-                        world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
-                }
+                if (line.Special != 0)
+                    world.MapInteraction.CrossSpecialLine(line, oldSide, thing);
             }
         }
 
@@ -642,7 +644,7 @@ public sealed class ThingMovement(World world)
                 if (thing.Player != null && thing.MomZ < -gravity * 8)
                 {
                     // Squat down.
-                    // Decrease viewheight for a moment after hitting the ground (hard),
+                    // Decrease view height for a moment after hitting the ground (hard),
                     // and utter appropriate sound.
                     thing.Player.DeltaViewHeight = (thing.MomZ >> 3);
                     world.StartSound(thing, Sfx.OOF, SfxType.Voice);
@@ -736,9 +738,7 @@ public sealed class ThingMovement(World world)
 
         var deltaAngle = moveAngle - lineAngle;
         if (deltaAngle > Angle.Ang180)
-        {
             deltaAngle += Angle.Ang180;
-        }
 
         var moveDist = Geometry.AproxDistance(slideMoveX, slideMoveY);
         var newDist = moveDist * Trig.Cos(deltaAngle);
@@ -778,7 +778,7 @@ public sealed class ThingMovement(World world)
         if (mc.OpenTop - slideThing.Z < slideThing.Height)
             goto isBlocking;
 
-        // Too big a step up.
+        // Too big a step-up.
         if (mc.OpenBottom - slideThing.Z > Fixed.FromInt(24))
             goto isBlocking;
 

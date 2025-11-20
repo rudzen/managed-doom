@@ -8,7 +8,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
     public void E1M1()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom1);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var options = GameOptions.CreateDefault();
         options.Skill = GameSkill.Hard;
         options.Episode = 1;
@@ -40,7 +40,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
     public void Map01()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var options = GameOptions.CreateDefault();
         options.Skill = GameSkill.Hard;
         options.Map = 1;
@@ -67,7 +67,7 @@ public sealed class DoNothing(WadPath wadPath) : IClassFixture<WadPath>
     public void Map11Nomonsters()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var options = GameOptions.CreateDefault();
         options.Skill = GameSkill.Medium;
         options.Map = 11;

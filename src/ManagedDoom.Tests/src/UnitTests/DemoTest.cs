@@ -9,7 +9,7 @@ public sealed class DemoTest(WadPath wadPath) : IClassFixture<WadPath>
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom2);
 
-        using var content = GameContent.CreateDummy(wadFile);
+        var content = GameContent.CreateDummy(wadFile);
         {
             var demo = new Demo(content.Wad.ReadLump("DEMO1"));
             Assert.Equal(11, demo.Options.Map);

@@ -8,7 +8,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
     public void E1M2Donut()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom1);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "e1m2_donut_test.lmp");
         var demo = new Demo(demoFile)
         {
@@ -48,7 +48,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
     public void E1M8Boss()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom1);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "e1m8_boss_test.lmp");
         var demo = new Demo(demoFile)
         {
@@ -88,7 +88,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
     public void Map06Crusher()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map06_crusher_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -122,7 +122,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
     public void Map07Boss()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map07_boss_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -156,7 +156,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
     public void Map30Brain()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map30_brain_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -190,7 +190,7 @@ public sealed class MapGimmicks(WadPath wadPath) : IClassFixture<WadPath>
     public void Map32Keen()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DemoPath, "map32_keen_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();

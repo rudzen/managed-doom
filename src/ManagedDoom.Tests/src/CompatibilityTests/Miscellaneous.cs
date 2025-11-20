@@ -8,7 +8,7 @@ public sealed class Miscellaneous(WadPath wadPath) : IClassFixture<WadPath>
     public void Altdeath()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var demoFile = Path.Combine(WadPath.DataPath, "altdeath_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();

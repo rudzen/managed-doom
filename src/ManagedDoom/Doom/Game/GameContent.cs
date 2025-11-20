@@ -14,14 +14,13 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Graphics.Dummy;
 
 namespace ManagedDoom.Doom.Game;
 
-public sealed class GameContent : IDisposable
+public sealed class GameContent
 {
     private GameContent(string[] wadPaths)
     {
@@ -65,12 +64,5 @@ public sealed class GameContent : IDisposable
     public static GameContent CreateDummy(params string[] wadPaths)
     {
         return new GameContent(wadPaths);
-    }
-
-    public void Dispose()
-    {
-        if (Wad is null) return;
-        Wad.Dispose();
-        Wad = null!;
     }
 }

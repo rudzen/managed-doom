@@ -42,11 +42,10 @@ public sealed class Sound : IDisposable
     public OutputType SoundType { get; set; }
     public Mobj? Listener { get; set; }
 
-    public int MaxVolume { get; }
+    public int MaxVolume { get; set; }
     public int Volume { get; set; }
 
     // only for silk-sound
-    public ConfigValues config;
     public AudioClip?[]? buffers;
     public float[] amplitudes;
     public DoomRandom? random;
@@ -113,6 +112,7 @@ public static class SoundExtensions
 
         try
         {
+            sound.MaxVolume = MaxVolume;
             config.AudioSoundVolume = Math.Clamp(config.AudioSoundVolume, 0, MaxVolume);
 
             var sfxNames = DoomInfo.SfxNames.AsSpan();
@@ -264,7 +264,7 @@ public static class SoundExtensions
     {
         public void StartSound(Sfx sfx)
         {
-            if (sound.buffers![sfx.AsInt()] is null)
+            if (sound.SoundType == OutputType.Null || sound.buffers![sfx.AsInt()] is null)
                 return;
 
             sound.uiReserved = sfx;
@@ -272,7 +272,7 @@ public static class SoundExtensions
 
         public void StartSound(Mobj mobj, Sfx sfx, SfxType type, int volume = 100)
         {
-            if (sound.buffers![(int)sfx] is null)
+            if (sound.SoundType == OutputType.Null || sound.buffers![(int)sfx] is null)
                 return;
 
             var x = (mobj.X - sound.Listener!.X).ToFloat();
@@ -356,6 +356,9 @@ public static class SoundExtensions
 
         public void StopSound(Mobj mobj)
         {
+            if (sound.SoundType == OutputType.Null)
+                return;
+
             var infos = sound.infos.AsSpan();
             foreach (var info in infos)
             {
@@ -371,6 +374,9 @@ public static class SoundExtensions
 
         public void Reset()
         {
+            if (sound.SoundType == OutputType.Null)
+                return;
+
             sound.random?.Clear();
 
             for (var i = 0; i < sound.infos.Length; i++)
@@ -384,6 +390,9 @@ public static class SoundExtensions
 
         public void Pause()
         {
+            if (sound.SoundType == OutputType.Null)
+                return;
+
             for (var i = 0; i < sound.infos.Length; i++)
             {
                 var channel = sound.channels![i];
@@ -396,6 +405,9 @@ public static class SoundExtensions
 
         public void Resume()
         {
+            if (sound.SoundType == OutputType.Null)
+                return;
+
             for (var i = 0; i < sound.infos.Length; i++)
             {
                 var channel = sound.channels![i]!;

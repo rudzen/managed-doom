@@ -29,16 +29,15 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Wad;
 
-public sealed class Wad : IDisposable
+public sealed class Wad
 {
     public readonly record struct LumpNumberAndSize(int LumpNumber, int Size);
 
     private readonly record struct WadHeader(string Id, int LumpCount, int LumpInfoTableOffset);
 
-    private static readonly LumpNumberAndSize DefaultLumpNumberAndSize = new(-1, -1);
+    private static readonly LumpNumberAndSize defaultLumpNumberAndSize = new(-1, -1);
 
     private readonly List<string> names;
-    //private readonly List<Stream> streams;
 
     public Wad(IEnumerable<string> fileNames) : this(fileNames.ToArray())
     {
@@ -65,17 +64,20 @@ public sealed class Wad : IDisposable
         catch (Exception e)
         {
             Console.WriteLine("Failed");
-            Dispose();
             ExceptionDispatchInfo.Throw(e);
         }
     }
+
+    public LumpInfo[] LumpInfos { get; }
+    public GameVersion GameVersion { get; }
+    public GameMode GameMode { get; }
+    public MissionPack MissionPack { get; }
 
     private List<LumpInfo> AddFile(string fileName)
     {
         names.Add(Path.GetFileNameWithoutExtension(fileName));
 
         var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-        //streams.Add(stream);
 
         var wadHeader = ReadWadHeader(stream);
 
@@ -86,9 +88,10 @@ public sealed class Wad : IDisposable
             var data = ArrayPool<byte>.Shared.Rent(size);
             stream.Seek(wadHeader.LumpInfoTableOffset, SeekOrigin.Begin);
 
+            var lumps = new List<LumpInfo>(size);
+
             try
             {
-                var lumps = new List<LumpInfo>(size);
                 var read = stream.Read(data);
 
                 if (read != size)
@@ -113,7 +116,8 @@ public sealed class Wad : IDisposable
                         if (read != s)
                             throw new Exception("Failed to read the WAD file.");
 
-                        lumps.Add(new LumpInfo(name, buffer));
+                        var lumpInfo = new LumpInfo(name, buffer);
+                        lumps.Add(lumpInfo);
                     }
                 }
 
@@ -176,7 +180,7 @@ public sealed class Wad : IDisposable
             }
         }
 
-        return DefaultLumpNumberAndSize;
+        return defaultLumpNumberAndSize;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -200,16 +204,6 @@ public sealed class Wad : IDisposable
             throw new Exception($"The lump '{name}' was not found.");
 
         return ReadLump(lumpNumber);
-    }
-
-    public void Dispose()
-    {
-        Console.WriteLine("Close WAD files.");
-
-        // foreach (var stream in streams)
-        //     stream.Dispose();
-        //
-        // streams.Clear();
     }
 
     private static bool IsValidWadId(ReadOnlySpan<char> wadId)
@@ -296,8 +290,4 @@ public sealed class Wad : IDisposable
         return missionPack != default;
     }
 
-    public LumpInfo[] LumpInfos { get; }
-    public GameVersion GameVersion { get; }
-    public GameMode GameMode { get; }
-    public MissionPack MissionPack { get; }
 }

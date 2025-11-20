@@ -8,7 +8,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     public void RequiemDemo1_Final2()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.Requiem)];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"))
         {
             Options =
@@ -49,7 +49,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.Requiem)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         demo.Options.Players[0].PlayerState = PlayerState.Reborn;
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -85,7 +85,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.Requiem)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -120,7 +120,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.TntBlood)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -154,7 +154,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.TntBlood)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -188,7 +188,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.TntBlood)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -222,7 +222,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.MementoMori)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -256,7 +256,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.MementoMori)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);
@@ -290,7 +290,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), wadPath.GetWadPath(WadFile.MementoMori)];
 
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
         var game = new DoomGame(content, demo.Options);

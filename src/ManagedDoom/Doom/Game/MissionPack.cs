@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.Doom.Game;
 
-public enum MissionPack
+public enum MissionPack : byte
 {
     Doom2,
     Plutonia,

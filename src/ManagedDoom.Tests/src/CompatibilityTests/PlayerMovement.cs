@@ -8,7 +8,7 @@ public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
     public void PlayerMovementTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "player_movement_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "player_movement_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -36,7 +36,7 @@ public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
     public void ThingCollisionTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "thing_collision_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "thing_collision_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
@@ -64,7 +64,7 @@ public sealed class PlayerMovement(WadPath wadPath) : IClassFixture<WadPath>
     public void AutoAimTest()
     {
         string[] wads = [wadPath.GetWadPath(WadFile.Doom2), Path.Combine(WadPath.DataPath, "autoaim_test.wad")];
-        using var content = GameContent.CreateDummy(wads);
+        var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "autoaim_test.lmp");
         var demo = new Demo(demoFile);
         var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();

@@ -8,7 +8,7 @@ public sealed class FireOnce(WadPath wadPath) : IClassFixture<WadPath>
     public void Map01()
     {
         var wad = wadPath.GetWadPath(WadFile.Doom2);
-        using var content = GameContent.CreateDummy(wad);
+        var content = GameContent.CreateDummy(wad);
         var options = GameOptions.CreateDefault();
         options.Skill = GameSkill.Hard;
         options.Map = 1;

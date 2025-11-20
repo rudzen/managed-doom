@@ -14,8 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
-
 namespace ManagedDoom.Doom.Game;
 
 public enum GameMode

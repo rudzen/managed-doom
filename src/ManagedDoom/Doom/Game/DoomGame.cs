@@ -16,7 +16,6 @@
 
 using System;
 using System.IO;
-using ManagedDoom.Audio;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Info;

@@ -16,10 +16,10 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.World;
@@ -187,8 +187,30 @@ public sealed class SilkUserInput : IUserInput
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsPressed(IKeyboard currentKeyboard, KeyBinding keyBinding)
     {
-        return keyBinding.Keys.Any(key => currentKeyboard.IsKeyPressed(DoomToSilk(key))) ||
-               mouseGrabbed && keyBinding.MouseButtons.Any(mouseButton => mouse!.IsButtonPressed((MouseButton)mouseButton));
+        var keys = keyBinding.Keys.AsSpan();
+        ref var keysRef = ref MemoryMarshal.GetReference(keys);
+
+        for (var i = 0; i < keys.Length; i++)
+        {
+            ref var key = ref Unsafe.Add(ref keysRef, i);
+            if (currentKeyboard.IsKeyPressed(DoomToSilk(key)))
+                return true;
+        }
+
+        if (!mouseGrabbed)
+            return false;
+
+        var mouseButtons = keyBinding.MouseButtons.AsSpan();
+        ref var mouseButtonsRef = ref MemoryMarshal.GetReference(mouseButtons);
+
+        for (var i = 0; i < mouseButtons.Length; i++)
+        {
+            ref var button = ref Unsafe.Add(ref mouseButtonsRef, i);
+            if (mouse!.IsButtonPressed((MouseButton)button))
+                return true;
+        }
+
+        return false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -260,9 +260,8 @@ public sealed class SilkMusic : IMusic
 
         private static void CheckHeader(ReadOnlySpan<byte> data)
         {
-            for (var p = 0; p < MusHeader.Length; p++)
-                if (data[p] != MusHeader[p])
-                    throw new Exception("Invalid format!");
+            if (!MusHeader.AsSpan().SequenceEqual(data[..MusHeader.Length]))
+                throw new Exception("Invalid format!");
         }
 
         public void RenderWaveform(Synthesizer synthesizer, Span<float> left, Span<float> right)
@@ -354,7 +353,7 @@ public sealed class SilkMusic : IMusic
             }
 
             var eventType = (data[p] & 0x70) >> 4;
-            var last = (data[p] >> 7) != 0;
+            var last = data[p] >> 7 != 0;
 
             p++;
 

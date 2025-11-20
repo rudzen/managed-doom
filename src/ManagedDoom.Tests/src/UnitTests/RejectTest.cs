@@ -10,7 +10,7 @@ public sealed class RejectTest(WadPath wadPath) : IClassFixture<WadPath>
     public void LoadE1M1()
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom1);
-        using var wad = new Wad(wadFile);
+        var wad = new Wad(wadFile);
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("E1M1");
@@ -48,7 +48,7 @@ public sealed class RejectTest(WadPath wadPath) : IClassFixture<WadPath>
     public void LoadMap01()
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom2);
-        using var wad = new Wad(wadFile);
+        var wad = new Wad(wadFile);
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("MAP01");

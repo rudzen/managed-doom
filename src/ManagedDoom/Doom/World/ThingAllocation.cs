@@ -87,17 +87,16 @@ public sealed class ThingAllocation
         if (mt.Type is 11 or <= 4)
             return;
 
-        // Check for apropriate skill level.
+        // Check for appropriate skill level.
         if (!world.Options.NetGame && ((int)mt.Flags & 16) != 0)
             return;
 
-        int bit;
-        if (world.Options.Skill == GameSkill.Baby)
-            bit = 1;
-        else if (world.Options.Skill == GameSkill.Nightmare)
-            bit = 4;
-        else
-            bit = 1 << ((int)world.Options.Skill - 1);
+        var bit = world.Options.Skill switch
+        {
+            GameSkill.Baby      => 1,
+            GameSkill.Nightmare => 4,
+            _                   => 1 << ((int)world.Options.Skill - 1)
+        };
 
         if (((int)mt.Flags & bit) == 0)
             return;
@@ -250,11 +249,11 @@ public sealed class ThingAllocation
         mobj.CeilingZ = mobj.Subsector.Sector.CeilingHeight;
 
         if (z == Mobj.OnFloorZ)
-            mobj.Z = mobj.FloorZ;
+            z = mobj.FloorZ;
         else if (z == Mobj.OnCeilingZ)
-            mobj.Z = mobj.CeilingZ - mobj.Info.Height;
-        else
-            mobj.Z = z;
+            z = mobj.CeilingZ - mobj.Info.Height;
+
+        mobj.Z = z;
 
         world.Thinkers.Add(mobj);
 
@@ -344,8 +343,9 @@ public sealed class ThingAllocation
         missile.Target = source;
 
         var angle = Geometry.PointToAngle(
-            source.X, source.Y,
-            dest.X, dest.Y);
+            fromX: source.X, fromY: source.Y,
+            toX: dest.X, toY: dest.Y
+        );
 
         // Fuzzy player.
         if ((dest.Flags & MobjFlags.Shadow) != 0)
@@ -361,8 +361,9 @@ public sealed class ThingAllocation
         missile.MomY = new Fixed(speed) * Trig.Sin(angle);
 
         var dist = Geometry.AproxDistance(
-            dest.X - source.X,
-            dest.Y - source.Y);
+            dx: dest.X - source.X,
+            dy: dest.Y - source.Y
+        );
 
         var num = (dest.Z - source.Z).Data;
         var den = (dist / speed).Data;
@@ -521,11 +522,9 @@ public sealed class ThingAllocation
             subSector.Sector.FloorHeight,
             MobjType.Tfog);
 
+        // Don't start sound on first frame.
         if (!world.FirstTicIsNotYetDone)
-        {
-            // Don't start sound on first frame.
             world.StartSound(mo, Sfx.TELEPT, SfxType.Misc);
-        }
 
         return true;
     }
