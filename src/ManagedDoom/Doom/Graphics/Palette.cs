@@ -60,24 +60,32 @@ public sealed class Palette
 
     public uint[] this[int paletteNumber] => palettes[paletteNumber];
 
+    [SkipLocalsInit]
     public void ResetColors(in double p)
     {
-        for (var i = 0; i < palettes.Length; i++)
+        // build lookup table for corrected byte values (0..255) for this p
+        Span<byte> lut = stackalloc byte[256];
+        for (var v = 0; v < lut.Length; v++)
+            lut[v] = (byte)System.Math.Round(255 * CorrectionCurve(v / 255.0, in p));
+
+        const uint alpha = 255u << 24;
+        var palettesCount = palettes.Length;
+        var dataSpanAll = data.AsSpan();
+
+        for (var pi = 0; pi < palettesCount; pi++)
         {
-            var paletteOffset = (3 * 256) * i;
+            var paletteOffset = 3 * 256 * pi;
+            var src = dataSpanAll.Slice(paletteOffset, 3 * 256);
+            var dest = palettes[pi].AsSpan();
+
             for (var j = 0; j < 256; j++)
             {
-                var colorOffset = paletteOffset + 3 * j;
+                var idx = j * 3;
+                var r = lut[src[idx]];
+                var g = lut[src[idx + 1]];
+                var b = lut[src[idx + 2]];
 
-                var r = data[colorOffset];
-                var g = data[colorOffset + 1];
-                var b = data[colorOffset + 2];
-
-                r = (byte)System.Math.Round(255 * CorrectionCurve(r / 255.0, in p));
-                g = (byte)System.Math.Round(255 * CorrectionCurve(g / 255.0, in p));
-                b = (byte)System.Math.Round(255 * CorrectionCurve(b / 255.0, in p));
-
-                palettes[i][j] = (uint)((r << 0) | (g << 8) | (b << 16) | (255 << 24));
+                dest[j] = r | ((uint)g << 8) | ((uint)b << 16) | alpha;
             }
         }
     }
