@@ -47,52 +47,6 @@ public sealed class Player
         "Red"
     ];
 
-    // Determine POV, including viewpoint bobbing during movement.
-    // Focal origin above mobj.Z.
-
-    // Base height above floor for viewz.
-
-    // Bob / squat speed.
-
-    // Bounded / scaled total momentum.
-
-    // This is only used between levels,
-    // mobj.Health is used during levels.
-
-    // Armor type is 0-2.
-
-    // Power ups. invinc and invis are tic counters.
-
-    // Frags, kills of other players.
-
-    // Is WeanponType.NoChange if not changing.
-
-    // True if button down last tic.
-
-    // Bit flags, for cheats and debug.
-
-    // Refired shots are less accurate.
-
-    // For intermission stats.
-
-    // Hint messages.
-
-    // For screen flashing (red or bright).
-
-    // Who did damage (null for floors / ceilings).
-
-    // So gun flashes light up areas.
-
-    // Current PLAYPAL, ???
-    // can be set to REDCOLORMAP for pain, etc.
-
-    // Player skin colorshift,
-    // 0-3 for which color to draw player.
-
-    // Overlay view sprites (gun, etc).
-
-    // True if secret level has been done.
-
     // For frame interpolation.
     private bool interpolate;
     private Fixed oldViewZ;
@@ -129,30 +83,63 @@ public sealed class Player
 
     public TicCommand Command { get; }
 
+    /// <summary>
+    /// Determine POV, including viewpoint bobbing during movement.
+    /// Focal origin above mobj.Z.
+    /// </summary>
     public Fixed ViewZ { get; set; }
 
+    /// <summary>
+    /// Base height above floor for viewz.
+    /// </summary>
     public Fixed ViewHeight { get; set; }
 
+    /// <summary>
+    /// Bob / squat speed.
+    /// </summary>
     public Fixed DeltaViewHeight { get; set; }
 
+    /// <summary>
+    /// Bounded / scaled total momentum.
+    /// </summary>
     public Fixed Bob { get; set; }
 
+    /// <summary>
+    /// This is only used between levels,
+    /// mobj.Health is used during levels.
+    /// </summary>
     public int Health { get; set; }
 
+    /// <summary>
+    /// This is only used between levels,
+    /// mobj.Health is used during levels.
+    /// </summary>
     public int ArmorPoints { get; set; }
 
+    /// <summary>
+    /// Armor type is 0-2.
+    /// </summary>
     public int ArmorType { get; set; }
 
+    /// <summary>
+    /// Power ups. invinc and invis are tic counters.
+    /// </summary>
     public int[] Powers { get; }
 
     public CardType Cards { get; set; }
 
     public bool Backpack { get; set; }
 
+    /// <summary>
+    /// Frags, kills of other players.
+    /// </summary>
     public int[] Frags { get; }
 
     public WeaponTypes ReadyWeapon { get; set; }
 
+    /// <summary>
+    /// Is WeaponTypes.None if not changing.
+    /// </summary>
     public WeaponTypes PendingWeapon { get; set; }
 
     public WeaponTypes WeaponOwned { get; set; }
@@ -161,38 +148,88 @@ public sealed class Player
 
     public int[] MaxAmmo { get; }
 
+    /// <summary>
+    /// True if button down last tic.
+    /// </summary>
     public bool AttackDown { get; set; }
 
     public bool UseDown { get; set; }
 
+    /// <summary>
+    /// Bit flags, for cheats and debug.
+    /// </summary>
     public CheatFlags Cheats { get; set; }
 
+    /// <summary>
+    /// Refired shots are less accurate.
+    /// </summary>
     public int Refire { get; set; }
 
+    /// <summary>
+    /// For intermission stats.
+    /// </summary>
     public int KillCount { get; set; }
 
+    /// <summary>
+    /// For intermission stats.
+    /// </summary>
     public int ItemCount { get; set; }
 
+    /// <summary>
+    /// For intermission stats.
+    /// </summary>
     public int SecretCount { get; set; }
 
+    /// <summary>
+    /// Hint messages.
+    /// </summary>
     public string? Message { get; set; }
 
+    /// <summary>
+    /// Hint message time to live.
+    /// </summary>
     public int MessageTime { get; set; }
 
+    /// <summary>
+    /// For screen flashing (red).
+    /// </summary>
     public int DamageCount { get; set; }
 
+    /// <summary>
+    /// For screen flashing (bright).
+    /// </summary>
     public int BonusCount { get; set; }
 
+    /// <summary>
+    /// Who did damage (null for floors / ceilings)
+    /// </summary>
     public Mobj? Attacker { get; set; }
 
+    /// <summary>
+    /// So gun flashes light up areas.
+    /// </summary>
     public int ExtraLight { get; set; }
 
+    /// <summary>
+    /// Current PLAYPAL, ???
+    /// can be set to REDCOLORMAP for pain, etc.
+    /// </summary>
     public int FixedColorMap { get; set; }
 
+    /// <summary>
+    /// Player skin colorshift,
+    /// 0-3 for which color to draw player.
+    /// </summary>
     public int ColorMap { get; set; }
 
+    /// <summary>
+    /// Overlay view sprites (gun, etc).
+    /// </summary>
     public PlayerSpriteDef[] PlayerSprites { get; }
 
+    /// <summary>
+    /// True if secret level has been done.
+    /// </summary>
     public bool DidSecret { get; set; }
 
     public void Clear()
