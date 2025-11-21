@@ -244,15 +244,39 @@ public sealed class DrawScreen
 
     public void FillRect(int x, int y, int w, int h, int color)
     {
+        var colorByte = (byte)color;
         var x2 = x + w;
 
-        for (var drawX = x; drawX < x2; drawX++)
+        if (Vector.IsHardwareAccelerated && h >= Vector<byte>.Count)
         {
-            var pos = Height * drawX + y;
-            for (var i = 0; i < h; i++)
+            f = 0;
+            var colorVector = new Vector<byte>(colorByte);
+
+            for (var drawX = x; drawX < x2; drawX++)
             {
-                Data[pos] = (byte)color;
-                pos++;
+                var pos = Height * drawX + y;
+                var remaining = h;
+
+                while (remaining >= Vector<byte>.Count)
+                {
+                    colorVector.CopyTo(Data.AsSpan(pos, Vector<byte>.Count));
+                    pos += Vector<byte>.Count;
+                    remaining -= Vector<byte>.Count;
+                }
+
+                // Handle remaining bytes
+                for (var i = 0; i < remaining; i++)
+                    Data[pos++] = colorByte;
+            }
+        }
+        else
+        {
+            // Fallback to non-simd implementation
+            var data = Data.AsSpan();
+            for (var drawX = x; drawX < x2; drawX++)
+            {
+                var pos = Height * drawX + y;
+                data.Slice(pos, h).Fill(colorByte);
             }
         }
     }
