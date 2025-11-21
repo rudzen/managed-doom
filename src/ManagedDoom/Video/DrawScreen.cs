@@ -15,8 +15,10 @@
 //
 
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
@@ -117,6 +119,8 @@ public sealed class DrawScreen
     private void DrawColumn(ReadOnlySpan<Column> source, int x, int y, int scale)
     {
         var step = Fixed.One / scale;
+        var xHeight = Height * x;
+        var data = Data.AsSpan();
 
         foreach (var (topDelta, bytes, sourceIndex, length) in source)
         {
@@ -127,7 +131,7 @@ public sealed class DrawScreen
             var drawLength = exLength;
 
             var i = 0;
-            var p = Height * x + drawY;
+            var p = xHeight + drawY;
             var frac = Fixed.One / scale - Fixed.Epsilon;
 
             if (drawY < 0)
@@ -146,7 +150,7 @@ public sealed class DrawScreen
 
             for (; i < drawLength; i++)
             {
-                Data[p] = bytes[sourceIndex + frac.ToIntFloor()];
+                data[p] = bytes[sourceIndex + frac.ToIntFloor()];
                 p++;
                 frac += step;
             }
@@ -163,12 +167,12 @@ public sealed class DrawScreen
         if (ch == 32)
             return;
 
-        var index = (int)ch;
-        if (index is >= 'a' and <= 'z')
-            index = index - 'a' + 'A';
+        var index = char.IsBetween(ch, 'a', 'z')
+            ? ch - 'a' + 'A'
+            : ch;
 
         var patch = chars[index];
-        if (patch == null)
+        if (patch is null)
             return;
 
         DrawPatch(patch, x, drawY, scale);
@@ -189,12 +193,12 @@ public sealed class DrawScreen
                 continue;
             }
 
-            var index = (int)ch;
-            if (index is >= 'a' and <= 'z')
-                index = index - 'a' + 'A';
+            var index = char.IsBetween(ch, 'a', 'z')
+                ? ch - 'a' + 'A'
+                : ch;
 
             var patch = chars[index];
-            if (patch == null)
+            if (patch is null)
                 continue;
 
             DrawPatch(patch, drawX, drawY, scale);
@@ -236,7 +240,7 @@ public sealed class DrawScreen
             index = index - 'a' + 'A';
 
         var patch = chars[index];
-        if (patch == null)
+        if (patch is null)
             return 0;
 
         return scale * patch.Width;
@@ -249,7 +253,6 @@ public sealed class DrawScreen
 
         if (Vector.IsHardwareAccelerated && h >= Vector<byte>.Count)
         {
-            f = 0;
             var colorVector = new Vector<byte>(colorByte);
 
             for (var drawX = x; drawX < x2; drawX++)
@@ -377,13 +380,18 @@ public sealed class DrawScreen
         var x = x1;
         var y = y1;
 
+        var byteColor = (byte)color;
+        var dataSpan = Data.AsSpan();
+        ref var dataRef = ref MemoryMarshal.GetReference(dataSpan);
+
         if (ax > ay)
         {
             var d = ay - ax / 2;
 
             while (true)
             {
-                Data[Height * x + y] = (byte)color;
+                ref var data = ref Unsafe.Add(ref dataRef, Height * x + y);
+                data = byteColor;
 
                 if (x == x2)
                     return;
@@ -403,7 +411,8 @@ public sealed class DrawScreen
             var d = ax - ay / 2;
             while (true)
             {
-                Data[Height * x + y] = (byte)color;
+                ref var data = ref Unsafe.Add(ref dataRef, Height * x + y);
+                data = byteColor;
 
                 if (y == y2)
                     return;
