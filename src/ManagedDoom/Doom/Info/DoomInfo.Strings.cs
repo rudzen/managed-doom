@@ -14,10 +14,12 @@
 // GNU General Public License for more details.
 //
 
+using System.Diagnostics.CodeAnalysis;
 using ManagedDoom.Doom.Common;
 
 namespace ManagedDoom.Doom.Info;
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static partial class DoomInfo
 {
     public static class Strings

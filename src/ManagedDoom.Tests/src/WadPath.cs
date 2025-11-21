@@ -16,7 +16,7 @@ public sealed class WadPath
     private const string TntBlood = "TNTBLOOD.WAD";
     private const string MementoMori = "MM.WAD";
 
-    private readonly Dictionary<WadFile, string> wadFiles = new();
+    private readonly Dictionary<WadFile, string> wadFiles = [];
 
     public WadPath()
     {

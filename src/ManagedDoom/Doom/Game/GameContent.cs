@@ -47,7 +47,7 @@ public sealed class GameContent
         Animation = new TextureAnimation(Textures, Flats);
     }
 
-    public Wad.Wad Wad { get; private set; }
+    public Wad.Wad Wad { get; }
 
     public Palette Palette { get; }
 

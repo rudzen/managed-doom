@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -51,6 +52,11 @@ public sealed class DoomString
     public static implicit operator string(DoomString ds)
     {
         return ds.replaced;
+    }
+
+    public static implicit operator ReadOnlySpan<char>(DoomString ds)
+    {
+        return ds.replaced.AsSpan();
     }
 
     public static void ReplaceByValue(string original, string replaced)
