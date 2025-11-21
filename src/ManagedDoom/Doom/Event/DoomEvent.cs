@@ -18,4 +18,13 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Event;
 
+
+public enum EventType : byte
+{
+    KeyDown,
+    KeyUp,
+    Mouse,
+    Joystick
+}
+
 public readonly record struct DoomEvent(EventType Type, DoomKey Key);

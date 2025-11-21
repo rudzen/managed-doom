@@ -14,7 +14,56 @@
 // GNU General Public License for more details.
 //
 
+using ManagedDoom.Doom.Math;
+
 namespace ManagedDoom.Doom.Game;
+
+public static class GameConst
+{
+    public const int TicRate = 35;
+
+    public static readonly Fixed MaxThingRadius = Fixed.FromInt(32);
+
+    public const int TurboThreshold = 0x32;
+}
+
+public enum MissionPack : byte
+{
+    Doom2,
+    Plutonia,
+    Tnt
+}
+
+public enum GameVersion
+{
+    Version109,
+    Ultimate,
+    Final,
+    Final2
+}
+
+public enum UpdateResult
+{
+    None,
+    Completed,
+    NeedWipe
+}
+
+public enum GameState : byte
+{
+    Level,
+    Intermission,
+    Finale
+}
+
+public enum GameSkill : byte
+{
+    Baby,
+    Easy,
+    Medium,
+    Hard,
+    Nightmare
+}
 
 public enum GameMode
 {
