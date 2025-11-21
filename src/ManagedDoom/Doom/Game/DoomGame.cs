@@ -16,6 +16,8 @@
 
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Info;
@@ -124,9 +126,12 @@ public sealed class DoomGame
     {
         // Do player reborns if needed.
         var players = Options.Players.AsSpan();
+        ref var playersRef = ref MemoryMarshal.GetReference(players);
+
         for (var i = 0; i < players.Length; i++)
         {
-            if (players[i].InGame && players[i].PlayerState == PlayerState.Reborn)
+            ref var player = ref Unsafe.Add(ref playersRef, i);
+            if (player is { InGame: true, PlayerState: PlayerState.Reborn })
                 DoReborn(i);
         }
 
@@ -163,17 +168,18 @@ public sealed class DoomGame
 
         for (var i = 0; i < players.Length; i++)
         {
-            if (!players[i].InGame)
+            ref var player = ref Unsafe.Add(ref playersRef, i);
+
+            if (!player.InGame)
                 continue;
 
-            ref var c = ref players[i];
-            var cmd = players[i].Command;
+            var cmd = player.Command;
             cmd.CopyFrom(cmds[i]);
 
             /*
                 if (demorecording)
                 {
-                    G_WriteDemoTiccmd(command);
+                    G_WriteDemoTiccmd(cmd);
                 }
                 */
 
@@ -182,14 +188,15 @@ public sealed class DoomGame
                 (World.LevelTime & 31) == 0 &&
                 ((World.LevelTime >> 5) & 3) == i)
             {
-                var player = players[Options.ConsolePlayer];
-                player.SendMessage($"{players[i].Name} is turbo!");
+                ref var consolePlayer = ref Unsafe.Add(ref playersRef, Options.ConsolePlayer);
+                consolePlayer.SendMessage($"{player.Name} is turbo!");
             }
         }
 
         // Check for special buttons.
-        foreach (var player in players)
+        for (var i = 0; i < players.Length; i++)
         {
+            ref var player = ref Unsafe.Add(ref playersRef, i);
             if (!player.InGame)
                 continue;
 
@@ -215,21 +222,17 @@ public sealed class DoomGame
                 {
                     result = World.Update();
                     if (result == UpdateResult.Completed)
-                    {
                         gameAction = GameAction.Completed;
-                    }
                 }
 
                 break;
 
             case GameState.Intermission:
-                result = Intermission.Update();
+                result = Intermission!.Update();
                 if (result == UpdateResult.Completed)
                 {
                     gameAction = GameAction.WorldDone;
-
-                    if (World.SecretExit)
-                        players[Options.ConsolePlayer].DidSecret = true;
+                    Unsafe.Add(ref playersRef, Options.ConsolePlayer).DidSecret = World.SecretExit;
 
                     if (Options.GameMode == GameMode.Commercial)
                     {
@@ -268,10 +271,7 @@ public sealed class DoomGame
 
         GameTic++;
 
-        if (result == UpdateResult.NeedWipe)
-            return UpdateResult.NeedWipe;
-
-        return UpdateResult.None;
+        return result == UpdateResult.NeedWipe ? UpdateResult.NeedWipe : UpdateResult.None;
     }
 
 
@@ -295,8 +295,11 @@ public sealed class DoomGame
         State = GameState.Level;
 
         var players = Options.Players.AsSpan();
-        foreach (var player in players)
+        ref var playersRef = ref MemoryMarshal.GetReference(players);
+
+        for (var i = 0; i < players.Length; i++)
         {
+            ref var player = ref Unsafe.Add(ref playersRef, i);
             if (player is { InGame: true, PlayerState: PlayerState.Dead })
                 player.PlayerState = PlayerState.Reborn;
 
@@ -324,7 +327,8 @@ public sealed class DoomGame
         gameAction = GameAction.Nothing;
 
         var directory = ConfigUtilities.GetExeDirectory;
-        var path = Path.Combine(directory, $"doomsav{loadGameSlotNumber}.dsg");
+        var file = $"doomsav{loadGameSlotNumber}.dsg";
+        var path = Path.Combine(directory, file);
         SaveAndLoad.Load(this, path);
     }
 
@@ -333,7 +337,8 @@ public sealed class DoomGame
         gameAction = GameAction.Nothing;
 
         var directory = ConfigUtilities.GetExeDirectory;
-        var path = Path.Combine(directory, $"doomsav{saveGameSlotNumber}.dsg");
+        var file = $"doomsav{saveGameSlotNumber}.dsg";
+        var path = Path.Combine(directory, file);
         SaveAndLoad.Save(this, saveGameDescription!, path);
         World.ConsolePlayer.SendMessage(DoomInfo.Strings.GGSAVED);
     }
@@ -343,8 +348,11 @@ public sealed class DoomGame
         gameAction = GameAction.Nothing;
 
         var players = Options.Players.AsSpan();
-        foreach (var player in players)
+        ref var playersRef = ref MemoryMarshal.GetReference(players);
+
+        for (var i = 0; i < players.Length; i++)
         {
+            ref var player = ref Unsafe.Add(ref playersRef, i);
             // Take away cards and stuff.
             if (player.InGame)
                 player.FinishLevel();
@@ -358,25 +366,11 @@ public sealed class DoomGame
                     gameAction = GameAction.Victory;
                     return;
                 case 9:
-                    foreach (var player in players)
-                        player.DidSecret = true;
+                    for (var i = 0; i < players.Length; i++)
+                        Unsafe.Add(ref playersRef, i).DidSecret = true;
 
                     break;
             }
-        }
-
-        if (Options.Map == 8 && Options.GameMode != GameMode.Commercial)
-        {
-            // Victory.
-            gameAction = GameAction.Victory;
-            return;
-        }
-
-        if (Options.Map == 9 && Options.GameMode != GameMode.Commercial)
-        {
-            // Exit secret level.
-            foreach (var player in players)
-                player.DidSecret = true;
         }
 
         var imInfo = Options.IntermissionInfo;
@@ -390,80 +384,67 @@ public sealed class DoomGame
         {
             if (World.SecretExit)
             {
-                switch (Options.Map)
+                imInfo.NextLevel = Options.Map switch
                 {
-                    case 15:
-                        imInfo.NextLevel = 30;
-                        break;
-                    case 31:
-                        imInfo.NextLevel = 31;
-                        break;
-                }
+                    15 => 30,
+                    31 => 31,
+                    _  => imInfo.NextLevel
+                };
             }
             else
             {
-                switch (Options.Map)
+                imInfo.NextLevel = Options.Map switch
                 {
-                    case 31:
-                    case 32:
-                        imInfo.NextLevel = 15;
-                        break;
-                    default:
-                        imInfo.NextLevel = Options.Map;
-                        break;
-                }
+                    31 or 32 => 15,
+                    _        => Options.Map
+                };
             }
         }
         else
         {
+            // Go to secret level.
             if (World.SecretExit)
-            {
-                // Go to secret level.
                 imInfo.NextLevel = 8;
-            }
+            // Returning from secret level.
             else if (Options.Map == 9)
             {
-                // Returning from secret level.
-                switch (Options.Episode)
+                imInfo.NextLevel = Options.Episode switch
                 {
-                    case 1:
-                        imInfo.NextLevel = 3;
-                        break;
-                    case 2:
-                        imInfo.NextLevel = 5;
-                        break;
-                    case 3:
-                        imInfo.NextLevel = 6;
-                        break;
-                    case 4:
-                        imInfo.NextLevel = 2;
-                        break;
-                }
+                    1 => 3,
+                    2 => 5,
+                    3 => 6,
+                    4 => 2,
+                    _ => imInfo.NextLevel
+                };
             }
+            // Go to next level.
             else
-            {
-                // Go to next level.
                 imInfo.NextLevel = Options.Map;
-            }
         }
 
         imInfo.MaxKillCount = World.TotalKills;
         imInfo.MaxItemCount = World.TotalItems;
         imInfo.MaxSecretCount = World.TotalSecrets;
         imInfo.TotalFrags = 0;
-        if (Options.GameMode == GameMode.Commercial)
-            imInfo.ParTime = 35 * DoomInfo.ParTimes.Doom2[Options.Map - 1];
-        else
-            imInfo.ParTime = 35 * DoomInfo.ParTimes.Doom1[Options.Episode - 1][Options.Map - 1];
+
+        var parTime = Options.GameMode == GameMode.Commercial
+            ? 35 * DoomInfo.ParTimes.Doom2[Options.Map - 1]
+            : 35 * DoomInfo.ParTimes.Doom1[Options.Episode - 1][Options.Map - 1];
+        imInfo.ParTime = parTime;
+
+        var playerScores = imInfo.PlayerScores.AsSpan();
+        ref var playerScoreRef = ref MemoryMarshal.GetReference(playerScores);
 
         for (var i = 0; i < players.Length; i++)
         {
-            imInfo.PlayerScores[i].InGame = players[i].InGame;
-            imInfo.PlayerScores[i].KillCount = players[i].KillCount;
-            imInfo.PlayerScores[i].ItemCount = players[i].ItemCount;
-            imInfo.PlayerScores[i].SecretCount = players[i].SecretCount;
-            imInfo.PlayerScores[i].Time = World.LevelTime;
-            players[i].Frags.AsSpan().CopyTo(imInfo.PlayerScores[i].Frags);
+            ref var player = ref Unsafe.Add(ref playersRef, i);
+            ref var playerScore = ref Unsafe.Add(ref playerScoreRef, i);
+            playerScore.InGame = player.InGame;
+            playerScore.KillCount = player.KillCount;
+            playerScore.ItemCount = player.ItemCount;
+            playerScore.SecretCount = player.SecretCount;
+            playerScore.Time = World.LevelTime;
+            player.Frags.AsSpan().CopyTo(playerScore.Frags);
         }
 
         State = GameState.Intermission;
@@ -527,11 +508,9 @@ public sealed class DoomGame
 
     private void DoReborn(int playerNumber)
     {
+        // Reload the level from scratch.
         if (!Options.NetGame)
-        {
-            // Reload the level from scratch.
             gameAction = GameAction.LoadLevel;
-        }
         else
         {
             // Respawn at the start.
