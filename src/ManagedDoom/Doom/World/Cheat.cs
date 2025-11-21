@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using ManagedDoom.Audio;
+using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
@@ -53,14 +54,14 @@ public sealed class Cheat(World world)
 
     public bool DoEvent(DoomEvent e)
     {
-        if (e.Type == EventType.KeyDown)
-        {
-            buffer[p] = e.Key.GetChar();
+        if (e.Type != EventType.KeyDown)
+            return true;
 
-            p = (p + 1) % buffer.Length;
+        buffer[p] = e.Key.GetChar();
 
-            CheckBuffer();
-        }
+        p = (p + 1) % buffer.Length;
+
+        CheckBuffer();
 
         return true;
     }
@@ -68,6 +69,7 @@ public sealed class Cheat(World world)
     private void CheckBuffer()
     {
         var listSpan = list.AsSpan();
+        Span<char> typed = stackalloc char[maxCodeLength];
         foreach (var cheatInfo in listSpan)
         {
             var code = cheatInfo.Code.AsSpan();
@@ -84,24 +86,23 @@ public sealed class Cheat(World world)
                     break;
             }
 
-            if (j == code.Length)
+            if (j != code.Length) continue;
+
+            typed.Clear();
+            var k = code.Length;
+            q = p;
+            for (j = 0; j < code.Length; j++)
             {
-                var typed = new char[code.Length];
-                var k = code.Length;
-                q = p;
-                for (j = 0; j < code.Length; j++)
-                {
-                    k--;
-                    q--;
-                    if (q == -1)
-                        q = buffer.Length - 1;
+                k--;
+                q--;
+                if (q == -1)
+                    q = buffer.Length - 1;
 
-                    typed[k] = buffer[q];
-                }
-
-                if (world.Options.Skill != GameSkill.Nightmare || cheatInfo.AvailableOnNightmare)
-                    cheatInfo.Action(this, new string(typed));
+                typed[k] = buffer[q];
             }
+
+            if (world.Options.Skill != GameSkill.Nightmare || cheatInfo.AvailableOnNightmare)
+                cheatInfo.Action(this, new string(typed));
         }
     }
 
@@ -109,9 +110,7 @@ public sealed class Cheat(World world)
     {
         var player = world.ConsolePlayer;
         if (world.Options.GameMode == GameMode.Commercial)
-        {
             player.WeaponOwned = WeaponTypes.All;
-        }
         else
         {
             var weapons = WeaponTypes.Shareware | WeaponTypes.Chainsaw;
@@ -134,22 +133,23 @@ public sealed class Cheat(World world)
 
     private void FullAmmo()
     {
-        GiveWeapons();
         var player = world.ConsolePlayer;
-        player.ArmorType = DoomInfo.DeHackEdConst.IdfaArmorClass;
-        player.ArmorPoints = DoomInfo.DeHackEdConst.IdfaArmor;
-        player.SendMessage(DoomInfo.Strings.STSTR_FAADDED);
+        GiveStuff(player, player.Cards, DoomInfo.Strings.STSTR_FAADDED);
     }
 
     private void FullAmmoAndKeys()
     {
-        GiveWeapons();
         var player = world.ConsolePlayer;
+        GiveStuff(player, CardType.All, DoomInfo.Strings.STSTR_FAADDED);
+    }
+
+    private void GiveStuff(Player player, CardType cardType, DoomString message)
+    {
+        GiveWeapons();
         player.ArmorType = DoomInfo.DeHackEdConst.IdkfaArmorClass;
         player.ArmorPoints = DoomInfo.DeHackEdConst.IdkfaArmor;
-        player.Cards = CardType.All;
-
-        player.SendMessage(DoomInfo.Strings.STSTR_KFAADDED);
+        player.Cards = cardType;
+        player.SendMessage(message);
     }
 
     private void GodMode()
@@ -321,9 +321,10 @@ public sealed class Cheat(World world)
 
     private void ChangeLevel(string typed)
     {
+        var typedSpan = typed.AsSpan();
         if (world.Options.GameMode == GameMode.Commercial)
         {
-            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 2), out var map))
+            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 2), out var map))
                 return;
 
             var skill = world.Options.Skill;
@@ -331,10 +332,10 @@ public sealed class Cheat(World world)
         }
         else
         {
-            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 1), out var episode))
+            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 1), out var episode))
                 return;
 
-            if (!int.TryParse(typed.AsSpan(typed.Length - 1, 1), out var map))
+            if (!int.TryParse(typedSpan.Slice(typed.Length - 1, 1), out var map))
                 return;
 
             var skill = world.Options.Skill;
@@ -344,21 +345,22 @@ public sealed class Cheat(World world)
 
     private void ChangeMusic(string typed)
     {
+        var typedSpan = typed.AsSpan();
         var options = GameOptions.CreateDefault();
         options.GameMode = world.Options.GameMode;
         if (world.Options.GameMode == GameMode.Commercial)
         {
-            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 2), out var map))
+            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 2), out var map))
                 return;
 
             options.Map = map;
         }
         else
         {
-            if (!int.TryParse(typed.AsSpan(typed.Length - 2, 1), out var episode))
+            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 1), out var episode))
                 return;
 
-            if (!int.TryParse(typed.AsSpan(typed.Length - 1, 1), out var map))
+            if (!int.TryParse(typedSpan.Slice(typed.Length - 1, 1), out var map))
                 return;
 
             options.Episode = episode;
