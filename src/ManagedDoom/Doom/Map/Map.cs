@@ -28,23 +28,24 @@ using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Doom.Map;
 
-public sealed class Map
+public sealed record Map(
+    ITextureLookup Textures,
+    IFlatLookup Flats,
+    TextureAnimation Animation,
+    Vertex[] Vertices,
+    Sector[] Sectors,
+    LineDef[] Lines,
+    Seg[] Segs,
+    Subsector[] Subsectors,
+    Node[] Nodes,
+    MapThing[] Things,
+    BlockMap BlockMap,
+    Reject Reject,
+    Texture SkyTexture,
+    string Title
+)
 {
-    public ITextureLookup Textures { get; init; }
-    public IFlatLookup Flats { get; init; }
-    public TextureAnimation Animation { get; init; }
-    public Vertex[] Vertices { get; init; }
-    public Sector[] Sectors { get; init; }
-    public LineDef[] Lines { get; init; }
-    public Seg[] Segs { get; init; }
-    public Subsector[] Subsectors { get; init; }
-    public Node[] Nodes { get; init; }
-    public MapThing[] Things { get; init; }
-    public BlockMap BlockMap { get; init; }
-    public Reject Reject { get; init; }
-    public Texture SkyTexture { get; init; }
     public int SkyFlatNumber => Flats.SkyFlatNumber;
-    public string Title { get; init; }
 }
 
 public static class MapExtensions
@@ -95,23 +96,22 @@ public static class MapExtensions
             var end = Stopwatch.GetElapsedTime(start);
             Console.WriteLine($"OK [{end}]");
 
-            return new Map
-            {
-                Textures = textures,
-                Flats = flats,
-                Animation = animation,
-                Vertices = vertices,
-                Sectors = sectors,
-                Lines = lines,
-                Segs = segs,
-                Subsectors = subSectors,
-                Nodes = nodes,
-                Things = things,
-                BlockMap = blockMap,
-                Reject = reject,
-                SkyTexture = skyTexture,
-                Title = title
-            };
+            return new Map(
+                Textures: textures,
+                Flats: flats,
+                Animation: animation,
+                Vertices: vertices,
+                Sectors: sectors,
+                Lines: lines,
+                Segs: segs,
+                Subsectors: subSectors,
+                Nodes: nodes,
+                Things: things,
+                BlockMap: blockMap,
+                Reject: reject,
+                SkyTexture: skyTexture,
+                Title: title
+            );
         }
         catch (Exception e)
         {
