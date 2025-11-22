@@ -154,7 +154,8 @@ public static class SoundExtensions
 
             sound.lastUpdate = 0;
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {

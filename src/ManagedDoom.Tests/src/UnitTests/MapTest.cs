@@ -16,7 +16,7 @@ public sealed class MapTest(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wadFile);
         var options = GameOptions.CreateDefault();
         var world = new World(content, options, null);
-        var map = new Map(content, world);
+        var map = MapExtensions.Create(content, world);
 
         var mapMinX = map.Lines.Min(line => Fixed.Min(line.Vertex1.X, line.Vertex2.X).ToDouble());
         var mapMaxX = map.Lines.Max(line => Fixed.Max(line.Vertex1.X, line.Vertex2.X).ToDouble());
@@ -62,7 +62,7 @@ public sealed class MapTest(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wadFile);
         var options = GameOptions.CreateDefault();
         var world = new World(content, options, null);
-        var map = new Map(content, world);
+        var map = MapExtensions.Create(content, world);
 
         var mapMinX = map.Lines.Min(line => Fixed.Min(line.Vertex1.X, line.Vertex2.X).ToDouble());
         var mapMaxX = map.Lines.Max(line => Fixed.Max(line.Vertex1.X, line.Vertex2.X).ToDouble());

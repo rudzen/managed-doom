@@ -21,6 +21,7 @@ using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
 using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.World;
@@ -367,7 +368,7 @@ public sealed class Cheat(World world)
             options.Map = map;
         }
 
-        world.Options.Music.StartMusic(Map.Map.GetMapBgm(options), PlayMode.Loop);
+        world.Options.Music.StartMusic(MapExtensions.GetMapBgm(options), PlayMode.Loop);
         world.ConsolePlayer.SendMessage(DoomInfo.Strings.STSTR_MUS);
     }
 }

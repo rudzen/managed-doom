@@ -77,7 +77,7 @@ public sealed class Wad
     {
         names.Add(Path.GetFileNameWithoutExtension(fileName));
 
-        var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+        using var stream = File.OpenRead(fileName);
 
         var wadHeader = ReadWadHeader(stream);
 

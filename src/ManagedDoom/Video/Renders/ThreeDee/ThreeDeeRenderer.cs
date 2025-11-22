@@ -233,11 +233,10 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
     private bool IsPotentiallyVisible(Fixed[] bbox)
     {
-        int bx;
-        int by;
 
         // Find the corners of the box that define the edges from
         // current viewpoint.
+        int bx;
         if (viewX <= bbox[Box.Left])
             bx = 0;
         else if (viewX < bbox[Box.Right])
@@ -245,6 +244,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         else
             bx = 2;
 
+        int by;
         if (viewY >= bbox[Box.Top])
             by = 0;
         else if (viewY > bbox[Box.Bottom])
@@ -256,10 +256,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         if (viewPos == 5)
             return true;
 
-        var x1 = bbox[viewPosToFrustumTangent[viewPos][0]];
-        var y1 = bbox[viewPosToFrustumTangent[viewPos][1]];
-        var x2 = bbox[viewPosToFrustumTangent[viewPos][2]];
-        var y2 = bbox[viewPosToFrustumTangent[viewPos][3]];
+        var frustumTangent = viewPosToFrustumTangent[viewPos];
+        var x1 = bbox[frustumTangent[0]];
+        var y1 = bbox[frustumTangent[1]];
+        var x2 = bbox[frustumTangent[2]];
+        var y2 = bbox[frustumTangent[3]];
 
         // Check clip list for an open space.
         var angle1 = Geometry.PointToAngle(viewX, viewY, x1, y1) - viewAngle;

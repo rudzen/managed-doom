@@ -20,6 +20,7 @@ using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Silk;
 using ManagedDoom.UserInput;
@@ -47,7 +48,7 @@ public sealed class World
         this.Random = options.Random;
         this.ConsolePlayer = options.Players[Options.ConsolePlayer];
 
-        Map = new Map.Map(resources, this);
+        Map = MapExtensions.Create(resources, this);
 
         Thinkers = new Thinkers();
         Specials = new Specials(this);
@@ -110,7 +111,7 @@ public sealed class World
 
         dummy = new Mobj(this);
 
-        options.Music.StartMusic(ManagedDoom.Doom.Map.Map.GetMapBgm(options), PlayMode.Loop);
+        options.Music.StartMusic(MapExtensions.GetMapBgm(options), PlayMode.Loop);
     }
 
     public GameOptions Options { get; }

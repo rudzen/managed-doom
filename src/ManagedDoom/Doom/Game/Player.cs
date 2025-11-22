@@ -377,11 +377,9 @@ public sealed class Player
 
     public void SendMessage(string message)
     {
-        if (ReferenceEquals(this.Message, (string)DoomInfo.Strings.MSGOFF) &&
-            !ReferenceEquals(message, (string)DoomInfo.Strings.MSGON))
-        {
+        if (ReferenceEquals(this.Message, (string)DoomInfo.Strings.MSGOFF)
+            && !ReferenceEquals(message, (string)DoomInfo.Strings.MSGON))
             return;
-        }
 
         this.Message = message;
         MessageTime = 4 * GameConst.TicRate;

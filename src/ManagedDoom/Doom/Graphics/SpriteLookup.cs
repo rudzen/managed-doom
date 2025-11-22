@@ -122,7 +122,8 @@ public sealed class SpriteLookup : ISpriteLookup
                 spriteDefs[i] = new SpriteDef(frames);
             }
 
-            Console.WriteLine($"OK ({cache.Count} sprites) [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK ({cache.Count} sprites) [{end}]");
         }
         catch (Exception e)
         {
@@ -165,7 +166,7 @@ public sealed class SpriteLookup : ISpriteLookup
     private static Patch CachedRead(int lump, Wad.Wad wad, Dictionary<int, Patch> cache)
     {
         ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, lump, out var exists);
-        if (exists) return value;
+        if (exists) return value!;
         var name = wad.LumpInfos[lump].Name;
         return value = Patch.FromData(name, wad.ReadLump(lump));
     }

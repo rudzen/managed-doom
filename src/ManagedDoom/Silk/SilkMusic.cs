@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using DrippyAL;
 using MeltySynth;
@@ -49,7 +50,8 @@ public sealed class SilkMusic : IMusic
             stream = new MusStream(this, config, device, sfPath);
             current = Bgm.NONE;
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {
@@ -154,6 +156,7 @@ public sealed class SilkMusic : IMusic
                 audioStream.Play(OnGetData);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void OnGetData(short[] samples)
         {
             if (reserved != current)
@@ -171,9 +174,9 @@ public sealed class SilkMusic : IMusic
             for (var t = 0; t < blockLength; t++)
             {
                 var sampleLeft = (int)(a * left[t]);
-                sampleLeft = Math.Clamp(sampleLeft, short.MinValue, short.MaxValue);
-
                 var sampleRight = (int)(a * right[t]);
+
+                sampleLeft = Math.Clamp(sampleLeft, short.MinValue, short.MaxValue);
                 sampleRight = Math.Clamp(sampleRight, short.MinValue, short.MaxValue);
 
                 samples[pos++] = (short)sampleLeft;
@@ -217,7 +220,6 @@ public sealed class SilkMusic : IMusic
         private readonly int scoreStart;
         private int channelCount;
         private int channelCount2;
-        private readonly int instrumentCount;
         private readonly int[] instruments;
 
         private readonly MusEvent[] events;
@@ -240,7 +242,7 @@ public sealed class SilkMusic : IMusic
             scoreStart = BitConverter.ToUInt16(data.Slice(6, 2));
             channelCount = BitConverter.ToUInt16(data.Slice(8, 2));
             channelCount2 = BitConverter.ToUInt16(data.Slice(10, 2));
-            instrumentCount = BitConverter.ToUInt16(data.Slice(12, 2));
+            var instrumentCount = BitConverter.ToUInt16(data.Slice(12, 2));
             instruments = new int[instrumentCount];
             for (var i = 0; i < instruments.Length; i++)
                 instruments[i] = BitConverter.ToUInt16(data.Slice(16 + 2 * i, 2));

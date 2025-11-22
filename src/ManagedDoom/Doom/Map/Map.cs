@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Game;
@@ -29,23 +30,35 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class Map
 {
-    private readonly World.World world;
+    public ITextureLookup Textures { get; init; }
+    public IFlatLookup Flats { get; init; }
+    public TextureAnimation Animation { get; init; }
+    public Vertex[] Vertices { get; init; }
+    public Sector[] Sectors { get; init; }
+    public LineDef[] Lines { get; init; }
+    public Seg[] Segs { get; init; }
+    public Subsector[] Subsectors { get; init; }
+    public Node[] Nodes { get; init; }
+    public MapThing[] Things { get; init; }
+    public BlockMap BlockMap { get; init; }
+    public Reject Reject { get; init; }
+    public Texture SkyTexture { get; init; }
+    public int SkyFlatNumber => Flats.SkyFlatNumber;
+    public string Title { get; init; }
+}
 
-    public Map(GameContent resources, World.World world)
-        : this(resources.Wad, resources.Textures, resources.Flats, resources.Animation, world)
+public static class MapExtensions
+{
+    public static Map Create(GameContent resources, World.World world)
     {
+        return Create(resources.Wad, resources.Textures, resources.Flats, resources.Animation, world);
     }
 
-    private Map(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World.World world)
+    private static Map Create(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World.World world)
     {
         try
         {
             var start = Stopwatch.GetTimestamp();
-
-            this.Textures = textures;
-            this.Flats = flats;
-            this.Animation = animation;
-            this.world = world;
 
             var options = world.Options;
 
@@ -60,57 +73,62 @@ public sealed class Map
             if (map == -1)
                 throw new Exception($"Map '{name}' was not found!");
 
-            Vertices = Vertex.FromWad(wad, map + 4);
-            Sectors = Sector.FromWad(wad, map + 8, flats);
-            var sides = SideDef.FromWad(wad, map + 3, textures, Sectors);
-            Lines = LineDef.FromWad(wad, map + 2, Vertices, sides);
-            Segs = Seg.FromWad(wad, map + 5, Vertices, Lines);
-            Subsectors = Subsector.FromWad(wad, map + 6, Segs);
-            Nodes = Node.FromWad(wad, map + 7);
-            Things = MapThing.FromWad(wad, map + 1);
-            BlockMap = BlockMap.FromWad(wad, map + 10, Lines);
-            Reject = Reject.FromWad(wad, map + 9, Sectors);
+            var vertices = Vertex.FromWad(wad, map + 4);
+            var sectors = Sector.FromWad(wad, map + 8, flats);
+            var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
+            var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
+            var segs = Seg.FromWad(wad, map + 5, vertices, lines);
+            var subSectors = Subsector.FromWad(wad, map + 6, segs);
+            var nodes = Node.FromWad(wad, map + 7);
+            var things = MapThing.FromWad(wad, map + 1);
+            var blockMap = BlockMap.FromWad(wad, map + 10, lines);
+            var reject = Reject.FromWad(wad, map + 9, sectors);
 
-            GroupLines();
+            GroupLines(world, lines.AsSpan(), sectors.AsSpan(), blockMap);
 
-            SkyTexture = GetSkyTextureByMapName(name);
+            var skyTexture = GetSkyTextureByMapName(name, textures);
 
-            Title = options.GameMode == GameMode.Commercial
+            var title = options.GameMode == GameMode.Commercial
                 ? DoomInfo.MapTitles.GetMapTitle(options.MissionPack, options.Map - 1)
                 : DoomInfo.MapTitles.GetMapTitle(options.Episode - 1, options.Map - 1);
 
             var end = Stopwatch.GetElapsedTime(start);
             Console.WriteLine($"OK [{end}]");
+
+            return new Map
+            {
+                Textures = textures,
+                Flats = flats,
+                Animation = animation,
+                Vertices = vertices,
+                Sectors = sectors,
+                Lines = lines,
+                Segs = segs,
+                Subsectors = subSectors,
+                Nodes = nodes,
+                Things = things,
+                BlockMap = blockMap,
+                Reject = reject,
+                SkyTexture = skyTexture,
+                Title = title
+            };
         }
         catch (Exception e)
         {
             Console.WriteLine("Failed");
             ExceptionDispatchInfo.Throw(e);
         }
+
+        return null!;
     }
 
-    public ITextureLookup Textures { get; }
-    public IFlatLookup Flats { get; }
-    public TextureAnimation Animation { get; }
-    public Vertex[] Vertices { get; }
-    public Sector[] Sectors { get; }
-    public LineDef[] Lines { get; }
-    public Seg[] Segs { get; }
-    public Subsector[] Subsectors { get; }
-    public Node[] Nodes { get; }
-    public MapThing[] Things { get; }
-    public BlockMap BlockMap { get; }
-    public Reject Reject { get; }
-    public Texture SkyTexture { get; }
-    public int SkyFlatNumber => Flats.SkyFlatNumber;
-    public string Title { get; }
-
-    private void GroupLines()
+    [SkipLocalsInit]
+    private static void GroupLines(World.World world, ReadOnlySpan<LineDef> lines, ReadOnlySpan<Sector> sectors, BlockMap blockMap)
     {
         var sectorLines = new List<LineDef>();
         var boundingBox = new Fixed[4];
 
-        foreach (var line in Lines)
+        foreach (var line in lines)
         {
             if (line.Special == 0) continue;
             line.SoundOrigin = new Mobj(world)
@@ -120,12 +138,12 @@ public sealed class Map
             };
         }
 
-        foreach (var sector in Sectors)
+        foreach (var sector in sectors)
         {
             sectorLines.Clear();
             boundingBox.Clear();
 
-            foreach (var line in Lines)
+            foreach (var line in lines)
             {
                 if (line.FrontSector != sector && line.BackSector != sector)
                     continue;
@@ -147,35 +165,35 @@ public sealed class Map
             sector.BlockBox = new int[4];
 
             // Adjust bounding box to map blocks.
-            var block = (boundingBox[Box.Top] - BlockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
-            block = block >= BlockMap.Height ? BlockMap.Height - 1 : block;
+            var block = (boundingBox[Box.Top] - blockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = block >= blockMap.Height ? blockMap.Height - 1 : block;
             sector.BlockBox[Box.Top] = block;
 
-            block = (boundingBox[Box.Bottom] - BlockMap.OriginY - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = (boundingBox[Box.Bottom] - blockMap.OriginY - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
             block = block < 0 ? 0 : block;
             sector.BlockBox[Box.Bottom] = block;
 
-            block = (boundingBox[Box.Right] - BlockMap.OriginX + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
-            block = block >= BlockMap.Width ? BlockMap.Width - 1 : block;
+            block = (boundingBox[Box.Right] - blockMap.OriginX + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = block >= blockMap.Width ? blockMap.Width - 1 : block;
             sector.BlockBox[Box.Right] = block;
 
-            block = (boundingBox[Box.Left] - BlockMap.OriginX - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = (boundingBox[Box.Left] - blockMap.OriginX - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
             block = block < 0 ? 0 : block;
             sector.BlockBox[Box.Left] = block;
         }
     }
 
-    private Texture GetSkyTextureByMapName(string name)
+    private static Texture GetSkyTextureByMapName(string name, ITextureLookup textures)
     {
         if (name.Length == 4)
-            return Textures[$"SKY{name[1]}"];
+            return textures[$"SKY{name[1]}"];
 
         var number = int.Parse(name[3..]);
         return number switch
         {
-            <= 11 => Textures["SKY1"],
-            <= 21 => Textures["SKY2"],
-            _     => Textures["SKY3"]
+            <= 11 => textures["SKY1"],
+            <= 21 => textures["SKY2"],
+            _     => textures["SKY3"]
         };
     }
 

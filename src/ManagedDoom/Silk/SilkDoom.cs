@@ -82,7 +82,8 @@ public sealed partial class SilkDoom
             window.Resize += OnResize;
             window.Closing += OnClose;
 
-            Console.WriteLine($"Startup time: [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"Startup time: [{end}]");
         }
         catch (Exception e)
         {

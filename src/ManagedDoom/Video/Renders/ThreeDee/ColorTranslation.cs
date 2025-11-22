@@ -43,9 +43,10 @@ public static class ColorTranslationExtensions
 
             for (var i = 0; i < ColorTranslation.TranslationChunkSize; i++)
             {
-                greenToGray[i] = (byte)i;
-                greenToBrown[i] = (byte)i;
-                greenToRed[i] = (byte)i;
+                var b = (byte)i;
+                greenToGray[i] = b;
+                greenToBrown[i] = b;
+                greenToRed[i] = b;
             }
 
             for (var i = 112; i < 128; i++)

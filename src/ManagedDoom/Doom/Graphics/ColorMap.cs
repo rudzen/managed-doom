@@ -46,7 +46,8 @@ public sealed class ColorMap
             for (var i = 0; i < data.Length; i++)
                 data[i] = lumpData.Slice(blockSize * i, blockSize).ToArray();
 
-            Console.WriteLine($"OK ({num} maps) [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK ({num} maps) [{end}]");
         }
         catch (Exception e)
         {

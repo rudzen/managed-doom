@@ -116,12 +116,12 @@ public sealed class AutoMapRenderer
         var world = player.Mobj!.World;
         var am = world.AutoMap;
 
-        actualView = new Vector2(am.ViewX.ToFloat(), am.ViewY.ToFloat());
+        actualView = Vector2.Create(am.ViewX.ToFloat(), am.ViewY.ToFloat());
         zoom = am.Zoom.ToFloat();
 
         // This hack aligns the view point to an integer coordinate
         // so that line shake is reduced when the view point moves.
-        renderView = new Vector2(
+        renderView = Vector2.Create(
             MathF.Round(zoom * ppu * actualView.X) / (zoom * ppu),
             MathF.Round(zoom * ppu * actualView.Y) / (zoom * ppu)
         );
@@ -172,10 +172,11 @@ public sealed class AutoMapRenderer
         {
             var pos = ToScreenPos(am.Marks[i]);
             screen.DrawPatch(
-                markNumbers[i],
-                (int)MathF.Round(pos.X),
-                (int)MathF.Round(pos.Y),
-                scale);
+                patch: markNumbers[i],
+                x: (int)MathF.Round(pos.X),
+                y: (int)MathF.Round(pos.Y),
+                scale: scale
+            );
         }
 
         if (am.State == AutoMapState.AllThings)
@@ -201,10 +202,11 @@ public sealed class AutoMapRenderer
         }
 
         screen.DrawText(
-            world.Map.Title,
-            0,
-            amHeight - scale,
-            scale);
+            text: world.Map.Title,
+            x: 0,
+            y: amHeight - scale,
+            scale: scale
+        );
     }
 
     private void DrawPlayers(World world)

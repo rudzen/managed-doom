@@ -31,6 +31,14 @@ using ManagedDoom.Video;
 
 namespace ManagedDoom.Doom;
 
+public enum DoomState
+{
+    None,
+    Opening,
+    DemoPlayback,
+    Game
+}
+
 public sealed class Doom
 {
     private readonly CommandLineArgs args;

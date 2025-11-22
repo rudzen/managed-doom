@@ -176,7 +176,7 @@ public sealed class Renderer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void RenderGame(DoomGame game, Fixed frameFrac, in long fps)
+    private void RenderGame(DoomGame game, Fixed frameFrac, in long fps)
     {
         if (game.Paused)
             frameFrac = Fixed.One;

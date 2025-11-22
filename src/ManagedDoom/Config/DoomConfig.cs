@@ -44,7 +44,8 @@ public sealed class DoomConfig
                 Values = JsonSerializer.Deserialize(s, ConfigValuesContext.Default.ConfigValues)!;
             }
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch
         {
@@ -63,7 +64,8 @@ public sealed class DoomConfig
             var configJson = JsonSerializer.Serialize(Values, ConfigValuesContext.Default.ConfigValues);
             File.WriteAllText(path, configJson);
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {

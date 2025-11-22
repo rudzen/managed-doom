@@ -49,7 +49,8 @@ public sealed class Palette
             for (var i = 0; i < palettes.Length; i++)
                 palettes[i] = new uint[256];
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {

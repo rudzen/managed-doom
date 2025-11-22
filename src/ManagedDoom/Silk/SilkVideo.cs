@@ -78,6 +78,9 @@ public sealed class SilkVideo : IVideo
             device.BlendingEnabled = false;
 
             Resize(window.Size.X, window.Size.Y);
+
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {
@@ -85,15 +88,13 @@ public sealed class SilkVideo : IVideo
             Dispose();
             ExceptionDispatchInfo.Throw(e);
         }
-
-        Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
     }
 
     public void Render(Doom.Doom doom, Fixed frameFrac, in long fps)
     {
         renderer.Render(doom, textureData, frameFrac, in fps);
 
-        texture!.SetData<byte>(textureData, 0, 0, (uint)renderer.Height, (uint)renderer.Width);
+        texture!.SetData(textureData, 0, 0, (uint)renderer.Height, (uint)renderer.Width);
 
         var u = (float)renderer.Height / textureWidth;
         var v = (float)renderer.Width / textureHeight;

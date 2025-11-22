@@ -69,7 +69,8 @@ public sealed class TextureAnimation
 
             Animations = [.. list];
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {

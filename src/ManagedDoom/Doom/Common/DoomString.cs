@@ -26,12 +26,10 @@ public sealed class DoomString
     private static readonly Dictionary<string, DoomString> valueTable = [];
     private static readonly Dictionary<string, DoomString> nameTable = [];
 
-    private string original;
     private string replaced;
 
     public DoomString(string original)
     {
-        this.original = original;
         replaced = original;
 
         ref var current = ref CollectionsMarshal.GetValueRefOrAddDefault(valueTable, original, out var exists);

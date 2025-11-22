@@ -64,7 +64,8 @@ public static class DeHackEd
                 ProcessLines(File.ReadLines(fileName));
             }
 
-            Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK ({string.Join(", ", fileNames.Select(Path.GetFileName))}) [{end}]");
         }
         catch (Exception e)
         {
@@ -90,7 +91,8 @@ public static class DeHackEd
 
             ProcessLines(ReadLines(wad.ReadLump(lump)));
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {
@@ -252,9 +254,7 @@ public static class DeHackEd
         var targetFrameNumber = int.Parse(data[0].Substring(start, length).Split(' ')[1]);
         var sourceFrameNumber = GetInt(dic, "Codep Frame", -1);
         if (sourceFrameNumber == -1)
-        {
             return;
-        }
 
         var info = DoomInfo.States[targetFrameNumber];
 

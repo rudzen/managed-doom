@@ -107,7 +107,8 @@ public sealed class FlatLookup : IFlatLookup
             this.nameToFlat = nameToFlatMapping.ToFrozenDictionary();
             this.nameToNumber = nameToNumberMapping.ToFrozenDictionary();
 
-            Console.WriteLine($"OK ({nameToFlatMapping.Count} flats) [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK ({nameToFlatMapping.Count} flats) [{end}]");
         }
         catch (Exception e)
         {

@@ -174,7 +174,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wadFile);
         var options = GameOptions.CreateDefault();
         var world = new World(content, options, null);
-        var map = new Map(content, world);
+        var map = MapExtensions.Create(content, world);
 
         var ok = 0;
         var count = 0;
@@ -225,7 +225,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wadFile);
         var options = GameOptions.CreateDefault();
         var world = new World(content, options, null);
-        var map = new Map(content, world);
+        var map = MapExtensions.Create(content, world);
 
         var ok = 0;
         var count = 0;

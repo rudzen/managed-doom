@@ -65,7 +65,8 @@ public static partial class SaveAndLoad
             using (var writer = new FileStream(path, FileMode.Create, FileAccess.Write))
                 writer.Write(fileBuffer[..ptr]);
 
-            Console.WriteLine($"Saved in: {Stopwatch.GetElapsedTime(start)}, size: {ptr} bytes");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"Saved in: {end}, size: {ptr} bytes");
         }
         finally
         {
@@ -107,7 +108,8 @@ public static partial class SaveAndLoad
 
             Load(game, fileBuffer, ptr);
 
-            Console.WriteLine($"Loaded in: {Stopwatch.GetElapsedTime(start)}, size: {length} bytes");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"Loaded in: {end}, size: {length} bytes");
         }
         finally
         {

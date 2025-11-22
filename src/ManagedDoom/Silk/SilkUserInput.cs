@@ -72,7 +72,8 @@ public sealed class SilkUserInput : IUserInput
             else
                 mouse = null;
 
-            Console.WriteLine($"OK [{Stopwatch.GetElapsedTime(start)}]");
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
         }
         catch (Exception e)
         {
