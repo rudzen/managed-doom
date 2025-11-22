@@ -70,7 +70,7 @@ public sealed record Seg(
             BackSector: (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
     }
 
-    public static Seg[] FromWad(Wad.Wad wad, int lump, Vertex[] vertices, LineDef[] lines)
+    public static Seg[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, LineDef[] lines)
     {
         var lumpSize = wad.GetLumpSize(lump);
         if (lumpSize % DataSize != 0)

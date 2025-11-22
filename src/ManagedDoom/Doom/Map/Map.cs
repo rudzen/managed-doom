@@ -74,7 +74,7 @@ public static class MapExtensions
             if (map == -1)
                 throw new Exception($"Map '{name}' was not found!");
 
-            var vertices = Vertex.FromWad(wad, map + 4);
+            var vertices = wad.CreateVertices(map + 4);
             var sectors = Sector.FromWad(wad, map + 8, flats);
             var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
             var lines = LineDef.FromWad(wad, map + 2, vertices, sides);

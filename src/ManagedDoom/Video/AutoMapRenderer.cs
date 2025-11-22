@@ -17,6 +17,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Info;
@@ -168,9 +169,13 @@ public sealed class AutoMapRenderer
             }
         }
 
-        for (var i = 0; i < am.Marks.Count; i++)
+        var marks = am.Marks;
+        ref var eventsRef = ref MemoryMarshal.GetReference(marks);
+
+        for (var i = 0; i < am.Marks.Length; i++)
         {
-            var pos = ToScreenPos(am.Marks[i]);
+            ref var mark = ref Unsafe.Add(ref eventsRef, i);
+            var pos = ToScreenPos(in mark);
             screen.DrawPatch(
                 patch: markNumbers[i],
                 x: (int)MathF.Round(pos.X),
@@ -273,7 +278,7 @@ public sealed class AutoMapRenderer
         return new Vector2(posX, posY);
     }
 
-    private Vector2 ToScreenPos(Vertex v)
+    private Vector2 ToScreenPos(in Vertex v)
     {
         var posX = zoom * ppu * (v.X.ToFloat() - renderView.X) + amWidth / 2;
         var posY = -zoom * ppu * (v.Y.ToFloat() - renderView.Y) + amHeight / 2;

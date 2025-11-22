@@ -17,7 +17,7 @@ public sealed class SideDefTest(WadPath wadPath) : IClassFixture<WadPath>
         var flats = new DummyFlatLookup(wad);
         var textures = new TextureLookup(wad);
         var map = wad.GetLumpNumber("E1M1");
-        _ = Vertex.FromWad(wad, map + 4);
+        _ = wad.CreateVertices(map + 4);
         var sectors = Sector.FromWad(wad, map + 8, flats);
         var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
 
@@ -60,7 +60,7 @@ public sealed class SideDefTest(WadPath wadPath) : IClassFixture<WadPath>
         var flats = new DummyFlatLookup(wad);
         var textures = new TextureLookup(wad);
         var map = wad.GetLumpNumber("MAP01");
-        _ = Vertex.FromWad(wad, map + 4);
+        _ = wad.CreateVertices(map + 4);
         var sectors = Sector.FromWad(wad, map + 8, flats);
         var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
 

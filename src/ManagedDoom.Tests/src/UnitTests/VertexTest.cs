@@ -13,7 +13,7 @@ public sealed class VertexTest(WadPath wadPath) : IClassFixture<WadPath>
         var wadFile = wadPath.GetWadPath(WadFile.Doom1);
         var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("E1M1");
-        var vertices = Vertex.FromWad(wad, map + 4);
+        var vertices = wad.CreateVertices(map + 4);
 
         Assert.Equal(470, vertices.Length);
 
@@ -33,7 +33,7 @@ public sealed class VertexTest(WadPath wadPath) : IClassFixture<WadPath>
         var wadFile = wadPath.GetWadPath(WadFile.Doom2);
         var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("MAP01");
-        var vertices = Vertex.FromWad(wad, map + 4);
+        var vertices = wad.CreateVertices(map + 4);
 
         Assert.Equal(383, vertices.Length);
 

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Map;
@@ -100,7 +101,7 @@ public sealed class AutoMap
 
     public AutoMapState State { get; private set; }
 
-    public IReadOnlyList<Vertex> Marks => marks;
+    public ReadOnlySpan<Vertex> Marks => CollectionsMarshal.AsSpan(marks);
 
     public void Update()
     {
