@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using ManagedDoom.Audio;
@@ -190,7 +191,7 @@ public static class DeHackEd
                     ProcessBexStringsBlock(data);
                     break;
                 case Block.BexPars:
-                    ProcessBexParsBlock(data);
+                    ProcessBexParsBlock(CollectionsMarshal.AsSpan(data));
                     break;
             }
         }
@@ -202,6 +203,7 @@ public static class DeHackEd
 
     private static void ProcessThingBlock(List<string> data)
     {
+        // TODO (rudz) : worth optimizing the split?
         var thingNumber = int.Parse(data[0].Split(' ')[1]) - 1;
         var info = DoomInfo.MobjInfos[thingNumber];
         var dic = GetKeyValuePairs(data);
@@ -410,9 +412,9 @@ public static class DeHackEd
         }
     }
 
-    private static void ProcessBexParsBlock(List<string> data)
+    private static void ProcessBexParsBlock(ReadOnlySpan<string> data)
     {
-        var dataSpan = CollectionsMarshal.AsSpan(data)[1..];
+        var dataSpan = data[1..];
         foreach (var line in dataSpan)
         {
             var split = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -558,10 +560,12 @@ public static class DeHackEd
 
     private static int GetInt(Dictionary<string, string> dic, string key, int defaultValue)
     {
-        if (!dic.TryGetValue(key, out var value))
+        ref var value = ref CollectionsMarshal.GetValueRefOrNullRef(dic, key);
+
+        if (Unsafe.IsNullRef(ref value))
             return defaultValue;
 
-        return int.TryParse(value, out var intValue) ? intValue : defaultValue;
+        return int.TryParse(value.AsSpan(), out var intValue) ? intValue : defaultValue;
     }
 
     private enum Block

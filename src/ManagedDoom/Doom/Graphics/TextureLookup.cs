@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Info;
@@ -25,12 +26,19 @@ namespace ManagedDoom.Doom.Graphics;
 public sealed class TextureLookup : ITextureLookup
 {
     private readonly List<Texture> textures = [];
-    private readonly Dictionary<string, Texture> nameToTexture = [];
-    private readonly Dictionary<string, int> nameToNumber = [];
+
+    private readonly FrozenDictionary<string, Texture> nameToTexture;
+    private readonly FrozenDictionary<string, Texture>.AlternateLookup<ReadOnlySpan<char>> nameToTextureLookup;
+
+    private readonly FrozenDictionary<string, int> nameToNumber;
+    private readonly FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
     public TextureLookup(Wad.Wad wad)
     {
         var patches = LoadPatches(wad);
+
+        var nameToTexturesLocal = new Dictionary<string, Texture>(256);
+        var nameToNumbersLocal = new Dictionary<string, int>(256);
 
         for (var n = 1; n <= 2; n++)
         {
@@ -45,17 +53,24 @@ public sealed class TextureLookup : ITextureLookup
             {
                 var offset = BitConverter.ToInt32(lumpData[(4 + 4 * i)..]);
                 var texture = Texture.FromData(lumpData, offset, patches);
-                nameToNumber.TryAdd(texture.Name, textures.Count);
+                nameToNumbersLocal.TryAdd(texture.Name, textures.Count);
                 textures.Add(texture);
-                nameToTexture.TryAdd(texture.Name, texture);
+                nameToTexturesLocal.TryAdd(texture.Name, texture);
             }
         }
+
+        this.nameToTexture = nameToTexturesLocal.ToFrozenDictionary();
+        this.nameToTextureLookup = this.nameToTexture.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        this.nameToNumber = nameToNumbersLocal.ToFrozenDictionary();
+        this.nameToNumberLookup = this.nameToNumber.GetAlternateLookup<ReadOnlySpan<char>>();
 
         SwitchList = CreateSwitchList();
     }
 
     public Texture this[int num] => textures[num];
     public Texture this[string name] => nameToTexture[name];
+    public Texture this[ReadOnlySpan<char> name] => nameToTextureLookup[name];
     public int Count => textures.Count;
     public int[] SwitchList { get; }
 
@@ -74,6 +89,17 @@ public sealed class TextureLookup : ITextureLookup
         }
 
         return [.. list];
+    }
+
+    public int GetNumber(ReadOnlySpan<char> name)
+    {
+        if (name[0] == '-')
+            return 0;
+
+        if (nameToNumberLookup.TryGetValue(name, out var number))
+            return number;
+
+        return -1;
     }
 
     public int GetNumber(string name)

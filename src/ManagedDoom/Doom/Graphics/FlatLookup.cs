@@ -30,7 +30,10 @@ public sealed class FlatLookup : IFlatLookup
     private Flat[] flats;
 
     private FrozenDictionary<string, Flat> nameToFlat;
+    private FrozenDictionary<string, Flat>.AlternateLookup<ReadOnlySpan<char>> nameToFlatLookup;
+
     private FrozenDictionary<string, int> nameToNumber;
+    private FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
     public FlatLookup(Wad.Wad wad)
     {
@@ -68,6 +71,8 @@ public sealed class FlatLookup : IFlatLookup
     public int Count => flats.Length;
     public Flat this[int num] => flats[num];
     public Flat this[string name] => nameToFlat[name];
+    public Flat this[ReadOnlySpan<char> name] => nameToFlatLookup[name];
+
     public int SkyFlatNumber { get; private set; }
     public Flat SkyFlat { get; private set; }
 
@@ -105,7 +110,10 @@ public sealed class FlatLookup : IFlatLookup
             SkyFlat = nameToFlatMapping["F_SKY1"];
 
             this.nameToFlat = nameToFlatMapping.ToFrozenDictionary();
+            this.nameToFlatLookup = this.nameToFlat.GetAlternateLookup<ReadOnlySpan<char>>();
+
             this.nameToNumber = nameToNumberMapping.ToFrozenDictionary();
+            this.nameToNumberLookup = this.nameToNumber.GetAlternateLookup<ReadOnlySpan<char>>();
 
             var end = Stopwatch.GetElapsedTime(start);
             Console.WriteLine($"OK ({nameToFlatMapping.Count} flats) [{end}]");
@@ -187,6 +195,12 @@ public sealed class FlatLookup : IFlatLookup
             Console.WriteLine("Failed");
             ExceptionDispatchInfo.Throw(e);
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetNumber(ReadOnlySpan<char> name)
+    {
+        return nameToNumberLookup.TryGetValue(name, out var number) ? number : -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -14,7 +14,9 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 
 namespace ManagedDoom.Doom.Graphics.Dummy;
@@ -23,8 +25,11 @@ public sealed class DummyFlatLookup : IFlatLookup
 {
     private readonly Flat[] flats;
 
-    private readonly Dictionary<string, Flat> nameToFlat;
-    private readonly Dictionary<string, int> nameToNumber;
+    private readonly FrozenDictionary<string, Flat> nameToFlat;
+    private readonly FrozenDictionary<string, Flat>.AlternateLookup<ReadOnlySpan<char>> nameToFlatLookup;
+
+    private readonly FrozenDictionary<string, int> nameToNumber;
+    private readonly FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
     public DummyFlatLookup(Wad.Wad wad)
     {
@@ -34,8 +39,8 @@ public sealed class DummyFlatLookup : IFlatLookup
 
         flats = new Flat[count];
 
-        nameToFlat = [];
-        nameToNumber = [];
+        var nameToNumberLocal = new Dictionary<string, int>(256);
+        var nameToFlatLocal = new Dictionary<string, Flat>(256);
 
         for (var lump = firstFlat; lump <= lastFlat; lump++)
         {
@@ -47,23 +52,38 @@ public sealed class DummyFlatLookup : IFlatLookup
             var flat = name != "F_SKY1" ? DummyData.GetFlat() : DummyData.GetSkyFlat();
 
             flats[number] = flat;
-            nameToFlat[name] = flat;
-            nameToNumber[name] = number;
+            nameToFlatLocal[name] = flat;
+            nameToNumberLocal[name] = number;
         }
 
-        SkyFlatNumber = nameToNumber["F_SKY1"];
-        SkyFlat = nameToFlat["F_SKY1"];
+        SkyFlatNumber = nameToNumberLocal["F_SKY1"];
+        SkyFlat = nameToFlatLocal["F_SKY1"];
+
+        nameToNumber = nameToNumberLocal.ToFrozenDictionary();
+        nameToNumberLookup = nameToNumber.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        nameToFlat = nameToFlatLocal.ToFrozenDictionary();
+        nameToFlatLookup = nameToFlat.GetAlternateLookup<ReadOnlySpan<char>>();
     }
 
     public int Count => flats.Length;
     public Flat this[int num] => flats[num];
     public Flat this[string name] => nameToFlat[name];
+    public Flat this[ReadOnlySpan<char> name] => nameToFlatLookup[name];
     public int SkyFlatNumber { get; }
     public Flat SkyFlat { get; }
 
     public int GetNumber(string name)
     {
         if (nameToNumber.TryGetValue(name, out var number))
+            return number;
+
+        return -1;
+    }
+
+    public int GetNumber(ReadOnlySpan<char> name)
+    {
+        if (nameToNumberLookup.TryGetValue(name, out var number))
             return number;
 
         return -1;

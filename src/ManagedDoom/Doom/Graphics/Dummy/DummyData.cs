@@ -15,6 +15,7 @@
 //
 
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Doom.Graphics.Dummy;
 
@@ -40,8 +41,8 @@ public static class DummyData
             data[y] = y / 32 % 2 == 0 ? (byte)80 : (byte)96;
 
         var columns = new Column[width][];
-        var c1 = new[] { new Column(0, data, 0, height) };
-        var c2 = new[] { new Column(0, data, 32, height) };
+        Column[] c1 = [new(0, data, 0, height)];
+        Column[] c2 = [new(0, data, 32, height)];
         for (var x = 0; x < width; x++)
             columns[x] = x / 32 % 2 == 0 ? c1 : c2;
 
@@ -52,14 +53,15 @@ public static class DummyData
 
     public static Texture GetTexture(int height)
     {
-        if (dummyTextures.TryGetValue(height, out var texture))
-            return texture;
+        ref var tex = ref CollectionsMarshal.GetValueRefOrAddDefault(dummyTextures, height, out var exists);
+
+        if (exists)
+            return tex!;
 
         TexturePatch[] patch = [new(0, 0, GetPatch())];
+        tex = new Texture(Name, false, 64, height, patch);
 
-        dummyTextures.Add(height, new Texture(Name, false, 64, height, patch));
-
-        return dummyTextures[height];
+        return tex;
     }
 
     public static Flat GetFlat()
@@ -85,10 +87,8 @@ public static class DummyData
 
     public static Flat GetSkyFlat()
     {
-        if (_dummySkyFlat is not null)
-            return _dummySkyFlat;
-
-        _dummySkyFlat = new Flat(Name, GetFlat().Data);
+        if (_dummySkyFlat is null)
+            _dummySkyFlat = new Flat(Name, GetFlat().Data);
 
         return _dummySkyFlat;
     }
