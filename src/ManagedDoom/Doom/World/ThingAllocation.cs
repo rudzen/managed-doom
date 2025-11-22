@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
@@ -202,9 +203,8 @@ public sealed class ThingAllocation
             player.Cards = CardType.All;
     }
 
-    public IReadOnlyList<MapThing> PlayerStarts => playerStarts;
-    public IReadOnlyList<MapThing> DeathmatchStarts => deathmatchStarts;
-
+    public ReadOnlySpan<MapThing> PlayerStarts => playerStarts;
+    public ReadOnlySpan<MapThing> DeathmatchStarts => CollectionsMarshal.AsSpan(deathmatchStarts);
 
     ////////////////////////////////////////////////////////////
     // Thing spawn functions for the middle of a game

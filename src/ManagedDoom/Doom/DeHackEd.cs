@@ -431,12 +431,12 @@ public static class DeHackEd
                     break;
             }
 
-            if (parsed.Count == 2 && parsed[0] <= DoomInfo.ParTimes.Doom2.Count)
+            if (parsed.Count == 2 && parsed[0] <= DoomInfo.ParTimes.Doom2.Length)
                 DoomInfo.ParTimes.Doom2[parsed[0] - 1] = parsed[1];
-            else if (parsed.Count >= 3 && parsed[0] <= DoomInfo.ParTimes.Doom1.Count)
+            else if (parsed.Count >= 3 && parsed[0] <= DoomInfo.ParTimes.Doom1.Length)
             {
                 var v = parsed[0] - 1;
-                if (parsed[1] <= DoomInfo.ParTimes.Doom1[v].Count)
+                if (parsed[1] <= DoomInfo.ParTimes.Doom1[v].Length)
                     DoomInfo.ParTimes.Doom1[v][parsed[1] - 1] = parsed[2];
             }
         }

@@ -60,7 +60,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
 
     private void DrawSelectableMenu(SelectableMenu selectable)
     {
-        for (var i = 0; i < selectable.Name.Count; i++)
+        for (var i = 0; i < selectable.Name.Length; i++)
         {
             DrawMenuPatch(
                 selectable.Name[i],

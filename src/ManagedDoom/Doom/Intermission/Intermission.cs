@@ -86,10 +86,10 @@ public sealed class Intermission
     public GameOptions Options { get; }
     public IntermissionInfo Info { get; }
     public IntermissionState State { get; private set; }
-    public IReadOnlyList<int> KillCount => killCount;
-    public IReadOnlyList<int> ItemCount => itemCount;
-    public IReadOnlyList<int> SecretCount => secretCount;
-    public IReadOnlyList<int> FragCount => fragCount;
+    public ReadOnlySpan<int> KillCount => killCount.AsSpan();
+    public ReadOnlySpan<int> ItemCount => itemCount.AsSpan();
+    public ReadOnlySpan<int> SecretCount => secretCount.AsSpan();
+    public ReadOnlySpan<int> FragCount => fragCount.AsSpan();
     public int TimeCount { get; private set; }
     public int ParCount { get; private set; }
     public int[][] DeathmatchFrags { get; }

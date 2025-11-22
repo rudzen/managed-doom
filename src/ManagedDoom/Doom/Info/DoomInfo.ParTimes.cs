@@ -24,7 +24,7 @@ public static partial class DoomInfo
     {
         // These lists are not readonly to allow change via BEX.
 
-        public static readonly IReadOnlyList<List<int>> Doom1 =
+        public static int[][] Doom1 =>
         [
             [30, 75, 120, 90, 165, 180, 180, 30, 165],
             [90, 90, 90, 120, 90, 360, 240, 30, 170],
@@ -32,7 +32,7 @@ public static partial class DoomInfo
             [165, 255, 135, 150, 180, 390, 135, 360, 180]
         ];
 
-        public static readonly List<int> Doom2 =
+        public static int[] Doom2 =>
         [
             30, 90, 120, 120, 90, 150, 120, 120, 270, 90,
             210, 150, 150, 150, 210, 150, 420, 150, 210, 150,

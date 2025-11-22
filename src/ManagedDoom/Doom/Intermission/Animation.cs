@@ -26,7 +26,6 @@ public sealed class Animation
     private readonly AnimationType type;
     private readonly int period;
     private readonly int frameCount;
-    private readonly string[] patches;
     private int nextTic;
 
     private readonly int data;
@@ -43,21 +42,22 @@ public sealed class Animation
         LocationY = info.Y;
         data = info.Data;
 
-        patches = new string[frameCount];
+        Patches = new string[frameCount];
         for (var i = 0; i < frameCount; i++)
         {
             // MONDO HACK!
             if (im.Info.Episode != 1 || number != 8)
-                patches[i] = $"WIA{im.Info.Episode}{number:00}{i:00}";
+                Patches[i] = $"WIA{im.Info.Episode}{number:00}{i:00}";
             // HACK ALERT!
             else
-                patches[i] = $"WIA104{i:00}";
+                Patches[i] = $"WIA104{i:00}";
         }
     }
 
     public int LocationX { get; }
     public int LocationY { get; }
-    public IReadOnlyList<string> Patches => patches;
+    public string[] Patches { get; }
+
     public int PatchNumber { get; private set; }
 
     public void Reset(int bgCount)

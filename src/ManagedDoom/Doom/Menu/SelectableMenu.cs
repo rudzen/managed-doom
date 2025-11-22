@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
@@ -23,7 +24,6 @@ namespace ManagedDoom.Doom.Menu;
 
 public sealed class SelectableMenu : MenuDef
 {
-    private readonly string[] name;
     private readonly int[] titleX;
     private readonly int[] titleY;
     private readonly MenuItem[] items;
@@ -38,7 +38,7 @@ public sealed class SelectableMenu : MenuDef
         int firstChoice,
         params MenuItem[] items) : base(menu)
     {
-        this.name = [name];
+        this.Name = [name];
         this.titleX = [titleX];
         this.titleY = [titleY];
         this.items = items;
@@ -54,7 +54,7 @@ public sealed class SelectableMenu : MenuDef
         int firstChoice,
         params MenuItem[] items) : base(menu)
     {
-        this.name = [name1, name2];
+        this.Name = [name1, name2];
         this.titleX = [titleX1, titleX2];
         this.titleY = [titleY1, titleY2];
         this.items = items;
@@ -63,10 +63,10 @@ public sealed class SelectableMenu : MenuDef
         Choice = items[index];
     }
 
-    public IReadOnlyList<string> Name => name;
-    public IReadOnlyList<int> TitleX => titleX;
-    public IReadOnlyList<int> TitleY => titleY;
-    public IReadOnlyList<MenuItem> Items => items;
+    public string[] Name { get; }
+    public ReadOnlySpan<int> TitleX => titleX;
+    public ReadOnlySpan<int> TitleY => titleY;
+    public ReadOnlySpan<MenuItem> Items => items;
     public MenuItem Choice { get; private set; }
 
     public override void Open()
