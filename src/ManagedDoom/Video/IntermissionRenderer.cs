@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;

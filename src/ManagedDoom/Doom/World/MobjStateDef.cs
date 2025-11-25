@@ -20,7 +20,7 @@ using ManagedDoom.Doom.Graphics;
 
 namespace ManagedDoom.Doom.World;
 
-public class MobjStateDef
+public sealed class MobjStateDef
 {
     public MobjStateDef(
         int number,

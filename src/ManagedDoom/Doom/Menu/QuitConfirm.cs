@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Event;
@@ -50,7 +51,7 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
         Sfx.SGTATK
     ];
 
-    private readonly DoomRandom random = new(DateTime.Now.Millisecond);
+    private readonly DoomRandom random = new(DateTime.UtcNow.Millisecond);
     private string[] text = [];
 
     private int endCount = -1;
@@ -59,11 +60,15 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
 
     public override void Open()
     {
-        var list = app.Options.GameMode == GameMode.Commercial
-            ? app.Options.MissionPack == MissionPack.Doom2 ? DoomInfo.QuitMessages.Doom2 : DoomInfo.QuitMessages.FinalDoom
-            : DoomInfo.QuitMessages.Doom;
+        DoomString[] list;
 
-        text = (list[random.Next() % list.Count] + "\n\n" + DoomInfo.Strings.PRESSYN).Split('\n');
+        if (app.Options.GameMode == GameMode.Commercial)
+            list = app.Options.MissionPack == MissionPack.Doom2 ? DoomInfo.QuitMessages.Doom2 : DoomInfo.QuitMessages.FinalDoom;
+        else
+            list = DoomInfo.QuitMessages.Doom;
+
+        var listIndex = random.Next() % list.Length;
+        text = (list[listIndex] + "\n\n" + DoomInfo.Strings.PRESSYN).Split('\n');
     }
 
     public override bool DoEvent(DoomEvent e)
@@ -80,9 +85,10 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
             {
                 endCount = 0;
 
+                var nextRandom = random.Next();
                 var sfx = Menu.Options.GameMode == GameMode.Commercial
-                    ? doom2QuitSoundList[random.Next() % doom2QuitSoundList.Length]
-                    : doomQuitSoundList[random.Next() % doomQuitSoundList.Length];
+                    ? doom2QuitSoundList[nextRandom % doom2QuitSoundList.Length]
+                    : doomQuitSoundList[nextRandom % doomQuitSoundList.Length];
                 Menu.StartSound(sfx);
                 break;
             }

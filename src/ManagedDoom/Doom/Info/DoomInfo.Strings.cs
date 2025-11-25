@@ -34,17 +34,11 @@ public static partial class DoomInfo
         public static readonly DoomString QSPROMPT = new("QSPROMPT", "quicksave over your game named\n\n'%s'?\n\n" + PRESSYN);
         public static readonly DoomString QLPROMPT = new("QLPROMPT", "do you want to quickload the game named\n\n'%s'?\n\n" + PRESSYN);
 
-        public static readonly DoomString NEWGAME = new("NEWGAME",
-            "you can't start a new game\n" +
-            "while in a network game.\n\n" + PRESSKEY);
+        public static readonly DoomString NEWGAME = new("NEWGAME", "you can't start a new game\nwhile in a network game.\n\n" + PRESSKEY);
 
-        public static readonly DoomString NIGHTMARE = new("NIGHTMARE",
-            "are you sure? this skill level\n" +
-            "isn't even remotely fair.\n\n" + PRESSYN);
+        public static readonly DoomString NIGHTMARE = new("NIGHTMARE", "are you sure? this skill level\nisn't even remotely fair.\n\n" + PRESSYN);
 
-        public static readonly DoomString SWSTRING = new("SWSTRING",
-            "this is the shareware version of doom.\n\n" +
-            "you need to order the entire trilogy.\n\n" + PRESSKEY);
+        public static readonly DoomString SWSTRING = new("SWSTRING", "this is the shareware version of doom.\n\nyou need to order the entire trilogy.\n\n" + PRESSKEY);
 
         public static readonly DoomString MSGOFF = new("MSGOFF", "Messages OFF");
         public static readonly DoomString MSGON = new("MSGON", "Messages ON");

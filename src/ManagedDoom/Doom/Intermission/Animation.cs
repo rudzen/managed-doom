@@ -14,8 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System.Collections.Generic;
-
 namespace ManagedDoom.Doom.Intermission;
 
 public sealed class Animation

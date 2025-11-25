@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.UserInput;
@@ -112,7 +111,7 @@ public sealed class LoadMenu : MenuDef
 
     public bool DoLoad(int slotNumber)
     {
-        var slotExists = Menu.SaveSlots[slotNumber] != null;
+        var slotExists = !string.IsNullOrEmpty(Menu.SaveSlots[slotNumber]);
 
         if (slotExists)
             Menu.Doom.LoadGame(slotNumber);

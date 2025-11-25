@@ -20,7 +20,7 @@ namespace ManagedDoom.Doom.Info;
 
 public static partial class DoomInfo
 {
-    public static readonly AnimationDef[] TextureAnimation =
+    public static AnimationDef[] TextureAnimation =>
     [
         new(false, "NUKAGE3", "NUKAGE1"),
         new(false, "FWATER4", "FWATER1"),

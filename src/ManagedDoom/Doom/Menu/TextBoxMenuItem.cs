@@ -47,10 +47,10 @@ public sealed class TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY
 
     public void SetText(string? inputText)
     {
-        if (inputText is not null)
-        {
-            this.text.Clear();
-            this.text.Append(inputText);
-        }
+        if (string.IsNullOrEmpty(inputText))
+            return;
+
+        this.text.Clear();
+        this.text.Append(inputText);
     }
 }

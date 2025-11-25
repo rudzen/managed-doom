@@ -104,36 +104,35 @@ public sealed class FinaleRenderer(GameContent gameContent, PatchCache patchCach
         DrawPatch("PFUB2", scroll - 320, 0);
         DrawPatch("PFUB1", scroll, 0);
 
-        if (finale.ShowTheEnd)
-        {
-            var patch = finale.TheEndIndex switch
-            {
-                1 => "END1",
-                2 => "END2",
-                3 => "END3",
-                4 => "END4",
-                5 => "END5",
-                6 => "END6",
-                _ => "END0"
-            };
+        if (!finale.ShowTheEnd) return;
 
-            DrawPatch(
-                patch,
-                (320 - 13 * 8) / 2,
-                (240 - 8 * 8) / 2);
-        }
+        var patch = finale.TheEndIndex switch
+        {
+            1 => "END1",
+            2 => "END2",
+            3 => "END3",
+            4 => "END4",
+            5 => "END5",
+            6 => "END6",
+            _ => "END0"
+        };
+
+        DrawPatch(
+            patch,
+            (320 - 13 * 8) / 2,
+            (240 - 8 * 8) / 2);
     }
 
     private void FillFlat(Flat flat)
     {
         var src = flat.Data;
         var dst = screen.Data;
-        var scale = screen.Width / 320;
-        var xFrac = Fixed.One / scale - Fixed.Epsilon;
-        var step = Fixed.One / scale;
+        var fillScale = screen.Width / 320;
+        var xFrac = Fixed.One / fillScale - Fixed.Epsilon;
+        var step = Fixed.One / fillScale;
         for (var x = 0; x < screen.Width; x++)
         {
-            var yFrac = Fixed.One / scale - Fixed.Epsilon;
+            var yFrac = Fixed.One / fillScale - Fixed.Epsilon;
             var p = screen.Height * x;
             for (var y = 0; y < screen.Height; y++)
             {
@@ -159,8 +158,9 @@ public sealed class FinaleRenderer(GameContent gameContent, PatchCache patchCach
         DrawPatch("BOSSBACK", 0, 0);
 
         var frame = finale.CastState.Frame & 0x7fff;
-        var patch = sprites[finale.CastState.Sprite].Frames[frame].Patches[0];
-        if (sprites[finale.CastState.Sprite].Frames[frame].Flip[0])
+        var sprite = sprites[finale.CastState.Sprite];
+        var patch = sprite.Frames[frame].Patches[0];
+        if (sprite.Frames[frame].Flip[0])
         {
             screen.DrawPatchFlip(
                 patch,

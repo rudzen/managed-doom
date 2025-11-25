@@ -60,5 +60,5 @@ public static class WorldMap
         ]
     ];
 
-    public record struct Point(int X, int Y);
+    public readonly record struct Point(int X, int Y);
 }

@@ -69,9 +69,7 @@ public sealed class DoomMenu
         const int skullX = 16;
         const int skullYStep = 16;
         var skullYPos = 0;
-        var skullY = 58;
-
-        int NextSkullY() => skullY + skullYStep * skullYPos++;
+        const int skullY = 58;
 
         var skillMenu = new SelectableMenu(
             this,
@@ -271,7 +269,10 @@ public sealed class DoomMenu
 
         selectedEpisode = 1;
 
-        SaveSlots = new SaveSlots();
+        SaveSlots = DoomSaveSlots.ReadSlots();
+        return;
+
+        int NextSkullY() => skullY + skullYStep * skullYPos++;
     }
 
     public Doom Doom { get; }
@@ -279,7 +280,7 @@ public sealed class DoomMenu
     public MenuDef Current { get; private set; }
     public bool Active { get; private set; }
     public int Tics { get; private set; }
-    public SaveSlots SaveSlots { get; }
+    public string[] SaveSlots { get; }
 
     public bool DoEvent(DoomEvent e)
     {
@@ -305,6 +306,7 @@ public sealed class DoomMenu
         var menuSelected = e.Type == EventType.KeyDown
                            && Doom.State == DoomState.Opening
                            && e.Key is DoomKey.Enter or DoomKey.Space or DoomKey.LControl or DoomKey.RControl or DoomKey.Escape;
+
         if (menuSelected)
         {
             SetCurrent(main);

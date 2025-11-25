@@ -55,7 +55,7 @@ public class ToggleMenuItem(
         if (stateNumber == states.Length)
             stateNumber = 0;
 
-        action?.Invoke(stateNumber);
+        action.Invoke(stateNumber);
     }
 
     public void Down()
@@ -64,6 +64,6 @@ public class ToggleMenuItem(
         if (stateNumber == -1)
             stateNumber = states.Length - 1;
 
-        action?.Invoke(stateNumber);
+        action.Invoke(stateNumber);
     }
 }

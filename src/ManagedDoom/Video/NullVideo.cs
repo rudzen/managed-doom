@@ -20,7 +20,7 @@ using ManagedDoom.Video.Renders.ThreeDee;
 
 namespace ManagedDoom.Video;
 
-public class NullVideo : IVideo
+public sealed class NullVideo : IVideo
 {
     private static NullVideo? instance;
 

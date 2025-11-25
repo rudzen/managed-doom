@@ -20,14 +20,6 @@ namespace ManagedDoom.Doom.Intermission;
 
 public sealed class IntermissionInfo
 {
-    // Episode number (0-2).
-
-    // If true, splash the secret level.
-
-    // Previous and next levels, origin 0.
-
-    // The par time.
-
     public IntermissionInfo()
     {
         PlayerScores = new PlayerScores[Player.MaxPlayerCount];
@@ -35,12 +27,24 @@ public sealed class IntermissionInfo
             PlayerScores[i] = new PlayerScores();
     }
 
+    /// <summary>
+    /// Episode number (0-2).
+    /// </summary>
     public int Episode { get; set; }
 
+    /// <summary>
+    /// If true, splash the secret level.
+    /// </summary>
     public bool DidSecret { get; set; }
 
+    /// <summary>
+    /// Previous level, origin 0.
+    /// </summary>
     public int LastLevel { get; set; }
 
+    /// <summary>
+    /// Next level, origin 0.
+    /// </summary>
     public int NextLevel { get; set; }
 
     public int MaxKillCount
@@ -67,6 +71,9 @@ public sealed class IntermissionInfo
         set;
     }
 
+    /// <summary>
+    /// The par time.
+    /// </summary>
     public int ParTime { get; set; }
 
     public PlayerScores[] PlayerScores { get; }

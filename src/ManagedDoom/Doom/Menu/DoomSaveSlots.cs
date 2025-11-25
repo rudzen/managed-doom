@@ -22,43 +22,30 @@ using ManagedDoom.Doom.Common;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class SaveSlots
+public static class DoomSaveSlots
 {
-    private const int slotCount = 6;
-    private const int descriptionSize = 24;
-
-    private string[] slots = [];
-
-    public string this[int number]
-    {
-        get
-        {
-            if (slots.Length == 0)
-                ReadSlots();
-
-            return slots[number];
-        }
-
-        set => slots[number] = value;
-    }
-
-    public int Count => slots.Length;
-
     [SkipLocalsInit]
-    private void ReadSlots()
+    public static string[] ReadSlots()
     {
-        Array.Resize(ref slots, slotCount);
-
+        const int slotCount = 6;
+        const int descriptionSize = 24;
         var directory = ConfigUtilities.GetExeDirectory;
+        var slots = new string[slotCount];
         Span<byte> buffer = stackalloc byte[descriptionSize];
         for (var i = 0; i < slots.Length; i++)
         {
             var path = Path.Combine(directory, $"doomsav{i}.dsg");
             if (!File.Exists(path))
+            {
+                slots[i] = string.Empty;
                 continue;
-            using var reader = new FileStream(path, FileMode.Open, FileAccess.Read);
+            }
+
+            using var reader = File.OpenRead(path);
             var read = reader.Read(buffer);
             slots[i] = DoomInterop.ToString(buffer[..read]);
         }
+
+        return slots;
     }
 }

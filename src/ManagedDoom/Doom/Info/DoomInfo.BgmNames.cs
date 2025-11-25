@@ -20,7 +20,7 @@ namespace ManagedDoom.Doom.Info;
 
 public static partial class DoomInfo
 {
-    public static readonly DoomString[] BgmNames =
+    public static DoomString[] BgmNames =>
     [
         new("none"),
         new("e1m1"),

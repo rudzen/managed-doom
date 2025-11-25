@@ -18,14 +18,16 @@ using System;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Menu;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Video;
 
 public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
 {
-    private static readonly char[]? cursor = ['_'];
-
     private const string emptyText = "EMPTY SLOT";
+
+    private static readonly char[]? cursor = ['_'];
+    private static readonly string[] skullLoadLookup = ["M_SKULL2", "M_SKULL1"];
 
     public void Render(DoomMenu menu)
     {
@@ -72,7 +74,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
             DrawMenuItem(selectable.Menu, item);
 
         var choice = selectable.Choice;
-        var skull = selectable.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
+        var skull = skullLoadLookup[(selectable.Menu.Tics / 8 % 2 == 0).AsByte()];
         DrawMenuPatch(skull, choice.SkullX, choice.SkullY);
     }
 
@@ -90,7 +92,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
             DrawMenuItem(save.Menu, item);
 
         var choice = save.Choice;
-        var skull = save.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
+        var skull = skullLoadLookup[(save.Menu.Tics / 8 % 2 == 0).AsByte()];
         DrawMenuPatch(skull, choice.SkullX, choice.SkullY);
     }
 
@@ -108,7 +110,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
             DrawMenuItem(load.Menu, item);
 
         var choice = load.Choice;
-        var skull = load.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
+        var skull = skullLoadLookup[(load.Menu.Tics / 8 % 2 == 0).AsByte()];
         DrawMenuPatch(skull, choice.SkullX, choice.SkullY);
     }
 
@@ -216,7 +218,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
 
     private void DrawHelp(HelpScreen help)
     {
-        var skull = help.Menu.Tics / 8 % 2 == 0 ? "M_SKULL1" : "M_SKULL2";
+        var skull = skullLoadLookup[(help.Menu.Tics / 8 % 2 == 0).AsByte()];
 
         if (help.Menu.Options.GameMode == GameMode.Commercial)
         {

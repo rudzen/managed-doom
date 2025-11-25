@@ -23,7 +23,7 @@ public static partial class DoomInfo
 {
     public static class QuitMessages
     {
-        public static readonly IReadOnlyList<DoomString> Doom =
+        public static DoomString[] Doom =>
         [
             Strings.QUITMSG,
             new("please don't leave, there's more\ndemons to toast!"),
@@ -35,7 +35,7 @@ public static partial class DoomInfo
             new("go ahead and leave. see if i care.")
         ];
 
-        public static readonly IReadOnlyList<DoomString> Doom2 =
+        public static DoomString[] Doom2 =>
         [
             new("you want to quit?\nthen, thou hast lost an eighth!"),
             new("don't go now, there's a \ndimensional shambler waiting\nat the dos prompt!"),
@@ -46,7 +46,7 @@ public static partial class DoomInfo
             new("you're lucky i don't smack\nyou for thinking about leaving.")
         ];
 
-        public static readonly IReadOnlyList<DoomString> FinalDoom =
+        public static DoomString[] FinalDoom =>
         [
             new("fuck you, pussy!\nget the fuck out!"),
             new("you quit and i'll jizz\nin your cystholes!"),

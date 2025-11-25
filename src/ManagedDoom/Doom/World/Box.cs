@@ -37,7 +37,7 @@ public static class Box
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddPoint(Vertex vertex)
+        public void AddPoint(in Vertex vertex)
         {
             var x = vertex.X;
             var y = vertex.Y;

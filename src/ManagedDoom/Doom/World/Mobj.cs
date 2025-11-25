@@ -92,8 +92,6 @@ public sealed class Mobj : Thinker
     public static readonly Fixed OnFloorZ = Fixed.MinValue;
     public static readonly Fixed OnCeilingZ = Fixed.MaxValue;
 
-    // Info for drawing: position.
-
     // More list: links in sector (if needed).
 
     // More drawing info: to determine current sprite.
@@ -142,10 +140,13 @@ public sealed class Mobj : Thinker
 
     public World World { get; }
 
+    // Info for drawing: position.
     public Fixed X { get; set; }
 
+    // Info for drawing: position.
     public Fixed Y { get; set; }
 
+    // Info for drawing: position.
     public Fixed Z { get; set; }
 
     public Mobj? SectorNext { get; set; }
@@ -218,22 +219,18 @@ public sealed class Mobj : Thinker
         {
             World.ThingMovement.XYMovement(this);
 
+            // Mobj was removed.
             if (ThinkerState == ThinkerState.Removed)
-            {
-                // Mobj was removed.
                 return;
-            }
         }
 
-        if ((Z != FloorZ) || MomZ != Fixed.Zero)
+        if (Z != FloorZ || MomZ != Fixed.Zero)
         {
             World.ThingMovement.ZMovement(this);
 
+            // Mobj was removed.
             if (ThinkerState == ThinkerState.Removed)
-            {
-                // Mobj was removed.
                 return;
-            }
         }
 
         // Cycle through states,

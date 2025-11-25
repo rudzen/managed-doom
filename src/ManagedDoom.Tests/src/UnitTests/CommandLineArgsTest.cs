@@ -145,7 +145,7 @@ public sealed class CommandLineArgsTest
     public void File_WithoutArgument_ShouldNotBePresent()
     {
         // Arrange
-        var args = Array.Empty<string>();
+        string[] args = [];
 
         // Act
         var commandLineArgs = new CommandLineArgs(args);

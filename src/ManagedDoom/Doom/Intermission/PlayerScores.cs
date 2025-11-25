@@ -20,10 +20,9 @@ namespace ManagedDoom.Doom.Intermission;
 
 public sealed class PlayerScores
 {
-    // Whether the player is in game.
-
-    // Player stats, kills, collected items etc.
-
+    /// <summary>
+    /// Whether the player is in game.
+    /// </summary>
     public bool InGame { get; set; }
 
     public int KillCount { get; set; }

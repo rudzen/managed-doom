@@ -52,11 +52,8 @@ public static class ApplicationInfo
         if (index <= 0) return default;
         value = value[(index + buildVersionMetadataPrefix.Length)..];
         if (DateTime.TryParseExact(value, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var result))
-        {
             return result;
-        }
 
         return DateTime.MinValue;
-        // return DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss:fffZ", CultureInfo.InvariantCulture);
     }
 }

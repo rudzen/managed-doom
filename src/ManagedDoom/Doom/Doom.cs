@@ -424,12 +424,17 @@ public sealed class Doom
 
     public void PauseGame()
     {
-        sendPause = !sendPause && State == DoomState.Game && Game is { State: GameState.Level, Paused: false };
+        ApplyPause(false);
     }
 
     public void ResumeGame()
     {
-        sendPause = !sendPause && State == DoomState.Game && Game is { State: GameState.Level, Paused: true };
+        ApplyPause(true);
+    }
+
+    private void ApplyPause(bool gamePausedState)
+    {
+        sendPause = !sendPause && State == DoomState.Game && Game.State == GameState.Level && Game.Paused == gamePausedState;
     }
 
     public bool SaveGame(int slotNumber, string description)

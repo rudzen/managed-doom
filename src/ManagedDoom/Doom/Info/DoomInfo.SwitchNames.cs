@@ -22,7 +22,7 @@ public sealed record DoomStringPair(DoomString First, DoomString Second);
 
 public static partial class DoomInfo
 {
-    public static readonly DoomStringPair[] SwitchNames =
+    public static DoomStringPair[] SwitchNames =>
     [
         new(new DoomString("SW1BRCOM"), new DoomString("SW2BRCOM")),
         new(new DoomString("SW1BRN1"), new DoomString("SW2BRN1")),

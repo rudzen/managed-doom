@@ -16,7 +16,6 @@
 
 using System;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Map;
 

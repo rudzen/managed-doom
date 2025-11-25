@@ -102,7 +102,7 @@ public static partial class DoomInfo
             raiseState: MobjState.SposRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Vile
+        new(                                                                    // MobjType.Vile
             doomEdNum: 64,                                                      // doomEdNum
             spawnState: MobjState.VileStnd,                                     // spawnState
             spawnHealth: 700,                                                   // spawnHealth
@@ -128,7 +128,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                          // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Fire
+        new(                                                   // MobjType.Fire
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Fire1,                       // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -154,7 +154,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Undead
+        new(                                                                    // MobjType.Undead
             doomEdNum: 66,                                                      // doomEdNum
             spawnState: MobjState.SkelStnd,                                     // spawnState
             spawnHealth: 300,                                                   // spawnHealth
@@ -180,7 +180,7 @@ public static partial class DoomInfo
             raiseState: MobjState.SkelRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Tracer
+        new(                                                                                           // MobjType.Tracer
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Tracer,                                                              // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -206,7 +206,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Smoke
+        new(                                                   // MobjType.Smoke
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Smoke1,                      // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -232,7 +232,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Fatso
+        new(                                                                    // MobjType.Fatso
             doomEdNum: 67,                                                      // doomEdNum
             spawnState: MobjState.FattStnd,                                     // spawnState
             spawnHealth: 600,                                                   // spawnHealth
@@ -258,7 +258,7 @@ public static partial class DoomInfo
             raiseState: MobjState.FattRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Fatshot
+        new(                                                                                           // MobjType.Fatshot
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Fatshot1,                                                            // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -284,7 +284,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Chainguy
+        new(                                                                    // MobjType.Chainguy
             doomEdNum: 65,                                                      // doomEdNum
             spawnState: MobjState.CposStnd,                                     // spawnState
             spawnHealth: 70,                                                    // spawnHealth
@@ -310,7 +310,7 @@ public static partial class DoomInfo
             raiseState: MobjState.CposRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Troop
+        new(                                                                    // MobjType.Troop
             doomEdNum: 3001,                                                    // doomEdNum
             spawnState: MobjState.TrooStnd,                                     // spawnState
             spawnHealth: 60,                                                    // spawnHealth
@@ -336,7 +336,7 @@ public static partial class DoomInfo
             raiseState: MobjState.TrooRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Sergeant
+        new(                                                                    // MobjType.Sergeant
             doomEdNum: 3002,                                                    // doomEdNum
             spawnState: MobjState.SargStnd,                                     // spawnState
             spawnHealth: 150,                                                   // spawnHealth
@@ -362,7 +362,7 @@ public static partial class DoomInfo
             raiseState: MobjState.SargRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                                              // MobjType.Shadows
+        new(                                                                                       // MobjType.Shadows
             doomEdNum: 58,                                                                         // doomEdNum
             spawnState: MobjState.SargStnd,                                                        // spawnState
             spawnHealth: 150,                                                                      // spawnHealth
@@ -388,7 +388,7 @@ public static partial class DoomInfo
             raiseState: MobjState.SargRaise1                                                       // raiseState
         ),
 
-        new MobjInfo(                                                                                                   // MobjType.Head
+        new(                                                                                                            // MobjType.Head
             doomEdNum: 3005,                                                                                            // doomEdNum
             spawnState: MobjState.HeadStnd,                                                                             // spawnState
             spawnHealth: 400,                                                                                           // spawnHealth
@@ -414,7 +414,7 @@ public static partial class DoomInfo
             raiseState: MobjState.HeadRaise1                                                                            // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Bruiser
+        new(                                                                    // MobjType.Bruiser
             doomEdNum: 3003,                                                    // doomEdNum
             spawnState: MobjState.BossStnd,                                     // spawnState
             spawnHealth: 1000,                                                  // spawnHealth
@@ -440,7 +440,7 @@ public static partial class DoomInfo
             raiseState: MobjState.BossRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Bruisershot
+        new(                                                                                           // MobjType.Bruisershot
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Brball1,                                                             // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -466,7 +466,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Knight
+        new(                                                                    // MobjType.Knight
             doomEdNum: 69,                                                      // doomEdNum
             spawnState: MobjState.Bos2Stnd,                                     // spawnState
             spawnHealth: 500,                                                   // spawnHealth
@@ -492,7 +492,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Bos2Raise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                                             // MobjType.Skull
+        new(                                                                                      // MobjType.Skull
             doomEdNum: 3006,                                                                      // doomEdNum
             spawnState: MobjState.SkullStnd,                                                      // spawnState
             spawnHealth: 100,                                                                     // spawnHealth
@@ -518,7 +518,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                            // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Spider
+        new(                                                                    // MobjType.Spider
             doomEdNum: 7,                                                       // doomEdNum
             spawnState: MobjState.SpidStnd,                                     // spawnState
             spawnHealth: 3000,                                                  // spawnHealth
@@ -544,7 +544,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                          // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Baby
+        new(                                                                    // MobjType.Baby
             doomEdNum: 68,                                                      // doomEdNum
             spawnState: MobjState.BspiStnd,                                     // spawnState
             spawnHealth: 500,                                                   // spawnHealth
@@ -570,7 +570,7 @@ public static partial class DoomInfo
             raiseState: MobjState.BspiRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Cyborg
+        new(                                                                    // MobjType.Cyborg
             doomEdNum: 16,                                                      // doomEdNum
             spawnState: MobjState.CyberStnd,                                    // spawnState
             spawnHealth: 4000,                                                  // spawnHealth
@@ -596,7 +596,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                          // raiseState
         ),
 
-        new MobjInfo(                                                                                                   // MobjType.Pain
+        new(                                                                                                            // MobjType.Pain
             doomEdNum: 71,                                                                                              // doomEdNum
             spawnState: MobjState.PainStnd,                                                                             // spawnState
             spawnHealth: 400,                                                                                           // spawnHealth
@@ -622,7 +622,7 @@ public static partial class DoomInfo
             raiseState: MobjState.PainRaise1                                                                            // raiseState
         ),
 
-        new MobjInfo(                                                           // MobjType.Wolfss
+        new(                                                                    // MobjType.Wolfss
             doomEdNum: 84,                                                      // doomEdNum
             spawnState: MobjState.SswvStnd,                                     // spawnState
             spawnHealth: 50,                                                    // spawnHealth
@@ -648,7 +648,7 @@ public static partial class DoomInfo
             raiseState: MobjState.SswvRaise1                                    // raiseState
         ),
 
-        new MobjInfo(                                                                                                          // MobjType.Keen
+        new(                                                                                                                   // MobjType.Keen
             doomEdNum: 72,                                                                                                     // doomEdNum
             spawnState: MobjState.Keenstnd,                                                                                    // spawnState
             spawnHealth: 100,                                                                                                  // spawnHealth
@@ -674,7 +674,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                                         // raiseState
         ),
 
-        new MobjInfo(                                     // MobjType.Bossbrain
+        new(                                              // MobjType.Bossbrain
             doomEdNum: 88,                                // doomEdNum
             spawnState: MobjState.Brain,                  // spawnState
             spawnHealth: 250,                             // spawnHealth
@@ -700,7 +700,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                    // raiseState
         ),
 
-        new MobjInfo(                                         // MobjType.Bossspit
+        new(                                                  // MobjType.Bossspit
             doomEdNum: 89,                                    // doomEdNum
             spawnState: MobjState.Braineye,                   // spawnState
             spawnHealth: 1000,                                // spawnHealth
@@ -726,7 +726,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                        // raiseState
         ),
 
-        new MobjInfo(                                         // MobjType.Bosstarget
+        new(                                                  // MobjType.Bosstarget
             doomEdNum: 87,                                    // doomEdNum
             spawnState: MobjState.Null,                       // spawnState
             spawnHealth: 1000,                                // spawnHealth
@@ -752,7 +752,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                        // raiseState
         ),
 
-        new MobjInfo(                                                                                                     // MobjType.Spawnshot
+        new(                                                                                                              // MobjType.Spawnshot
             doomEdNum: -1,                                                                                                // doomEdNum
             spawnState: MobjState.Spawn1,                                                                                 // spawnState
             spawnHealth: 1000,                                                                                            // spawnHealth
@@ -778,7 +778,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                                    // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Spawnfire
+        new(                                                   // MobjType.Spawnfire
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Spawnfire1,                  // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -804,7 +804,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                                                         // MobjType.Barrel
+        new(                                                                  // MobjType.Barrel
             doomEdNum: 2035,                                                  // doomEdNum
             spawnState: MobjState.Bar1,                                       // spawnState
             spawnHealth: 20,                                                  // spawnHealth
@@ -830,7 +830,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                        // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Troopshot
+        new(                                                                                           // MobjType.Troopshot
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Tball1,                                                              // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -856,7 +856,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Headshot
+        new(                                                                                           // MobjType.Headshot
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Rball1,                                                              // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -882,7 +882,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Rocket
+        new(                                                                                           // MobjType.Rocket
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Rocket,                                                              // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -908,7 +908,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Plasma
+        new(                                                                                           // MobjType.Plasma
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Plasball,                                                            // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -934,7 +934,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Bfg
+        new(                                                                                           // MobjType.Bfg
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.Bfgshot,                                                             // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -960,7 +960,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                                                                  // MobjType.Arachplaz
+        new(                                                                                           // MobjType.Arachplaz
             doomEdNum: -1,                                                                             // doomEdNum
             spawnState: MobjState.ArachPlaz,                                                           // spawnState
             spawnHealth: 1000,                                                                         // spawnHealth
@@ -986,7 +986,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                                                 // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Puff
+        new(                                                   // MobjType.Puff
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Puff1,                       // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -1012,7 +1012,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Blood
+        new(                                  // MobjType.Blood
             doomEdNum: -1,                    // doomEdNum
             spawnState: MobjState.Blood1,     // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1038,7 +1038,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Tfog
+        new(                                                   // MobjType.Tfog
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Tfog,                        // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -1064,7 +1064,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Ifog
+        new(                                                   // MobjType.Ifog
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Ifog,                        // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -1090,7 +1090,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                                         // MobjType.Teleportman
+        new(                                                  // MobjType.Teleportman
             doomEdNum: 14,                                    // doomEdNum
             spawnState: MobjState.Null,                       // spawnState
             spawnHealth: 1000,                                // spawnHealth
@@ -1116,7 +1116,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                        // raiseState
         ),
 
-        new MobjInfo(                                          // MobjType.Extrabfg
+        new(                                                   // MobjType.Extrabfg
             doomEdNum: -1,                                     // doomEdNum
             spawnState: MobjState.Bfgexp,                      // spawnState
             spawnHealth: 1000,                                 // spawnHealth
@@ -1142,7 +1142,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                         // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc0
+        new(                                  // MobjType.Misc0
             doomEdNum: 2018,                  // doomEdNum
             spawnState: MobjState.Arm1,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1168,7 +1168,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc1
+        new(                                  // MobjType.Misc1
             doomEdNum: 2019,                  // doomEdNum
             spawnState: MobjState.Arm2,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1194,7 +1194,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Misc2
+        new(                                                // MobjType.Misc2
             doomEdNum: 2014,                                // doomEdNum
             spawnState: MobjState.Bon1,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1220,7 +1220,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Misc3
+        new(                                                // MobjType.Misc3
             doomEdNum: 2015,                                // doomEdNum
             spawnState: MobjState.Bon2,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1246,7 +1246,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                           // MobjType.Misc4
+        new(                                                    // MobjType.Misc4
             doomEdNum: 5,                                       // doomEdNum
             spawnState: MobjState.Bkey,                         // spawnState
             spawnHealth: 1000,                                  // spawnHealth
@@ -1272,7 +1272,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                          // raiseState
         ),
 
-        new MobjInfo(                                           // MobjType.Misc5
+        new(                                                    // MobjType.Misc5
             doomEdNum: 13,                                      // doomEdNum
             spawnState: MobjState.Rkey,                         // spawnState
             spawnHealth: 1000,                                  // spawnHealth
@@ -1298,7 +1298,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                          // raiseState
         ),
 
-        new MobjInfo(                                           // MobjType.Misc6
+        new(                                                    // MobjType.Misc6
             doomEdNum: 6,                                       // doomEdNum
             spawnState: MobjState.Ykey,                         // spawnState
             spawnHealth: 1000,                                  // spawnHealth
@@ -1324,7 +1324,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                          // raiseState
         ),
 
-        new MobjInfo(                                           // MobjType.Misc7
+        new(                                                    // MobjType.Misc7
             doomEdNum: 39,                                      // doomEdNum
             spawnState: MobjState.Yskull,                       // spawnState
             spawnHealth: 1000,                                  // spawnHealth
@@ -1350,7 +1350,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                          // raiseState
         ),
 
-        new MobjInfo(                                           // MobjType.Misc8
+        new(                                                    // MobjType.Misc8
             doomEdNum: 38,                                      // doomEdNum
             spawnState: MobjState.Rskull,                       // spawnState
             spawnHealth: 1000,                                  // spawnHealth
@@ -1376,7 +1376,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                          // raiseState
         ),
 
-        new MobjInfo(                                           // MobjType.Misc9
+        new(                                                    // MobjType.Misc9
             doomEdNum: 40,                                      // doomEdNum
             spawnState: MobjState.Bskull,                       // spawnState
             spawnHealth: 1000,                                  // spawnHealth
@@ -1402,7 +1402,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                          // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc10
+        new(                                  // MobjType.Misc10
             doomEdNum: 2011,                  // doomEdNum
             spawnState: MobjState.Stim,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1428,7 +1428,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc11
+        new(                                  // MobjType.Misc11
             doomEdNum: 2012,                  // doomEdNum
             spawnState: MobjState.Medi,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1454,7 +1454,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Misc12
+        new(                                                // MobjType.Misc12
             doomEdNum: 2013,                                // doomEdNum
             spawnState: MobjState.Soul,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1480,7 +1480,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Inv
+        new(                                                // MobjType.Inv
             doomEdNum: 2022,                                // doomEdNum
             spawnState: MobjState.Pinv,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1506,7 +1506,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Misc13
+        new(                                                // MobjType.Misc13
             doomEdNum: 2023,                                // doomEdNum
             spawnState: MobjState.Pstr,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1532,7 +1532,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Ins
+        new(                                                // MobjType.Ins
             doomEdNum: 2024,                                // doomEdNum
             spawnState: MobjState.Pins,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1558,7 +1558,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc14
+        new(                                  // MobjType.Misc14
             doomEdNum: 2025,                  // doomEdNum
             spawnState: MobjState.Suit,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1584,7 +1584,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Misc15
+        new(                                                // MobjType.Misc15
             doomEdNum: 2026,                                // doomEdNum
             spawnState: MobjState.Pmap,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1610,7 +1610,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Misc16
+        new(                                                // MobjType.Misc16
             doomEdNum: 2045,                                // doomEdNum
             spawnState: MobjState.Pvis,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1636,7 +1636,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                                       // MobjType.Mega
+        new(                                                // MobjType.Mega
             doomEdNum: 83,                                  // doomEdNum
             spawnState: MobjState.Mega,                     // spawnState
             spawnHealth: 1000,                              // spawnHealth
@@ -1662,7 +1662,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                      // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Clip
+        new(                                  // MobjType.Clip
             doomEdNum: 2007,                  // doomEdNum
             spawnState: MobjState.Clip,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1688,7 +1688,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc17
+        new(                                  // MobjType.Misc17
             doomEdNum: 2048,                  // doomEdNum
             spawnState: MobjState.Ammo,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1714,7 +1714,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc18
+        new(                                  // MobjType.Misc18
             doomEdNum: 2010,                  // doomEdNum
             spawnState: MobjState.Rock,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1740,7 +1740,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc19
+        new(                                  // MobjType.Misc19
             doomEdNum: 2046,                  // doomEdNum
             spawnState: MobjState.Brok,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1766,7 +1766,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc20
+        new(                                  // MobjType.Misc20
             doomEdNum: 2047,                  // doomEdNum
             spawnState: MobjState.Cell,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1792,7 +1792,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc21
+        new(                                  // MobjType.Misc21
             doomEdNum: 17,                    // doomEdNum
             spawnState: MobjState.Celp,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1818,7 +1818,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc22
+        new(                                  // MobjType.Misc22
             doomEdNum: 2008,                  // doomEdNum
             spawnState: MobjState.Shel,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1844,7 +1844,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc23
+        new(                                  // MobjType.Misc23
             doomEdNum: 2049,                  // doomEdNum
             spawnState: MobjState.Sbox,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1870,7 +1870,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc24
+        new(                                  // MobjType.Misc24
             doomEdNum: 8,                     // doomEdNum
             spawnState: MobjState.Bpak,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1896,7 +1896,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc25
+        new(                                  // MobjType.Misc25
             doomEdNum: 2006,                  // doomEdNum
             spawnState: MobjState.Bfug,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1922,7 +1922,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Chaingun
+        new(                                  // MobjType.Chaingun
             doomEdNum: 2002,                  // doomEdNum
             spawnState: MobjState.Mgun,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1948,7 +1948,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc26
+        new(                                  // MobjType.Misc26
             doomEdNum: 2005,                  // doomEdNum
             spawnState: MobjState.Csaw,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -1974,7 +1974,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc27
+        new(                                  // MobjType.Misc27
             doomEdNum: 2003,                  // doomEdNum
             spawnState: MobjState.Laun,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2000,7 +2000,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc28
+        new(                                  // MobjType.Misc28
             doomEdNum: 2004,                  // doomEdNum
             spawnState: MobjState.Plas,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2026,7 +2026,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Shotgun
+        new(                                  // MobjType.Shotgun
             doomEdNum: 2001,                  // doomEdNum
             spawnState: MobjState.Shot,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2052,7 +2052,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Supershotgun
+        new(                                  // MobjType.Supershotgun
             doomEdNum: 82,                    // doomEdNum
             spawnState: MobjState.Shot2,      // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2078,7 +2078,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc29
+        new(                                  // MobjType.Misc29
             doomEdNum: 85,                    // doomEdNum
             spawnState: MobjState.Techlamp,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2104,7 +2104,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc30
+        new(                                  // MobjType.Misc30
             doomEdNum: 86,                    // doomEdNum
             spawnState: MobjState.Tech2Lamp,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2130,7 +2130,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc31
+        new(                                  // MobjType.Misc31
             doomEdNum: 2028,                  // doomEdNum
             spawnState: MobjState.Colu,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2156,7 +2156,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc32
+        new(                                  // MobjType.Misc32
             doomEdNum: 30,                    // doomEdNum
             spawnState: MobjState.Tallgrncol, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2182,7 +2182,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc33
+        new(                                  // MobjType.Misc33
             doomEdNum: 31,                    // doomEdNum
             spawnState: MobjState.Shrtgrncol, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2208,7 +2208,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc34
+        new(                                  // MobjType.Misc34
             doomEdNum: 32,                    // doomEdNum
             spawnState: MobjState.Tallredcol, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2234,7 +2234,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc35
+        new(                                  // MobjType.Misc35
             doomEdNum: 33,                    // doomEdNum
             spawnState: MobjState.Shrtredcol, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2260,7 +2260,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc36
+        new(                                  // MobjType.Misc36
             doomEdNum: 37,                    // doomEdNum
             spawnState: MobjState.Skullcol,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2286,7 +2286,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc37
+        new(                                  // MobjType.Misc37
             doomEdNum: 36,                    // doomEdNum
             spawnState: MobjState.Heartcol,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2312,7 +2312,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc38
+        new(                                  // MobjType.Misc38
             doomEdNum: 41,                    // doomEdNum
             spawnState: MobjState.Evileye,    // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2338,7 +2338,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc39
+        new(                                  // MobjType.Misc39
             doomEdNum: 42,                    // doomEdNum
             spawnState: MobjState.Floatskull, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2364,7 +2364,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc40
+        new(                                  // MobjType.Misc40
             doomEdNum: 43,                    // doomEdNum
             spawnState: MobjState.Torchtree,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2390,7 +2390,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc41
+        new(                                  // MobjType.Misc41
             doomEdNum: 44,                    // doomEdNum
             spawnState: MobjState.Bluetorch,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2416,7 +2416,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc42
+        new(                                  // MobjType.Misc42
             doomEdNum: 45,                    // doomEdNum
             spawnState: MobjState.Greentorch, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2442,7 +2442,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc43
+        new(                                  // MobjType.Misc43
             doomEdNum: 46,                    // doomEdNum
             spawnState: MobjState.Redtorch,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2468,7 +2468,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc44
+        new(                                  // MobjType.Misc44
             doomEdNum: 55,                    // doomEdNum
             spawnState: MobjState.Btorchshrt, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2494,7 +2494,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc45
+        new(                                  // MobjType.Misc45
             doomEdNum: 56,                    // doomEdNum
             spawnState: MobjState.Gtorchshrt, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2520,7 +2520,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc46
+        new(                                  // MobjType.Misc46
             doomEdNum: 57,                    // doomEdNum
             spawnState: MobjState.Rtorchshrt, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2546,7 +2546,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc47
+        new(                                  // MobjType.Misc47
             doomEdNum: 47,                    // doomEdNum
             spawnState: MobjState.Stalagtite, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2572,7 +2572,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc48
+        new(                                  // MobjType.Misc48
             doomEdNum: 48,                    // doomEdNum
             spawnState: MobjState.Techpillar, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2598,7 +2598,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc49
+        new(                                  // MobjType.Misc49
             doomEdNum: 34,                    // doomEdNum
             spawnState: MobjState.Candlestik, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2624,7 +2624,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc50
+        new(                                  // MobjType.Misc50
             doomEdNum: 35,                    // doomEdNum
             spawnState: MobjState.Candelabra, // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2650,7 +2650,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc51
+        new(                                                                       // MobjType.Misc51
             doomEdNum: 49,                                                         // doomEdNum
             spawnState: MobjState.Bloodytwitch,                                    // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -2676,7 +2676,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc52
+        new(                                                                       // MobjType.Misc52
             doomEdNum: 50,                                                         // doomEdNum
             spawnState: MobjState.Meat2,                                           // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -2702,7 +2702,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc53
+        new(                                                                       // MobjType.Misc53
             doomEdNum: 51,                                                         // doomEdNum
             spawnState: MobjState.Meat3,                                           // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -2728,7 +2728,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc54
+        new(                                                                       // MobjType.Misc54
             doomEdNum: 52,                                                         // doomEdNum
             spawnState: MobjState.Meat4,                                           // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -2754,7 +2754,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc55
+        new(                                                                       // MobjType.Misc55
             doomEdNum: 53,                                                         // doomEdNum
             spawnState: MobjState.Meat5,                                           // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -2780,7 +2780,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                            // MobjType.Misc56
+        new(                                                     // MobjType.Misc56
             doomEdNum: 59,                                       // doomEdNum
             spawnState: MobjState.Meat2,                         // spawnState
             spawnHealth: 1000,                                   // spawnHealth
@@ -2806,7 +2806,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                           // raiseState
         ),
 
-        new MobjInfo(                                            // MobjType.Misc57
+        new(                                                     // MobjType.Misc57
             doomEdNum: 60,                                       // doomEdNum
             spawnState: MobjState.Meat4,                         // spawnState
             spawnHealth: 1000,                                   // spawnHealth
@@ -2832,7 +2832,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                           // raiseState
         ),
 
-        new MobjInfo(                                            // MobjType.Misc58
+        new(                                                     // MobjType.Misc58
             doomEdNum: 61,                                       // doomEdNum
             spawnState: MobjState.Meat3,                         // spawnState
             spawnHealth: 1000,                                   // spawnHealth
@@ -2858,7 +2858,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                           // raiseState
         ),
 
-        new MobjInfo(                                            // MobjType.Misc59
+        new(                                                     // MobjType.Misc59
             doomEdNum: 62,                                       // doomEdNum
             spawnState: MobjState.Meat5,                         // spawnState
             spawnHealth: 1000,                                   // spawnHealth
@@ -2884,7 +2884,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                           // raiseState
         ),
 
-        new MobjInfo(                                            // MobjType.Misc60
+        new(                                                     // MobjType.Misc60
             doomEdNum: 63,                                       // doomEdNum
             spawnState: MobjState.Bloodytwitch,                  // spawnState
             spawnHealth: 1000,                                   // spawnHealth
@@ -2910,7 +2910,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                           // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc61
+        new(                                  // MobjType.Misc61
             doomEdNum: 22,                    // doomEdNum
             spawnState: MobjState.HeadDie6,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2936,7 +2936,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc62
+        new(                                  // MobjType.Misc62
             doomEdNum: 15,                    // doomEdNum
             spawnState: MobjState.PlayDie7,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2962,7 +2962,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc63
+        new(                                  // MobjType.Misc63
             doomEdNum: 18,                    // doomEdNum
             spawnState: MobjState.PossDie5,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -2988,7 +2988,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc64
+        new(                                  // MobjType.Misc64
             doomEdNum: 21,                    // doomEdNum
             spawnState: MobjState.SargDie6,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3014,7 +3014,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc65
+        new(                                  // MobjType.Misc65
             doomEdNum: 23,                    // doomEdNum
             spawnState: MobjState.SkullDie6,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3040,7 +3040,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc66
+        new(                                  // MobjType.Misc66
             doomEdNum: 20,                    // doomEdNum
             spawnState: MobjState.TrooDie5,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3066,7 +3066,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc67
+        new(                                  // MobjType.Misc67
             doomEdNum: 19,                    // doomEdNum
             spawnState: MobjState.SposDie5,   // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3092,7 +3092,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc68
+        new(                                  // MobjType.Misc68
             doomEdNum: 10,                    // doomEdNum
             spawnState: MobjState.PlayXdie9,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3118,7 +3118,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc69
+        new(                                  // MobjType.Misc69
             doomEdNum: 12,                    // doomEdNum
             spawnState: MobjState.PlayXdie9,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3144,7 +3144,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                           // MobjType.Misc70
+        new(                                    // MobjType.Misc70
             doomEdNum: 28,                      // doomEdNum
             spawnState: MobjState.Headsonstick, // spawnState
             spawnHealth: 1000,                  // spawnHealth
@@ -3170,7 +3170,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null          // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc71
+        new(                                  // MobjType.Misc71
             doomEdNum: 24,                    // doomEdNum
             spawnState: MobjState.Gibs,       // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3196,7 +3196,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                           // MobjType.Misc72
+        new(                                    // MobjType.Misc72
             doomEdNum: 27,                      // doomEdNum
             spawnState: MobjState.Headonastick, // spawnState
             spawnHealth: 1000,                  // spawnHealth
@@ -3222,7 +3222,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null          // raiseState
         ),
 
-        new MobjInfo(                          // MobjType.Misc73
+        new(                                   // MobjType.Misc73
             doomEdNum: 29,                     // doomEdNum
             spawnState: MobjState.Headcandles, // spawnState
             spawnHealth: 1000,                 // spawnHealth
@@ -3248,7 +3248,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null         // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc74
+        new(                                  // MobjType.Misc74
             doomEdNum: 25,                    // doomEdNum
             spawnState: MobjState.Deadstick,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3274,7 +3274,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc75
+        new(                                  // MobjType.Misc75
             doomEdNum: 26,                    // doomEdNum
             spawnState: MobjState.Livestick,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3300,7 +3300,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc76
+        new(                                  // MobjType.Misc76
             doomEdNum: 54,                    // doomEdNum
             spawnState: MobjState.Bigtree,    // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3326,7 +3326,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc77
+        new(                                  // MobjType.Misc77
             doomEdNum: 70,                    // doomEdNum
             spawnState: MobjState.Bbar1,      // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3352,7 +3352,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc78
+        new(                                                                       // MobjType.Misc78
             doomEdNum: 73,                                                         // doomEdNum
             spawnState: MobjState.Hangnoguts,                                      // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -3378,7 +3378,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc79
+        new(                                                                       // MobjType.Misc79
             doomEdNum: 74,                                                         // doomEdNum
             spawnState: MobjState.Hangbnobrain,                                    // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -3404,7 +3404,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc80
+        new(                                                                       // MobjType.Misc80
             doomEdNum: 75,                                                         // doomEdNum
             spawnState: MobjState.Hangtlookdn,                                     // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -3430,7 +3430,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc81
+        new(                                                                       // MobjType.Misc81
             doomEdNum: 76,                                                         // doomEdNum
             spawnState: MobjState.Hangtskull,                                      // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -3456,7 +3456,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc82
+        new(                                                                       // MobjType.Misc82
             doomEdNum: 77,                                                         // doomEdNum
             spawnState: MobjState.Hangtlookup,                                     // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -3482,7 +3482,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                                                              // MobjType.Misc83
+        new(                                                                       // MobjType.Misc83
             doomEdNum: 78,                                                         // doomEdNum
             spawnState: MobjState.Hangtnobrain,                                    // spawnState
             spawnHealth: 1000,                                                     // spawnHealth
@@ -3508,7 +3508,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null                                             // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc84
+        new(                                  // MobjType.Misc84
             doomEdNum: 79,                    // doomEdNum
             spawnState: MobjState.Colongibs,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3534,7 +3534,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc85
+        new(                                  // MobjType.Misc85
             doomEdNum: 80,                    // doomEdNum
             spawnState: MobjState.Smallpool,  // spawnState
             spawnHealth: 1000,                // spawnHealth
@@ -3560,7 +3560,7 @@ public static partial class DoomInfo
             raiseState: MobjState.Null        // raiseState
         ),
 
-        new MobjInfo(                         // MobjType.Misc86
+        new(                                  // MobjType.Misc86
             doomEdNum: 81,                    // doomEdNum
             spawnState: MobjState.Brainstem,  // spawnState
             spawnHealth: 1000,                // spawnHealth
