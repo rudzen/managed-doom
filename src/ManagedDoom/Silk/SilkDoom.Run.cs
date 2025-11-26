@@ -19,7 +19,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 #if WINDOWS_RELEASE
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 #endif
 using Silk.NET.Windowing;
@@ -57,18 +56,10 @@ public sealed partial class SilkDoom
         return Task.CompletedTask;
     }
 #else
-    [LibraryImport("winmm.dll")]
-    private static partial uint timeBeginPeriod(uint uPeriod);
-
-    [LibraryImport("winmm.dll")]
-    private static partial uint timeEndPeriod(uint uPeriod);
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Sleep(int ms)
     {
-        _ = timeBeginPeriod(1);
         Thread.Sleep(ms);
-        _ = timeEndPeriod(1);
     }
 
     public Task Run()
@@ -97,10 +88,7 @@ public sealed partial class SilkDoom
                 {
                     window.DoUpdate();
                     gameTime += gameTimeStep;
-                }
 
-                if (!window.IsClosing)
-                {
                     var elapsed = Stopwatch.GetElapsedTime(startTime);
                     if (elapsed >= gameTime) continue;
                     window.DoRender();

@@ -16,11 +16,10 @@
 
 using System;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.Map;
 
-public sealed class MapThing : IFixedCoordinates
+public sealed class MapThing
 {
     private const int DataSize = 10;
 

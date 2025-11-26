@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System.Collections.Generic;
 using ManagedDoom.Doom.Common;
 
 namespace ManagedDoom.Doom.Info;

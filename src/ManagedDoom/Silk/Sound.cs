@@ -39,7 +39,7 @@ public enum OutputType : byte
 
 public sealed class Sound : IDisposable
 {
-    public OutputType SoundType { get; set; }
+    public OutputType SoundType { get; init; }
     public Mobj? Listener { get; set; }
 
     public int MaxVolume { get; set; }

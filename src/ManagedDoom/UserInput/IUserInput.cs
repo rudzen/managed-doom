@@ -19,6 +19,12 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.UserInput;
 
+public enum UserInputType
+{
+    Null,
+    Silk
+}
+
 public interface IUserInput : IDisposable
 {
     void BuildTicCmd(TicCommand command);
