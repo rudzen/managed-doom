@@ -159,9 +159,6 @@ public sealed class Mobj : Thinker
 
     public int Frame { get; set; }
 
-    public Mobj? BlockNext { get; set; }
-
-    public Mobj? BlockPrev { get; set; }
 
     public Subsector Subsector { get; set; }
 

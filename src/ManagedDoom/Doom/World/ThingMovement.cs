@@ -78,23 +78,7 @@ public sealed class ThingMovement(World world)
             var index = map.BlockMap.GetIndex(thing.X, thing.Y);
 
             if (index != -1)
-            {
-                var link = map.BlockMap.ThingLists[index];
-
-                thing.BlockPrev = null;
-                thing.BlockNext = link;
-
-                if (link is not null)
-                    link.BlockPrev = thing;
-
-                map.BlockMap.ThingLists[index] = thing;
-            }
-            else
-            {
-                // Thing is off the map.
-                thing.BlockNext = null;
-                thing.BlockPrev = null;
-            }
+                map.BlockMap.ThingLists[index].Insert(0, thing); // Insert at head to maintain original linked-list order
         }
     }
 
@@ -124,19 +108,10 @@ public sealed class ThingMovement(World world)
         // Inert things don't need to be in blockmap.
         if ((thing.Flags & MobjFlags.NoBlockMap) == 0)
         {
-            // Unlink from block map.
-            if (thing.BlockNext != null)
-                thing.BlockNext.BlockPrev = thing.BlockPrev;
+            var index = map.BlockMap.GetIndex(thing.X, thing.Y);
 
-            if (thing.BlockPrev != null)
-                thing.BlockPrev.BlockNext = thing.BlockNext;
-            else
-            {
-                var index = map.BlockMap.GetIndex(thing.X, thing.Y);
-
-                if (index != -1)
-                    map.BlockMap.ThingLists[index] = thing.BlockNext;
-            }
+            if (index != -1)
+                map.BlockMap.ThingLists[index].Remove(thing);
         }
     }
 

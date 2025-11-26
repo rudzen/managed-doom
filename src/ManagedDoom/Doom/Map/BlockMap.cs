@@ -15,6 +15,8 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
@@ -36,7 +38,7 @@ public sealed class BlockMap
     public Fixed OriginY { get; }
     public int Width { get; }
     public int Height { get; }
-    public Mobj?[] ThingLists { get; }
+    public List<Mobj>[] ThingLists { get; }
 
     private BlockMap(
         Fixed originX,
@@ -53,7 +55,9 @@ public sealed class BlockMap
         this.table = table;
         this.lines = lines;
 
-        ThingLists = new Mobj[width * height];
+        ThingLists = new List<Mobj>[width * height];
+        for (var i = 0; i < ThingLists.Length; i++)
+            ThingLists[i] = new List<Mobj>();
     }
 
     public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
@@ -111,7 +115,7 @@ public sealed class BlockMap
         return GetIndex(blockX, blockY);
     }
 
-    public bool IterateLines(int blockX, int blockY, Predicate<LineDef> func, int validCount)
+    public bool IterateLines(int blockX, int blockY, Func<LineDef, bool> func, int validCount)
     {
         var index = GetIndex(blockX, blockY);
 
@@ -134,17 +138,18 @@ public sealed class BlockMap
         return true;
     }
 
-    public bool IterateThings(int blockX, int blockY, Predicate<Mobj> func)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IterateThings(int blockX, int blockY, Func<Mobj, bool> func)
     {
         var index = GetIndex(blockX, blockY);
 
         if (index == -1)
             return true;
 
-        for (var mobj = ThingLists[index]; mobj != null; mobj = mobj.BlockNext)
-            if (!func(mobj))
-                return false;
-
-        return true;
+        var list = ThingLists[index];
+        // Create snapshot to safely handle items being removed during iteration
+        // while maintaining LIFO order (newest first)
+        var snapshot = list.ToArray();
+        return snapshot.All(func);
     }
 }
