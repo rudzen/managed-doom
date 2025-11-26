@@ -57,7 +57,7 @@ public sealed class BlockMap
 
         ThingLists = new List<Mobj>[width * height];
         for (var i = 0; i < ThingLists.Length; i++)
-            ThingLists[i] = new List<Mobj>();
+            ThingLists[i] = new List<Mobj>(32);
     }
 
     public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)

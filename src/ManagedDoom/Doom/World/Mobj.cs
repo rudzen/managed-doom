@@ -149,9 +149,6 @@ public sealed class Mobj : Thinker
     // Info for drawing: position.
     public Fixed Z { get; set; }
 
-    public Mobj? SectorNext { get; set; }
-
-    public Mobj? SectorPrev { get; set; }
 
     public Angle Angle { get; set; }
 

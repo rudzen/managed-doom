@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Graphics;
@@ -67,6 +66,8 @@ public sealed class Sector
 
         oldFloorHeight = floorHeight;
         oldCeilingHeight = ceilingHeight;
+
+        ThingList = new List<Mobj>(512);
     }
 
     public int Number { get; }
@@ -82,7 +83,7 @@ public sealed class Sector
     public int[] BlockBox { get; set; } = null!;
     public Mobj SoundOrigin { get; set; } = null!;
     public int ValidCount { get; set; }
-    public Mobj? ThingList { get; set; }
+    public List<Mobj> ThingList { get; }
     public Thinker? SpecialData { get; set; }
     public LineDef[] Lines { get; set; } = null!;
 
@@ -149,49 +150,8 @@ public sealed class Sector
         oldCeilingHeight = CeilingHeight;
     }
 
-    public ThingEnumerator GetEnumerator()
+    public List<Mobj>.Enumerator GetEnumerator()
     {
-        return new ThingEnumerator(this);
-    }
-
-
-    public struct ThingEnumerator : IEnumerator<Mobj>
-    {
-        private readonly Sector sector;
-        private Mobj? thing;
-
-        public ThingEnumerator(Sector sector)
-        {
-            this.sector = sector;
-            thing = sector.ThingList;
-            Current = null!;
-        }
-
-        public bool MoveNext()
-        {
-            if (thing is not null)
-            {
-                Current = thing;
-                thing = thing.SectorNext;
-                return true;
-            }
-
-            Current = null!;
-            return false;
-        }
-
-        public void Reset()
-        {
-            thing = sector.ThingList;
-            Current = null!;
-        }
-
-        public readonly void Dispose()
-        {
-        }
-
-        public Mobj Current { get; private set; }
-
-        readonly object IEnumerator.Current => throw new NotImplementedException();
+        return ThingList.GetEnumerator();
     }
 }
