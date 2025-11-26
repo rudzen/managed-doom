@@ -16,11 +16,10 @@
 
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Interfaces;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class DivLine : IFixedCoordinates
+public sealed class DivLine
 {
     public void MakeFrom(LineDef line)
     {

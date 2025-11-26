@@ -24,14 +24,14 @@ public sealed class KeyBinding
 {
     private static readonly KeyBinding empty = new([], []);
 
-    public DoomKey[] Keys { get; set; }
-    public DoomMouseButton[] MouseButtons { get; set; }
-
     public KeyBinding(DoomKey[] keys, DoomMouseButton[] mouseButtons)
     {
         Keys = keys;
         MouseButtons = mouseButtons;
     }
+
+    public DoomKey[] Keys { get; set; }
+    public DoomMouseButton[] MouseButtons { get; set; }
 
     public override string ToString()
     {

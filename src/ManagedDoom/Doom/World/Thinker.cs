@@ -18,10 +18,6 @@ namespace ManagedDoom.Doom.World;
 
 public class Thinker
 {
-    public Thinker Prev { get; set; }
-
-    public Thinker Next { get; set; }
-
     public ThinkerState ThinkerState { get; set; }
 
     public virtual void Run()

@@ -65,35 +65,24 @@ public sealed class SectorAction
         thing.FloorZ = tm.CurrentFloorZ;
         thing.CeilingZ = tm.CurrentCeilingZ;
 
+        // Walking monsters rise and fall with the floor.
         if (onFloor)
-        {
-            // Walking monsters rise and fall with the floor.
             thing.Z = thing.FloorZ;
-        }
         else
         {
             // Don't adjust a floating monster unless forced to.
             if (thing.Z + thing.Height > thing.CeilingZ)
-            {
                 thing.Z = thing.CeilingZ - thing.Height;
-            }
         }
 
-        if (thing.CeilingZ - thing.FloorZ < thing.Height)
-        {
-            return false;
-        }
-
-        return true;
+        return thing.CeilingZ - thing.FloorZ >= thing.Height;
     }
 
     private bool CrushThing(Mobj thing)
     {
+        // Keep checking.
         if (ThingHeightClip(thing))
-        {
-            // Keep checking.
             return true;
-        }
 
         // Crunch bodies to giblets.
         if (thing.Health <= 0)
@@ -116,11 +105,9 @@ public sealed class SectorAction
             return true;
         }
 
+        // Assume it is bloody gibs or something.
         if ((thing.Flags & MobjFlags.Shootable) == 0)
-        {
-            // Assume it is bloody gibs or something.
             return true;
-        }
 
         noFit = true;
 
@@ -130,10 +117,11 @@ public sealed class SectorAction
 
             // Spray blood in a random direction.
             var blood = world.ThingAllocation.SpawnMobj(
-                thing.X,
-                thing.Y,
-                thing.Z + thing.Height / 2,
-                MobjType.Blood);
+                x: thing.X,
+                y: thing.Y,
+                z: thing.Z + thing.Height / 2,
+                type: MobjType.Blood
+            );
 
             var random = world.Random;
             blood.MomX = new Fixed((random.Next() - random.Next()) << 12);
@@ -152,13 +140,16 @@ public sealed class SectorAction
         var bm = world.Map.BlockMap;
         var blockBox = sector.BlockBox;
 
+        var left = blockBox.Left();
+        var right = blockBox.Right();
+        var bottom = blockBox.Bottom();
+        var top = blockBox.Top();
+
         // Re-check heights for all things near the moving sector.
-        for (var x = blockBox.Left(); x <= blockBox.Right(); x++)
+        for (var x = left; x <= right; x++)
         {
-            for (var y = blockBox.Bottom(); y <= blockBox.Top(); y++)
-            {
+            for (var y = bottom; y <= top; y++)
                 bm.IterateThings(x, y, CrushThing);
-            }
         }
 
         return noFit;
@@ -232,9 +223,7 @@ public sealed class SectorAction
                             if (ChangeSector(sector, crush))
                             {
                                 if (crush)
-                                {
                                     return SectorActionResult.Crushed;
-                                }
 
                                 sector.FloorHeight = lastPos;
                                 ChangeSector(sector, crush);
@@ -274,9 +263,7 @@ public sealed class SectorAction
                             if (ChangeSector(sector, crush))
                             {
                                 if (crush)
-                                {
                                     return SectorActionResult.Crushed;
-                                }
 
                                 sector.CeilingHeight = lastPos;
                                 ChangeSector(sector, crush);
@@ -328,17 +315,18 @@ public sealed class SectorAction
     private static Fixed FindLowestFloorSurrounding(Sector sector)
     {
         var floor = sector.FloorHeight;
+        var lines = sector.Lines.AsSpan();
+        ref var linesRef = ref MemoryMarshal.GetReference(lines);
 
-        foreach (var check in sector.Lines)
+        for (var i = 0; i < sector.Lines.Length; i++)
         {
+            ref var check = ref Unsafe.Add(ref linesRef, i);
             var other = GetNextSector(check, sector);
-            if (other == null)
+            if (other is null)
                 continue;
 
             if (other.FloorHeight < floor)
-            {
                 floor = other.FloorHeight;
-            }
         }
 
         return floor;
@@ -348,11 +336,14 @@ public sealed class SectorAction
     private static Fixed FindHighestFloorSurrounding(Sector sector)
     {
         var floor = Fixed.FromInt(-500);
+        var linesSpan = sector.Lines.AsSpan();
+        ref var linesRef = ref MemoryMarshal.GetReference(linesSpan);
 
-        foreach (var check in sector.Lines)
+        for (var i = 0; i < sector.Lines.Length; i++)
         {
+            ref var check = ref Unsafe.Add(ref linesRef, i);
             var other = GetNextSector(check, sector);
-            if (other == null)
+            if (other is null)
                 continue;
 
             if (other.FloorHeight > floor)
@@ -366,7 +357,6 @@ public sealed class SectorAction
     private static Fixed FindLowestCeilingSurrounding(Sector sector)
     {
         var height = Fixed.MaxValue;
-
         var lines = sector.Lines.AsSpan();
         ref var linesRef = ref MemoryMarshal.GetReference(lines);
 
@@ -374,7 +364,7 @@ public sealed class SectorAction
         {
             ref var check = ref Unsafe.Add(ref linesRef, i);
             var other = GetNextSector(check, sector);
-            if (other == null)
+            if (other is null)
                 continue;
 
             if (other.CeilingHeight < height)
@@ -388,18 +378,18 @@ public sealed class SectorAction
     {
         var height = Fixed.Zero;
 
-        foreach (var check in sector.Lines)
+        var lines = sector.Lines.AsSpan();
+        ref var linesRef = ref MemoryMarshal.GetReference(lines);
+
+        for (var i = 0; i < sector.Lines.Length; i++)
         {
+            ref var check = ref Unsafe.Add(ref linesRef, i);
             var other = GetNextSector(check, sector);
             if (other == null)
-            {
                 continue;
-            }
 
             if (other.CeilingHeight > height)
-            {
                 height = other.CeilingHeight;
-            }
         }
 
         return height;
@@ -407,14 +397,14 @@ public sealed class SectorAction
 
     private int FindSectorFromLineTag(LineDef line, int start)
     {
-        var sectors = world.Map.Sectors;
+        var sectorSpan = world.Map.Sectors.AsSpan();
+        ref var sectorsRef = ref MemoryMarshal.GetReference(sectorSpan);
 
-        for (var i = start + 1; i < sectors.Length; i++)
+        for (var i = start + 1; i < sectorSpan.Length; i++)
         {
-            if (sectors[i].Tag == line.Tag)
-            {
+            ref var sector = ref Unsafe.Add(ref sectorsRef, i);
+            if (sector.Tag == line.Tag)
                 return i;
-            }
         }
 
         return -1;
@@ -475,10 +465,8 @@ public sealed class SectorAction
             // Red Lock.
             case 28:
             case 33:
-                if (player == null)
-                {
+                if (player is null)
                     return;
-                }
 
                 const CardType redCards = CardType.RedCard | CardType.RedSkull;
 
@@ -506,18 +494,14 @@ public sealed class SectorAction
                 case 27:
                 case 28:
                 case 117:
+                    // Go back up.
                     if (door.Direction == -1)
-                    {
-                        // Go back up.
                         door.Direction = 1;
-                    }
                     else
                     {
+                        // Bad guys never close doors.
                         if (thing.Player == null)
-                        {
-                            // Bad guys never close doors.
                             return;
-                        }
 
                         // Start going down immediately.
                         door.Direction = -1;
@@ -605,9 +589,7 @@ public sealed class SectorAction
         {
             var sector = sectors[sectorNumber];
             if (sector.SpecialData != null)
-            {
                 continue;
-            }
 
             result = true;
 
@@ -648,9 +630,7 @@ public sealed class SectorAction
                 door.TopHeight -= Fixed.FromInt(4);
                 door.Speed = doorSpeed * 4;
                 if (door.TopHeight != sector.CeilingHeight)
-                {
                     world.StartSound(door.Sector.SoundOrigin, Sfx.BDOPN, SfxType.Misc);
-                }
             }
             else if (type is VerticalDoorType.Normal or VerticalDoorType.Open)
             {
@@ -658,9 +638,7 @@ public sealed class SectorAction
                 door.TopHeight = FindLowestCeilingSurrounding(sector);
                 door.TopHeight -= Fixed.FromInt(4);
                 if (door.TopHeight != sector.CeilingHeight)
-                {
                     world.StartSound(door.Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-                }
             }
         }
 
@@ -731,48 +709,46 @@ public sealed class SectorAction
 
     // In plutonia MAP23, number of adjoining sectors can be 44.
     private const int maxAdjoiningSectorCount = 64;
-    private readonly Fixed[] heightList = new Fixed[maxAdjoiningSectorCount];
 
-    private Fixed FindNextHighestFloor(Sector sector, Fixed currentHeight)
+    [SkipLocalsInit]
+    private static Fixed FindNextHighestFloor(Sector sector, Fixed currentHeight)
     {
         var h = 0;
+        var sectorSpan = sector.Lines.AsSpan();
+        ref var sectorRef = ref MemoryMarshal.GetReference(sectorSpan);
+        Span<Fixed> heightList = stackalloc Fixed[maxAdjoiningSectorCount];
 
-        foreach (var check in sector.Lines)
+        for (var i = 0; i < sector.Lines.Length; i++)
         {
+            ref var check = ref Unsafe.Add(ref sectorRef, i);
             var other = GetNextSector(check, sector);
-            if (other == null)
-            {
+            if (other is null)
                 continue;
-            }
 
             if (other.FloorHeight > currentHeight)
-            {
                 heightList[h++] = other.FloorHeight;
-            }
 
             // Check for overflow.
+            // Exit.
             if (h >= heightList.Length)
-            {
-                // Exit.
                 throw new Exception("Too many adjoining sectors!");
-            }
         }
 
-        // Find lowest height in list.
+        // Find the lowest height in list.
         if (h == 0)
-        {
             return currentHeight;
-        }
 
         var min = heightList[0];
 
-        // Range checking? 
-        for (var i = 1; i < h; i++)
+        // Range checking?
+        var heightSpan = heightList[1..h];
+        ref var heightRef = ref MemoryMarshal.GetReference(heightSpan);
+
+        for (var i = 0; i < heightSpan.Length; i++)
         {
-            if (heightList[i] < min)
-            {
-                min = heightList[i];
-            }
+            ref var height = ref Unsafe.Add(ref heightRef, i);
+            if (height < min)
+                min = height;
         }
 
         return min;
@@ -780,7 +756,6 @@ public sealed class SectorAction
 
 
     private const int PlatformWait = 3;
-    private static readonly Fixed platformSpeed = Fixed.One;
 
     public bool DoPlatform(LineDef line, PlatformType type, int amount)
     {
@@ -791,11 +766,12 @@ public sealed class SectorAction
         var sectors = world.Map.Sectors;
         var sectorNumber = -1;
         var result = false;
+        var platformSpeed = Fixed.One;
 
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
             var sector = sectors[sectorNumber];
-            if (sector.SpecialData != null)
+            if (sector.SpecialData is not null)
                 continue;
 
             result = true;
@@ -835,9 +811,7 @@ public sealed class SectorAction
                     plat.Speed = platformSpeed * 4;
                     plat.Low = FindLowestFloorSurrounding(sector);
                     if (plat.Low > sector.FloorHeight)
-                    {
                         plat.Low = sector.FloorHeight;
-                    }
 
                     plat.High = sector.FloorHeight;
                     plat.Wait = 35 * PlatformWait;
@@ -849,9 +823,7 @@ public sealed class SectorAction
                     plat.Speed = platformSpeed * 8;
                     plat.Low = FindLowestFloorSurrounding(sector);
                     if (plat.Low > sector.FloorHeight)
-                    {
                         plat.Low = sector.FloorHeight;
-                    }
 
                     plat.High = sector.FloorHeight;
                     plat.Wait = 35 * PlatformWait;
@@ -863,15 +835,11 @@ public sealed class SectorAction
                     plat.Speed = platformSpeed;
                     plat.Low = FindLowestFloorSurrounding(sector);
                     if (plat.Low > sector.FloorHeight)
-                    {
                         plat.Low = sector.FloorHeight;
-                    }
 
                     plat.High = FindHighestFloorSurrounding(sector);
                     if (plat.High < sector.FloorHeight)
-                    {
                         plat.High = sector.FloorHeight;
-                    }
 
                     plat.Wait = 35 * PlatformWait;
                     plat.Status = (PlatformState)(world.Random.Next() & 1);
@@ -893,11 +861,17 @@ public sealed class SectorAction
     {
         foreach (var platform in activePlatforms.AsSpan())
         {
-            if (platform != null && platform.Tag == tag && platform.Status == PlatformState.InStasis)
-            {
-                platform.Status = platform.OldStatus;
-                platform.ThinkerState = ThinkerState.Active;
-            }
+            if (platform is null)
+                continue;
+
+            if (platform.Tag != tag)
+                continue;
+
+            if (platform.Status != PlatformState.InStasis)
+                continue;
+
+            platform.Status = platform.OldStatus;
+            platform.ThinkerState = ThinkerState.Active;
         }
     }
 
@@ -905,7 +879,7 @@ public sealed class SectorAction
     {
         foreach (var platform in activePlatforms)
         {
-            if (platform != null &&
+            if (platform is not null &&
                 platform.Status != PlatformState.InStasis &&
                 platform.Tag == line.Tag)
             {
@@ -920,12 +894,9 @@ public sealed class SectorAction
     {
         for (var i = 0; i < activePlatforms.Length; i++)
         {
-            if (activePlatforms[i] == null)
-            {
-                activePlatforms[i] = platform;
-
-                return;
-            }
+            if (activePlatforms[i] is not null) continue;
+            activePlatforms[i] = platform;
+            return;
         }
 
         throw new Exception("Too many active platforms!");
@@ -965,10 +936,8 @@ public sealed class SectorAction
             var sector = sectors[sectorNumber];
 
             // Already moving? If so, keep going...
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1010,18 +979,14 @@ public sealed class SectorAction
                 case FloorMoveType.RaiseFloorCrush:
                 case FloorMoveType.RaiseFloor:
                     if (type == FloorMoveType.RaiseFloorCrush)
-                    {
                         floor.Crush = true;
-                    }
 
                     floor.Direction = 1;
                     floor.Sector = sector;
                     floor.Speed = floorSpeed;
                     floor.FloorDestHeight = FindLowestCeilingSurrounding(sector);
                     if (floor.FloorDestHeight > sector.CeilingHeight)
-                    {
                         floor.FloorDestHeight = sector.CeilingHeight;
-                    }
 
                     floor.FloorDestHeight -= Fixed.FromInt(8) * (type == FloorMoveType.RaiseFloorCrush).AsInt();
                     break;
@@ -1075,22 +1040,12 @@ public sealed class SectorAction
                             continue;
 
                         var frontSide = sectorLine.FrontSide;
-                        if (frontSide!.BottomTexture >= 0)
-                        {
-                            if (textures[frontSide.BottomTexture].Height < min)
-                            {
-                                min = textures[frontSide.BottomTexture].Height;
-                            }
-                        }
+                        if (frontSide!.BottomTexture >= 0 && textures[frontSide.BottomTexture].Height < min)
+                            min = textures[frontSide.BottomTexture].Height;
 
                         var backSide = sectorLine.BackSide;
-                        if (backSide!.BottomTexture >= 0)
-                        {
-                            if (textures[backSide.BottomTexture].Height < min)
-                            {
-                                min = textures[backSide.BottomTexture].Height;
-                            }
-                        }
+                        if (backSide!.BottomTexture >= 0 && textures[backSide.BottomTexture].Height < min)
+                            min = textures[backSide.BottomTexture].Height;
                     }
 
                     floor.FloorDestHeight = floor.Sector.FloorHeight + Fixed.FromInt(min);
@@ -1148,10 +1103,8 @@ public sealed class SectorAction
             var sector = sectors[sectorNumber];
 
             // Already moving? If so, keep going...
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1178,8 +1131,9 @@ public sealed class SectorAction
                     throw new Exception("Unknown stair type!");
             }
 
-            floor.Speed = speed;
             var height = sector.FloorHeight + stairSize;
+
+            floor.Speed = speed;
             floor.FloorDestHeight = height;
 
             var texture = sector.FloorFlat;
@@ -1195,32 +1149,24 @@ public sealed class SectorAction
                 foreach (var sectorLine in sector.Lines.AsSpan())
                 {
                     if (((sectorLine).Flags & LineFlags.TwoSided) == 0)
-                    {
                         continue;
-                    }
 
                     var target = sectorLine.FrontSector;
                     var newSectorNumber = target.Number;
 
                     if (sectorNumber != newSectorNumber)
-                    {
                         continue;
-                    }
 
                     target = sectorLine.BackSector!;
                     newSectorNumber = target.Number;
 
                     if (target.FloorFlat != texture)
-                    {
                         continue;
-                    }
 
                     height += stairSize;
 
                     if (target.SpecialData != null)
-                    {
                         continue;
-                    }
 
                     sector = target;
                     sectorNumber = newSectorNumber;
@@ -1257,9 +1203,6 @@ public sealed class SectorAction
             case CeilingMoveType.CrushAndRaise:
                 ActivateInStasisCeiling(line);
                 break;
-
-            default:
-                break;
         }
 
         var sectors = world.Map.Sectors;
@@ -1269,10 +1212,8 @@ public sealed class SectorAction
         while ((sectorNumber = FindSectorFromLineTag(line, sectorNumber)) >= 0)
         {
             var sector = sectors[sectorNumber];
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1305,9 +1246,7 @@ public sealed class SectorAction
 
                     ceiling.BottomHeight = sector.FloorHeight;
                     if (type != CeilingMoveType.LowerToFloor)
-                    {
                         ceiling.BottomHeight += Fixed.FromInt(8);
-                    }
 
                     ceiling.Direction = -1;
                     ceiling.Speed = CeilingSpeed;
@@ -1343,7 +1282,6 @@ public sealed class SectorAction
             if (activeCeilings[i] is null)
             {
                 activeCeilings[i] = ceiling;
-
                 return;
             }
         }
@@ -1372,7 +1310,7 @@ public sealed class SectorAction
     {
         foreach (var ceiling in activeCeilings)
         {
-            if (ceiling != null &&
+            if (ceiling is not null &&
                 ceiling.Tag == line.Tag &&
                 ceiling.Direction == 0)
             {
@@ -1388,7 +1326,7 @@ public sealed class SectorAction
 
         foreach (var ceiling in activeCeilings)
         {
-            if (ceiling != null &&
+            if (ceiling is not null &&
                 ceiling.Tag == line.Tag &&
                 ceiling.Direction != 0)
             {
@@ -1411,15 +1349,11 @@ public sealed class SectorAction
     {
         // Don't teleport missiles.
         if ((thing.Flags & MobjFlags.Missile) != 0)
-        {
             return false;
-        }
 
         // Don't teleport if hit back of line, so you can get out of teleporter.
         if (side == 1)
-        {
             return false;
-        }
 
         var sectors = world.Map.Sectors;
         var tag = line.Tag;
@@ -1430,70 +1364,58 @@ public sealed class SectorAction
             {
                 foreach (var thinker in world.Thinkers)
                 {
+                    // Not a mobj.
                     if (thinker is not Mobj dest)
-                    {
-                        // Not a mobj.
                         continue;
-                    }
 
+                    // Not a teleportman.
                     if (dest.Type != MobjType.Teleportman)
-                    {
-                        // Not a teleportman.
                         continue;
-                    }
 
                     var sector = dest.Subsector.Sector;
 
+                    // Wrong sector.
                     if (sector.Number != i)
-                    {
-                        // Wrong sector.
                         continue;
-                    }
 
                     var oldX = thing.X;
                     var oldY = thing.Y;
                     var oldZ = thing.Z;
 
                     if (!world.ThingMovement.TeleportMove(thing, dest.X, dest.Y))
-                    {
                         return false;
-                    }
 
                     // This compatibility fix is based on Chocolate Doom's implementation.
                     if (world.Options.GameVersion != GameVersion.Final)
-                    {
                         thing.Z = thing.FloorZ;
-                    }
 
                     if (thing.Player != null)
-                    {
                         thing.Player.ViewZ = thing.Z + thing.Player.ViewHeight;
-                    }
 
                     var ta = world.ThingAllocation;
 
                     // Spawn teleport fog at source position.
                     var fog1 = ta.SpawnMobj(
-                        oldX,
-                        oldY,
-                        oldZ,
-                        MobjType.Tfog);
+                        x: oldX,
+                        y: oldY,
+                        z: oldZ,
+                        type: MobjType.Tfog
+                    );
                     world.StartSound(fog1, Sfx.TELEPT, SfxType.Misc);
 
                     // Destination position.
                     var angle = dest.Angle;
                     var fog2 = ta.SpawnMobj(
-                        dest.X + 20 * Trig.Cos(angle),
-                        dest.Y + 20 * Trig.Sin(angle),
-                        thing.Z,
-                        MobjType.Tfog);
+                        x: dest.X + 20 * Trig.Cos(angle),
+                        y: dest.Y + 20 * Trig.Sin(angle),
+                        z: thing.Z,
+                        type: MobjType.Tfog
+                    );
                     world.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
 
-                    if (thing.Player != null)
-                    {
-                        // Don't move for a bit.
+                    // Don't move for a bit.
+                    if (thing.Player is not null)
                         thing.ReactionTime = 18;
-                    }
 
                     thing.Angle = dest.Angle;
                     thing.MomX = thing.MomY = thing.MomZ = Fixed.Zero;
@@ -1520,18 +1442,16 @@ public sealed class SectorAction
 
         foreach (var sector in sectors)
         {
-            if (sector.Tag == line.Tag)
+            if (sector.Tag != line.Tag) continue;
+            var min = sector.LightLevel;
+
+            foreach (var target in sector.Lines.Select(x => GetNextSector(x, sector)).Where(x => x is not null))
             {
-                var min = sector.LightLevel;
-
-                foreach (var target in sector.Lines.Select(x => GetNextSector(x, sector)).Where(x => x is not null))
-                {
-                    if (target!.LightLevel < min)
-                        min = target.LightLevel;
-                }
-
-                sector.LightLevel = min;
+                if (target!.LightLevel < min)
+                    min = target.LightLevel;
             }
+
+            sector.LightLevel = min;
         }
     }
 
@@ -1545,15 +1465,11 @@ public sealed class SectorAction
             // bright = 0 means to search for highest light level surrounding sector.
             if (bright == 0)
             {
-                foreach (var sectorLine in sector.Lines)
-                {
-                    var target = GetNextSector(sectorLine, sector);
-                    if (target == null)
-                        continue;
-
-                    if (target.LightLevel > bright)
-                        bright = target.LightLevel;
-                }
+                bright = sector.Lines
+                               .Select(sectorLine => GetNextSector(sectorLine, sector))
+                               .OfType<Sector>().Select(target => target.LightLevel)
+                               .Prepend(bright)
+                               .Max();
             }
 
             sector.LightLevel = bright;
@@ -1570,10 +1486,8 @@ public sealed class SectorAction
         {
             var sector = sectors[sectorNumber];
 
-            if (sector.SpecialData != null)
-            {
+            if (sector.SpecialData is not null)
                 continue;
-            }
 
             world.LightingChange.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, false);
         }
@@ -1595,10 +1509,8 @@ public sealed class SectorAction
             var s1 = sectors[sectorNumber];
 
             // Already moving? If so, keep going...
-            if (s1.SpecialData != null)
-            {
+            if (s1.SpecialData is not null)
                 continue;
-            }
 
             result = true;
 
@@ -1608,25 +1520,19 @@ public sealed class SectorAction
             // The code below is based on Chocolate Doom's implementation.
             //
 
-            if (s2 == null)
-            {
+            if (s2 is null)
                 break;
-            }
 
             foreach (var s2Line in s2.Lines)
             {
                 var s3 = s2Line.BackSector;
 
                 if (s3 == s1)
-                {
                     continue;
-                }
 
-                if (s3 == null)
-                {
-                    // Undefined behavior in Vanilla Doom.
+                // Undefined behavior in Vanilla Doom.
+                if (s3 is null)
                     return result;
-                }
 
                 var thinkers = world.Thinkers;
 

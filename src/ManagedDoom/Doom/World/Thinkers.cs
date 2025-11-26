@@ -14,28 +14,21 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ManagedDoom.Doom.World;
 
 public sealed class Thinkers
 {
-    private readonly Thinker cap;
-
-    public Thinkers()
-    {
-        cap = new Thinker();
-        cap.Prev = cap.Next = cap;
-    }
+    // Pre-allocate for typical usage
+    private readonly List<Thinker> thinkers = new(1024);
 
     public void Add(Thinker thinker)
     {
-        cap.Prev.Next = thinker;
-        thinker.Next = cap;
-        thinker.Prev = cap.Prev;
-        cap.Prev = thinker;
+        thinkers.Add(thinker);
     }
 
     public static void Remove(Thinker thinker)
@@ -45,38 +38,38 @@ public sealed class Thinkers
 
     public void Run()
     {
-        var current = cap.Next;
-        while (current != cap)
-        {
-            if (current.ThinkerState == ThinkerState.Removed)
-            {
-                // Time to remove it.
-                current.Next.Prev = current.Prev;
-                current.Prev.Next = current.Next;
-            }
-            else
-            {
-                if (current.ThinkerState == ThinkerState.Active)
-                    current.Run();
-            }
+        var thinkersSpan = CollectionsMarshal.AsSpan(thinkers);
+        ref var thinkersRef = ref MemoryMarshal.GetReference(thinkersSpan);
 
-            current = current.Next;
+        // Pass 1: Process thinkers in insertion order (FIFO) for correct RNG sequence
+        for (var i = 0; i < thinkers.Count; i++)
+        {
+            ref var thinker = ref Unsafe.Add(ref thinkersRef, i);
+            if (thinker.ThinkerState == ThinkerState.Active)
+                thinker.Run();
         }
+
+        // Pass 2: Remove dead thinkers after iteration completes
+        thinkers.RemoveAll(t => t.ThinkerState == ThinkerState.Removed);
     }
 
     public void UpdateFrameInterpolationInfo()
     {
-        var current = cap.Next;
-        while (current != cap)
+        var thinkersSpan = CollectionsMarshal.AsSpan(thinkers);
+        ref var thinkersRef = ref MemoryMarshal.GetReference(thinkersSpan);
+
+        // Can iterate forward for read-only operations
+        for (var i = 0; i < thinkers.Count; i++)
         {
-            current.UpdateFrameInterpolationInfo();
-            current = current.Next;
+            ref var thinker = ref Unsafe.Add(ref thinkersRef, i);
+            if (thinker is Mobj mobj)
+                mobj.UpdateFrameInterpolationInfo();
         }
     }
 
     public void Reset()
     {
-        cap.Prev = cap.Next = cap;
+        thinkers.Clear();
     }
 
     public ThinkerEnumerator GetEnumerator()
@@ -84,15 +77,28 @@ public sealed class Thinkers
         return new ThinkerEnumerator(this);
     }
 
-    public struct ThinkerEnumerator(Thinkers thinkers) : IEnumerator<Thinker>
+    public struct ThinkerEnumerator : IEnumerator<Thinker>
     {
+        private readonly Thinkers thinkers;
+        private int index;
+
+        public ThinkerEnumerator(Thinkers thinkers)
+        {
+            this.thinkers = thinkers;
+            index = -1;
+            Current = null!;
+        }
+
         public bool MoveNext()
         {
             while (true)
             {
-                Current = Current.Next;
-                if (Current == thinkers.cap)
+                index++;
+
+                if (index >= thinkers.thinkers.Count)
                     return false;
+
+                Current = thinkers.thinkers[index];
 
                 if (Current.ThinkerState != ThinkerState.Removed)
                     return true;
@@ -101,15 +107,16 @@ public sealed class Thinkers
 
         public void Reset()
         {
-            Current = thinkers.cap;
+            index = -1;
+            Current = null!;
         }
 
         public readonly void Dispose()
         {
         }
 
-        public Thinker Current { get; private set; } = thinkers.cap;
+        public Thinker Current { get; private set; }
 
-        readonly object IEnumerator.Current => throw new NotImplementedException();
+        readonly object IEnumerator.Current => Current;
     }
 }

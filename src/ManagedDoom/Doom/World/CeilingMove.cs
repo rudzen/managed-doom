@@ -24,17 +24,21 @@ public sealed class CeilingMove : Thinker
 {
     private readonly World world;
 
-    // 1 = up, 0 = waiting, -1 = down.
-
-    // Corresponding sector tag.
-
     public CeilingMove(World world)
     {
         this.world = world;
     }
 
+    /// <summary>
+    /// 1 = up, 0 = waiting, -1 = down.
+    /// </summary>
     public CeilingMoveType Type { get; set; }
+
+    /// <summary>
+    /// Corresponding sector tag.
+    /// </summary>
     public Sector Sector { get; set; }
+
     public Fixed BottomHeight { get; set; }
     public Fixed TopHeight { get; set; }
     public Fixed Speed { get; set; }
@@ -45,10 +49,6 @@ public sealed class CeilingMove : Thinker
 
     public override void Run()
     {
-        SectorActionResult result;
-
-        var sa = world.SectorAction;
-
         switch (Direction)
         {
             case 0:
@@ -56,14 +56,18 @@ public sealed class CeilingMove : Thinker
                 break;
 
             case 1:
+            {
+                var sa = world.SectorAction;
+
                 // Up.
-                result = sa.MovePlane(
-                    Sector,
-                    Speed,
-                    TopHeight,
-                    false,
-                    1,
-                    Direction);
+                var result = sa.MovePlane(
+                    sector: Sector,
+                    speed: Speed,
+                    dest: TopHeight,
+                    crush: false,
+                    floorOrCeiling: 1,
+                    direction: Direction
+                );
 
                 if (((world.LevelTime + Sector.Number) & 7) == 0)
                 {
@@ -91,29 +95,29 @@ public sealed class CeilingMove : Thinker
                         case CeilingMoveType.FastCrushAndRaise:
                         case CeilingMoveType.CrushAndRaise:
                             if (Type == CeilingMoveType.SilentCrushAndRaise)
-                            {
                                 world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-                            }
 
                             Direction = -1;
-                            break;
-
-                        default:
                             break;
                     }
                 }
 
                 break;
+            }
 
             case -1:
+            {
+                var sa = world.SectorAction;
+
                 // Down.
-                result = sa.MovePlane(
-                    Sector,
-                    Speed,
-                    BottomHeight,
-                    Crush,
-                    1,
-                    Direction);
+                var result = sa.MovePlane(
+                    sector: Sector,
+                    speed: Speed,
+                    dest: BottomHeight,
+                    crush: Crush,
+                    floorOrCeiling: 1,
+                    direction: Direction
+                );
 
                 if (((world.LevelTime + Sector.Number) & 7) == 0)
                 {
@@ -135,15 +139,15 @@ public sealed class CeilingMove : Thinker
                         case CeilingMoveType.SilentCrushAndRaise:
                         case CeilingMoveType.CrushAndRaise:
                         case CeilingMoveType.FastCrushAndRaise:
-                            if (Type == CeilingMoveType.SilentCrushAndRaise)
+                            switch (Type)
                             {
-                                world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-                                Speed = SectorAction.CeilingSpeed;
-                            }
-
-                            if (Type == CeilingMoveType.CrushAndRaise)
-                            {
-                                Speed = SectorAction.CeilingSpeed;
+                                case CeilingMoveType.SilentCrushAndRaise:
+                                    world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+                                    Speed = SectorAction.CeilingSpeed;
+                                    break;
+                                case CeilingMoveType.CrushAndRaise:
+                                    Speed = SectorAction.CeilingSpeed;
+                                    break;
                             }
 
                             Direction = 1;
@@ -154,30 +158,22 @@ public sealed class CeilingMove : Thinker
                             sa.RemoveActiveCeiling(this);
                             Sector.DisableFrameInterpolationForOneFrame();
                             break;
-
-                        default:
-                            break;
                     }
                 }
                 else
                 {
                     if (result == SectorActionResult.Crushed)
                     {
-                        switch (Type)
+                        Speed = Type switch
                         {
-                            case CeilingMoveType.SilentCrushAndRaise:
-                            case CeilingMoveType.CrushAndRaise:
-                            case CeilingMoveType.LowerAndCrush:
-                                Speed = SectorAction.CeilingSpeed / 8;
-                                break;
-
-                            default:
-                                break;
-                        }
+                            CeilingMoveType.SilentCrushAndRaise or CeilingMoveType.CrushAndRaise or CeilingMoveType.LowerAndCrush => SectorAction.CeilingSpeed / 8,
+                            _                                                                                                     => Speed
+                        };
                     }
                 }
 
                 break;
+            }
         }
     }
 }

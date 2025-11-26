@@ -14,6 +14,8 @@
 // GNU General Public License for more details.
 //
 
+using System;
+
 namespace ManagedDoom.UserInput;
 
 public enum DoomMouseButton
@@ -25,4 +27,33 @@ public enum DoomMouseButton
     Mouse4,
     Mouse5,
     Count
+}
+
+public static class DoomMouseButtonEx
+{
+    public static string ToString(DoomMouseButton button)
+    {
+        return button switch
+        {
+            DoomMouseButton.Mouse1 => "mouse1",
+            DoomMouseButton.Mouse2 => "mouse2",
+            DoomMouseButton.Mouse3 => "mouse3",
+            DoomMouseButton.Mouse4 => "mouse4",
+            DoomMouseButton.Mouse5 => "mouse5",
+            _                      => "unknown"
+        };
+    }
+
+    public static DoomMouseButton Parse(ReadOnlySpan<char> value)
+    {
+        return value switch
+        {
+            "mouse1" => DoomMouseButton.Mouse1,
+            "mouse2" => DoomMouseButton.Mouse2,
+            "mouse3" => DoomMouseButton.Mouse3,
+            "mouse4" => DoomMouseButton.Mouse4,
+            "mouse5" => DoomMouseButton.Mouse5,
+            _        => DoomMouseButton.Unknown
+        };
+    }
 }

@@ -250,10 +250,18 @@ public static class DeHackEd
     private static void ProcessPointerBlock(List<string> data)
     {
         var dic = GetKeyValuePairs(data);
-        var start = data[0].IndexOf('(') + 1;
-        var end = data[0].IndexOf(')');
+        var dataSpan = CollectionsMarshal.AsSpan(data);
+        var firstData = dataSpan[0].AsSpan();
+        var start = firstData.IndexOf('(') + 1;
+        var end = firstData.IndexOf(')');
         var length = end - start;
-        var targetFrameNumber = int.Parse(data[0].Substring(start, length).Split(' ')[1]);
+
+        firstData = firstData.Slice(start, length);
+
+        Span<Range> splits = stackalloc Range[2];
+        firstData.Split(splits, ' ');
+
+        var targetFrameNumber = int.Parse(firstData[splits[1]].Trim());
         var sourceFrameNumber = GetInt(dic, "Codep Frame", -1);
         if (sourceFrameNumber == -1)
             return;
@@ -324,6 +332,7 @@ public static class DeHackEd
 
     private static void ProcessTextBlock(List<string> data)
     {
+        // TODO (rudz) : worth optimizing the split?
         var split = data[0].Split(' ');
         var length1 = int.Parse(split[1]);
         var length2 = int.Parse(split[2]);

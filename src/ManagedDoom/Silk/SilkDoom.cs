@@ -24,6 +24,7 @@ using ManagedDoom.Config;
 using ManagedDoom.Doom.Event;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.UserInput;
 using ManagedDoom.Video;
 using Silk.NET.OpenGL;
 
@@ -45,7 +46,7 @@ public sealed partial class SilkDoom
 
     private readonly AudioFactory audioFactory;
 
-    private SilkUserInput? userInput;
+    private IUserInput? userInput;
 
     private Doom.Doom? doom;
 
@@ -65,9 +66,9 @@ public sealed partial class SilkDoom
         AudioFactory audioFactory
     )
     {
+        var start = Stopwatch.GetTimestamp();
         try
         {
-            var start = Stopwatch.GetTimestamp();
             this.args = args;
             this.window = windowFactory.GetWindow();
 

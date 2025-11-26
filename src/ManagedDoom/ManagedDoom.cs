@@ -58,7 +58,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<SilkDoom>();
               services.AddSingleton<AudioFactory>();
 
-                // game content
+              // game content
               services.AddSingleton<DrawScreen>();
               services.AddSingleton<Renderer>();
               services.AddSingleton<MenuRenderer>();

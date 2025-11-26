@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using ManagedDoom.Config;
 using ManagedDoom.Doom.Math;
@@ -90,6 +91,7 @@ public sealed class SilkVideo : IVideo
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Doom.Doom doom, Fixed frameFrac, in long fps)
     {
         renderer.Render(doom, textureData, frameFrac, in fps);

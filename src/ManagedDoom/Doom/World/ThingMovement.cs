@@ -39,7 +39,7 @@ public sealed class ThingMovement(World world)
     private MobjFlags currentFlags;
     private Fixed currentX;
     private Fixed currentY;
-    private readonly Fixed[]? currentBox = new Fixed[4];
+    private readonly Fixed[] currentBox = new Fixed[4];
 
     private LineDef? currentCeilingLine;
 
@@ -62,14 +62,7 @@ public sealed class ThingMovement(World world)
         if ((thing.Flags & MobjFlags.NoSector) == 0)
         {
             var sector = subSector.Sector;
-
-            thing.SectorPrev = null;
-            thing.SectorNext = sector.ThingList;
-
-            if (sector.ThingList is not null)
-                sector.ThingList.SectorPrev = thing;
-
-            sector.ThingList = thing;
+            sector.ThingList.Insert(0, thing); // Insert at head to maintain original linked-list order
         }
 
         // Inert things don't need to be in blockmap.
@@ -78,23 +71,7 @@ public sealed class ThingMovement(World world)
             var index = map.BlockMap.GetIndex(thing.X, thing.Y);
 
             if (index != -1)
-            {
-                var link = map.BlockMap.ThingLists[index];
-
-                thing.BlockPrev = null;
-                thing.BlockNext = link;
-
-                if (link is not null)
-                    link.BlockPrev = thing;
-
-                map.BlockMap.ThingLists[index] = thing;
-            }
-            else
-            {
-                // Thing is off the map.
-                thing.BlockNext = null;
-                thing.BlockPrev = null;
-            }
+                map.BlockMap.ThingLists[index].Insert(0, thing); // Insert at head to maintain original linked-list order
         }
     }
 
@@ -109,34 +86,17 @@ public sealed class ThingMovement(World world)
         var map = world.Map;
 
         // Invisible things don't go into the sector links.
+        // Remove from sector list
         if ((thing.Flags & MobjFlags.NoSector) == 0)
-        {
-            // Unlink from subsector.
-            if (thing.SectorNext is not null)
-                thing.SectorNext.SectorPrev = thing.SectorPrev;
-
-            if (thing.SectorPrev is not null)
-                thing.SectorPrev.SectorNext = thing.SectorNext;
-            else
-                thing.Subsector.Sector.ThingList = thing.SectorNext;
-        }
+            thing.Subsector.Sector.ThingList.Remove(thing);
 
         // Inert things don't need to be in blockmap.
         if ((thing.Flags & MobjFlags.NoBlockMap) == 0)
         {
-            // Unlink from block map.
-            if (thing.BlockNext != null)
-                thing.BlockNext.BlockPrev = thing.BlockPrev;
+            var index = map.BlockMap.GetIndex(thing.X, thing.Y);
 
-            if (thing.BlockPrev != null)
-                thing.BlockPrev.BlockNext = thing.BlockNext;
-            else
-            {
-                var index = map.BlockMap.GetIndex(thing.X, thing.Y);
-
-                if (index != -1)
-                    map.BlockMap.ThingLists[index] = thing.BlockNext;
-            }
+            if (index != -1)
+                map.BlockMap.ThingLists[index].Remove(thing);
         }
     }
 
