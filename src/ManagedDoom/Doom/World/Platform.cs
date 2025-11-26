@@ -88,9 +88,6 @@ public sealed class Platform(World world) : Thinker
                                 sa.RemoveActivePlatform(this);
                                 Sector.DisableFrameInterpolationForOneFrame();
                                 break;
-
-                            default:
-                                break;
                         }
                     }
                 }
