@@ -89,13 +89,14 @@ public sealed class LineDef
         var side1Number = BitConverter.ToInt16(data.Slice(12, 2));
 
         return new LineDef(
-            vertices[vertex1Number],
-            vertices[vertex2Number],
-            (LineFlags)flags,
-            (LineSpecial)special,
-            tag,
-            sides[side0Number],
-            side1Number != -1 ? sides[side1Number] : null);
+            vertex1: vertices[vertex1Number],
+            vertex2: vertices[vertex2Number],
+            flags: (LineFlags)flags,
+            special: (LineSpecial)special,
+            tag: tag,
+            frontSide: sides[side0Number],
+            backSide: side1Number != -1 ? sides[side1Number] : null
+        );
     }
 
     public static LineDef[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
