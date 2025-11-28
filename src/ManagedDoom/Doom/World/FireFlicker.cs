@@ -35,20 +35,14 @@ public sealed class FireFlicker : Thinker
     public override void Run()
     {
         if (--Count > 0)
-        {
             return;
-        }
 
         var amount = (world.Random.Next() & 3) * 16;
 
         if (Sector.LightLevel - amount < MinLight)
-        {
             Sector.LightLevel = MinLight;
-        }
         else
-        {
             Sector.LightLevel = MaxLight - amount;
-        }
 
         Count = 4;
     }

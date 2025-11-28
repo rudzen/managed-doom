@@ -43,45 +43,42 @@ public sealed class FloorMove : Thinker
         var sa = world.SectorAction;
 
         var result = sa.MovePlane(
-            Sector,
-            Speed,
-            FloorDestHeight,
-            Crush,
-            0,
-            Direction);
+            sector: Sector,
+            speed: Speed,
+            dest: FloorDestHeight,
+            crush: Crush,
+            floorOrCeiling: 0,
+            direction: Direction
+        );
 
         if (((world.LevelTime + Sector.Number) & 7) == 0)
             world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
 
-        if (result == SectorActionResult.PastDestination)
+        if (result != SectorActionResult.PastDestination)
+            return;
+
+        Sector.SpecialData = null;
+
+        if (Direction == 1)
         {
-            Sector.SpecialData = null;
-
-            if (Direction == 1)
+            if (Type == FloorMoveType.DonutRaise)
             {
-                switch (Type)
-                {
-                    case FloorMoveType.DonutRaise:
-                        Sector.Special = NewSpecial;
-                        Sector.FloorFlat = Texture;
-                        break;
-                }
+                Sector.Special = NewSpecial;
+                Sector.FloorFlat = Texture;
             }
-            else if (Direction == -1)
-            {
-                switch (Type)
-                {
-                    case FloorMoveType.LowerAndChange:
-                        Sector.Special = NewSpecial;
-                        Sector.FloorFlat = Texture;
-                        break;
-                }
-            }
-
-            Thinkers.Remove(this);
-            Sector.DisableFrameInterpolationForOneFrame();
-
-            world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
         }
+        else if (Direction == -1)
+        {
+            if (Type == FloorMoveType.LowerAndChange)
+            {
+                Sector.Special = NewSpecial;
+                Sector.FloorFlat = Texture;
+            }
+        }
+
+        Thinkers.Remove(this);
+        Sector.DisableFrameInterpolationForOneFrame();
+
+        world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
     }
 }

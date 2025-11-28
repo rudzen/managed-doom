@@ -20,11 +20,11 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class Button
 {
-    public LineDef Line { get; set; }
+    public LineDef? Line { get; set; }
     public ButtonPosition Position { get; set; }
     public int Texture { get; set; }
     public int Timer { get; set; }
-    public Mobj SoundOrigin { get; set; }
+    public Mobj? SoundOrigin { get; set; }
 
     public void Clear()
     {

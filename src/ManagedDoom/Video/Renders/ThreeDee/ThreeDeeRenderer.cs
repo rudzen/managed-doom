@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Game;
@@ -233,7 +234,6 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
     private bool IsPotentiallyVisible(Fixed[] bbox)
     {
-
         // Find the corners of the box that define the edges from
         // current viewpoint.
         int bx;
@@ -1557,6 +1557,7 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         planeRender.FloorPrevY2 = y2;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void DrawColumn(
         Column column,
         ReadOnlySpan<byte> map,
@@ -1569,6 +1570,25 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         if (y2 - y1 < 0)
             return;
 
+        var height = y2 - y1 + 1;
+
+        // Use SIMD for columns taller than threshold
+        if (Vector.IsHardwareAccelerated && height >= 32)
+            DrawColumnSimd(column, map, x, y1, y2, invScale, textureAlt);
+        else
+            DrawColumnScalar(column, map, x, y1, y2, invScale, textureAlt);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void DrawColumnScalar(
+        Column column,
+        ReadOnlySpan<byte> map,
+        int x,
+        int y1,
+        int y2,
+        Fixed invScale,
+        Fixed textureAlt)
+    {
         // Framebuffer destination address.
         // Use ylookup LUT to avoid multiply with ScreenWidth.
         // Use columnofs LUT for subwindows? 
@@ -1591,6 +1611,121 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             var sourceIndex = offset + ((frac.Data >> Fixed.FracBits) & 127);
             var mapIndex = source[sourceIndex];
             screenData[pos] = map[mapIndex];
+            frac += fracStep;
+        }
+    }
+
+    [SkipLocalsInit]
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void DrawColumnSimd(
+        Column column,
+        ReadOnlySpan<byte> map,
+        int x,
+        int y1,
+        int y2,
+        Fixed invScale,
+        Fixed textureAlt)
+    {
+        var pos1 = screenHeight * (windowSettings.WindowX + x) + windowSettings.WindowY + y1;
+        var height = y2 - y1 + 1;
+        var fracStep = invScale.Data;
+        var frac = textureAlt.Data + (y1 - windowSettings.CenterY) * invScale.Data;
+        var source = column.Data.AsSpan();
+        var offset = column.Offset;
+
+        var pos = pos1;
+        var remaining = height;
+
+        // Process 8 pixels at a time with Vector<int> for fractional calculations
+        if (Vector<int>.Count >= 8 && remaining >= 8)
+        {
+            var vecCount = remaining / 8;
+            Span<int> fracStepArray = [0, 1, 2, 3, 4, 5, 6, 7];
+            var fracStepVec = Vector.Multiply(new Vector<int>(fracStep),
+                new Vector<int>(fracStepArray));
+            var fracStepDelta = new Vector<int>(fracStep * 8);
+            var fracVec = Vector.Add(new Vector<int>(frac), fracStepVec);
+            var maskConst = new Vector<int>(127);
+
+            Span<int> fracValues = stackalloc int[8];
+            Span<byte> pixels = stackalloc byte[8];
+
+            for (var i = 0; i < vecCount; i++)
+            {
+                // Calculate texture sample positions
+                var indices = Vector.BitwiseAnd(
+                    left: Vector.ShiftRightArithmetic(fracVec, Fixed.FracBits),
+                    right: maskConst
+                );
+
+                // Extract indices and perform lookups
+                indices.CopyTo(fracValues);
+
+                for (var j = 0; j < 8; j++)
+                {
+                    var sourceIndex = offset + fracValues[j];
+                    var mapIndex = source[sourceIndex];
+                    pixels[j] = map[mapIndex];
+                }
+
+                // Write pixels to screen
+                pixels.CopyTo(screenData.AsSpan(pos, pixels.Length));
+
+                pos += 8;
+                fracVec = Vector.Add(fracVec, fracStepDelta);
+            }
+
+            remaining %= 8;
+            frac = fracVec[0];
+        }
+        else if (Vector<int>.Count >= 4 && remaining >= 4)
+        {
+            // Fallback to 4-wide processing for smaller vector sizes
+            var vecCount = remaining / 4;
+            Span<int> fracStepArray = [0, 1, 2, 3];
+            var fracStepVec = Vector.Multiply(new Vector<int>(fracStep),
+                new Vector<int>(fracStepArray));
+            var fracStepDelta = new Vector<int>(fracStep * 4);
+            var fracVec = Vector.Add(new Vector<int>(frac), fracStepVec);
+            var maskConst = new Vector<int>(127);
+
+            Span<int> fracValues = stackalloc int[4];
+            Span<byte> pixels = stackalloc byte[4];
+
+            for (var i = 0; i < vecCount; i++)
+            {
+                var indices = Vector.BitwiseAnd(
+                    left: Vector.ShiftRightArithmetic(fracVec, Fixed.FracBits),
+                    right: maskConst
+                );
+
+                indices.CopyTo(fracValues);
+
+                for (var j = 0; j < 4; j++)
+                {
+                    var sourceIndex = offset + fracValues[j];
+                    var mapIndex = source[sourceIndex];
+                    pixels[j] = map[mapIndex];
+                }
+
+                // Write pixels to screen
+                pixels.CopyTo(screenData.AsSpan(pos, pixels.Length));
+
+                pos += 4;
+                fracVec = Vector.Add(fracVec, fracStepDelta);
+            }
+
+            remaining %= 4;
+            frac = fracVec[0];
+        }
+
+        // Handle remaining pixels with scalar code
+        for (var i = 0; i < remaining; i++)
+        {
+            var sourceIndex = offset + ((frac >> Fixed.FracBits) & 127);
+            var mapIndex = source[sourceIndex];
+            screenData[pos] = map[mapIndex];
+            pos++;
             frac += fracStep;
         }
     }
@@ -1627,7 +1762,10 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         {
             // Re-map color indices from wall texture column
             // using a lighting/special effects LUT.
-            screenData[pos] = map[translation[source[offset + ((frac.Data >> Fixed.FracBits) & 127)]]];
+            var sourceIndex = offset + ((frac.Data >> Fixed.FracBits) & 127);
+            var sourceValue = source[sourceIndex];
+            var translationValue = translation[sourceValue];
+            screenData[pos] = map[translationValue];
             frac += fracStep;
         }
     }

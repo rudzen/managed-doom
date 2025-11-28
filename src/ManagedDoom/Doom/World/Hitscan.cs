@@ -259,7 +259,7 @@ public sealed class Hitscan
             var z = currentShooterZ + currentAimSlope * (frac * currentRange);
 
             // Spawn bullet puffs or blod spots, depending on target type.
-            if ((intercept.Thing.Flags & MobjFlags.NoBlood) != 0)
+            if ((thing.Flags & MobjFlags.NoBlood) != 0)
                 SpawnPuff(x, y, z);
             else
                 SpawnBlood(x, y, z, currentDamage);
@@ -284,12 +284,13 @@ public sealed class Hitscan
         currentShooterZ = shooter.Z + (shooter.Height >> 1) + Fixed.FromInt(8);
         currentRange = range;
 
-        var targetX = shooter.X + range.ToIntFloor() * Trig.Cos(angle);
-        var targetY = shooter.Y + range.ToIntFloor() * Trig.Sin(angle);
+        var rangeFloor = range.ToIntFloor();
+        var targetX = shooter.X + rangeFloor * Trig.Cos(angle);
+        var targetY = shooter.Y + rangeFloor * Trig.Sin(angle);
 
         // Can't shoot outside view angles.
-        topSlope = Fixed.FromInt(100) / 160;
-        bottomSlope = Fixed.FromInt(-100) / 160;
+        topSlope = Fixed.OneHundred / 160;
+        bottomSlope = Fixed.OneHundredNegative / 160;
 
         LineTarget = null;
 

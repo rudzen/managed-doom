@@ -69,18 +69,8 @@ public sealed class CeilingMove : Thinker
                     direction: Direction
                 );
 
-                if (((world.LevelTime + Sector.Number) & 7) == 0)
-                {
-                    switch (Type)
-                    {
-                        case CeilingMoveType.SilentCrushAndRaise:
-                            break;
-
-                        default:
-                            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-                            break;
-                    }
-                }
+                if (((world.LevelTime + Sector.Number) & 7) == 0 && Type != CeilingMoveType.SilentCrushAndRaise)
+                    world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
 
                 if (result == SectorActionResult.PastDestination)
                 {
@@ -119,18 +109,8 @@ public sealed class CeilingMove : Thinker
                     direction: Direction
                 );
 
-                if (((world.LevelTime + Sector.Number) & 7) == 0)
-                {
-                    switch (Type)
-                    {
-                        case CeilingMoveType.SilentCrushAndRaise:
-                            break;
-
-                        default:
-                            world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
-                            break;
-                    }
-                }
+                if (((world.LevelTime + Sector.Number) & 7) == 0 && Type != CeilingMoveType.SilentCrushAndRaise)
+                    world.StartSound(Sector.SoundOrigin, Sfx.STNMOV, SfxType.Misc);
 
                 if (result == SectorActionResult.PastDestination)
                 {

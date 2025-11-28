@@ -43,4 +43,26 @@ public static class DoomInterop
 
         return new string(chars[..pos]);
     }
+
+    [SkipLocalsInit]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlySpan<char> ToString(ReadOnlySpan<byte> data, Span<char> output)
+    {
+        const byte zero = 0;
+
+        var pos = 0;
+
+        foreach (var t in data)
+        {
+            var c = (char)t;
+            if (c == zero)
+                break;
+            if (char.IsBetween(c, 'a', 'z'))
+                output[pos++] = (char)(c - 0x20);
+            else
+                output[pos++] = c;
+        }
+
+        return output[..pos];
+    }
 }

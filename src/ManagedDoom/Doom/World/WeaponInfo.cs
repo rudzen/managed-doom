@@ -16,7 +16,7 @@
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class WeaponInfo
+public struct WeaponInfo
 {
     public WeaponInfo(
         AmmoType ammo,

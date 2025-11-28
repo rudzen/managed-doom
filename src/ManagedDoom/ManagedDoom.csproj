@@ -32,8 +32,6 @@
         <PackageReference Include="Microsoft.Extensions.Hosting"/>
         <PackageReference Include="Silk.NET.Input.Glfw"/>
         <PackageReference Include="Silk.NET.Windowing.Glfw"/>
-        <PackageReference Include="System.Text.Encodings.Web" />
-        <PackageReference Include="System.Text.Json" />
         <PackageReference Include="TrippyGL"/>
     </ItemGroup>
 

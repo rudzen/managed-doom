@@ -38,6 +38,9 @@ public readonly record struct Fixed(int Data)
     public static Fixed OnePlusEpsilon => new(FracUnit + 1);
     public static Fixed OneMinusEpsilon => new(FracUnit - 1);
 
+    public static Fixed OneHundred => FromInt(100);
+    public static Fixed OneHundredNegative => FromInt(-100);
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Fixed FromInt(int value)
     {

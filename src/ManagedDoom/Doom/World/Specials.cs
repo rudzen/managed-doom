@@ -108,11 +108,10 @@ public sealed class Specials
                 lc.SpawnFireFlicker(sector);
         }
 
-        scrollLines = world
+        scrollLines = [.. world
                       .Map
                       .Lines
-                      .Where(line => line.Special == LineSpecial.TextureScroll)
-                      .ToArray();
+                      .Where(line => line.Special == LineSpecial.TextureScroll)];
     }
 
     public void ChangeSwitchTexture(LineDef line, bool useAgain)
@@ -241,13 +240,13 @@ public sealed class Specials
                 continue;
 
             if (button.Position == ButtonPosition.Top)
-                button.Line.FrontSide!.TopTexture = button.Texture;
+                button.Line!.FrontSide!.TopTexture = button.Texture;
             else if (button.Position == ButtonPosition.Middle)
-                button.Line.FrontSide!.MiddleTexture = button.Texture;
+                button.Line!.FrontSide!.MiddleTexture = button.Texture;
             else if (button.Position == ButtonPosition.Bottom)
-                button.Line.FrontSide!.BottomTexture = button.Texture;
+                button.Line!.FrontSide!.BottomTexture = button.Texture;
 
-            world.StartSound(button.SoundOrigin, Sfx.SWTCHN, SfxType.Misc, 50);
+            world.StartSound(button.SoundOrigin!, Sfx.SWTCHN, SfxType.Misc, 50);
             button.Clear();
         }
     }

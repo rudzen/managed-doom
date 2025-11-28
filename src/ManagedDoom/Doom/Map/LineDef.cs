@@ -51,11 +51,13 @@ public sealed class LineDef
         else
             SlopeType = Dy / Dx > Fixed.Zero ? SlopeType.Positive : SlopeType.Negative;
 
-        BoundingBox = new Fixed[4];
-        BoundingBox[Box.Top] = Fixed.Max(vertex1.Y, vertex2.Y);
-        BoundingBox[Box.Bottom] = Fixed.Min(vertex1.Y, vertex2.Y);
-        BoundingBox[Box.Left] = Fixed.Min(vertex1.X, vertex2.X);
-        BoundingBox[Box.Right] = Fixed.Max(vertex1.X, vertex2.X);
+        BoundingBox =
+        [
+            Fixed.Max(vertex1.Y, vertex2.Y), // Top
+            Fixed.Min(vertex1.Y, vertex2.Y), // Bottom
+            Fixed.Min(vertex1.X, vertex2.X), // Left
+            Fixed.Max(vertex1.X, vertex2.X)  // Right
+        ];
 
         FrontSector = frontSide?.Sector!;
         BackSector = backSide?.Sector;

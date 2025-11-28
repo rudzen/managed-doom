@@ -1491,7 +1491,8 @@ public sealed class MonsterBehavior
     {
         var random = world.Random;
 
-        for (var x = actor.X - Fixed.FromInt(196); x < actor.X + Fixed.FromInt(320); x += Fixed.FromInt(8))
+        var step = Fixed.FromInt(8);
+        for (var x = actor.X - Fixed.FromInt(196); x < actor.X + Fixed.FromInt(320); x += step)
         {
             var y = actor.Y - Fixed.FromInt(320);
             var z = new Fixed(128) + random.Next() * Fixed.FromInt(2);
@@ -1501,9 +1502,7 @@ public sealed class MonsterBehavior
             explosion.SetState(MobjState.Brainexplode1);
             explosion.Tics -= random.Next() & 7;
             if (explosion.Tics < 1)
-            {
                 explosion.Tics = 1;
-            }
         }
 
         world.StartSound(actor, Sfx.BOSDTH, SfxType.Diffuse);
@@ -1525,7 +1524,7 @@ public sealed class MonsterBehavior
             explosion.Tics = 1;
     }
 
-    public void BrainDie(Mobj actor)
+    public void BrainDie()
     {
         world.ExitLevel();
     }

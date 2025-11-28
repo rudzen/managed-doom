@@ -21,44 +21,53 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class MapCollision
 {
-    public Fixed OpenTop { get; private set; }
+    public Fixed OpenTop { get; set; }
 
-    public Fixed OpenBottom { get; private set; }
+    public Fixed OpenBottom { get; set; }
 
-    public Fixed OpenRange { get; private set; }
+    public Fixed OpenRange { get; set; }
 
-    public Fixed LowFloor { get; private set; }
+    public Fixed LowFloor { get; set; }
+}
 
+public static class MapCollisionExtensions
+{
     /// <summary>
-    /// Sets opentop and openbottom to the window through a two sided line.
+    /// Sets opentop and openbottom to the window through a two-sided line.
     /// </summary>
-    public void LineOpening(LineDef line)
+    public static void LineOpening(this MapCollision mapCollision, LineDef line)
     {
-        if (line.BackSide == null)
+        if (line.BackSide is null)
         {
             // If the line is single sided, nothing can pass through.
-            OpenRange = Fixed.Zero;
+            mapCollision.OpenRange = Fixed.Zero;
             return;
         }
 
         var front = line.FrontSector;
         var back = line.BackSector;
 
-        OpenTop = front.CeilingHeight < back.CeilingHeight
+        var openTop = front.CeilingHeight < back!.CeilingHeight
             ? front.CeilingHeight
             : back.CeilingHeight;
 
+        Fixed openBottom;
+        Fixed lowFloor;
+
         if (front.FloorHeight > back.FloorHeight)
         {
-            OpenBottom = front.FloorHeight;
-            LowFloor = back.FloorHeight;
+            openBottom = front.FloorHeight;
+            lowFloor = back.FloorHeight;
         }
         else
         {
-            OpenBottom = back.FloorHeight;
-            LowFloor = front.FloorHeight;
+            openBottom = back.FloorHeight;
+            lowFloor = front.FloorHeight;
         }
 
-        OpenRange = OpenTop - OpenBottom;
+        mapCollision.OpenTop = openTop;
+        mapCollision.OpenBottom = openBottom;
+        mapCollision.LowFloor = lowFloor;
+        mapCollision.OpenRange = openTop - openBottom;
     }
 }

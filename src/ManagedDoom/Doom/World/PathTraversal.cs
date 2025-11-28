@@ -195,17 +195,13 @@ public sealed class PathTraversal
                 }
             }
 
+            // Checked everything in range.
             if (dist > maxFrac)
-            {
-                // Checked everything in range.
                 return true;
-            }
 
+            // Don't bother going farther.
             if (!func(intercept!))
-            {
-                // Don't bother going farther.
                 return false;
-            }
 
             intercept!.Frac = Fixed.MaxValue;
         }
@@ -228,17 +224,13 @@ public sealed class PathTraversal
 
         interceptCount = 0;
 
+        // Don't side exactly on a line.
         if (((x1 - bm.OriginX).Data & (BlockMap.BlockSize.Data - 1)) == 0)
-        {
-            // Don't side exactly on a line.
             x1 += Fixed.One;
-        }
 
+        // Don't side exactly on a line.
         if (((y1 - bm.OriginY).Data & (BlockMap.BlockSize.Data - 1)) == 0)
-        {
-            // Don't side exactly on a line.
             y1 += Fixed.One;
-        }
 
         Trace.X = x1;
         Trace.Y = y1;
@@ -317,20 +309,16 @@ public sealed class PathTraversal
         {
             if ((flags & PathTraverseFlags.AddLines) != 0)
             {
+                // Early out.
                 if (!bm.IterateLines(bx, by, AddLineIntercepts, validCount))
-                {
-                    // Early out.
                     return false;
-                }
             }
 
             if ((flags & PathTraverseFlags.AddThings) != 0)
             {
+                // Early out.
                 if (!bm.IterateThings(bx, by, AddThingIntercepts))
-                {
-                    // Early out.
                     return false;
-                }
             }
 
             if (bx == blockX2 && by == blockY2)

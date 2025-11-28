@@ -23,8 +23,4 @@ public class Thinker
     public virtual void Run()
     {
     }
-
-    public virtual void UpdateFrameInterpolationInfo()
-    {
-    }
 }

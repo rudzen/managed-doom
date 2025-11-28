@@ -66,9 +66,9 @@ public static class WeaponTypesExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public WeaponInfo WeaponInfo()
+        public ref WeaponInfo WeaponInfo()
         {
-            return weaponInfos[wt.Index()];
+            return ref weaponInfos[wt.Index()];
         }
     }
 

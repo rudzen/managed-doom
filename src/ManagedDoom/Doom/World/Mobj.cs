@@ -359,7 +359,7 @@ public sealed class Mobj : Thinker
         World.ThingAllocation.RemoveMobj(this);
     }
 
-    public override void UpdateFrameInterpolationInfo()
+    public void UpdateFrameInterpolationInfo()
     {
         interpolate = true;
         oldX = X;
