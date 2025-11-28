@@ -1,0 +1,2 @@
+﻿# any path here is considered when looking for a wad file
+D:\doom_wads

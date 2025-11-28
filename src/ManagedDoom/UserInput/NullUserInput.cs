@@ -1,0 +1,60 @@
+﻿//
+// Copyright (C) 1993-1996 Id Software, Inc.
+// Copyright (C) 2019-2020 Nobuaki Tanaka
+// Copyright (C)      2024 Rudy Alex Kohn
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+
+using ManagedDoom.Doom.Game;
+
+namespace ManagedDoom.UserInput;
+
+public sealed class NullUserInput : IUserInput
+{
+    private static NullUserInput? _instance;
+
+    public static NullUserInput GetInstance()
+    {
+        return _instance ??= new NullUserInput();
+    }
+
+    public void BuildTicCmd(TicCommand command)
+    {
+        command.Clear();
+    }
+
+    public void Reset()
+    {
+    }
+
+    public void GrabMouse()
+    {
+    }
+
+    public void ReleaseMouse()
+    {
+    }
+
+    public int MaxMouseSensitivity => 9;
+
+    public int MouseSensitivity
+    {
+        get => 3;
+
+        set { }
+    }
+
+    public void Dispose()
+    {
+        // TODO release managed resources here
+    }
+}

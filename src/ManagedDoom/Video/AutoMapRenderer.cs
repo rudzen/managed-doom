@@ -1,0 +1,287 @@
+﻿//
+// Copyright (C) 1993-1996 Id Software, Inc.
+// Copyright (C) 2019-2020 Nobuaki Tanaka
+// Copyright (C)      2024 Rudy Alex Kohn
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+
+using System;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using ManagedDoom.Doom.Game;
+using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Map;
+using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
+
+namespace ManagedDoom.Video;
+
+public sealed class AutoMapRenderer
+{
+    private const float Tr = 16;
+
+    // For use if I do walls with outsides / insides.
+    private const int Reds = (256 - 5 * 16);
+    private const int RedRange = 16;
+    private const int Greens = (7 * 16);
+    private const int Grays = (6 * 16);
+    private const int Browns = (4 * 16);
+    private const int Yellows = (256 - 32 + 7);
+    private const int Black = 0;
+    private const int White = (256 - 47);
+
+    // Automap colors.
+    private const int Background = Black;
+    private const int WallColors = Reds;
+    private const int WallRange = RedRange;
+    private const int TsWallColors = Grays;
+    private const int FdWallColors = Browns;
+    private const int CdWallColors = Yellows;
+    private const int SecretWallColors = WallColors;
+    private static readonly float pr = 8 * DoomInfo.MobjInfos[(int)MobjType.Player].Radius.ToFloat() / 7;
+
+    // The vector graphics for the automap.
+    // A line drawing of the player pointing right, starting from the middle.
+    private static readonly float[] playerArrow =
+    [
+        -pr + pr / 8, 0, pr, 0,     // -----
+        pr, 0, pr - pr / 2, pr / 4, // ----->
+        pr, 0, pr - pr / 2, -pr / 4,
+        -pr + pr / 8, 0, -pr - pr / 8, pr / 4, // >---->
+        -pr + pr / 8, 0, -pr - pr / 8, -pr / 4,
+        -pr + 3 * pr / 8, 0, -pr + pr / 8, pr / 4, // >>--->
+        -pr + 3 * pr / 8, 0, -pr + pr / 8, -pr / 4
+    ];
+
+    private static readonly float[] thingTriangle =
+    [
+        -0.5F * Tr, -0.7F * Tr, Tr, 0F,
+        Tr, 0F, -0.5F * Tr, 0.7F * Tr,
+        -0.5F * Tr, 0.7F * Tr, -0.5F * Tr,
+        -0.7F * Tr
+    ];
+
+    private static readonly int[] playerColors =
+    [
+        Greens,
+        Grays,
+        Browns,
+        Reds
+    ];
+
+    private readonly int amHeight;
+    private readonly int amWidth;
+
+    private readonly Patch[] markNumbers;
+    private readonly float ppu;
+
+    private readonly int scale;
+
+    private readonly DrawScreen screen;
+
+    private Vector2 actualView = Vector2.Zero;
+    private Vector2 renderView = Vector2.Zero;
+
+    private float zoom;
+
+    public AutoMapRenderer(GameContent gameContent, DrawScreen screen)
+    {
+        this.screen = screen;
+
+        scale = screen.Width / 320;
+        amWidth = screen.Width;
+        amHeight = screen.Height - scale * StatusBarRenderer.Height;
+        ppu = (float)scale / 16;
+
+        var wad = gameContent.Wad;
+        markNumbers = new Patch[10];
+        for (var i = 0; i < markNumbers.Length; i++)
+            markNumbers[i] = Patch.FromWad(wad, $"AMMNUM{i}");
+    }
+
+    public void Render(Player player)
+    {
+        screen.FillRect(0, 0, amWidth, amHeight, Background);
+
+        var world = player.Mobj!.World;
+        var am = world.AutoMap;
+
+        actualView = Vector2.Create(am.ViewX.ToFloat(), am.ViewY.ToFloat());
+        zoom = am.Zoom.ToFloat();
+
+        // This hack aligns the view point to an integer coordinate
+        // so that line shake is reduced when the view point moves.
+        renderView = Vector2.Create(
+            MathF.Round(zoom * ppu * actualView.X) / (zoom * ppu),
+            MathF.Round(zoom * ppu * actualView.Y) / (zoom * ppu)
+        );
+
+        foreach (var line in world.Map.Lines)
+        {
+            var v1 = ToScreenPos(line.Vertex1);
+            var v2 = ToScreenPos(line.Vertex2);
+
+            var cheating = am.State != AutoMapState.None;
+
+            if (cheating || (line.Flags & LineFlags.Mapped) != 0)
+            {
+                if ((line.Flags & LineFlags.DontDraw) != 0 && !cheating)
+                    continue;
+
+                if (line.BackSector == null)
+                    screen.DrawLine(v1, v2, WallColors);
+                else
+                {
+                    // Teleporters.
+                    if (line.Special == (LineSpecial)39)
+                        screen.DrawLine(v1, v2, WallColors + WallRange / 2);
+                    else if ((line.Flags & LineFlags.Secret) != 0)
+                    {
+                        // Secret door.
+                        var color = cheating ? SecretWallColors : WallColors;
+                        screen.DrawLine(v1, v2, color);
+                    }
+                    // Floor level change.
+                    else if (line.BackSector.FloorHeight != line.FrontSector.FloorHeight)
+                        screen.DrawLine(v1, v2, FdWallColors);
+                    // Ceiling level change.
+                    else if (line.BackSector.CeilingHeight != line.FrontSector.CeilingHeight)
+                        screen.DrawLine(v1, v2, CdWallColors);
+                    else if (cheating)
+                        screen.DrawLine(v1, v2, TsWallColors);
+                }
+            }
+            else if (player.Powers[PowerType.AllMap] > 0)
+            {
+                if ((line.Flags & LineFlags.DontDraw) == 0)
+                    screen.DrawLine(v1, v2, Grays + 3);
+            }
+        }
+
+        var marks = am.Marks;
+        ref var eventsRef = ref MemoryMarshal.GetReference(marks);
+
+        for (var i = 0; i < am.Marks.Length; i++)
+        {
+            ref var mark = ref Unsafe.Add(ref eventsRef, i);
+            var pos = ToScreenPos(in mark);
+            screen.DrawPatch(
+                patch: markNumbers[i],
+                x: (int)MathF.Round(pos.X),
+                y: (int)MathF.Round(pos.Y),
+                scale: scale
+            );
+        }
+
+        if (am.State == AutoMapState.AllThings)
+            DrawThings(world);
+
+        DrawPlayers(world);
+
+        if (!am.Follow)
+        {
+            var halfWidth = amWidth / 2.0F;
+            var halfHeight = amHeight / 2.0F;
+            var doubleScale = 2.0F * scale;
+
+            var p1 = Vector2.Create(halfWidth - doubleScale, halfHeight);
+            var p2 = Vector2.Create(halfWidth + doubleScale, halfHeight);
+
+            screen.DrawLine(p1, p2, Grays);
+
+            p1 = Vector2.Create(halfWidth, halfHeight - doubleScale);
+            p2 = Vector2.Create(halfWidth, halfHeight + doubleScale);
+
+            screen.DrawLine(p1, p2, Grays);
+        }
+
+        screen.DrawText(
+            text: world.Map.Title,
+            x: 0,
+            y: amHeight - scale,
+            scale: scale
+        );
+    }
+
+    private void DrawPlayers(World world)
+    {
+        var options = world.Options;
+        var players = options.Players;
+        var consolePlayer = world.ConsolePlayer;
+
+        if (!options.NetGame)
+        {
+            DrawCharacter(consolePlayer.Mobj, playerArrow, White);
+            return;
+        }
+
+        for (var i = 0; i < Player.MaxPlayerCount; i++)
+        {
+            var player = players[i];
+            if (options.Deathmatch != 0 && !options.DemoPlayback && player != consolePlayer)
+                continue;
+
+            if (!player.InGame)
+                continue;
+
+            const int closeToBlack = 246;
+            // Close to black or set base player color
+            var color = player.Powers[PowerType.Invisibility] > 0
+                ? closeToBlack
+                : playerColors[i];
+
+            DrawCharacter(player.Mobj!, playerArrow, color);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void DrawThings(World world)
+    {
+        foreach (var thinker in world.Thinkers)
+        {
+            if (thinker is Mobj mobj)
+                DrawCharacter(mobj, thingTriangle, Greens);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void DrawCharacter(Mobj mobj, float[] data, int color)
+    {
+        var pos = ToScreenPos(mobj.X, mobj.Y);
+        var sin = (float)Math.Sin(mobj.Angle.ToRadian());
+        var cos = (float)Math.Cos(mobj.Angle.ToRadian());
+        var zoomedPpu = zoom * ppu;
+
+        for (var i = 0; i < data.Length; i += 4)
+        {
+            var p1 = Vector2.Create(pos.X + zoomedPpu * (cos * data[i + 0] - sin * data[i + 1]), pos.Y - zoomedPpu * (sin * data[i + 0] + cos * data[i + 1]));
+            var p2 = Vector2.Create(pos.X + zoomedPpu * (cos * data[i + 2] - sin * data[i + 3]), pos.Y - zoomedPpu * (sin * data[i + 2] + cos * data[i + 3]));
+            screen.DrawLine(p1, p2, color);
+        }
+    }
+
+    private Vector2 ToScreenPos(Fixed x, Fixed y)
+    {
+        var posX = zoom * ppu * (x.ToFloat() - renderView.X) + amWidth / 2;
+        var posY = -zoom * ppu * (y.ToFloat() - renderView.Y) + amHeight / 2;
+        return new Vector2(posX, posY);
+    }
+
+    private Vector2 ToScreenPos(in Vertex v)
+    {
+        var posX = zoom * ppu * (v.X.ToFloat() - renderView.X) + amWidth / 2;
+        var posY = -zoom * ppu * (v.Y.ToFloat() - renderView.Y) + amHeight / 2;
+        return new Vector2(posX, posY);
+    }
+}

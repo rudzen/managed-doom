@@ -1,0 +1,135 @@
+﻿//
+// Copyright (C) 1993-1996 Id Software, Inc.
+// Copyright (C) 2019-2020 Nobuaki Tanaka
+// Copyright (C)      2024 Rudy Alex Kohn
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+
+using ManagedDoom.Doom.Common;
+
+namespace ManagedDoom.Doom.Info;
+
+public static partial class DoomInfo
+{
+    public static DoomString[] SfxNames =>
+    [
+        new("none"),
+        new("pistol"),
+        new("shotgn"),
+        new("sgcock"),
+        new("dshtgn"),
+        new("dbopn"),
+        new("dbcls"),
+        new("dbload"),
+        new("plasma"),
+        new("bfg"),
+        new("sawup"),
+        new("sawidl"),
+        new("sawful"),
+        new("sawhit"),
+        new("rlaunc"),
+        new("rxplod"),
+        new("firsht"),
+        new("firxpl"),
+        new("pstart"),
+        new("pstop"),
+        new("doropn"),
+        new("dorcls"),
+        new("stnmov"),
+        new("swtchn"),
+        new("swtchx"),
+        new("plpain"),
+        new("dmpain"),
+        new("popain"),
+        new("vipain"),
+        new("mnpain"),
+        new("pepain"),
+        new("slop"),
+        new("itemup"),
+        new("wpnup"),
+        new("oof"),
+        new("telept"),
+        new("posit1"),
+        new("posit2"),
+        new("posit3"),
+        new("bgsit1"),
+        new("bgsit2"),
+        new("sgtsit"),
+        new("cacsit"),
+        new("brssit"),
+        new("cybsit"),
+        new("spisit"),
+        new("bspsit"),
+        new("kntsit"),
+        new("vilsit"),
+        new("mansit"),
+        new("pesit"),
+        new("sklatk"),
+        new("sgtatk"),
+        new("skepch"),
+        new("vilatk"),
+        new("claw"),
+        new("skeswg"),
+        new("pldeth"),
+        new("pdiehi"),
+        new("podth1"),
+        new("podth2"),
+        new("podth3"),
+        new("bgdth1"),
+        new("bgdth2"),
+        new("sgtdth"),
+        new("cacdth"),
+        new("skldth"),
+        new("brsdth"),
+        new("cybdth"),
+        new("spidth"),
+        new("bspdth"),
+        new("vildth"),
+        new("kntdth"),
+        new("pedth"),
+        new("skedth"),
+        new("posact"),
+        new("bgact"),
+        new("dmact"),
+        new("bspact"),
+        new("bspwlk"),
+        new("vilact"),
+        new("noway"),
+        new("barexp"),
+        new("punch"),
+        new("hoof"),
+        new("metal"),
+        new("chgun"),
+        new("tink"),
+        new("bdopn"),
+        new("bdcls"),
+        new("itmbk"),
+        new("flame"),
+        new("flamst"),
+        new("getpow"),
+        new("bospit"),
+        new("boscub"),
+        new("bossit"),
+        new("bospn"),
+        new("bosdth"),
+        new("manatk"),
+        new("mandth"),
+        new("sssit"),
+        new("ssdth"),
+        new("keenpn"),
+        new("keendt"),
+        new("skeact"),
+        new("skesit"),
+        new("skeatk"),
+        new("radio")
+    ];
+}

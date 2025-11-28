@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>managed-doom</AssemblyName>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <UseSystemResourceKeys>true</UseSystemResourceKeys>
+        <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+        <DebuggerSupport>false</DebuggerSupport>
+        <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+        <EventSourceSupport>false</EventSourceSupport>
+        <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+        <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+
+        <NoWarn>$(NoWarn);IL2104;IL3000;IL3002;CA1069</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DefineConstants>WINDOWS_RELEASE</DefineConstants>
+    </PropertyGroup>
+  
+    <ItemGroup>
+        <PackageReference Include="DrippyAL"/>
+        <PackageReference Include="MeltySynth"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+        <PackageReference Include="Silk.NET.Input.Glfw"/>
+        <PackageReference Include="Silk.NET.Windowing.Glfw"/>
+        <PackageReference Include="TrippyGL"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="src\managed-doom.cfg"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="managed-doom.cfg"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="managed-doom.cfg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
