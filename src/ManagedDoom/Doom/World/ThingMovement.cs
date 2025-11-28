@@ -108,10 +108,10 @@ public sealed class ThingMovement(World world)
     {
         var mc = world.MapCollision;
 
-        if (currentBox.Right() <= line.BoundingBox.Left() ||
-            currentBox.Left() >= line.BoundingBox.Right() ||
-            currentBox.Top() <= line.BoundingBox.Bottom() ||
-            currentBox.Bottom() >= line.BoundingBox.Top())
+        if (currentBox[Box.Right] <= line.BoundingBox[Box.Left] ||
+            currentBox[Box.Left] >= line.BoundingBox[Box.Right] ||
+            currentBox[Box.Top] <= line.BoundingBox[Box.Bottom] ||
+            currentBox[Box.Bottom] >= line.BoundingBox[Box.Top])
         {
             return true;
         }
@@ -133,7 +133,7 @@ public sealed class ThingMovement(World world)
         if (line.BackSector == null)
             return false;
 
-        if ((currentThing.Flags & MobjFlags.Missile) == 0)
+        if ((currentThing!.Flags & MobjFlags.Missile) == 0)
         {
             // Explicitly blocking everything.
             if ((line.Flags & LineFlags.Blocking) != 0)
@@ -163,7 +163,7 @@ public sealed class ThingMovement(World world)
         // If contacted a special line, add it to the list.
         if (line.Special != 0)
         {
-            crossedSpecials[crossedSpecialCount] = line;
+            crossedSpecials![crossedSpecialCount] = line;
             crossedSpecialCount++;
         }
 
@@ -175,7 +175,7 @@ public sealed class ThingMovement(World world)
         if ((thing.Flags & (MobjFlags.Solid | MobjFlags.Special | MobjFlags.Shootable)) == 0)
             return true;
 
-        var blockDist = thing.Radius + currentThing.Radius;
+        var blockDist = thing.Radius + currentThing!.Radius;
 
         // Didn't hit it.
         if (Fixed.Abs(thing.X - currentX) >= blockDist || Fixed.Abs(thing.Y - currentY) >= blockDist)

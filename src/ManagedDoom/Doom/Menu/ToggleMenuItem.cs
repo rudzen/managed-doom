@@ -18,7 +18,7 @@ using System;
 
 namespace ManagedDoom.Doom.Menu;
 
-public class ToggleMenuItem(
+public sealed class ToggleMenuItem(
     string name,
     int skullX,
     int skullY,

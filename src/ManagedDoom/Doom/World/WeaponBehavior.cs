@@ -96,71 +96,52 @@ public sealed class WeaponBehavior(World world)
     {
         var ammo = player.ReadyWeapon.WeaponInfo().Ammo;
 
-        int count;
+        // No ammo needed.
+        if (ammo == AmmoType.NoAmmo)
+            return true;
 
-        // Minimal amount for one shot varies.
-        if (player.ReadyWeapon == WeaponTypes.Bfg)
-            count = DoomInfo.DeHackEdConst.BfgCellsPerShot;
-        else if (player.ReadyWeapon == WeaponTypes.SuperShotgun)
-            count = 2; // double barrel
-        else
-            count = 1; // regular
+        var count = player.ReadyWeapon switch
+        {
+            // Minimal amount for one shot varies.
+            WeaponTypes.Bfg          => DoomInfo.DeHackEdConst.BfgCellsPerShot,
+            WeaponTypes.SuperShotgun => 2, // double barrel
+            _                        => 1  // regular
+        };
 
         // Some do not need ammunition anyway.
         // Return if current ammunition sufficient.
-        if (ammo == AmmoType.NoAmmo || player.Ammo[ammo] >= count)
+        if (player.Ammo[ammo] >= count)
             return true;
 
         // Out of ammo, pick a weapon to change to.
         // Preferences are set here.
         do
         {
-            if (player.WeaponOwned.Has(WeaponTypes.Plasma) &&
-                player.Ammo[(int)AmmoTypes.Cell] > 0 &&
-                world.Options.GameMode != GameMode.Shareware)
-            {
+            if (player.WeaponOwned.Has(WeaponTypes.Plasma)
+                && player.Ammo[(int)AmmoTypes.Cell] > 0
+                && world.Options.GameMode != GameMode.Shareware)
                 player.PendingWeapon = WeaponTypes.Plasma;
-            }
-            else if (player.WeaponOwned.Has(WeaponTypes.SuperShotgun) &&
-                     player.Ammo[(int)AmmoTypes.Shell] > 2 &&
-                     world.Options.GameMode == GameMode.Commercial)
-            {
+            else if (player.WeaponOwned.Has(WeaponTypes.SuperShotgun)
+                     && player.Ammo[(int)AmmoTypes.Shell] > 2
+                     && world.Options.GameMode == GameMode.Commercial)
                 player.PendingWeapon = WeaponTypes.SuperShotgun;
-            }
-            else if (player.WeaponOwned.Has(WeaponTypes.Chaingun) &&
-                     player.Ammo[(int)AmmoTypes.Clip] > 0)
-            {
+            else if (player.WeaponOwned.Has(WeaponTypes.Chaingun) && player.Ammo[(int)AmmoTypes.Clip] > 0)
                 player.PendingWeapon = WeaponTypes.Chaingun;
-            }
-            else if (player.WeaponOwned.Has(WeaponTypes.Shotgun) &&
-                     player.Ammo[(int)AmmoTypes.Shell] > 0)
-            {
+            else if (player.WeaponOwned.Has(WeaponTypes.Shotgun) && player.Ammo[(int)AmmoTypes.Shell] > 0)
                 player.PendingWeapon = WeaponTypes.Shotgun;
-            }
             else if (player.Ammo[(int)AmmoTypes.Clip] > 0)
-            {
                 player.PendingWeapon = WeaponTypes.Pistol;
-            }
             else if (player.WeaponOwned.Has(WeaponTypes.Chainsaw))
-            {
                 player.PendingWeapon = WeaponTypes.Chainsaw;
-            }
-            else if (player.WeaponOwned.Has(WeaponTypes.Missile) &&
-                     player.Ammo[(int)AmmoTypes.Missile] > 0)
-            {
+            else if (player.WeaponOwned.Has(WeaponTypes.Missile) && player.Ammo[(int)AmmoTypes.Missile] > 0)
                 player.PendingWeapon = WeaponTypes.Missile;
-            }
-            else if (player.WeaponOwned.Has(WeaponTypes.Bfg) &&
-                     player.Ammo[(int)AmmoTypes.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot &&
-                     world.Options.GameMode != GameMode.Shareware)
-            {
+            else if (player.WeaponOwned.Has(WeaponTypes.Bfg)
+                     && player.Ammo[(int)AmmoTypes.Cell] > DoomInfo.DeHackEdConst.BfgCellsPerShot
+                     && world.Options.GameMode != GameMode.Shareware)
                 player.PendingWeapon = WeaponTypes.Bfg;
-            }
+            // If everything fails.
             else
-            {
-                // If everything fails.
                 player.PendingWeapon = WeaponTypes.Fist;
-            }
         } while (player.PendingWeapon == WeaponTypes.None);
 
         // Now set appropriate weapon overlay.
@@ -173,18 +154,17 @@ public sealed class WeaponBehavior(World world)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void RecursiveSound(Sector sec, int soundblocks, Mobj soundtarget, int validCount)
+    private void RecursiveSound(Sector sec, int soundBlocks, Mobj soundTarget, int validCount)
     {
-        // Wake up all monsters in this sector.
-        if (sec.ValidCount == validCount && sec.SoundTraversed <= soundblocks + 1)
-        {
-            // Already flooded.
+        // Already flooded.
+        if (sec.ValidCount == validCount && sec.SoundTraversed <= soundBlocks + 1)
             return;
-        }
+
+        // Wake up all monsters in this sector.
 
         sec.ValidCount = validCount;
-        sec.SoundTraversed = soundblocks + 1;
-        sec.SoundTarget = soundtarget;
+        sec.SoundTraversed = soundBlocks + 1;
+        sec.SoundTarget = soundTarget;
 
         var mc = world.MapCollision;
 
@@ -203,11 +183,11 @@ public sealed class WeaponBehavior(World world)
 
             if ((check.Flags & LineFlags.SoundBlock) != 0)
             {
-                if (soundblocks == 0)
-                    RecursiveSound(other, 1, soundtarget, validCount);
+                if (soundBlocks == 0)
+                    RecursiveSound(other, 1, soundTarget, validCount);
             }
             else
-                RecursiveSound(other, soundblocks, soundtarget, validCount);
+                RecursiveSound(other, soundBlocks, soundTarget, validCount);
         }
     }
 
@@ -215,10 +195,11 @@ public sealed class WeaponBehavior(World world)
     private void NoiseAlert(Mobj target, Mobj emmiter)
     {
         RecursiveSound(
-            emmiter.Subsector.Sector,
-            0,
-            target,
-            world.GetNewValidCount());
+            sec: emmiter.Subsector.Sector,
+            soundBlocks: 0,
+            soundTarget: target,
+            validCount: world.GetNewValidCount()
+        );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -309,10 +290,10 @@ public sealed class WeaponBehavior(World world)
         world.StartSound(player.Mobj, Sfx.PUNCH, SfxType.Weapon);
 
         player.Mobj.Angle = Geometry.PointToAngle(
-            player.Mobj.X, player.Mobj.Y,
-            hs.LineTarget.X, hs.LineTarget.Y);
+            fromX: player.Mobj.X, fromY: player.Mobj.Y,
+            toX: hs.LineTarget.X, toY: hs.LineTarget.Y
+        );
     }
-
 
     public void Saw(Player player)
     {
@@ -339,8 +320,9 @@ public sealed class WeaponBehavior(World world)
 
         // Turn to face target.
         var targetAngle = Geometry.PointToAngle(
-            player.Mobj.X, player.Mobj.Y,
-            hs.LineTarget.X, hs.LineTarget.Y);
+            fromX: player.Mobj.X, fromY: player.Mobj.Y,
+            toX: hs.LineTarget.X, toY: hs.LineTarget.Y
+        );
 
         if (targetAngle - player.Mobj.Angle > Angle.Ang180)
         {
@@ -426,9 +408,10 @@ public sealed class WeaponBehavior(World world)
         player.Ammo[player.ReadyWeapon.WeaponInfo().Ammo]--;
 
         world.PlayerBehavior.SetPlayerSprite(
-            player,
-            PlayerSprite.Flash,
-            player.ReadyWeapon.WeaponInfo().FlashState);
+            player: player,
+            position: PlayerSprite.Flash,
+            state: player.ReadyWeapon.WeaponInfo().FlashState
+        );
 
         BulletSlope(player.Mobj);
 
@@ -436,10 +419,7 @@ public sealed class WeaponBehavior(World world)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Light1(Player player)
-    {
-        player.ExtraLight = 1;
-    }
+    public static void Light1(Player player) => player.ExtraLight = 1;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FireShotgun(Player player)

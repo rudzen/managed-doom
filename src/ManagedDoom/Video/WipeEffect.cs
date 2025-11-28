@@ -14,8 +14,10 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Extensions;
@@ -46,12 +48,16 @@ public sealed class WipeEffect
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Start()
     {
-        Y[0] = (short)-(random.Next() % 16);
+        var ySpan = Y.AsSpan();
+        ref var yRef = ref MemoryMarshal.GetReference(ySpan);
+
+        yRef = (short)-(random.Next() % 16);
         for (var i = 1; i < Y.Length; i++)
         {
+            ref var y = ref Unsafe.Add(ref yRef, i);
             var r = random.Next() % 3 - 1;
-            var v = (short)(Y[i - 1] + r);
-            Y[i] = v switch
+            var v = (short)(Unsafe.Add(ref yRef, i - 1) + r);
+            y = v switch
             {
                 > 0 => 0,
                 -16 => -15,
@@ -60,24 +66,29 @@ public sealed class WipeEffect
         }
     }
 
+    [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public UpdateResult Update()
     {
         var done = true;
 
+        var ySpan = Y.AsSpan();
+        ref var yRef = ref MemoryMarshal.GetReference(ySpan);
+
         for (var i = 0; i < Y.Length; i++)
         {
-            if (Y[i] < 0)
+            ref var y = ref Unsafe.Add(ref yRef, i);
+            if (y < 0)
             {
-                Y[i]++;
+                y++;
                 done = false;
             }
-            else if (Y[i] < height)
+            else if (y < height)
             {
-                var dy = Y[i] < 16 ? Y[i] + 1 : 8;
-                if (Y[i] + dy >= height)
-                    dy = height - Y[i];
-                Y[i] += (short)dy;
+                var dy = y < 16 ? y + 1 : 8;
+                if (y + dy >= height)
+                    dy = height - y;
+                y += (short)dy;
                 done = false;
             }
         }

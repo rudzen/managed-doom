@@ -131,10 +131,12 @@ public static class MapExtensions
         foreach (var line in lines)
         {
             if (line.Special == 0) continue;
+            var x = (line.Vertex1.X + line.Vertex2.X) / 2;
+            var y = (line.Vertex1.Y + line.Vertex2.Y) / 2;
             line.SoundOrigin = new Mobj(world)
             {
-                X = (line.Vertex1.X + line.Vertex2.X) / 2,
-                Y = (line.Vertex1.Y + line.Vertex2.Y) / 2
+                X = x,
+                Y = y
             };
         }
 
@@ -149,6 +151,7 @@ public static class MapExtensions
                     continue;
 
                 sectorLines.Add(line);
+
                 boundingBox.AddPoint(line.Vertex1);
                 boundingBox.AddPoint(line.Vertex2);
             }
@@ -156,10 +159,12 @@ public static class MapExtensions
             sector.Lines = [.. sectorLines];
 
             // Set the degenmobj_t to the middle of the bounding box.
+            var x = (boundingBox[Box.Right] + boundingBox[Box.Left]) / 2;
+            var y = (boundingBox[Box.Top] + boundingBox[Box.Bottom]) / 2;
             sector.SoundOrigin = new Mobj(world)
             {
-                X = (boundingBox[Box.Right] + boundingBox[Box.Left]) / 2,
-                Y = (boundingBox[Box.Top] + boundingBox[Box.Bottom]) / 2
+                X = x,
+                Y = y
             };
 
             sector.BlockBox = new int[4];

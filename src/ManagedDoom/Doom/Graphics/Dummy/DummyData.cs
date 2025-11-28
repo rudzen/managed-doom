@@ -87,9 +87,7 @@ public static class DummyData
 
     public static Flat GetSkyFlat()
     {
-        if (_dummySkyFlat is null)
-            _dummySkyFlat = new Flat(Name, GetFlat().Data);
-
+        _dummySkyFlat ??= new Flat(Name, GetFlat().Data);
         return _dummySkyFlat;
     }
 }

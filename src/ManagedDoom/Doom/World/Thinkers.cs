@@ -26,15 +26,11 @@ public sealed class Thinkers
     // Pre-allocate for typical usage
     private readonly List<Thinker> thinkers = new(1024);
 
-    public void Add(Thinker thinker)
-    {
-        thinkers.Add(thinker);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Add(Thinker thinker) => thinkers.Add(thinker);
 
-    public static void Remove(Thinker thinker)
-    {
-        thinker.ThinkerState = ThinkerState.Removed;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Remove(Thinker thinker) => thinker.ThinkerState = ThinkerState.Removed;
 
     public void Run()
     {
@@ -72,10 +68,8 @@ public sealed class Thinkers
         thinkers.Clear();
     }
 
-    public ThinkerEnumerator GetEnumerator()
-    {
-        return new ThinkerEnumerator(this);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ThinkerEnumerator GetEnumerator() => new(this);
 
     public struct ThinkerEnumerator : IEnumerator<Thinker>
     {

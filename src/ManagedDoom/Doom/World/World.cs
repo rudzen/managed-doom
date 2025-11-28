@@ -66,9 +66,11 @@ public sealed class World
         WeaponBehavior = new WeaponBehavior(this);
         MonsterBehavior = new MonsterBehavior(this);
         LightingChange = new LightingChange(this);
-        StatusBar = new StatusBar(ConsolePlayer);
+        StatusBar = new StatusBar();
         AutoMap = new AutoMap(this);
         cheat = new Cheat(this);
+
+        StatusBar.Reset(ConsolePlayer.WeaponOwned);
 
         options.IntermissionInfo.TotalFrags = 0;
         options.IntermissionInfo.ParTime = 180;

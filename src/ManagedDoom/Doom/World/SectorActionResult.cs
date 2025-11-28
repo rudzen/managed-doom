@@ -18,7 +18,7 @@ namespace ManagedDoom.Doom.World;
 
 public enum SectorActionResult
 {
-    OK,
+    Ok,
     Crushed,
     PastDestination
 }

@@ -294,9 +294,9 @@ public static partial class DoomInfo
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void BrainDie(World.World world, Mobj actor)
+        public static void BrainDie(World.World world, Mobj _)
         {
-            world.MonsterBehavior.BrainDie(actor);
+            world.MonsterBehavior.BrainDie();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

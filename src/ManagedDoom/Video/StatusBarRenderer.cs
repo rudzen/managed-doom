@@ -431,11 +431,11 @@ public sealed class StatusBarRenderer
                 Patch.FromWad(wad, "STFB3")
             ];
 
-            var faces = new Patch[StatusBar.Face.FaceCount];
+            var faces = new Patch[Face.FaceCount];
             var faceCount = 0;
-            for (var i = 0; i < StatusBar.Face.PainFaceCount; i++)
+            for (var i = 0; i < Face.PainFaceCount; i++)
             {
-                for (var j = 0; j < StatusBar.Face.StraightFaceCount; j++)
+                for (var j = 0; j < Face.StraightFaceCount; j++)
                     faces[faceCount++] = Patch.FromWad(wad, $"STFST{i}{j}");
 
                 faces[faceCount++] = Patch.FromWad(wad, $"STFTR{i}0");

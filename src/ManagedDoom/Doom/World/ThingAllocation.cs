@@ -172,7 +172,7 @@ public sealed class ThingAllocation
 
         if (mt.Type - 1 == world.Options.ConsolePlayer)
         {
-            world.StatusBar.Reset(world.ConsolePlayer);
+            world.StatusBar.Reset(world.ConsolePlayer.WeaponOwned);
             world.Options.Sound.Listener = mobj;
         }
 

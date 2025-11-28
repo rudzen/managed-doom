@@ -39,7 +39,7 @@ public sealed class Wad
 
     private readonly List<string> names;
 
-    public Wad(IEnumerable<string> fileNames) : this(fileNames.ToArray())
+    public Wad(IEnumerable<string> fileNames) : this([.. fileNames])
     {
     }
 

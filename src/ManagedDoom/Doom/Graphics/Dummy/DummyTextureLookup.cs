@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Info;
 
 namespace ManagedDoom.Doom.Graphics.Dummy;
@@ -35,7 +36,11 @@ public sealed class DummyTextureLookup : ITextureLookup
     public DummyTextureLookup(Wad.Wad wad)
     {
         var nameToTextureLocal = new Dictionary<string, Texture>(512);
+        var nameToTextureLookupLocal = nameToTextureLocal.GetAlternateLookup<ReadOnlySpan<char>>();
         var nameToNumberLocal = new Dictionary<string, int>(512);
+        var nameToNumberLocalLocalLookup = nameToNumberLocal.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        Span<char> buffer = stackalloc char[8];
 
         for (var n = 1; n <= 2; n++)
         {
@@ -49,12 +54,12 @@ public sealed class DummyTextureLookup : ITextureLookup
             for (var i = 0; i < count; i++)
             {
                 var offset = BitConverter.ToInt32(lumpData.Slice(4 + 4 * i, 4));
-                var name = Texture.GetName(lumpData[offset..]);
+                var name = DoomInterop.ToString(lumpData[offset..], buffer);
                 var height = Texture.GetHeight(lumpData, offset);
                 var texture = DummyData.GetTexture(height);
-                nameToNumberLocal.TryAdd(name, textures.Count);
+                nameToNumberLocalLocalLookup.TryAdd(name, textures.Count);
                 textures.Add(texture);
-                nameToTextureLocal.TryAdd(name, texture);
+                nameToTextureLookupLocal.TryAdd(name, texture);
             }
         }
 

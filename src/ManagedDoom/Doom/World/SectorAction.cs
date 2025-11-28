@@ -140,10 +140,10 @@ public sealed class SectorAction
         var bm = world.Map.BlockMap;
         var blockBox = sector.BlockBox;
 
-        var left = blockBox.Left();
-        var right = blockBox.Right();
-        var bottom = blockBox.Bottom();
-        var top = blockBox.Top();
+        var left = blockBox[Box.Left];
+        var right = blockBox[Box.Right];
+        var bottom = blockBox[Box.Bottom];
+        var top = blockBox[Box.Top];
 
         // Re-check heights for all things near the moving sector.
         for (var x = left; x <= right; x++)
@@ -298,7 +298,7 @@ public sealed class SectorAction
                 break;
         }
 
-        return SectorActionResult.OK;
+        return SectorActionResult.Ok;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

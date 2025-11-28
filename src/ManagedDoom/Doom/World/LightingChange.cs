@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System.Linq;
 using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
@@ -91,19 +92,12 @@ public sealed class LightingChange(World world)
 
     private static int FindMinSurroundingLight(Sector sector, int max)
     {
-        var min = max;
-        foreach (var line in sector.Lines)
-        {
-            var check = GetNextSector(line, sector);
-
-            if (check == null)
-                continue;
-
-            if (check.LightLevel < min)
-                min = check.LightLevel;
-        }
-
-        return min;
+        return sector.Lines
+                     .Select(line => GetNextSector(line, sector))
+                     .OfType<Sector>()
+                     .Select(check => check.LightLevel)
+                     .Prepend(max)
+                     .Min();
     }
 
     private static Sector? GetNextSector(LineDef line, Sector sector)

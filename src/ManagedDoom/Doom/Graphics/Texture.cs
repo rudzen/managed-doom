@@ -58,11 +58,6 @@ public sealed class Texture
             patches);
     }
 
-    public static string GetName(ReadOnlySpan<byte> data)
-    {
-        return DoomInterop.ToString(data);
-    }
-
     public static int GetHeight(ReadOnlySpan<byte> data, int offset)
     {
         return BitConverter.ToInt16(data[(offset + 14)..]);
