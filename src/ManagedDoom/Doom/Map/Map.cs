@@ -31,7 +31,7 @@ namespace ManagedDoom.Doom.Map;
 public sealed record Map(
     ITextureLookup Textures,
     IFlatLookup Flats,
-    TextureAnimation Animation,
+    TextureAnimationInfo[] Animations,
     Vertex[] Vertices,
     Sector[] Sectors,
     LineDef[] Lines,
@@ -52,10 +52,10 @@ public static class MapExtensions
 {
     public static Map Create(GameContent resources, World.World world)
     {
-        return Create(resources.Wad, resources.Textures, resources.Flats, resources.Animation, world);
+        return Create(resources.Wad, resources.Textures, resources.Flats, resources.Animations, world);
     }
 
-    private static Map Create(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimation animation, World.World world)
+    private static Map Create(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimationInfo[] animations, World.World world)
     {
         try
         {
@@ -99,7 +99,7 @@ public static class MapExtensions
             return new Map(
                 Textures: textures,
                 Flats: flats,
-                Animation: animation,
+                Animations: animations,
                 Vertices: vertices,
                 Sectors: sectors,
                 Lines: lines,

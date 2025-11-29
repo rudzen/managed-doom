@@ -30,7 +30,7 @@ public sealed class GameContent
         Textures = new DummyTextureLookup(Wad);
         Flats = new DummyFlatLookup(Wad);
         Sprites = new DummySpriteLookup(Wad);
-        Animation = new TextureAnimation(Textures, Flats);
+        Animations = GraphicsFactory.CreateTextureAnimations(Textures, Flats);
     }
 
     public GameContent(CommandLineArgs args)
@@ -44,7 +44,7 @@ public sealed class GameContent
         Textures = new TextureLookup(Wad);
         Flats = new FlatLookup(Wad);
         Sprites = new SpriteLookup(Wad);
-        Animation = new TextureAnimation(Textures, Flats);
+        Animations = GraphicsFactory.CreateTextureAnimations(Textures, Flats);
     }
 
     public Wad.Wad Wad { get; }
@@ -59,7 +59,7 @@ public sealed class GameContent
 
     public ISpriteLookup Sprites { get; }
 
-    public TextureAnimation Animation { get; }
+    public TextureAnimationInfo[] Animations { get; }
 
     public static GameContent CreateDummy(params string[] wadPaths)
     {

@@ -92,8 +92,5 @@ public sealed class Palette
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static double CorrectionCurve(double x, in double p)
-    {
-        return System.Math.Pow(x, p);
-    }
+    private static double CorrectionCurve(double x, in double p) => System.Math.Pow(x, p);
 }

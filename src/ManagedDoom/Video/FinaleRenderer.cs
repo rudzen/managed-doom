@@ -72,16 +72,12 @@ public sealed class FinaleRenderer(GameContent gameContent, PatchCache patchCach
 
         var count = (finale.Count - 10) / Finale.TextSpeed;
         if (count < 0)
-        {
             count = 0;
-        }
 
         for (; count > 0; count--)
         {
             if (ch == finale.Text.Length)
-            {
                 break;
-            }
 
             var c = finale.Text[ch++];
 

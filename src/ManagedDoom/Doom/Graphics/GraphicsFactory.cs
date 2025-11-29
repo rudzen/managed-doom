@@ -1,7 +1,7 @@
 ﻿//
 // Copyright (C) 1993-1996 Id Software, Inc.
 // Copyright (C) 2019-2020 Nobuaki Tanaka
-// Copyright (C)      2024 Rudy Alex Kohn
+// Copyright (C)      2025 Rudy Alex Kohn
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,17 +22,16 @@ using ManagedDoom.Doom.Info;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class TextureAnimation
+public static class GraphicsFactory
 {
-    public TextureAnimation(ILookup<Texture> textures, IFlatLookup flats)
+    public static TextureAnimationInfo[] CreateTextureAnimations(ILookup<Texture> textures, IFlatLookup flats)
     {
+        Console.Write("Load texture animation info: ");
+        var list = new List<TextureAnimationInfo>(DoomInfo.TextureAnimation.Length);
+        var start = Stopwatch.GetTimestamp();
+
         try
         {
-            Console.Write("Load texture animation info: ");
-            var start = Stopwatch.GetTimestamp();
-
-            var list = new List<TextureAnimationInfo>(DoomInfo.TextureAnimation.Length);
-
             foreach (var animDef in DoomInfo.TextureAnimation.AsSpan())
             {
                 int picNum;
@@ -67,17 +66,16 @@ public sealed class TextureAnimation
                 list.Add(anim);
             }
 
-            Animations = [.. list];
-
             var end = Stopwatch.GetElapsedTime(start);
             Console.WriteLine($"OK [{end}]");
+            return [.. list];
         }
         catch (Exception e)
         {
             Console.WriteLine("Failed");
             ExceptionDispatchInfo.Throw(e);
         }
-    }
 
-    public TextureAnimationInfo[] Animations { get; }
+        return [];
+    }
 }

@@ -149,13 +149,7 @@ public sealed class TextureLookup : ITextureLookup
         return names;
     }
 
-    public IEnumerator<Texture> GetEnumerator()
-    {
-        return textures.GetEnumerator();
-    }
+    public IEnumerator<Texture> GetEnumerator() => textures.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return textures.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => textures.GetEnumerator();
 }

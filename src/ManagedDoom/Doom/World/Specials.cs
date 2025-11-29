@@ -209,7 +209,7 @@ public sealed class Specials
         }
 
         // Animate flats and textures globally.
-        var animations = world.Map.Animation.Animations.AsSpan();
+        var animations = world.Map.Animations.AsSpan();
         foreach (var anim in animations)
         {
             for (var i = anim.BasePic; i < anim.BasePic + anim.NumPics; i++)
