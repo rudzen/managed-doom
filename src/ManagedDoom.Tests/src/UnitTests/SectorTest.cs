@@ -15,7 +15,7 @@ public sealed class SectorTest(WadPath wadPath) : IClassFixture<WadPath>
         var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("E1M1");
         var flats = new FlatLookup(wad);
-        var sectors = Sector.FromWad(wad, map + 8, flats);
+        var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
 
         Assert.Equal(88, sectors.Length);
 
@@ -51,7 +51,7 @@ public sealed class SectorTest(WadPath wadPath) : IClassFixture<WadPath>
         var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("MAP01");
         var flats = new FlatLookup(wad);
-        var sectors = Sector.FromWad(wad, map + 8, flats);
+        var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
 
         Assert.Equal(59, sectors.Length);
 

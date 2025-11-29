@@ -367,7 +367,7 @@ public sealed class Player
         // Cancel gun flashes.
         ExtraLight = 0;
 
-        // Cancel ir gogles.
+        // Cancel ir goggles.
         FixedColorMap = 0;
 
         // No palette changes.
@@ -392,10 +392,7 @@ public sealed class Player
         oldAngle = Mobj!.Angle;
     }
 
-    public void DisableFrameInterpolationForOneFrame()
-    {
-        interpolate = false;
-    }
+    public void DisableFrameInterpolationForOneFrame() => interpolate = false;
 
     public Fixed GetInterpolatedViewZ(Fixed frameFrac)
     {

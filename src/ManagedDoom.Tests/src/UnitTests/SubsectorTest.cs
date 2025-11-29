@@ -14,12 +14,12 @@ public sealed class SubsectorTest(WadPath wadPath) : IClassFixture<WadPath>
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("E1M1");
-        var vertices = wad.CreateVertices(map + 4);
-        var sectors = Sector.FromWad(wad, map + 8, flats);
-        var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
-        var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
-        var segments = Seg.FromWad(wad, map + 5, vertices, lines);
-        var subSectors = Subsector.FromWad(wad, map + 6, segments);
+        var vertices = MapFactory.CreateVertices(wad, map + 4);
+        var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
+        var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
+        var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
+        var segments = MapFactory.CreateSegs(wad, map + 5, vertices, lines);
+        var subSectors = MapFactory.CreateSubSectors(wad, map + 6, segments);
 
         Assert.Equal(239, subSectors.Length);
 
@@ -44,12 +44,12 @@ public sealed class SubsectorTest(WadPath wadPath) : IClassFixture<WadPath>
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("MAP01");
-        var vertices = wad.CreateVertices(map + 4);
-        var sectors = Sector.FromWad(wad, map + 8, flats);
-        var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
-        var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
-        var segments = Seg.FromWad(wad, map + 5, vertices, lines);
-        var subSectors = Subsector.FromWad(wad, map + 6, segments);
+        var vertices = MapFactory.CreateVertices(wad, map + 4);
+        var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
+        var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
+        var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
+        var segments = MapFactory.CreateSegs(wad, map + 5, vertices, lines);
+        var subSectors = MapFactory.CreateSubSectors(wad, map + 6, segments);
 
         Assert.Equal(194, subSectors.Length);
 

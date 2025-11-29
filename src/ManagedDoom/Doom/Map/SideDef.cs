@@ -14,18 +14,13 @@
 // GNU General Public License for more details.
 //
 
-using System;
-using ManagedDoom.Doom.Common;
-using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.Map;
 
 public sealed class SideDef
 {
-    private const int DataSize = 30;
-
-    private SideDef(
+    public SideDef(
         Fixed textureOffset,
         Fixed rowOffset,
         int topTexture,
@@ -41,7 +36,6 @@ public sealed class SideDef
         this.Sector = sector;
     }
 
-
     public Fixed TextureOffset { get; set; }
 
     public Fixed RowOffset { get; set; }
@@ -53,42 +47,4 @@ public sealed class SideDef
     public int MiddleTexture { get; set; }
 
     public Sector? Sector { get; }
-
-    private static SideDef FromData(ReadOnlySpan<byte> data, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
-    {
-        var textureOffset = BitConverter.ToInt16(data[..2]);
-        var rowOffset = BitConverter.ToInt16(data.Slice(2, 2));
-        var topTextureName = DoomInterop.ToString(data.Slice(4, 8));
-        var bottomTextureName = DoomInterop.ToString(data.Slice(12, 8));
-        var middleTextureName = DoomInterop.ToString(data.Slice(20, 8));
-        var sectorNum = BitConverter.ToInt16(data.Slice(28, 2));
-
-        return new SideDef(
-            Fixed.FromInt(textureOffset),
-            Fixed.FromInt(rowOffset),
-            textures.GetNumber(topTextureName),
-            textures.GetNumber(bottomTextureName),
-            textures.GetNumber(middleTextureName),
-            sectorNum != -1 ? sectors[sectorNum] : null);
-    }
-
-    public static SideDef[] FromWad(Wad.Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
-            throw new Exception();
-
-        var lumpData = wad.GetLumpData(lump);
-
-        var count = lumpSize / DataSize;
-        var sides = new SideDef[count];
-
-        for (var i = 0; i < sides.Length; i++)
-        {
-            var offset = DataSize * i;
-            sides[i] = FromData(lumpData[offset..], textures, sectors);
-        }
-
-        return sides;
-    }
 }

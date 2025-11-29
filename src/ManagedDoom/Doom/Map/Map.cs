@@ -74,16 +74,16 @@ public static class MapExtensions
             if (map == -1)
                 throw new Exception($"Map '{name}' was not found!");
 
-            var vertices = wad.CreateVertices(map + 4);
-            var sectors = Sector.FromWad(wad, map + 8, flats);
-            var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
-            var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
-            var segs = Seg.FromWad(wad, map + 5, vertices, lines);
-            var subSectors = Subsector.FromWad(wad, map + 6, segs);
-            var nodes = Node.FromWad(wad, map + 7);
-            var things = MapThing.FromWad(wad, map + 1);
-            var blockMap = BlockMap.FromWad(wad, map + 10, lines);
-            var reject = Reject.FromWad(wad, map + 9, sectors);
+            var vertices = MapFactory.CreateVertices(wad, map + 4);
+            var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
+            var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
+            var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
+            var segs = MapFactory.CreateSegs(wad, map + 5, vertices, lines);
+            var subSectors = MapFactory.CreateSubSectors(wad, map + 6, segs);
+            var nodes = MapFactory.CreateNodes(wad, map + 7);
+            var things = MapFactory.CreateMapThings(wad, map + 1);
+            var blockMap = MapFactory.CreateBlockMap(wad, map + 10, lines);
+            var reject = MapFactory.CreateReject(wad, map + 9, sectors);
 
             GroupLines(world, lines.AsSpan(), sectors.AsSpan(), blockMap);
 

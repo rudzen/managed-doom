@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
 
@@ -22,8 +21,6 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class LineDef
 {
-    private const int DataSize = 14;
-
     public LineDef(
         Vertex vertex1,
         Vertex vertex2,
@@ -79,44 +76,4 @@ public sealed class LineDef
     public int ValidCount { get; set; }
     public Thinker SpecialData { get; set; } = null!;
     public Mobj SoundOrigin { get; set; } = null!;
-
-    private static LineDef FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
-    {
-        var vertex1Number = BitConverter.ToInt16(data[..2]);
-        var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
-        var flags = BitConverter.ToInt16(data.Slice(4, 2));
-        var special = BitConverter.ToInt16(data.Slice(6, 2));
-        var tag = BitConverter.ToInt16(data.Slice(8, 2));
-        var side0Number = BitConverter.ToInt16(data.Slice(10, 2));
-        var side1Number = BitConverter.ToInt16(data.Slice(12, 2));
-
-        return new LineDef(
-            vertex1: vertices[vertex1Number],
-            vertex2: vertices[vertex2Number],
-            flags: (LineFlags)flags,
-            special: (LineSpecial)special,
-            tag: tag,
-            frontSide: sides[side0Number],
-            backSide: side1Number != -1 ? sides[side1Number] : null
-        );
-    }
-
-    public static LineDef[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
-            throw new Exception();
-
-        var lumpData = wad.GetLumpData(lump);
-        var count = lumpSize / DataSize;
-        var lines = new LineDef[count];
-
-        for (var i = 0; i < lines.Length; i++)
-        {
-            var offset = 14 * i;
-            lines[i] = FromData(lumpData[offset..], vertices, sides);
-        }
-
-        return lines;
-    }
 }

@@ -11,10 +11,9 @@ public sealed class ThingTest(WadPath wadPath) : IClassFixture<WadPath>
     public void LoadE1M1()
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom1);
-
         var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("E1M1");
-        var things = MapThing.FromWad(wad, map + 1);
+        var things = MapFactory.CreateMapThings(wad, map + 1);
 
         Assert.Equal(143, things.Length);
 
@@ -41,10 +40,9 @@ public sealed class ThingTest(WadPath wadPath) : IClassFixture<WadPath>
     public void LoadMap01()
     {
         var wadFile = wadPath.GetWadPath(WadFile.Doom2);
-
         var wad = new Wad(wadFile);
         var map = wad.GetLumpNumber("MAP01");
-        var things = MapThing.FromWad(wad, map + 1);
+        var things = MapFactory.CreateMapThings(wad, map + 1);
 
         Assert.Equal(69, things.Length);
 

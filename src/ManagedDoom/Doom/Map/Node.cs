@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Math;
 
@@ -22,8 +21,6 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class Node
 {
-    private const int DataSize = 28;
-
     public Node(
         Fixed x,
         Fixed y,
@@ -81,69 +78,9 @@ public sealed class Node
     public Fixed[][] BoundingBox { get; }
     public int[] Children { get; }
 
-    private static Node FromData(ReadOnlySpan<byte> data)
-    {
-        var x = BitConverter.ToInt16(data[..2]);
-        var y = BitConverter.ToInt16(data.Slice(2, 2));
-        var dx = BitConverter.ToInt16(data.Slice(4, 2));
-        var dy = BitConverter.ToInt16(data.Slice(6, 2));
-        var frontBoundingBoxTop = BitConverter.ToInt16(data.Slice(8, 2));
-        var frontBoundingBoxBottom = BitConverter.ToInt16(data.Slice(10, 2));
-        var frontBoundingBoxLeft = BitConverter.ToInt16(data.Slice(12, 2));
-        var frontBoundingBoxRight = BitConverter.ToInt16(data.Slice(14, 2));
-        var backBoundingBoxTop = BitConverter.ToInt16(data.Slice(16, 2));
-        var backBoundingBoxBottom = BitConverter.ToInt16(data.Slice(18, 2));
-        var backBoundingBoxLeft = BitConverter.ToInt16(data.Slice(20, 2));
-        var backBoundingBoxRight = BitConverter.ToInt16(data.Slice(22, 2));
-        var frontChild = BitConverter.ToInt16(data.Slice(24, 2));
-        var backChild = BitConverter.ToInt16(data.Slice(26, 2));
-
-        return new Node(
-            x: Fixed.FromInt(x),
-            y: Fixed.FromInt(y),
-            dx: Fixed.FromInt(dx),
-            dy: Fixed.FromInt(dy),
-            frontBoundingBoxTop: Fixed.FromInt(frontBoundingBoxTop),
-            frontBoundingBoxBottom: Fixed.FromInt(frontBoundingBoxBottom),
-            frontBoundingBoxLeft: Fixed.FromInt(frontBoundingBoxLeft),
-            frontBoundingBoxRight: Fixed.FromInt(frontBoundingBoxRight),
-            backBoundingBoxTop: Fixed.FromInt(backBoundingBoxTop),
-            backBoundingBoxBottom: Fixed.FromInt(backBoundingBoxBottom),
-            backBoundingBoxLeft: Fixed.FromInt(backBoundingBoxLeft),
-            backBoundingBoxRight: Fixed.FromInt(backBoundingBoxRight),
-            frontChild: frontChild,
-            backChild: backChild);
-    }
-
-    public static Node[] FromWad(Wad.Wad wad, int lump)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
-            throw new Exception();
-
-        var lumpData = wad.GetLumpData(lump);
-
-        var count = lumpSize / DataSize;
-        var nodes = new Node[count];
-
-        for (var i = 0; i < nodes.Length; i++)
-        {
-            var offset = DataSize * i;
-            nodes[i] = FromData(lumpData.Slice(offset, DataSize));
-        }
-
-        return nodes;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSubsector(int node) => (node & unchecked((int)0xFFFF8000)) != 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsSubsector(int node)
-    {
-        return (node & unchecked((int)0xFFFF8000)) != 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetSubsector(int node)
-    {
-        return node ^ unchecked((int)0xFFFF8000);
-    }
+    public static int GetSubsector(int node) => node ^ unchecked((int)0xFFFF8000);
 }

@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.Map;
@@ -27,66 +26,4 @@ public sealed record Seg(
     SideDef? SideDef,
     LineDef? LineDef,
     Sector? FrontSector,
-    Sector? BackSector)
-{
-    private const int DataSize = 12;
-
-    private static Seg FromData(
-        ReadOnlySpan<byte> data,
-        ReadOnlySpan<Vertex> vertices,
-        ReadOnlySpan<LineDef> lines)
-    {
-        var vertex1Number = BitConverter.ToInt16(data[..2]);
-        var vertex2Number = BitConverter.ToInt16(data.Slice(2, 2));
-        var angle = BitConverter.ToInt16(data.Slice(4, 2));
-        var lineNumber = BitConverter.ToInt16(data.Slice(6, 2));
-        var side = BitConverter.ToInt16(data.Slice(8, 2));
-        var segOffset = BitConverter.ToInt16(data.Slice(10, 2));
-
-        var lineDef = lines[lineNumber];
-
-        SideDef? frontSide;
-        SideDef? backSide;
-
-        if (side == 0)
-        {
-            frontSide = lineDef.FrontSide;
-            backSide = lineDef.BackSide;
-        }
-        else
-        {
-            frontSide = lineDef.BackSide;
-            backSide = lineDef.FrontSide;
-        }
-
-        return new Seg(
-            Vertex1: vertices[vertex1Number],
-            Vertex2: vertices[vertex2Number],
-            Offset: Fixed.FromInt(segOffset),
-            Angle: new Angle((uint)angle << 16),
-            SideDef: frontSide,
-            LineDef: lineDef,
-            FrontSector: frontSide?.Sector,
-            BackSector: (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
-    }
-
-    public static Seg[] FromWad(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, LineDef[] lines)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
-            throw new Exception();
-
-        var lumpData = wad.GetLumpData(lump);
-
-        var count = lumpSize / DataSize;
-        var segments = new Seg[count];
-
-        for (var i = 0; i < segments.Length; i++)
-        {
-            var offset = DataSize * i;
-            segments[i] = FromData(lumpData.Slice(offset, DataSize), vertices, lines);
-        }
-
-        return segments;
-    }
-}
+    Sector? BackSector);

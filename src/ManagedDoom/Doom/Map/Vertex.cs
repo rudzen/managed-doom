@@ -14,42 +14,8 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.Map;
 
 public readonly record struct Vertex(Fixed X, Fixed Y);
-
-public static class VertexExtensions
-{
-    private const int DataSize = 4;
-
-    public static Vertex[] CreateVertices(this Wad.Wad wad, int lump)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
-            throw new Exception();
-
-        var lumpData = wad.GetLumpData(lump);
-
-        var count = lumpSize / DataSize;
-        var vertices = new Vertex[count];
-
-        for (var i = 0; i < vertices.Length; i++)
-        {
-            var offset = DataSize * i;
-            vertices[i] = FromData(lumpData[offset..]);
-        }
-
-        return vertices;
-    }
-
-    private static Vertex FromData(ReadOnlySpan<byte> data)
-    {
-        var x = BitConverter.ToInt16(data);
-        var y = BitConverter.ToInt16(data.Slice(2, 2));
-
-        return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
-    }
-}

@@ -28,6 +28,8 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class ThingAllocation
 {
+    private static readonly Fixed[] mapThingZ = [Mobj.OnFloorZ, Mobj.OnCeilingZ];
+
     private readonly World world;
 
     public ThingAllocation(World world)
@@ -52,8 +54,6 @@ public sealed class ThingAllocation
         playerStarts = new MapThing[Player.MaxPlayerCount];
         deathmatchStarts = [];
     }
-
-    private static readonly Fixed[] MapThingZ = [Mobj.OnFloorZ, Mobj.OnCeilingZ];
 
     /// <summary>
     /// Spawn a mobj at the mapthing.
@@ -87,9 +87,6 @@ public sealed class ThingAllocation
 
             return;
         }
-
-        if (mt.Type is 11 or <= 4)
-            return;
 
         // Check for appropriate skill level.
         if (!world.Options.NetGame && ((int)mt.Flags & 16) != 0)
@@ -129,7 +126,7 @@ public sealed class ThingAllocation
         // Spawn it.
         var x = mt.X;
         var y = mt.Y;
-        var z = MapThingZ[((mobjInfoFlags & MobjFlags.SpawnCeiling) != 0).AsByte()];
+        var z = mapThingZ[((mobjInfoFlags & MobjFlags.SpawnCeiling) != 0).AsByte()];
 
         var mobj = SpawnMobj(x, y, z, (MobjType)i);
 
@@ -612,9 +609,7 @@ public sealed class ThingAllocation
         }
 
         // Spawn it.
-        var z = (DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0
-            ? Mobj.OnCeilingZ
-            : Mobj.OnFloorZ;
+        var z = mapThingZ[((DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0).AsByte()];
 
         mo = SpawnMobj(x, y, z, (MobjType)i);
         mo.SpawnPoint = mapThing;

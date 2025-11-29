@@ -15,10 +15,10 @@ public sealed class LineDefTest(WadPath wadPath) : IClassFixture<WadPath>
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("E1M1");
-        var vertices = wad.CreateVertices(map + 4);
-        var sectors = Sector.FromWad(wad, map + 8, flats);
-        var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
-        var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
+        var vertices = MapFactory.CreateVertices(wad, map + 4);
+        var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
+        var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
+        var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
 
         Assert.Equal(486, lines.Length);
 
@@ -61,10 +61,10 @@ public sealed class LineDefTest(WadPath wadPath) : IClassFixture<WadPath>
         var flats = new DummyFlatLookup(wad);
         var textures = new DummyTextureLookup(wad);
         var map = wad.GetLumpNumber("MAP01");
-        var vertices = wad.CreateVertices(map + 4);
-        var sectors = Sector.FromWad(wad, map + 8, flats);
-        var sides = SideDef.FromWad(wad, map + 3, textures, sectors);
-        var lines = LineDef.FromWad(wad, map + 2, vertices, sides);
+        var vertices = MapFactory.CreateVertices(wad, map + 4);
+        var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
+        var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
+        var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
 
         Assert.Equal(370, lines.Length);
 

@@ -40,7 +40,7 @@ public sealed class BlockMap
     public int Height { get; }
     public List<Mobj>[] ThingLists { get; }
 
-    private BlockMap(
+    public BlockMap(
         Fixed originX,
         Fixed originY,
         int width,
@@ -60,43 +60,11 @@ public sealed class BlockMap
             ThingLists[i] = new List<Mobj>(32);
     }
 
-    public static BlockMap FromWad(Wad.Wad wad, int lump, LineDef[] lines)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        var lumpData = wad.GetLumpData(lump);
-
-        var table = new short[lumpSize / 2];
-        for (var i = 0; i < table.Length; i++)
-        {
-            var offset = 2 * i;
-            table[i] = BitConverter.ToInt16(lumpData.Slice(offset, 2));
-        }
-
-        var originX = Fixed.FromInt(table[0]);
-        var originY = Fixed.FromInt(table[1]);
-        var width = table[2];
-        var height = table[3];
-
-        return new BlockMap(
-            originX,
-            originY,
-            width,
-            height,
-            table,
-            lines);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetBlockX(Fixed x) => (x - OriginX).Data >> FracToBlockShift;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetBlockX(Fixed x)
-    {
-        return (x - OriginX).Data >> FracToBlockShift;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetBlockY(Fixed y)
-    {
-        return (y - OriginY).Data >> FracToBlockShift;
-    }
+    public int GetBlockY(Fixed y) => (y - OriginY).Data >> FracToBlockShift;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int GetIndex(int blockX, int blockY)

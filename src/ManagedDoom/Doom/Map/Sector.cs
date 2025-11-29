@@ -14,10 +14,7 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using System.Collections.Generic;
-using ManagedDoom.Doom.Common;
-using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Doom.World;
 
@@ -25,8 +22,6 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class Sector
 {
-    private const int DataSize = 26;
-
     // 0 = untraversed, 1, 2 = sndlines - 1.
 
     // Thing that made a sound (or null).
@@ -45,7 +40,7 @@ public sealed class Sector
     private Fixed oldFloorHeight;
     private Fixed oldCeilingHeight;
 
-    private Sector(
+    public Sector(
         int number,
         Fixed floorHeight,
         Fixed ceilingHeight,
@@ -87,62 +82,15 @@ public sealed class Sector
     public Thinker? SpecialData { get; set; }
     public LineDef[] Lines { get; set; } = null!;
 
-    private static Sector FromData(ReadOnlySpan<byte> data, int number, IFlatLookup flats)
-    {
-        var floorHeight = BitConverter.ToInt16(data[..2]);
-        var ceilingHeight = BitConverter.ToInt16(data.Slice(2, 2));
-        var floorFlatName = DoomInterop.ToString(data.Slice(4, 8));
-        var ceilingFlatName = DoomInterop.ToString(data.Slice(12, 8));
-        var lightLevel = BitConverter.ToInt16(data.Slice(20, 2));
-        var special = BitConverter.ToInt16(data.Slice(22, 2));
-        var tag = BitConverter.ToInt16(data.Slice(24, 2));
-
-        return new Sector(
-            number,
-            Fixed.FromInt(floorHeight),
-            Fixed.FromInt(ceilingHeight),
-            flats.GetNumber(floorFlatName),
-            flats.GetNumber(ceilingFlatName),
-            lightLevel,
-            (SectorSpecial)special,
-            tag);
-    }
-
-    public static Sector[] FromWad(Wad.Wad wad, int lump, IFlatLookup flats)
-    {
-        var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
-            throw new Exception();
-
-        var lumpData = wad.GetLumpData(lump);
-
-        var count = lumpSize / DataSize;
-        var sectors = new Sector[count];
-
-        for (var i = 0; i < sectors.Length; i++)
-        {
-            var offset = DataSize * i;
-            sectors[i] = FromData(lumpData[offset..], i, flats);
-        }
-
-        return sectors;
-    }
-
     public void UpdateFrameInterpolationInfo()
     {
         oldFloorHeight = FloorHeight;
         oldCeilingHeight = CeilingHeight;
     }
 
-    public Fixed GetInterpolatedFloorHeight(Fixed frameFrac)
-    {
-        return oldFloorHeight + frameFrac * (FloorHeight - oldFloorHeight);
-    }
+    public Fixed GetInterpolatedFloorHeight(Fixed frameFrac) => oldFloorHeight + frameFrac * (FloorHeight - oldFloorHeight);
 
-    public Fixed GetInterpolatedCeilingHeight(Fixed frameFrac)
-    {
-        return oldCeilingHeight + frameFrac * (CeilingHeight - oldCeilingHeight);
-    }
+    public Fixed GetInterpolatedCeilingHeight(Fixed frameFrac) => oldCeilingHeight + frameFrac * (CeilingHeight - oldCeilingHeight);
 
     public void DisableFrameInterpolationForOneFrame()
     {
@@ -150,8 +98,5 @@ public sealed class Sector
         oldCeilingHeight = CeilingHeight;
     }
 
-    public List<Mobj>.Enumerator GetEnumerator()
-    {
-        return ThingList.GetEnumerator();
-    }
+    public List<Mobj>.Enumerator GetEnumerator() => ThingList.GetEnumerator();
 }

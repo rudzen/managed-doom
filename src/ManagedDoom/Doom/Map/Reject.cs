@@ -24,7 +24,7 @@ public sealed class Reject
     private readonly byte[] data;
     private readonly int sectorCount;
 
-    private Reject(byte[] data, int sectorCount)
+    public Reject(byte[] data, int sectorCount)
     {
         // If the reject table is too small, expand it to avoid crash.
         // https://doomwiki.org/wiki/Reject#Reject_Overflow
@@ -34,12 +34,6 @@ public sealed class Reject
 
         this.data = data;
         this.sectorCount = sectorCount;
-    }
-
-    public static Reject FromWad(Wad.Wad wad, int lump, Sector[] sectors)
-    {
-        // TODO (rudzen) : add a clever way to ready this lump with auto resize of buffer
-        return new Reject(wad.ReadLump(lump), sectors.Length);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
