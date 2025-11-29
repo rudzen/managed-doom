@@ -35,7 +35,7 @@ public sealed class PatchCache(GameContent content)
             if (exists)
                 return p2!;
 
-            p2 = Patch.FromWad(wad, name);
+            p2 = GraphicsFactory.CreatePatch(wad, name);
 
             return p2;
         }

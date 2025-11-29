@@ -93,7 +93,7 @@ public sealed class Renderer
         this.autoMapRenderer = autoMapRenderer;
         this.finaleRenderer = finaleRenderer;
 
-        this.pause = Patch.FromWad(content.Wad, "M_PAUSE");
+        this.pause = GraphicsFactory.CreatePatch(content.Wad, "M_PAUSE");
 
         var scale = screen.Width / 320;
         wipeBandWidth = 2 * scale;

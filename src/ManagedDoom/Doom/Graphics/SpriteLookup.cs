@@ -177,7 +177,7 @@ public sealed class SpriteLookup : ISpriteLookup
         ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, lump, out var exists);
         if (exists) return value!;
         var name = wad.LumpInfos[lump].Name;
-        return value = Patch.FromData(name, wad.ReadLump(lump));
+        return value = GraphicsFactory.CreatePatch(name, wad.ReadLump(lump));
     }
 
     public SpriteDef this[Sprite sprite] => spriteDefs[(int)sprite];

@@ -25,14 +25,15 @@ namespace ManagedDoom.Video.Renders.ThreeDee;
 
 public sealed class WindowBorder(Wad wad, IFlatLookup flats)
 {
-    private readonly Patch borderTopLeft = Patch.FromWad(wad, "BRDR_TL");
-    private readonly Patch borderTopRight = Patch.FromWad(wad, "BRDR_TR");
-    private readonly Patch borderBottomLeft = Patch.FromWad(wad, "BRDR_BL");
-    private readonly Patch borderBottomRight = Patch.FromWad(wad, "BRDR_BR");
-    private readonly Patch borderTop = Patch.FromWad(wad, "BRDR_T");
-    private readonly Patch borderBottom = Patch.FromWad(wad, "BRDR_B");
-    private readonly Patch borderLeft = Patch.FromWad(wad, "BRDR_L");
-    private readonly Patch borderRight = Patch.FromWad(wad, "BRDR_R");
+    private readonly Patch borderTopLeft = GraphicsFactory.CreatePatch(wad, "BRDR_TL");
+    private readonly Patch borderTopRight = GraphicsFactory.CreatePatch(wad, "BRDR_TR");
+    private readonly Patch borderBottomLeft = GraphicsFactory.CreatePatch(wad, "BRDR_BL");
+    private readonly Patch borderBottomRight = GraphicsFactory.CreatePatch(wad, "BRDR_BR");
+    private readonly Patch borderTop = GraphicsFactory.CreatePatch(wad, "BRDR_T");
+    private readonly Patch borderBottom = GraphicsFactory.CreatePatch(wad, "BRDR_B");
+    private readonly Patch borderLeft = GraphicsFactory.CreatePatch(wad, "BRDR_L");
+    private readonly Patch borderRight = GraphicsFactory.CreatePatch(wad, "BRDR_R");
+
     private readonly Flat backFlat = wad.GameMode == GameMode.Commercial
         ? flats["GRNROCK"]
         : flats["FLOOR7_2"];

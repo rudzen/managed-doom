@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Intermission;

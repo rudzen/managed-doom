@@ -107,7 +107,7 @@ public sealed class AutoMapRenderer
         var wad = gameContent.Wad;
         markNumbers = new Patch[10];
         for (var i = 0; i < markNumbers.Length; i++)
-            markNumbers[i] = Patch.FromWad(wad, $"AMMNUM{i}");
+            markNumbers[i] = GraphicsFactory.CreatePatch(wad, $"AMMNUM{i}");
     }
 
     public void Render(Player player)

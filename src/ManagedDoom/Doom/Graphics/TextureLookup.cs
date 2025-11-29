@@ -128,7 +128,7 @@ public sealed class TextureLookup : ITextureLookup
                 continue;
 
             var lumpData = wad.ReadLump(lumpNumber);
-            patches[i] = Patch.FromData(name, lumpData);
+            patches[i] = GraphicsFactory.CreatePatch(name, lumpData);
         }
 
         return patches;

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using ManagedDoom.Doom.Info;
 
@@ -24,6 +25,72 @@ namespace ManagedDoom.Doom.Graphics;
 
 public static class GraphicsFactory
 {
+    public static Patch CreatePatch(string name, byte[] data)
+    {
+        var width = BitConverter.ToInt16(data, 0);
+        var height = BitConverter.ToInt16(data, 2);
+        var leftOffset = BitConverter.ToInt16(data, 4);
+        var topOffset = BitConverter.ToInt16(data, 6);
+
+        PadPatchData(ref data, width);
+
+        var columns = new Column[width][];
+        var cs = new List<Column>(width);
+        for (var x = 0; x < width; x++)
+        {
+            cs.Clear();
+            var p = BitConverter.ToInt32(data, 8 + 4 * x);
+            while (true)
+            {
+                var topDelta = data[p];
+                if (topDelta == Column.Last)
+                    break;
+                var length = data[p + 1];
+                var offset = p + 3;
+                cs.Add(new Column(topDelta, data, offset, length));
+                p += length + 4;
+            }
+
+            columns[x] = [.. cs];
+        }
+
+        return new Patch(
+            name,
+            width,
+            height,
+            leftOffset,
+            topOffset,
+            columns);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Patch CreatePatch(Wad.Wad wad, string name)
+    {
+        return CreatePatch(name, wad.ReadLump(name));
+    }
+
+    private static void PadPatchData(ref byte[] data, int width)
+    {
+        var need = 0;
+        for (var x = 0; x < width; x++)
+        {
+            var p = BitConverter.ToInt32(data, 8 + 4 * x);
+            while (true)
+            {
+                var topDelta = data[p];
+                if (topDelta == Column.Last)
+                    break;
+                var length = data[p + 1];
+                var offset = p + 3;
+                need = System.Math.Max(offset + 128, need);
+                p += length + 4;
+            }
+        }
+
+        if (data.Length < need)
+            Array.Resize(ref data, need);
+    }
+
     public static TextureAnimationInfo[] CreateTextureAnimations(ILookup<Texture> textures, IFlatLookup flats)
     {
         Console.Write("Load texture animation info: ");

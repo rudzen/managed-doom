@@ -392,43 +392,43 @@ public sealed class StatusBarRenderer
     {
         public static Patches Create(Wad wad)
         {
-            var background = Patch.FromWad(wad, "STBAR");
+            var background = GraphicsFactory.CreatePatch(wad, "STBAR");
 
             var tallNumbers = new Patch[10];
             var shortNumbers = new Patch[10];
             for (var i = 0; i < 10; i++)
             {
-                tallNumbers[i] = Patch.FromWad(wad, $"STTNUM{i}");
-                shortNumbers[i] = Patch.FromWad(wad, $"STYSNUM{i}");
+                tallNumbers[i] = GraphicsFactory.CreatePatch(wad, $"STTNUM{i}");
+                shortNumbers[i] = GraphicsFactory.CreatePatch(wad, $"STYSNUM{i}");
             }
 
-            var tallMinus = Patch.FromWad(wad, "STTMINUS");
-            var tallPercent = Patch.FromWad(wad, "STTPRCNT");
+            var tallMinus = GraphicsFactory.CreatePatch(wad, "STTMINUS");
+            var tallPercent = GraphicsFactory.CreatePatch(wad, "STTPRCNT");
 
             Patch[] keys =
             [
-                Patch.FromWad(wad, "STKEYS0"),
-                Patch.FromWad(wad, "STKEYS1"),
-                Patch.FromWad(wad, "STKEYS2"),
-                Patch.FromWad(wad, "STKEYS3"),
-                Patch.FromWad(wad, "STKEYS4"),
-                Patch.FromWad(wad, "STKEYS5")
+                GraphicsFactory.CreatePatch(wad, "STKEYS0"),
+                GraphicsFactory.CreatePatch(wad, "STKEYS1"),
+                GraphicsFactory.CreatePatch(wad, "STKEYS2"),
+                GraphicsFactory.CreatePatch(wad, "STKEYS3"),
+                GraphicsFactory.CreatePatch(wad, "STKEYS4"),
+                GraphicsFactory.CreatePatch(wad, "STKEYS5")
             ];
 
-            var armsBackground = Patch.FromWad(wad, "STARMS");
+            var armsBackground = GraphicsFactory.CreatePatch(wad, "STARMS");
             var arms = new Patch[6][];
             for (var i = 0; i < arms.Length; i++)
             {
                 var num = i + 2;
-                arms[i] = [Patch.FromWad(wad, $"STGNUM{num}"), shortNumbers[num]];
+                arms[i] = [GraphicsFactory.CreatePatch(wad, $"STGNUM{num}"), shortNumbers[num]];
             }
 
             Patch[] faceBackground =
             [
-                Patch.FromWad(wad, "STFB0"),
-                Patch.FromWad(wad, "STFB1"),
-                Patch.FromWad(wad, "STFB2"),
-                Patch.FromWad(wad, "STFB3")
+                GraphicsFactory.CreatePatch(wad, "STFB0"),
+                GraphicsFactory.CreatePatch(wad, "STFB1"),
+                GraphicsFactory.CreatePatch(wad, "STFB2"),
+                GraphicsFactory.CreatePatch(wad, "STFB3")
             ];
 
             var faces = new Patch[Face.FaceCount];
@@ -436,17 +436,17 @@ public sealed class StatusBarRenderer
             for (var i = 0; i < Face.PainFaceCount; i++)
             {
                 for (var j = 0; j < Face.StraightFaceCount; j++)
-                    faces[faceCount++] = Patch.FromWad(wad, $"STFST{i}{j}");
+                    faces[faceCount++] = GraphicsFactory.CreatePatch(wad, $"STFST{i}{j}");
 
-                faces[faceCount++] = Patch.FromWad(wad, $"STFTR{i}0");
-                faces[faceCount++] = Patch.FromWad(wad, $"STFTL{i}0");
-                faces[faceCount++] = Patch.FromWad(wad, $"STFOUCH{i}");
-                faces[faceCount++] = Patch.FromWad(wad, $"STFEVL{i}");
-                faces[faceCount++] = Patch.FromWad(wad, $"STFKILL{i}");
+                faces[faceCount++] = GraphicsFactory.CreatePatch(wad, $"STFTR{i}0");
+                faces[faceCount++] = GraphicsFactory.CreatePatch(wad, $"STFTL{i}0");
+                faces[faceCount++] = GraphicsFactory.CreatePatch(wad, $"STFOUCH{i}");
+                faces[faceCount++] = GraphicsFactory.CreatePatch(wad, $"STFEVL{i}");
+                faces[faceCount++] = GraphicsFactory.CreatePatch(wad, $"STFKILL{i}");
             }
 
-            faces[faceCount++] = Patch.FromWad(wad, "STFGOD0");
-            faces[faceCount] = Patch.FromWad(wad, "STFDEAD0");
+            faces[faceCount++] = GraphicsFactory.CreatePatch(wad, "STFGOD0");
+            faces[faceCount] = GraphicsFactory.CreatePatch(wad, "STFDEAD0");
 
             return new Patches(
                 Background: background,

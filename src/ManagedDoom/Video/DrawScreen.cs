@@ -44,7 +44,7 @@ public sealed class DrawScreen
             var name = $"STCFN{i:000}";
             var lump = wad.GetLumpNumber(name);
             if (lump != -1)
-                chars[i] = Patch.FromData(name, wad.ReadLump(lump));
+                chars[i] = GraphicsFactory.CreatePatch(name, wad.ReadLump(lump));
         }
     }
 

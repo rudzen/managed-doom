@@ -102,13 +102,13 @@ public sealed class IntermissionRenderer
         this.screen = screen;
         this.cache = patchCache;
         var wad = gameContent.Wad;
-        this.minus = Patch.FromWad(wad, "WIMINUS");
+        this.minus = GraphicsFactory.CreatePatch(wad, "WIMINUS");
         this.numbers = new Patch[10];
         for (var i = 0; i < 10; i++)
-            numbers[i] = Patch.FromWad(wad, $"WINUM{i}");
+            numbers[i] = GraphicsFactory.CreatePatch(wad, $"WINUM{i}");
 
-        this.percent = Patch.FromWad(wad, "WIPCNT");
-        this.colon = Patch.FromWad(wad, "WICOLON");
+        this.percent = GraphicsFactory.CreatePatch(wad, "WIPCNT");
+        this.colon = GraphicsFactory.CreatePatch(wad, "WICOLON");
         this.scale = screen.Width / 320;
     }
 
