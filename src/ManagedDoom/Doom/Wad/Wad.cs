@@ -250,17 +250,16 @@ public sealed class Wad
     [SkipLocalsInit]
     private static bool TryGetGameGameMode(ReadOnlySpan<char> name, out GameMode gameMode)
     {
-        gameMode = default;
-
         Span<char> lower = stackalloc char[name.Length];
         name.ToLower(lower, CultureInfo.InvariantCulture);
 
-        if (lower is "doom2" or "plutonia" or "tnt" or "freedoom2")
-            gameMode = GameMode.Commercial;
-        if (lower is "doom" or "freedoom1")
-            gameMode = GameMode.Retail;
-        if (lower is "doom1")
-            gameMode = GameMode.Shareware;
+        gameMode = lower switch
+        {
+            "doom2" or "plutonia" or "tnt" or "freedoom2" => GameMode.Commercial,
+            "doom" or "freedoom1"                         => GameMode.Retail,
+            "doom1"                                       => GameMode.Shareware,
+            _                                             => default
+        };
 
         return gameMode != default;
     }
@@ -277,15 +276,15 @@ public sealed class Wad
     [SkipLocalsInit]
     private static bool TryGetMissionPack(ReadOnlySpan<char> name, out MissionPack missionPack)
     {
-        missionPack = default;
-
         Span<char> lower = stackalloc char[name.Length];
         name.ToLower(lower, CultureInfo.InvariantCulture);
 
-        if (lower is "plutonia")
-            missionPack = MissionPack.Plutonia;
-        if (lower is "tnt")
-            missionPack = MissionPack.Tnt;
+        missionPack = lower switch
+        {
+            "plutonia" => MissionPack.Plutonia,
+            "tnt"      => MissionPack.Tnt,
+            _          => default
+        };
 
         return missionPack != default;
     }

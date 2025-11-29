@@ -72,6 +72,7 @@ public static partial class Trig
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Angle TanToAngle(uint tan)
     {
-        return new Angle(tanToAngle[tan]);
+        ref var angles = ref MemoryMarshal.GetArrayDataReference(tanToAngle);
+        return new Angle(Unsafe.Add(ref angles, tan));
     }
 }
