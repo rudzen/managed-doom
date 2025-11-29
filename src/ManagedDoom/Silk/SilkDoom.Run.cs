@@ -62,7 +62,7 @@ public sealed partial class SilkDoom
         Thread.Sleep(ms);
     }
 
-    public Task Run()
+    public ValueTask Run()
     {
         silkConfig.DoomConfig.Values.VideoFpsScale = Math.Clamp(silkConfig.DoomConfig.Values.VideoFpsScale, 1, 100);
         var targetFps = 35 * silkConfig.DoomConfig.Values.VideoFpsScale;
@@ -106,7 +106,7 @@ public sealed partial class SilkDoom
 
         Quit();
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 #endif
 }
