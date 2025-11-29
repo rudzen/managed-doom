@@ -22,6 +22,7 @@ using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
@@ -51,6 +52,8 @@ public sealed class ThingAllocation
         playerStarts = new MapThing[Player.MaxPlayerCount];
         deathmatchStarts = [];
     }
+
+    private static readonly Fixed[] MapThingZ = [Mobj.OnFloorZ, Mobj.OnCeilingZ];
 
     /// <summary>
     /// Spawn a mobj at the mapthing.
@@ -113,20 +116,20 @@ public sealed class ThingAllocation
         if (i == DoomInfo.MobjInfos.Length)
             throw new Exception("Unknown type!");
 
+        var mobjInfoFlags = DoomInfo.MobjInfos[i].Flags;
+
         // Don't spawn keycards and players in deathmatch.
-        if (world.Options.Deathmatch != 0 && (DoomInfo.MobjInfos[i].Flags & MobjFlags.NotDeathmatch) != 0)
+        if (world.Options.Deathmatch != 0 && (mobjInfoFlags & MobjFlags.NotDeathmatch) != 0)
             return;
 
         // Don't spawn any monsters if -nomonsters.
-        if (world.Options.NoMonsters && (i == (int)MobjType.Skull || (DoomInfo.MobjInfos[i].Flags & MobjFlags.CountKill) != 0))
+        if (world.Options.NoMonsters && (i == (int)MobjType.Skull || (mobjInfoFlags & MobjFlags.CountKill) != 0))
             return;
 
         // Spawn it.
         var x = mt.X;
         var y = mt.Y;
-        var z = (DoomInfo.MobjInfos[i].Flags & MobjFlags.SpawnCeiling) != 0
-            ? Mobj.OnCeilingZ
-            : Mobj.OnFloorZ;
+        var z = MapThingZ[((mobjInfoFlags & MobjFlags.SpawnCeiling) != 0).AsByte()];
 
         var mobj = SpawnMobj(x, y, z, (MobjType)i);
 
