@@ -438,7 +438,10 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
                 while (next != start)
                 {
-                    clipRanges[next].CopyFrom(clipRanges[next - 1]);
+                    var previous = clipRanges[next - 1];
+                    var current = clipRanges[next];
+                    current.First = previous.First;
+                    current.Last = previous.Last;
                     next--;
                 }
 
@@ -489,7 +492,12 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
 
         // Remove a post.
         while (next++ != renderingHistory.ClipRangeCount)
-            clipRanges[++start].CopyFrom(clipRanges[next]);
+        {
+            var forward = clipRanges[next];
+            var current = clipRanges[++start];
+            current.First = forward.First;
+            current.Last = forward.Last;
+        }
 
         renderingHistory.ClipRangeCount = start + 1;
     }

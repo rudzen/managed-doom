@@ -70,15 +70,16 @@ public sealed class RenderingHistory
         UpperClip.AsSpan(0, windowSettings.WindowWidth).Fill(upperClipDefaultValue);
         LowerClip.AsSpan(0, windowSettings.WindowWidth).Fill((short)windowSettings.WindowHeight);
 
-        ClipRanges[0].First = -0x7fffffff;
-        ClipRanges[0].Last = -1;
-        ClipRanges[1].First = windowSettings.WindowWidth;
-        ClipRanges[1].Last = 0x7fffffff;
+        var clipRange0 = ClipRanges[0];
+        var clipRange1 = ClipRanges[1];
+
+        clipRange0.First = -0x7fffffff;
+        clipRange0.Last = -1;
+        clipRange1.First = windowSettings.WindowWidth;
+        clipRange1.Last = 0x7fffffff;
 
         ClipRangeCount = 2;
-
         ClipDataLength = windowSettings.WindowWidth << 1;
-
         VisWallRangeCount = 0;
     }
 
