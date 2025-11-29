@@ -62,7 +62,7 @@ public static partial class SaveAndLoad
             var ptr = SaveHeader(description, fileBuffer);
             ptr = Save(game, fileBuffer, ptr);
 
-            using (var writer = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var writer = File.Open(path, FileMode.Create, FileAccess.Write))
                 writer.Write(fileBuffer[..ptr]);
 
             var end = Stopwatch.GetElapsedTime(start);
