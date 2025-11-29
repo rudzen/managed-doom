@@ -6,6 +6,8 @@ namespace ManagedDoom.Tests.UnitTests;
 
 public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
 {
+    private readonly record struct Spot(int BlockX, int BlockY);
+
     [Fact]
     public void LoadE1M1()
     {
@@ -32,11 +34,11 @@ public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
             Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY, 128D);
         }
 
-        var spots = new List<Tuple<int, int>>();
+        var spots = new List<Spot>();
         for (var blockY = -2; blockY < blockMap.Height + 2; blockY++)
         {
             for (var blockX = -2; blockX < blockMap.Width + 2; blockX++)
-                spots.Add(Tuple.Create(blockX, blockY));
+                spots.Add(new(blockX, blockY));
         }
 
         var random = new Random(666);
@@ -55,23 +57,20 @@ public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
                 var maxY = double.MinValue;
                 var count = 0;
 
-                blockMap.IterateLines(
-                    blockX,
-                    blockY,
-                    line =>
-                    {
-                        if (count != 0)
-                        {
-                            minX = Math.Min(Math.Min(line.Vertex1.X.ToDouble(), line.Vertex2.X.ToDouble()), minX);
-                            maxX = Math.Max(Math.Max(line.Vertex1.X.ToDouble(), line.Vertex2.X.ToDouble()), maxX);
-                            minY = Math.Min(Math.Min(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), minY);
-                            maxY = Math.Max(Math.Max(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), maxY);
-                        }
+                var lineIterations = blockMap.IterateLines(blockX, blockY, i + 1);
 
-                        count++;
-                        return true;
-                    },
-                    i + 1);
+                foreach (var lineIteration in lineIterations)
+                {
+                    if (count != 0)
+                    {
+                        minX = Math.Min(Math.Min(lineIteration.Vertex1.X.ToDouble(), lineIteration.Vertex2.X.ToDouble()), minX);
+                        maxX = Math.Max(Math.Max(lineIteration.Vertex1.X.ToDouble(), lineIteration.Vertex2.X.ToDouble()), maxX);
+                        minY = Math.Min(Math.Min(lineIteration.Vertex1.Y.ToDouble(), lineIteration.Vertex2.Y.ToDouble()), minY);
+                        maxY = Math.Max(Math.Max(lineIteration.Vertex1.Y.ToDouble(), lineIteration.Vertex2.Y.ToDouble()), maxY);
+                    }
+
+                    count++;
+                }
 
                 if (count > 1)
                 {
@@ -114,20 +113,18 @@ public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
             Assert.Equal((blockMap.OriginY + BlockMap.BlockSize * blockMap.Height).ToDouble(), maxY, 128D);
         }
 
-        var spots = new List<Tuple<int, int>>();
+        var spots = new List<Spot>();
         for (var blockY = -2; blockY < blockMap.Height + 2; blockY++)
         {
             for (var blockX = -2; blockX < blockMap.Width + 2; blockX++)
-            {
-                spots.Add(Tuple.Create(blockX, blockY));
-            }
+                spots.Add(new(blockX, blockY));
         }
 
         var random = new Random(666);
 
         for (var i = 0; i < 50; i++)
         {
-            var ordered = spots.OrderBy(spot => random.NextDouble()).ToArray();
+            var ordered = spots.OrderBy(_ => random.NextDouble()).ToArray();
 
             var total = 0;
 
@@ -139,23 +136,20 @@ public sealed class BlockMapTest(WadPath wadPath) : IClassFixture<WadPath>
                 var maxY = double.MinValue;
                 var count = 0;
 
-                blockMap.IterateLines(
-                    blockX,
-                    blockY,
-                    line =>
-                    {
-                        if (count != 0)
-                        {
-                            minX = Math.Min(Math.Min(line.Vertex1.X.ToDouble(), line.Vertex2.X.ToDouble()), minX);
-                            maxX = Math.Max(Math.Max(line.Vertex1.X.ToDouble(), line.Vertex2.X.ToDouble()), maxX);
-                            minY = Math.Min(Math.Min(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), minY);
-                            maxY = Math.Max(Math.Max(line.Vertex1.Y.ToDouble(), line.Vertex2.Y.ToDouble()), maxY);
-                        }
+                var lineIterations = blockMap.IterateLines(blockX, blockY, i + 1);
 
-                        count++;
-                        return true;
-                    },
-                    i + 1);
+                foreach (var lineIteration in lineIterations)
+                {
+                    if (count != 0)
+                    {
+                        minX = Math.Min(Math.Min(lineIteration.Vertex1.X.ToDouble(), lineIteration.Vertex2.X.ToDouble()), minX);
+                        maxX = Math.Max(Math.Max(lineIteration.Vertex1.X.ToDouble(), lineIteration.Vertex2.X.ToDouble()), maxX);
+                        minY = Math.Min(Math.Min(lineIteration.Vertex1.Y.ToDouble(), lineIteration.Vertex2.Y.ToDouble()), minY);
+                        maxY = Math.Max(Math.Max(lineIteration.Vertex1.Y.ToDouble(), lineIteration.Vertex2.Y.ToDouble()), maxY);
+                    }
+
+                    count++;
+                }
 
                 if (count > 1)
                 {

@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Linq;
 using ManagedDoom.Doom.Map;
 using ManagedDoom.Doom.Math;
 
@@ -309,8 +310,9 @@ public sealed class PathTraversal
         {
             if ((flags & PathTraverseFlags.AddLines) != 0)
             {
+                var lines = bm.IterateLines(bx, by, validCount);
                 // Early out.
-                if (!bm.IterateLines(bx, by, AddLineIntercepts, validCount))
+                if (lines.Any(lineDef => !AddLineIntercepts(lineDef)))
                     return false;
             }
 

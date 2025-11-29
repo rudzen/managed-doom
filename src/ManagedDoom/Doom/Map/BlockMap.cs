@@ -115,12 +115,21 @@ public sealed class BlockMap
         return GetIndex(blockX, blockY);
     }
 
-    public bool IterateLines(int blockX, int blockY, Func<LineDef, bool> func, int validCount)
+    /// <summary>
+    /// Iterates through all lines in the specified block using lazy enumeration (yield return).
+    /// Lines are filtered by validCount to avoid duplicate processing within the same iteration pass.
+    /// IMPORTANT: Unlike the previous callback overload which supports early termination via return false,
+    /// this version yields all matching lines. The caller must manually break from the foreach loop
+    /// to achieve early termination (e.g., by returning false from the calling method or breaking the loop).
+    /// This semantic difference means callers are responsible for implementing their own early-exit logic.
+    /// Returns an empty sequence for invalid block coordinates.
+    /// </summary>
+    public IEnumerable<LineDef> IterateLines(int blockX, int blockY, int validCount)
     {
         var index = GetIndex(blockX, blockY);
 
         if (index == -1)
-            return true;
+            yield break;
 
         for (var offset = table[4 + index]; table[offset] != -1; offset++)
         {
@@ -131,11 +140,8 @@ public sealed class BlockMap
 
             line.ValidCount = validCount;
 
-            if (!func(line))
-                return false;
+            yield return line;
         }
-
-        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

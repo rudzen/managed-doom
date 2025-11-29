@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Linq;
 using ManagedDoom.Audio;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
@@ -326,7 +327,8 @@ public sealed class ThingMovement(World world)
             {
                 for (var by = blockY1; by <= blockY2; by++)
                 {
-                    if (!map.BlockMap.IterateThings(bx, by, CheckThing))
+                    // Early out.
+                    if (!bm.IterateThings(bx, by, CheckThing))
                         return false;
                 }
             }
@@ -343,7 +345,9 @@ public sealed class ThingMovement(World world)
             {
                 for (var by = blockY1; by <= blockY2; by++)
                 {
-                    if (!map.BlockMap.IterateLines(bx, by, CheckLine, validCount))
+                    var lines = bm.IterateLines(bx, by, validCount);
+                    // Early out.
+                    if (lines.Any(lineDef => !CheckLine(lineDef)))
                         return false;
                 }
             }
