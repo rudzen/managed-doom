@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Doom.Graphics;
 
@@ -25,21 +26,23 @@ public sealed class Texture
         bool masked,
         int width,
         int height,
-        ReadOnlySpan<TexturePatch> patches)
+        params ReadOnlySpan<TexturePatch> patches)
     {
-        this.Name = name;
         this.Masked = masked;
-        this.Width = width;
-        this.Height = height;
         Composite = GenerateComposite(name, width, height, patches);
     }
 
-    public static int GetHeight(ReadOnlySpan<byte> data, int offset)
-    {
-        return BitConverter.ToInt16(data[(offset + 14)..]);
-    }
+    public override string ToString() => Name;
+    public string Name => Composite.Name;
+    public bool Masked { get; }
+    public int Width => Composite.Width;
+    public int Height => Composite.Height;
+    public Patch Composite { get; }
 
-    private static Patch GenerateComposite(string name, int width, int height, ReadOnlySpan<TexturePatch> patches)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetHeight(ReadOnlySpan<byte> data, int offset) => BitConverter.ToInt16(data[(offset + 14)..]);
+
+    private static Patch GenerateComposite(string name, int width, int height, params ReadOnlySpan<TexturePatch> patches)
     {
         var patchCount = new int[width];
         var columns = new Column[width][];
@@ -129,18 +132,4 @@ public sealed class Texture
                 column.Data.AsSpan(sourceIndex, length).CopyTo(destination[destinationIndex..]);
         }
     }
-
-    public override string ToString()
-    {
-        return Name;
-    }
-
-    public string Name { get; }
-
-    public bool Masked { get; }
-
-    public int Width { get; }
-
-    public int Height { get; }
-    public Patch Composite { get; }
 }

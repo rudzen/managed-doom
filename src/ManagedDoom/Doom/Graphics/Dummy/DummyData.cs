@@ -58,7 +58,7 @@ public static class DummyData
         if (exists)
             return tex!;
 
-        TexturePatch[] patch = [new(0, 0, GetPatch())];
+        TexturePatch patch = new(0, 0, GetPatch());
         tex = new Texture(Name, false, 64, height, patch);
 
         return tex;
