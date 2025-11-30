@@ -14,6 +14,11 @@
 // GNU General Public License for more details.
 //
 
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using ManagedDoom.Doom.Game;
+
 namespace ManagedDoom.Doom.Graphics;
 
 public sealed record Patch(
@@ -25,4 +30,31 @@ public sealed record Patch(
     Column[][] Columns)
 {
     public override string ToString() => Name;
+}
+
+public sealed class PatchCache(GameContent content)
+{
+    private readonly Wad.Wad wad = content.Wad;
+    private readonly Dictionary<string, Patch> cache = new(32);
+
+    public Patch this[string name]
+    {
+        get
+        {
+            ref var p2 = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, name, out var exists);
+
+            if (exists)
+                return p2!;
+
+            p2 = GraphicsFactory.CreatePatch(wad, name);
+
+            return p2;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetWidth(string name) => this[name].Width;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetHeight(string name) => this[name].Height;
 }

@@ -242,7 +242,7 @@ public sealed class Renderer
             RenderWipe(doom, destination, fps);
             return;
         }
-        
+
         RenderDoom(doom, frameFrac, fps);
         menuRenderer.Render(doom.Menu);
 

@@ -21,11 +21,19 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Info;
+using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Doom.Graphics;
 
 public static class GraphicsFactory
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Flat CreateFlat(LumpInfo lumpInfo)
+    {
+        return new Flat(lumpInfo.Name, lumpInfo.Data);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Palette CreatePalette(Wad.Wad wad)
     {
         try
@@ -54,6 +62,7 @@ public static class GraphicsFactory
         return null!;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Texture CreateTexture(ReadOnlySpan<byte> data, int offset, ReadOnlySpan<Patch> patchLookup)
     {
         const int texturePatchDataSize = 10;
@@ -81,6 +90,7 @@ public static class GraphicsFactory
             patches);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static TexturePatch CreateTexturePatch(ReadOnlySpan<byte> data, ReadOnlySpan<Patch> patches)
     {
         var originX = BitConverter.ToInt16(data);
@@ -93,6 +103,7 @@ public static class GraphicsFactory
             patches[patchNum]);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Patch CreatePatch(string name, byte[] data)
     {
         var width = BitConverter.ToInt16(data, 0);
@@ -137,6 +148,7 @@ public static class GraphicsFactory
         return CreatePatch(name, wad.ReadLump(name));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void PadPatchData(ref byte[] data, int width)
     {
         var need = 0;
@@ -159,6 +171,7 @@ public static class GraphicsFactory
             Array.Resize(ref data, need);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TextureAnimationInfo[] CreateTextureAnimations(ILookup<Texture> textures, IFlatLookup flats)
     {
         Console.Write("Load texture animation info: ");
