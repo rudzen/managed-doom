@@ -60,19 +60,13 @@ public readonly record struct Angle(uint Data)
     /// Converts this angle to radians.
     /// </summary>
     /// <returns>The angle in radians.</returns>
-    public double ToRadian()
-    {
-        return System.Math.Tau * ((double)Data / 0x100000000);
-    }
+    public double ToRadian() => System.Math.Tau * ((double)Data / 0x100000000);
 
     /// <summary>
     /// Converts this angle to degrees.
     /// </summary>
     /// <returns>The angle in degrees.</returns>
-    public double ToDegree()
-    {
-        return 360 * ((double)Data / 0x100000000);
-    }
+    public double ToDegree() => 360 * ((double)Data / 0x100000000);
 
     /// <summary>
     /// Returns the absolute value of an angle, treating it as a signed value.
@@ -92,10 +86,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="a">The angle.</param>
     /// <returns>The same angle.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator +(Angle a)
-    {
-        return a;
-    }
+    public static Angle operator +(Angle a) => a;
 
     /// <summary>
     /// Negates the angle (unary minus operator).
@@ -103,10 +94,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="a">The angle to negate.</param>
     /// <returns>The negated angle.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator -(Angle a)
-    {
-        return new Angle((uint)-(int)a.Data);
-    }
+    public static Angle operator -(Angle a) => new((uint)-(int)a.Data);
 
     /// <summary>
     /// Adds two angles together with automatic wrapping.
@@ -115,10 +103,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The second angle.</param>
     /// <returns>The sum of the two angles.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator +(Angle a, Angle b)
-    {
-        return new Angle(a.Data + b.Data);
-    }
+    public static Angle operator +(Angle a, Angle b) => new(a.Data + b.Data);
 
     /// <summary>
     /// Subtracts one angle from another with automatic wrapping.
@@ -127,10 +112,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The angle to subtract.</param>
     /// <returns>The difference between the two angles.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator -(Angle a, Angle b)
-    {
-        return new Angle(a.Data - b.Data);
-    }
+    public static Angle operator -(Angle a, Angle b) => new(a.Data - b.Data);
 
     /// <summary>
     /// Multiplies an angle by an unsigned integer scalar.
@@ -139,10 +121,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The angle to multiply.</param>
     /// <returns>The multiplied angle.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator *(uint a, Angle b)
-    {
-        return new Angle(a * b.Data);
-    }
+    public static Angle operator *(uint a, Angle b) => new(a * b.Data);
 
     /// <summary>
     /// Multiplies an angle by an unsigned integer scalar.
@@ -151,10 +130,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The scalar multiplier.</param>
     /// <returns>The multiplied angle.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator *(Angle a, uint b)
-    {
-        return new Angle(a.Data * b);
-    }
+    public static Angle operator *(Angle a, uint b) => new(a.Data * b);
 
     /// <summary>
     /// Divides an angle by an unsigned integer scalar.
@@ -163,10 +139,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The scalar divisor.</param>
     /// <returns>The divided angle.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Angle operator /(Angle a, uint b)
-    {
-        return new Angle(a.Data / b);
-    }
+    public static Angle operator /(Angle a, uint b) => new(a.Data / b);
 
     /// <summary>
     /// Determines whether one angle is less than another.
@@ -175,10 +148,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The second angle.</param>
     /// <returns>true if a is less than b; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator <(Angle a, Angle b)
-    {
-        return a.Data < b.Data;
-    }
+    public static bool operator <(Angle a, Angle b) => a.Data < b.Data;
 
     /// <summary>
     /// Determines whether one angle is greater than another.
@@ -187,10 +157,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The second angle.</param>
     /// <returns>true if a is greater than b; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator >(Angle a, Angle b)
-    {
-        return a.Data > b.Data;
-    }
+    public static bool operator >(Angle a, Angle b) => a.Data > b.Data;
 
     /// <summary>
     /// Determines whether one angle is less than or equal to another.
@@ -199,10 +166,7 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The second angle.</param>
     /// <returns>true if a is less than or equal to b; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator <=(Angle a, Angle b)
-    {
-        return a.Data <= b.Data;
-    }
+    public static bool operator <=(Angle a, Angle b) => a.Data <= b.Data;
 
     /// <summary>
     /// Determines whether one angle is greater than or equal to another.
@@ -211,26 +175,17 @@ public readonly record struct Angle(uint Data)
     /// <param name="b">The second angle.</param>
     /// <returns>true if a is greater than or equal to b; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator >=(Angle a, Angle b)
-    {
-        return a.Data >= b.Data;
-    }
+    public static bool operator >=(Angle a, Angle b) => a.Data >= b.Data;
 
     /// <summary>
     /// Returns the hash code for this angle.
     /// </summary>
     /// <returns>A hash code for the current angle.</returns>
-    public override int GetHashCode()
-    {
-        return Data.GetHashCode();
-    }
+    public override int GetHashCode() => Data.GetHashCode();
 
     /// <summary>
     /// Converts the angle to its string representation in degrees.
     /// </summary>
     /// <returns>A string that represents the angle in degrees.</returns>
-    public override string ToString()
-    {
-        return ToDegree().ToString(System.Globalization.CultureInfo.InvariantCulture);
-    }
+    public override string ToString() => ToDegree().ToString(System.Globalization.CultureInfo.InvariantCulture);
 }
