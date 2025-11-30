@@ -15,7 +15,6 @@
 //
 
 using System;
-using ManagedDoom.Doom.Common;
 
 namespace ManagedDoom.Doom.Graphics;
 
@@ -33,29 +32,6 @@ public sealed class Texture
         this.Width = width;
         this.Height = height;
         Composite = GenerateComposite(name, width, height, patches);
-    }
-
-    public static Texture FromData(ReadOnlySpan<byte> data, int offset, ReadOnlySpan<Patch> patchLookup)
-    {
-        var root = data[offset..];
-        var name = DoomInterop.ToString(root);
-        var masked = BitConverter.ToInt32(root[8..]);
-        var width = BitConverter.ToInt16(root[12..]);
-        var height = BitConverter.ToInt16(root[14..]);
-        var patchCount = BitConverter.ToInt16(root[20..]);
-        var patches = new TexturePatch[patchCount];
-        for (var i = 0; i < patches.Length; i++)
-        {
-            var patchOffset = offset + 22 + TexturePatch.DataSize * i;
-            patches[i] = TexturePatch.FromData(data[patchOffset..], patchLookup);
-        }
-
-        return new Texture(
-            name,
-            masked != 0,
-            width,
-            height,
-            patches);
     }
 
     public static int GetHeight(ReadOnlySpan<byte> data, int offset)

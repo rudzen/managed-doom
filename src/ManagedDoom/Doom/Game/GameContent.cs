@@ -25,7 +25,7 @@ public sealed class GameContent
     private GameContent(string[] wadPaths)
     {
         Wad = new Wad.Wad(wadPaths);
-        Palette = new Palette(Wad);
+        Palette = GraphicsFactory.CreatePalette(Wad);
         ColorMap = new ColorMap(Wad);
         Textures = new DummyTextureLookup(Wad);
         Flats = new DummyFlatLookup(Wad);
@@ -39,7 +39,7 @@ public sealed class GameContent
 
         DeHackEd.Initialize(args, Wad);
 
-        Palette = new Palette(Wad);
+        Palette = GraphicsFactory.CreatePalette(Wad);
         ColorMap = new ColorMap(Wad);
         Textures = new TextureLookup(Wad);
         Flats = new FlatLookup(Wad);

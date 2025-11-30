@@ -14,14 +14,10 @@
 // GNU General Public License for more details.
 //
 
-using System;
-
 namespace ManagedDoom.Doom.Graphics;
 
 public sealed class TexturePatch
 {
-    public const int DataSize = 10;
-
     private readonly Patch patch;
 
     public TexturePatch(
@@ -40,16 +36,4 @@ public sealed class TexturePatch
     public int Width => patch.Width;
     public int Height => patch.Height;
     public Column[][] Columns => patch.Columns;
-
-    public static TexturePatch FromData(ReadOnlySpan<byte> data, ReadOnlySpan<Patch> patches)
-    {
-        var originX = BitConverter.ToInt16(data);
-        var originY = BitConverter.ToInt16(data[2..]);
-        var patchNum = BitConverter.ToInt16(data[4..]);
-
-        return new TexturePatch(
-            originX,
-            originY,
-            patches[patchNum]);
-    }
 }

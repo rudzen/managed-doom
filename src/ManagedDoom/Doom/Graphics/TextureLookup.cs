@@ -52,7 +52,7 @@ public sealed class TextureLookup : ITextureLookup
             for (var i = 0; i < count; i++)
             {
                 var offset = BitConverter.ToInt32(lumpData[(4 + 4 * i)..]);
-                var texture = Texture.FromData(lumpData, offset, patches);
+                var texture = GraphicsFactory.CreateTexture(lumpData, offset, patches);
                 nameToNumbersLocal.TryAdd(texture.Name, textures.Count);
                 textures.Add(texture);
                 nameToTexturesLocal.TryAdd(texture.Name, texture);

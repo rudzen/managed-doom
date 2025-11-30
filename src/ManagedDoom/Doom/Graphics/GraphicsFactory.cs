@@ -19,12 +19,80 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Info;
 
 namespace ManagedDoom.Doom.Graphics;
 
 public static class GraphicsFactory
 {
+    public static Palette CreatePalette(Wad.Wad wad)
+    {
+        try
+        {
+            Console.Write("Load palette: ");
+            var start = Stopwatch.GetTimestamp();
+
+            var data = wad.ReadLump("PLAYPAL");
+
+            var count = data.Length / (3 * 256);
+            var palettes = new uint[count][];
+            for (var i = 0; i < palettes.Length; i++)
+                palettes[i] = new uint[256];
+
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
+
+            return new Palette(data, palettes);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
+
+        return null!;
+    }
+
+    public static Texture CreateTexture(ReadOnlySpan<byte> data, int offset, ReadOnlySpan<Patch> patchLookup)
+    {
+        const int texturePatchDataSize = 10;
+
+        var root = data[offset..];
+        var name = DoomInterop.ToString(root);
+        var masked = BitConverter.ToInt32(root[8..]);
+        var width = BitConverter.ToInt16(root[12..]);
+        var height = BitConverter.ToInt16(root[14..]);
+        var patchCount = BitConverter.ToInt16(root[20..]);
+        var patches = new TexturePatch[patchCount];
+        var baseOffset = offset + 22;
+
+        for (var i = 0; i < patches.Length; i++)
+        {
+            var patchOffset = baseOffset + texturePatchDataSize * i;
+            patches[i] = CreateTexturePatch(data[patchOffset..], patchLookup);
+        }
+
+        return new Texture(
+            name,
+            masked != 0,
+            width,
+            height,
+            patches);
+    }
+
+    private static TexturePatch CreateTexturePatch(ReadOnlySpan<byte> data, ReadOnlySpan<Patch> patches)
+    {
+        var originX = BitConverter.ToInt16(data);
+        var originY = BitConverter.ToInt16(data[2..]);
+        var patchNum = BitConverter.ToInt16(data[4..]);
+
+        return new TexturePatch(
+            originX,
+            originY,
+            patches[patchNum]);
+    }
+
     public static Patch CreatePatch(string name, byte[] data)
     {
         var width = BitConverter.ToInt16(data, 0);

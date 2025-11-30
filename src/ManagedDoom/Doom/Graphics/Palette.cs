@@ -35,28 +35,10 @@ public sealed class Palette
 
     private readonly uint[][] palettes;
 
-    public Palette(Wad.Wad wad)
+    public Palette(byte[] paletteData, uint[][] palettes)
     {
-        try
-        {
-            Console.Write("Load palette: ");
-            var start = Stopwatch.GetTimestamp();
-
-            data = wad.ReadLump("PLAYPAL");
-
-            var count = data.Length / (3 * 256);
-            palettes = new uint[count][];
-            for (var i = 0; i < palettes.Length; i++)
-                palettes[i] = new uint[256];
-
-            var end = Stopwatch.GetElapsedTime(start);
-            Console.WriteLine($"OK [{end}]");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Failed");
-            ExceptionDispatchInfo.Throw(e);
-        }
+        this.data = paletteData;
+        this.palettes = palettes;
     }
 
     public uint[] this[int paletteNumber] => palettes[paletteNumber];
@@ -67,7 +49,10 @@ public sealed class Palette
         // build lookup table for corrected byte values (0..255) for this p
         Span<byte> lut = stackalloc byte[256];
         for (var v = 0; v < lut.Length; v++)
-            lut[v] = (byte)System.Math.Round(255 * CorrectionCurve(v / 255.0, in p));
+        {
+            var x = v / 255.0;
+            lut[v] = (byte)System.Math.Round(255 * CorrectionCurve(in x, in p));
+        }
 
         const uint alpha = 255u << 24;
         var palettesCount = palettes.Length;
@@ -92,5 +77,5 @@ public sealed class Palette
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static double CorrectionCurve(double x, in double p) => System.Math.Pow(x, p);
+    private static double CorrectionCurve(in double x, in double p) => System.Math.Pow(x, p);
 }

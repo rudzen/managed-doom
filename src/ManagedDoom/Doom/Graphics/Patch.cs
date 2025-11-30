@@ -24,8 +24,5 @@ public sealed record Patch(
     int TopOffset,
     Column[][] Columns)
 {
-    public override string ToString()
-    {
-        return Name;
-    }
+    public override string ToString() => Name;
 }
