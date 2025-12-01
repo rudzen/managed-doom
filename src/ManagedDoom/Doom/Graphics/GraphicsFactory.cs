@@ -28,6 +28,41 @@ namespace ManagedDoom.Doom.Graphics;
 public static class GraphicsFactory
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ColorMap CreateColorMap(Wad.Wad wad)
+    {
+        const string lump = "COLORMAP";
+        const int blockSize = 256;
+
+        Console.Write("Load color map: ");
+
+        var start = Stopwatch.GetTimestamp();
+
+        try
+        {
+            var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
+            var num = lumpSize / blockSize;
+
+            var lumpData = wad.GetLumpData(lumpNumber);
+
+            var data = new byte[num][];
+            for (var i = 0; i < data.Length; i++)
+                data[i] = lumpData.Slice(blockSize * i, blockSize).ToArray();
+
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK ({num} maps) [{end}]");
+
+            return new ColorMap(data);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
+
+        return null!;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Flat CreateFlat(LumpInfo lumpInfo)
     {
         return new Flat(lumpInfo.Name, lumpInfo.Data);

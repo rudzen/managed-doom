@@ -14,49 +14,11 @@
 // GNU General Public License for more details.
 //
 
-using System;
-using System.Diagnostics;
-using System.Runtime.ExceptionServices;
-
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class ColorMap
+public sealed record ColorMap(byte[][] Data)
 {
-    public const int Inverse = 32;
+    public byte[] this[int index] => Data[index];
 
-    private readonly byte[][] data;
-
-    public ColorMap(Wad.Wad wad)
-    {
-        const string lump = "COLORMAP";
-        const int blockSize = 256;
-
-        Console.Write("Load color map: ");
-
-        var start = Stopwatch.GetTimestamp();
-
-        try
-        {
-            var (lumpNumber, lumpSize) = wad.GetLumpNumberAndSize(lump);
-            var num = lumpSize / blockSize;
-
-            var lumpData = wad.GetLumpData(lumpNumber);
-
-            data = new byte[num][];
-            for (var i = 0; i < data.Length; i++)
-                data[i] = lumpData.Slice(blockSize * i, blockSize).ToArray();
-
-            var end = Stopwatch.GetElapsedTime(start);
-            Console.WriteLine($"OK ({num} maps) [{end}]");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Failed");
-            ExceptionDispatchInfo.Throw(e);
-        }
-    }
-
-    public byte[] this[int index] => data[index];
-
-    public byte[] FullBright => data[0];
+    public byte[] FullBright => Data[0];
 }

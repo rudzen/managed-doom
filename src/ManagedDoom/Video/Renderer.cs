@@ -168,10 +168,11 @@ public sealed class Renderer
         {
             var scale = screen.Width / 320;
             screen.DrawPatch(
-                pause,
-                (screen.Width - scale * pause.Width) / 2,
-                4 * scale,
-                scale);
+                patch: pause,
+                x: (screen.Width - scale * pause.Width) / 2,
+                y: 4 * scale,
+                scale: scale
+            );
         }
     }
 
@@ -246,16 +247,18 @@ public sealed class Renderer
         RenderDoom(doom, frameFrac, fps);
         menuRenderer.Render(doom.Menu);
 
-        uint[] colors;
+        int paletteIndex;
 
         if (doom is { State: DoomState.Game, Game.State: GameState.Level })
-            colors = palette[GetPaletteNumber(doom.Game.World.ConsolePlayer)];
+            paletteIndex = GetPaletteNumber(doom.Game.World.ConsolePlayer);
         else if (doom is { State: DoomState.Opening, Opening: { State: OpeningSequenceState.Demo, DemoGame.State: GameState.Level } })
-            colors = palette[GetPaletteNumber(doom.Opening.DemoGame.World.ConsolePlayer)];
+            paletteIndex = GetPaletteNumber(doom.Opening.DemoGame.World.ConsolePlayer);
         else if (doom.State == DoomState.DemoPlayback && doom.DemoPlayback!.Game.State == GameState.Level)
-            colors = palette[GetPaletteNumber(doom.DemoPlayback.Game.World.ConsolePlayer)];
+            paletteIndex = GetPaletteNumber(doom.DemoPlayback.Game.World.ConsolePlayer);
         else
-            colors = palette[0];
+            paletteIndex = 0;
+
+        var colors = palette[paletteIndex];
 
         WriteData(colors, destination);
     }
