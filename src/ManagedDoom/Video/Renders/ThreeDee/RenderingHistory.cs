@@ -25,14 +25,13 @@ public sealed class RenderingHistory
     {
         UpperClip = new short[screenWidth];
         LowerClip = new short[screenWidth];
-
         ClipRanges = new ClipRange[256];
+        ClipData = new short[128 * screenWidth];
+        VisWallRanges = new VisWallRange[512];
+
         for (var i = 0; i < ClipRanges.Length; i++)
             ClipRanges[i] = new ClipRange();
 
-        ClipData = new short[128 * screenWidth];
-
-        VisWallRanges = new VisWallRange[512];
         for (var i = 0; i < VisWallRanges.Length; i++)
             VisWallRanges[i] = new VisWallRange();
     }

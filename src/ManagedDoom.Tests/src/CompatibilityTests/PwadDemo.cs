@@ -16,7 +16,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
                 GameVersion = GameVersion.Final2
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -52,7 +52,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
         demo.Options.Players[0].PlayerState = PlayerState.Reborn;
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -87,7 +87,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -122,7 +122,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -156,7 +156,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -190,7 +190,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -224,7 +224,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO1"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -258,7 +258,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO2"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -292,7 +292,7 @@ public sealed class PwadDemo(WadPath wadPath) : IClassFixture<WadPath>
 
         var content = GameContent.CreateDummy(wads);
         var demo = new Demo(content.Wad.ReadLump("DEMO3"));
-        TicCommand[] ticCommands = [new(), new(), new(), new()];
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 

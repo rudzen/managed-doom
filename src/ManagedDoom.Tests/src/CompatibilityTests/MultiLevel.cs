@@ -17,7 +17,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
                 GameMode = GameMode.Retail
             }
         };
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -138,7 +138,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "multilevel_test_doom2.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -259,7 +259,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "finale_test1.lmp");
         var demo = new Demo(demoFile);
-        var ticCommands = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -320,7 +320,7 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         var content = GameContent.CreateDummy(wads);
         var demoFile = Path.Combine(WadPath.DataPath, "finale_test2.lmp");
         var demo = new Demo(demoFile);
-        var cmds = Enumerable.Range(0, Player.MaxPlayerCount).Select(_ => new TicCommand()).ToArray();
+        TicCommand[] ticCommands = [new(), new(), new(), new()]; // Four players
         var game = new DoomGame(content, demo.Options);
         game.DeferInitNew();
 
@@ -331,8 +331,8 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         {
             for (var i = 0; i < 475; i++)
             {
-                demo.ReadCmd(cmds);
-                game.Update(cmds);
+                demo.ReadCmd(ticCommands);
+                game.Update(ticCommands);
                 lastMobjHash = DoomDebug.GetMobjHash(game.World);
                 aggMobjHash = DoomDebug.CombineHash(aggMobjHash, lastMobjHash);
             }
@@ -345,8 +345,8 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         {
             for (var i = 0; i < 21; i++)
             {
-                demo.ReadCmd(cmds);
-                game.Update(cmds);
+                demo.ReadCmd(ticCommands);
+                game.Update(ticCommands);
             }
         }
 
@@ -354,8 +354,8 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         {
             for (var i = 0; i < 52; i++)
             {
-                demo.ReadCmd(cmds);
-                game.Update(cmds);
+                demo.ReadCmd(ticCommands);
+                game.Update(ticCommands);
             }
         }
 
@@ -363,8 +363,8 @@ public sealed class MultiLevel(WadPath wadPath) : IClassFixture<WadPath>
         {
             for (var i = 0; i < 494; i++)
             {
-                demo.ReadCmd(cmds);
-                game.Update(cmds);
+                demo.ReadCmd(ticCommands);
+                game.Update(ticCommands);
                 lastMobjHash = DoomDebug.GetMobjHash(game.World);
                 aggMobjHash = DoomDebug.CombineHash(aggMobjHash, lastMobjHash);
             }

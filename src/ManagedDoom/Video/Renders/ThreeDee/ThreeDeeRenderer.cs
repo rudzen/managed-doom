@@ -313,12 +313,8 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
             start++;
 
         // The clippost contains the new span.
-        if (sx1 >= renderingHistory.ClipRanges[start].First && sx2 <= renderingHistory.ClipRanges[start].Last)
-            return false;
-
-        return true;
+        return sx1 < renderingHistory.ClipRanges[start].First || sx2 > renderingHistory.ClipRanges[start].Last;
     }
-
 
     private void DrawSeg(Seg seg)
     {
@@ -405,13 +401,11 @@ public sealed class ThreeDeeRenderer : IThreeDeeRenderer
         // Reject empty lines used for triggers and special events.
         // Identical floor and ceiling on both sides, identical
         // light levels on both sides, and no middle texture.
-        if (backSector.CeilingFlat == frontSector.CeilingFlat &&
-            backSector.FloorFlat == frontSector.FloorFlat &&
-            backSector.LightLevel == frontSector.LightLevel &&
-            seg.SideDef.MiddleTexture == 0)
-        {
+        if (backSector.CeilingFlat == frontSector.CeilingFlat
+            && backSector.FloorFlat == frontSector.FloorFlat
+            && backSector.LightLevel == frontSector.LightLevel
+            && seg.SideDef!.MiddleTexture == 0)
             return;
-        }
 
         DrawPassWall(seg, rwAngle1, x1, x2 - 1);
     }

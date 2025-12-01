@@ -26,7 +26,7 @@ public static class DummyData
     private static Patch? _dummyPatch;
     private static Flat? _dummyFlat;
     private static Flat? _dummySkyFlat;
-    private static readonly Dictionary<int, Texture> dummyTextures = [];
+    private static readonly Dictionary<int, Texture> dummyTextures = new(64);
 
     public static Patch GetPatch()
     {
