@@ -63,13 +63,25 @@ public static class GraphicsFactory
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Texture CreateTexture(
+        string name,
+        bool masked,
+        int width,
+        int height,
+        params ReadOnlySpan<TexturePatch> patches)
+    {
+        var compositePatch = CreateCompositePatch(name, width, height, patches);
+        return new Texture(masked, compositePatch);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Texture CreateTexture(ReadOnlySpan<byte> data, int offset, ReadOnlySpan<Patch> patchLookup)
     {
         const int texturePatchDataSize = 10;
 
         var root = data[offset..];
         var name = DoomInterop.ToString(root);
-        var masked = BitConverter.ToInt32(root[8..]);
+        var masked = BitConverter.ToInt32(root[8..]) != 0;
         var width = BitConverter.ToInt16(root[12..]);
         var height = BitConverter.ToInt16(root[14..]);
         var patchCount = BitConverter.ToInt16(root[20..]);
@@ -82,13 +94,101 @@ public static class GraphicsFactory
             patches[i] = CreateTexturePatch(data[patchOffset..], patchLookup);
         }
 
-        return new Texture(
-            name,
-            masked != 0,
-            width,
-            height,
-            patches);
+        var compositePatch = CreateCompositePatch(name, width, height, patches);
+
+        return new Texture(masked, compositePatch);
     }
+
+    private static Patch CreateCompositePatch(string name, int width, int height, params ReadOnlySpan<TexturePatch> patches)
+    {
+        var patchCount = new int[width];
+        var columns = new Column[width][];
+        var compositeColumnCount = 0;
+
+        foreach (var (left, _, patch) in patches)
+        {
+            var right = left + patch.Width;
+
+            var start = System.Math.Max(left, 0);
+            var end = System.Math.Min(right, width);
+
+            for (var x = start; x < end; x++)
+            {
+                patchCount[x]++;
+                if (patchCount[x] == 2)
+                    compositeColumnCount++;
+
+                columns[x] = patch.Columns[x - left];
+            }
+        }
+
+        var padding = System.Math.Max(128 - height, 0);
+        var data = new byte[height * compositeColumnCount + padding];
+        var i = 0;
+        for (var x = 0; x < width; x++)
+        {
+            if (patchCount[x] == 0)
+                columns[x] = [];
+            else if (patchCount[x] >= 2)
+            {
+                var column = new Column(0, data, height * i, height);
+
+                foreach (var patch in patches)
+                {
+                    var px = x - patch.OriginX;
+                    if (px < 0 || px >= patch.Patch.Width)
+                        continue;
+
+                    var patchColumn = patch.Patch.Columns[px];
+                    DrawColumnInCache(
+                        source: patchColumn,
+                        destination: column.Data,
+                        destinationOffset: column.Offset,
+                        destinationY: patch.OriginY,
+                        destinationHeight: height
+                    );
+                }
+
+                columns[x] = [column];
+
+                i++;
+            }
+        }
+
+        return new Patch(name, width, height, 0, 0, columns);
+
+        static void DrawColumnInCache(
+            ReadOnlySpan<Column> source,
+            Span<byte> destination,
+            int destinationOffset,
+            int destinationY,
+            int destinationHeight)
+        {
+            foreach (var column in source)
+            {
+                var sourceIndex = column.Offset;
+                var destinationIndex = destinationOffset + destinationY + column.TopDelta;
+                var length = column.Length;
+
+                var topExceedance = -(destinationY + column.TopDelta);
+                if (topExceedance > 0)
+                {
+                    sourceIndex += topExceedance;
+                    destinationIndex += topExceedance;
+                    length -= topExceedance;
+                }
+
+                var bottomExceedance = destinationY + column.TopDelta + column.Length - destinationHeight;
+
+                if (bottomExceedance > 0)
+                    length -= bottomExceedance;
+
+                if (length > 0)
+                    column.Data.AsSpan(sourceIndex, length).CopyTo(destination[destinationIndex..]);
+            }
+        }
+    }
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static TexturePatch CreateTexturePatch(ReadOnlySpan<byte> data, ReadOnlySpan<Patch> patches)
