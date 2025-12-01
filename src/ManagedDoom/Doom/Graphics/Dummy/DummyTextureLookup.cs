@@ -107,17 +107,6 @@ public sealed class DummyTextureLookup : ITextureLookup
         return -1;
     }
 
-    public int GetNumber(string name)
-    {
-        if (name[0] == '-')
-            return 0;
-
-        if (nameToNumber.TryGetValue(name, out var number))
-            return number;
-
-        return -1;
-    }
-
     public IEnumerator<Texture> GetEnumerator()
     {
         return textures.GetEnumerator();

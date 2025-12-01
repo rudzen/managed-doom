@@ -15,9 +15,18 @@
 //
 
 using System;
+using System.Collections;
+using System.Collections.Frozen;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Info;
 
 namespace ManagedDoom.Doom.Graphics;
+
+public sealed record TextureAnimationInfo(bool IsTexture, int PicNum, int BasePic, int NumPics, int Speed);
+
+public sealed record TexturePatch(int OriginX, int OriginY, Patch Patch);
 
 public sealed class Texture
 {
@@ -51,7 +60,7 @@ public sealed class Texture
         foreach (var patch in patches)
         {
             var left = patch.OriginX;
-            var right = left + patch.Width;
+            var right = left + patch.Patch.Width;
 
             var start = System.Math.Max(left, 0);
             var end = System.Math.Min(right, width);
@@ -62,7 +71,7 @@ public sealed class Texture
                 if (patchCount[x] == 2)
                     compositeColumnCount++;
 
-                columns[x] = patch.Columns[x - patch.OriginX];
+                columns[x] = patch.Patch.Columns[x - patch.OriginX];
             }
         }
 
@@ -80,10 +89,10 @@ public sealed class Texture
                 foreach (var patch in patches)
                 {
                     var px = x - patch.OriginX;
-                    if (px < 0 || px >= patch.Width)
+                    if (px < 0 || px >= patch.Patch.Width)
                         continue;
 
-                    var patchColumn = patch.Columns[px];
+                    var patchColumn = patch.Patch.Columns[px];
                     DrawColumnInCache(
                         source: patchColumn,
                         destination: column.Data,
@@ -132,4 +141,128 @@ public sealed class Texture
                 column.Data.AsSpan(sourceIndex, length).CopyTo(destination[destinationIndex..]);
         }
     }
+}
+
+public sealed class TextureLookup : ITextureLookup
+{
+    private readonly List<Texture> textures = [];
+
+    private readonly FrozenDictionary<string, Texture> nameToTexture;
+    private readonly FrozenDictionary<string, Texture>.AlternateLookup<ReadOnlySpan<char>> nameToTextureLookup;
+
+    private readonly FrozenDictionary<string, int> nameToNumber;
+    private readonly FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
+
+    public TextureLookup(Wad.Wad wad)
+    {
+        var patches = LoadPatches(wad);
+
+        var nameToTexturesLocal = new Dictionary<string, Texture>(256);
+        var nameToNumbersLocal = new Dictionary<string, int>(256);
+
+        for (var n = 1; n <= 2; n++)
+        {
+            var lumpNumber = wad.GetLumpNumber($"TEXTURE{n}");
+            if (lumpNumber == -1)
+                break;
+
+            var lumpData = wad.GetLumpData(lumpNumber);
+
+            var count = BitConverter.ToInt32(lumpData);
+            for (var i = 0; i < count; i++)
+            {
+                var offset = BitConverter.ToInt32(lumpData[(4 + 4 * i)..]);
+                var texture = GraphicsFactory.CreateTexture(lumpData, offset, patches);
+                nameToNumbersLocal.TryAdd(texture.Name, textures.Count);
+                textures.Add(texture);
+                nameToTexturesLocal.TryAdd(texture.Name, texture);
+            }
+        }
+
+        this.nameToTexture = nameToTexturesLocal.ToFrozenDictionary();
+        this.nameToTextureLookup = this.nameToTexture.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        this.nameToNumber = nameToNumbersLocal.ToFrozenDictionary();
+        this.nameToNumberLookup = this.nameToNumber.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        SwitchList = CreateSwitchList();
+    }
+
+    public Texture this[int num] => textures[num];
+    public Texture this[string name] => nameToTexture[name];
+    public Texture this[ReadOnlySpan<char> name] => nameToTextureLookup[name];
+    public int Count => textures.Count;
+    public int[] SwitchList { get; }
+
+    private int[] CreateSwitchList()
+    {
+        var list = new List<int>(DoomInfo.SwitchNames.Length);
+        foreach (var (tex1, tex2) in DoomInfo.SwitchNames.AsSpan())
+        {
+            var texNum1 = GetNumber(tex1);
+            if (texNum1 != -1)
+            {
+                var texNum2 = GetNumber(tex2);
+                if (texNum2 != -1)
+                {
+                    list.Add(texNum1);
+                    list.Add(texNum2);
+                }
+            }
+        }
+
+        return [.. list];
+    }
+
+    public int GetNumber(ReadOnlySpan<char> name)
+    {
+        if (name[0] == '-')
+            return 0;
+
+        if (nameToNumberLookup.TryGetValue(name, out var number))
+            return number;
+
+        return -1;
+    }
+
+
+    private static Patch[] LoadPatches(Wad.Wad wad)
+    {
+        var patchNames = LoadPatchNames(wad);
+        var patches = new Patch[patchNames.Length];
+        for (var i = 0; i < patches.Length; i++)
+        {
+            var name = patchNames[i];
+
+            var lumpNumber = wad.GetLumpNumber(name);
+
+            // This check is necessary to avoid crash in DOOM1.WAD.
+            if (lumpNumber == -1)
+                continue;
+
+            var lumpData = wad.ReadLump(lumpNumber);
+            patches[i] = GraphicsFactory.CreatePatch(name, lumpData);
+        }
+
+        return patches;
+    }
+
+    private static string[] LoadPatchNames(Wad.Wad wad)
+    {
+        const string lumpName = "PNAMES";
+        var lumpNumber = wad.GetLumpNumber(lumpName);
+        var lumpData = wad.GetLumpData(lumpNumber);
+
+        var count = BitConverter.ToInt32(lumpData[..4]);
+        var names = new string[count];
+
+        for (var i = 0; i < names.Length; i++)
+            names[i] = DoomInterop.ToString(lumpData.Slice(4 + 8 * i, 8));
+
+        return names;
+    }
+
+    public IEnumerator<Texture> GetEnumerator() => textures.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => textures.GetEnumerator();
 }
