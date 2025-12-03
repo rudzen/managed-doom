@@ -32,7 +32,7 @@ public sealed class Thinkers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Remove(Thinker thinker) => thinker.ThinkerState = ThinkerState.Removed;
 
-    public void Run()
+    public void Run(World world)
     {
         var thinkersSpan = CollectionsMarshal.AsSpan(thinkers);
         ref var thinkersRef = ref MemoryMarshal.GetReference(thinkersSpan);
@@ -42,7 +42,7 @@ public sealed class Thinkers
         {
             ref var thinker = ref Unsafe.Add(ref thinkersRef, i);
             if (thinker.ThinkerState == ThinkerState.Active)
-                thinker.Run();
+                thinker.Run(world);
         }
 
         // Pass 2: Remove dead thinkers after iteration completes

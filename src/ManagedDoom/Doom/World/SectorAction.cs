@@ -54,7 +54,7 @@ public sealed class SectorAction
 
     private bool ThingHeightClip(Mobj thing)
     {
-        var onFloor = (thing.Z == thing.FloorZ);
+        var onFloor = thing.Z == thing.FloorZ;
 
         var tm = world.ThingMovement;
 
@@ -776,7 +776,7 @@ public sealed class SectorAction
             result = true;
 
             // Find lowest and highest floors around sector.
-            var plat = new Platform(world);
+            var plat = new Platform();
             world.Thinkers.Add(plat);
             plat.Type = type;
             plat.Sector = sector;
@@ -941,7 +941,7 @@ public sealed class SectorAction
             result = true;
 
             // New floor thinker.
-            var floor = new FloorMove(world);
+            var floor = new FloorMove();
             world.Thinkers.Add(floor);
             sector.SpecialData = floor;
             floor.Type = type;
@@ -1108,7 +1108,7 @@ public sealed class SectorAction
             result = true;
 
             // New floor thinker.
-            var floor = new FloorMove(world);
+            var floor = new FloorMove();
             world.Thinkers.Add(floor);
             sector.SpecialData = floor;
             floor.Direction = 1;
@@ -1169,7 +1169,7 @@ public sealed class SectorAction
 
                     sector = target;
                     sectorNumber = newSectorNumber;
-                    floor = new FloorMove(world);
+                    floor = new FloorMove();
 
                     world.Thinkers.Add(floor);
 
@@ -1217,7 +1217,7 @@ public sealed class SectorAction
             result = true;
 
             // New door thinker.
-            var ceiling = new CeilingMove(world);
+            var ceiling = new CeilingMove();
             world.Thinkers.Add(ceiling);
             sector.SpecialData = ceiling;
             ceiling.Sector = sector;
@@ -1527,7 +1527,7 @@ public sealed class SectorAction
                 var thinkers = world.Thinkers;
 
                 // Spawn rising slime.
-                var floor1 = new FloorMove(world);
+                var floor1 = new FloorMove();
                 thinkers.Add(floor1);
                 s2.SpecialData = floor1;
                 floor1.Type = FloorMoveType.DonutRaise;
@@ -1540,7 +1540,7 @@ public sealed class SectorAction
                 floor1.FloorDestHeight = s3.FloorHeight;
 
                 // Spawn lowering donut-hole.
-                var floor2 = new FloorMove(world);
+                var floor2 = new FloorMove();
                 thinkers.Add(floor2);
                 s1.SpecialData = floor2;
                 floor2.Type = FloorMoveType.LowerFloor;

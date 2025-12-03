@@ -22,13 +22,6 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class FloorMove : Thinker
 {
-    private readonly World world;
-
-    public FloorMove(World world)
-    {
-        this.world = world;
-    }
-
     public FloorMoveType Type { get; set; }
     public bool Crush { get; set; }
     public Sector Sector { get; set; }
@@ -38,7 +31,7 @@ public sealed class FloorMove : Thinker
     public Fixed FloorDestHeight { get; set; }
     public Fixed Speed { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         var sa = world.SectorAction;
 

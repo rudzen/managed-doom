@@ -190,7 +190,7 @@ public sealed class World
             if (player.InGame)
                 PlayerBehavior.PlayerThink(player);
 
-        Thinkers.Run();
+        Thinkers.Run(this);
         Specials.Update();
         ThingAllocation.RespawnSpecials();
 

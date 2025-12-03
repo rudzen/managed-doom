@@ -22,13 +22,6 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class CeilingMove : Thinker
 {
-    private readonly World world;
-
-    public CeilingMove(World world)
-    {
-        this.world = world;
-    }
-
     /// <summary>
     /// 1 = up, 0 = waiting, -1 = down.
     /// </summary>
@@ -47,7 +40,7 @@ public sealed class CeilingMove : Thinker
     public int Tag { get; set; }
     public int OldDirection { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         switch (Direction)
         {
@@ -82,11 +75,13 @@ public sealed class CeilingMove : Thinker
                             break;
 
                         case CeilingMoveType.SilentCrushAndRaise:
+                        {
+                            world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
+                            Direction = -1;
+                            break;
+                        }
                         case CeilingMoveType.FastCrushAndRaise:
                         case CeilingMoveType.CrushAndRaise:
-                            if (Type == CeilingMoveType.SilentCrushAndRaise)
-                                world.StartSound(Sector.SoundOrigin, Sfx.PSTOP, SfxType.Misc);
-
                             Direction = -1;
                             break;
                     }

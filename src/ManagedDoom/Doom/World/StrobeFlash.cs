@@ -36,7 +36,7 @@ public sealed class StrobeFlash : Thinker
 
     public int BrightTime { get; set; }
 
-    public override void Run()
+    public override void Run(World _)
     {
         if (--Count > 0)
             return;

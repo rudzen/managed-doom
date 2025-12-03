@@ -20,7 +20,7 @@ public class Thinker
 {
     public ThinkerState ThinkerState { get; set; }
 
-    public virtual void Run()
+    public virtual void Run(World world)
     {
     }
 }

@@ -30,7 +30,7 @@ public sealed class GlowingLight : Thinker
 
     public int Direction { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         switch (Direction)
         {

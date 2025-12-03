@@ -20,7 +20,7 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class Platform(World world) : Thinker
+public sealed class Platform : Thinker
 {
     public Sector Sector { get; set; } = null!;
 
@@ -44,7 +44,7 @@ public sealed class Platform(World world) : Thinker
 
     public PlatformType Type { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         var sa = world.SectorAction;
 

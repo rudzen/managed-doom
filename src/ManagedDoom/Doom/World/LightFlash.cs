@@ -19,7 +19,7 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class LightFlash(DoomRandom doomRandom) : Thinker
+public sealed class LightFlash : Thinker
 {
     public Sector Sector { get; set; } = null!;
 
@@ -33,10 +33,12 @@ public sealed class LightFlash(DoomRandom doomRandom) : Thinker
 
     public int MinTime { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         if (--Count > 0)
             return;
+
+        var doomRandom = world.Random;
 
         if (Sector.LightLevel == MaxLight)
         {

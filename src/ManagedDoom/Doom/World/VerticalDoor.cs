@@ -29,7 +29,7 @@ public sealed class VerticalDoor(World world) : Thinker
     // When it reaches 0, start going down
     // (keep in case a door going down is reset).
 
-    public override void Run()
+    public override void Run(World world)
     {
         var sa = world.SectorAction;
 
@@ -59,9 +59,6 @@ public sealed class VerticalDoor(World world) : Thinker
                             Direction = 1;
                             world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
                             break;
-
-                        default:
-                            break;
                     }
                 }
 
@@ -77,9 +74,6 @@ public sealed class VerticalDoor(World world) : Thinker
                             Direction = 1;
                             Type = VerticalDoorType.Normal;
                             world.StartSound(Sector.SoundOrigin, Sfx.DOROPN, SfxType.Misc);
-                            break;
-
-                        default:
                             break;
                     }
                 }
@@ -117,9 +111,6 @@ public sealed class VerticalDoor(World world) : Thinker
                         case VerticalDoorType.Close30ThenOpen:
                             Direction = 0;
                             TopCountDown = 35 * 30;
-                            break;
-
-                        default:
                             break;
                     }
                 }
@@ -166,9 +157,6 @@ public sealed class VerticalDoor(World world) : Thinker
                             // Unlink and free.
                             Thinkers.Remove(this);
                             Sector.DisableFrameInterpolationForOneFrame();
-                            break;
-
-                        default:
                             break;
                     }
                 }

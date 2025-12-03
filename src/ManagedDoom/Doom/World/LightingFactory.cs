@@ -13,7 +13,7 @@ public static class LightingFactory
         // Nothing special about it during gameplay.
         sector.Special = 0;
 
-        var flicker = new FireFlicker(world);
+        var flicker = new FireFlicker();
 
         world.Thinkers.Add(flicker);
 
@@ -29,7 +29,7 @@ public static class LightingFactory
         // Nothing special about it during gameplay.
         sector.Special = 0;
 
-        var light = new LightFlash(world.Random);
+        var light = new LightFlash();
 
         world.Thinkers.Add(light);
 

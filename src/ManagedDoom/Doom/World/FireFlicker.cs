@@ -20,19 +20,12 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class FireFlicker : Thinker
 {
-    private readonly World world;
-
-    public FireFlicker(World world)
-    {
-        this.world = world;
-    }
-
     public Sector Sector { get; set; }
     public int Count { get; set; }
     public int MaxLight { get; set; }
     public int MinLight { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         if (--Count > 0)
             return;

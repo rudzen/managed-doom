@@ -205,7 +205,7 @@ public sealed class Mobj : Thinker
 
     public Mobj Tracer { get; set; }
 
-    public override void Run()
+    public override void Run(World world)
     {
         // Momentum movement.
         if (MomX != Fixed.Zero || MomY != Fixed.Zero ||

@@ -259,7 +259,7 @@ public static partial class SaveAndLoad
         const int dataSize = 48;
         var ceilingData = data[..dataSize];
 
-        ceilingMove = new CeilingMove(world);
+        ceilingMove = new CeilingMove();
         ceilingMove.ThinkerState = ReadThinkerState(ceilingData.Slice(8, 4));
         ceilingMove.Type = (CeilingMoveType)BitConverter.ToInt32(ceilingData.Slice(12, 4));
         ceilingMove.Sector = world.Map.Sectors[BitConverter.ToInt32(ceilingData.Slice(16, 4))];
@@ -299,7 +299,7 @@ public static partial class SaveAndLoad
         const int dataSize = 44;
         var floorData = data[..dataSize];
 
-        floor = new FloorMove(world);
+        floor = new FloorMove();
         floor.ThinkerState = ReadThinkerState(floorData.Slice(8, 4));
         floor.Type = (FloorMoveType)BitConverter.ToInt32(floorData.Slice(12, 4));
         floor.Crush = BitConverter.ToInt32(floorData.Slice(16, 4)) != 0;
@@ -319,7 +319,7 @@ public static partial class SaveAndLoad
         const int dataSize = 56;
         var platformData = data[..dataSize];
 
-        plat = new Platform(world);
+        plat = new Platform();
         plat.ThinkerState = ReadThinkerState(platformData.Slice(8, 4));
         plat.Sector = world.Map.Sectors[BitConverter.ToInt32(platformData.Slice(12, 4))];
         plat.Speed = new Fixed(BitConverter.ToInt32(platformData.Slice(16, 4)));
@@ -342,7 +342,7 @@ public static partial class SaveAndLoad
         const int dataSize = 36;
         var flashData = data[..dataSize];
 
-        flash = new LightFlash(world.Random);
+        flash = new LightFlash();
         flash.ThinkerState = ReadThinkerState(flashData.Slice(8, 4));
         flash.Sector = world.Map.Sectors[BitConverter.ToInt32(flashData.Slice(12, 4))];
         flash.Count = BitConverter.ToInt32(flashData.Slice(16, 4));
