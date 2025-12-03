@@ -256,8 +256,6 @@ public sealed class MonsterBehavior
         Direction.Southeast
     ];
 
-    private readonly Direction[] choices = new Direction[3];
-
     private void NewChaseDir(Mobj actor)
     {
         if (actor.Target is null)
@@ -268,6 +266,8 @@ public sealed class MonsterBehavior
 
         var deltaX = actor.Target.X - actor.X;
         var deltaY = actor.Target.Y - actor.Y;
+
+        Span<Direction> choices = stackalloc Direction[3];
 
         if (deltaX > Fixed.FromInt(10))
             choices[1] = Direction.East;

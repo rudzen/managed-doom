@@ -56,11 +56,12 @@ public sealed class PathTraversal
         int s1;
         int s2;
 
+        var fixed16 = Fixed.FromInt(16);
         // Avoid precision problems with two routines.
-        if (Trace.Dx > Fixed.FromInt(16) ||
-            Trace.Dy > Fixed.FromInt(16) ||
-            Trace.Dx < -Fixed.FromInt(16) ||
-            Trace.Dy < -Fixed.FromInt(16))
+        if (Trace.Dx > fixed16 ||
+            Trace.Dy > fixed16 ||
+            Trace.Dx < -fixed16 ||
+            Trace.Dy < -fixed16)
         {
             s1 = Geometry.PointOnDivLineSide(line.Vertex1.X, line.Vertex1.Y, Trace);
             s2 = Geometry.PointOnDivLineSide(line.Vertex2.X, line.Vertex2.Y, Trace);
@@ -105,15 +106,15 @@ public sealed class PathTraversal
     {
         var tracePositive = (Trace.Dx.Data ^ Trace.Dy.Data) > 0;
 
-        Fixed x1;
         Fixed y1;
         Fixed x2;
         Fixed y2;
 
         // Check a corner to corner crossection for hit.
+        var x1 = thing.X - thing.Radius;
+
         if (tracePositive)
         {
-            x1 = thing.X - thing.Radius;
             y1 = thing.Y + thing.Radius;
 
             x2 = thing.X + thing.Radius;
@@ -121,7 +122,6 @@ public sealed class PathTraversal
         }
         else
         {
-            x1 = thing.X - thing.Radius;
             y1 = thing.Y - thing.Radius;
 
             x2 = thing.X + thing.Radius;
@@ -131,11 +131,9 @@ public sealed class PathTraversal
         var s1 = Geometry.PointOnDivLineSide(x1, y1, Trace);
         var s2 = Geometry.PointOnDivLineSide(x2, y2, Trace);
 
+        // Line isn't crossed.
         if (s1 == s2)
-        {
-            // Line isn't crossed.
             return true;
-        }
 
         target.X = x1;
         target.Y = y1;
@@ -144,11 +142,9 @@ public sealed class PathTraversal
 
         var frac = InterceptVector(Trace, target);
 
+        // Behind source.
         if (frac < Fixed.Zero)
-        {
-            // Behind source.
             return true;
-        }
 
         intercepts[interceptCount].Make(frac, thing);
         interceptCount++;

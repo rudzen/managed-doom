@@ -21,6 +21,5 @@ namespace ManagedDoom.Doom.Graphics;
 public interface ILookup<out T>
 {
     int GetNumber(ReadOnlySpan<char> name);
-    T this[string name] { get; }
     T this[ReadOnlySpan<char> name] { get; }
 }

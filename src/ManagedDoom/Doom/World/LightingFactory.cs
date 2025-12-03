@@ -1,27 +1,13 @@
-﻿//
-// Copyright (C) 1993-1996 Id Software, Inc.
-// Copyright (C) 2019-2020 Nobuaki Tanaka
-// Copyright (C)      2024 Rudy Alex Kohn
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-
-using System.Linq;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class LightingChange(World world)
+public static class LightingFactory
 {
-    public void SpawnFireFlicker(Sector sector)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SpawnFireFlicker(World world, Sector sector)
     {
         // Note that we are resetting sector attributes.
         // Nothing special about it during gameplay.
@@ -37,7 +23,8 @@ public sealed class LightingChange(World world)
         flicker.Count = 4;
     }
 
-    public void SpawnLightFlash(Sector sector)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SpawnLightFlash(World world, Sector sector)
     {
         // Nothing special about it during gameplay.
         sector.Special = 0;
@@ -55,7 +42,8 @@ public sealed class LightingChange(World world)
         light.Count = (world.Random.Next() & light.MaxTime) + 1;
     }
 
-    public void SpawnStrobeFlash(Sector sector, int time, bool inSync)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SpawnStrobeFlash(World world, Sector sector, int time, bool inSync)
     {
         var strobe = new StrobeFlash();
 
@@ -76,7 +64,8 @@ public sealed class LightingChange(World world)
         strobe.Count = inSync ? 1 : (world.Random.Next() & 7) + 1;
     }
 
-    public void SpawnGlowingLight(Sector sector)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SpawnGlowingLight(World world, Sector sector)
     {
         var glowing = new GlowingLight();
 
@@ -90,21 +79,25 @@ public sealed class LightingChange(World world)
         sector.Special = 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int FindMinSurroundingLight(Sector sector, int max)
     {
         return sector.Lines
-                     .Select(line => GetNextSector(line, sector))
+                     .Select(line => SectorAction.GetNextSector(line, sector))
                      .OfType<Sector>()
                      .Select(check => check.LightLevel)
                      .Prepend(max)
                      .Min();
     }
 
-    private static Sector? GetNextSector(LineDef line, Sector sector)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int FindMaxSurroundingLight(Sector sector, int max)
     {
-        if ((line.Flags & LineFlags.TwoSided) == 0)
-            return null;
-
-        return line.FrontSector == sector ? line.BackSector : line.FrontSector;
+        return sector.Lines
+                     .Select(line => SectorAction.GetNextSector(line, sector))
+                     .OfType<Sector>()
+                     .Select(check => check.LightLevel)
+                     .Prepend(max)
+                     .Max();
     }
 }

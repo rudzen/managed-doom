@@ -192,7 +192,7 @@ public sealed class DrawScreen
                 continue;
             }
 
-            var index = char.IsBetween(ch, 'a', 'z')
+            var index = char.IsAsciiLetterLower(ch)
                 ? ch - 'a' + 'A'
                 : ch;
 

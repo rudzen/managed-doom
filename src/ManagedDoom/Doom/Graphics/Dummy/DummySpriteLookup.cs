@@ -28,78 +28,76 @@ public sealed class DummySpriteLookup : ISpriteLookup
     public DummySpriteLookup(Wad.Wad wad)
     {
         var temp = new Dictionary<string, List<SpriteInfo>>();
+        var tempLookup = temp.GetAlternateLookup<ReadOnlySpan<char>>();
+
         for (var i = 0; i < (int)Sprite.Count; i++)
-            temp.Add(DoomInfo.SpriteNames[i], []);
+            tempLookup.TryAdd(DoomInfo.SpriteNames[i], []);
 
-        foreach (var lump in EnumerateSprites(wad))
+        foreach (var lumpNumber in EnumerateSprites(wad))
         {
-            var name = wad.LumpInfos[lump].Name[..4];
+            var lump = wad.LumpInfos[lumpNumber];
+            var lumpName = lump.Name.AsSpan();
+            var namePrefix = lumpName[..4];
 
-            if (!temp.TryGetValue(name, out var list))
+            if (!tempLookup.TryGetValue(namePrefix, out var list))
                 continue;
 
+            var frame = lumpName[4] - 'A';
+            var rotation = lumpName[5] - '0';
+
+            while (list.Count < frame + 1)
+                list.Add(new SpriteInfo());
+
+            if (rotation == 0)
             {
-                var frame = wad.LumpInfos[lump].Name[4] - 'A';
-                var rotation = wad.LumpInfos[lump].Name[5] - '0';
-
-                while (list.Count < frame + 1)
-                    list.Add(new SpriteInfo());
-
-                if (rotation == 0)
+                for (var i = 0; i < list[frame].Patches.Length; i++)
                 {
-                    for (var i = 0; i < list[frame].Patches.Length; i++)
+                    if (list[frame].Patches[i] is null)
                     {
-                        if (list[frame].Patches[i] is null)
-                        {
-                            list[frame].Patches[i] = DummyData.GetPatch();
-                            list[frame].Flip[i] = false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (list[frame].Patches[rotation - 1] is null)
-                    {
-                        list[frame].Patches[rotation - 1] = DummyData.GetPatch();
-                        list[frame].Flip[rotation - 1] = false;
+                        list[frame].Patches[i] = DummyData.GetPatch();
+                        list[frame].Flip[i] = false;
                     }
                 }
             }
-
-            if (wad.LumpInfos[lump].Name.Length == 8)
+            else
             {
-                var frame = wad.LumpInfos[lump].Name[6] - 'A';
-                var rotation = wad.LumpInfos[lump].Name[7] - '0';
-                
-                while (list.Count < frame + 1)
-                    list.Add(new SpriteInfo());
+                if (list[frame].Patches[rotation - 1] is null)
+                {
+                    list[frame].Patches[rotation - 1] = DummyData.GetPatch();
+                    list[frame].Flip[rotation - 1] = false;
+                }
+            }
 
-                if (rotation == 0)
+            if (lumpName.Length != 8) continue;
+
+            frame = lumpName[6] - 'A';
+            rotation = lumpName[7] - '0';
+
+            while (list.Count < frame + 1)
+                list.Add(new SpriteInfo());
+
+            if (rotation == 0)
+            {
+                for (var i = 0; i < 8; i++)
                 {
-                    for (var i = 0; i < 8; i++)
+                    if (list[frame].Patches[i] is null)
                     {
-                        if (list[frame].Patches[i] is null)
-                        {
-                            list[frame].Patches[i] = DummyData.GetPatch();
-                            list[frame].Flip[i] = true;
-                        }
+                        list[frame].Patches[i] = DummyData.GetPatch();
+                        list[frame].Flip[i] = true;
                     }
                 }
-                else
-                {
-                    if (list[frame].Patches[rotation - 1] is null)
-                    {
-                        list[frame].Patches[rotation - 1] = DummyData.GetPatch();
-                        list[frame].Flip[rotation - 1] = true;
-                    }
-                }
+            }
+            else if (list[frame].Patches[rotation - 1] is null)
+            {
+                list[frame].Patches[rotation - 1] = DummyData.GetPatch();
+                list[frame].Flip[rotation - 1] = true;
             }
         }
 
         spriteDefs = new SpriteDef[(int)Sprite.Count];
         for (var i = 0; i < spriteDefs.Length; i++)
         {
-            var list = temp[DoomInfo.SpriteNames[i]];
+            var list = tempLookup[DoomInfo.SpriteNames[i]];
 
             var frames = new SpriteFrame[list.Count];
             for (var j = 0; j < frames.Length; j++)
@@ -120,9 +118,10 @@ public sealed class DummySpriteLookup : ISpriteLookup
 
         for (var lumpNumber = wad.LumpInfos.Length - 1; lumpNumber >= 0; lumpNumber--)
         {
-            var name = wad.LumpInfos[lumpNumber].Name;
+            var lump = wad.LumpInfos[lumpNumber];
+            var name = lump.Name.AsSpan();
 
-            if (name.StartsWith('S'))
+            if (name[0] == 'S')
             {
                 if (name.EndsWith("_END"))
                 {
@@ -139,7 +138,7 @@ public sealed class DummySpriteLookup : ISpriteLookup
 
             if (spriteSection)
             {
-                var length = wad.LumpInfos[lumpNumber].Data?.Length ?? -1;
+                var length = lump.Data?.Length ?? -1;
                 if (length > 0)
                     yield return lumpNumber;
             }

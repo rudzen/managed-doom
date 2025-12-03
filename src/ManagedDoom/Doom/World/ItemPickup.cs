@@ -145,7 +145,8 @@ public sealed class ItemPickup(World world)
     private bool GaveAmmo(Player player, WeaponTypes weapon, bool dropped)
     {
         bool gaveAmmo;
-        if (weapon.WeaponInfo().Ammo != AmmoType.NoAmmo)
+        ref var weaponInfo = ref weapon.WeaponInfo();
+        if (weaponInfo.Ammo != AmmoType.NoAmmo)
         {
             // Give one clip with a dropped weapon, two clips with a found weapon.
 
@@ -155,7 +156,7 @@ public sealed class ItemPickup(World world)
             // flipped to false + 1 = 1
             // flipped to true + 1 = 2
             var amount = (!dropped).AsInt() + 1;
-            gaveAmmo = GiveAmmo(player, weapon.WeaponInfo().Ammo, amount);
+            gaveAmmo = GiveAmmo(player, weaponInfo.Ammo, amount);
         }
         else
             gaveAmmo = false;

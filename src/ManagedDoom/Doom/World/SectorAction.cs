@@ -42,7 +42,6 @@ public sealed class SectorAction
     // the way it was and call P_ChangeSector again
     // to undo the changes.
     //
-
     private readonly World world;
 
     public SectorAction(World world)
@@ -302,7 +301,7 @@ public sealed class SectorAction
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Sector? GetNextSector(LineDef line, Sector sector)
+    public static Sector? GetNextSector(LineDef line, Sector sector)
     {
         if ((line.Flags & LineFlags.TwoSided) == 0)
             return null;
@@ -581,7 +580,7 @@ public sealed class SectorAction
 
     public bool DoDoor(LineDef line, VerticalDoorType type)
     {
-        var sectors = world.Map.Sectors;
+        var sectors = world.Map.Sectors.AsSpan();
         var sectorNumber = -1;
         var result = false;
 
@@ -1360,71 +1359,69 @@ public sealed class SectorAction
 
         for (var i = 0; i < sectors.Length; i++)
         {
-            if (sectors[i].Tag == tag)
+            if (sectors[i].Tag != tag) continue;
+            foreach (var thinker in world.Thinkers)
             {
-                foreach (var thinker in world.Thinkers)
-                {
-                    // Not a mobj.
-                    if (thinker is not Mobj dest)
-                        continue;
+                // Not a mobj.
+                if (thinker is not Mobj dest)
+                    continue;
 
-                    // Not a teleportman.
-                    if (dest.Type != MobjType.Teleportman)
-                        continue;
+                // Not a teleportman.
+                if (dest.Type != MobjType.Teleportman)
+                    continue;
 
-                    var sector = dest.Subsector.Sector;
+                var sector = dest.Subsector.Sector;
 
-                    // Wrong sector.
-                    if (sector.Number != i)
-                        continue;
+                // Wrong sector.
+                if (sector.Number != i)
+                    continue;
 
-                    var oldX = thing.X;
-                    var oldY = thing.Y;
-                    var oldZ = thing.Z;
+                var oldX = thing.X;
+                var oldY = thing.Y;
+                var oldZ = thing.Z;
 
-                    if (!world.ThingMovement.TeleportMove(thing, dest.X, dest.Y))
-                        return false;
+                if (!world.ThingMovement.TeleportMove(thing, dest.X, dest.Y))
+                    return false;
 
-                    // This compatibility fix is based on Chocolate Doom's implementation.
-                    if (world.Options.GameVersion != GameVersion.Final)
-                        thing.Z = thing.FloorZ;
+                // This compatibility fix is based on Chocolate Doom's implementation.
+                if (world.Options.GameVersion != GameVersion.Final)
+                    thing.Z = thing.FloorZ;
 
-                    if (thing.Player != null)
-                        thing.Player.ViewZ = thing.Z + thing.Player.ViewHeight;
+                if (thing.Player != null)
+                    thing.Player.ViewZ = thing.Z + thing.Player.ViewHeight;
 
-                    var ta = world.ThingAllocation;
+                var ta = world.ThingAllocation;
 
-                    // Spawn teleport fog at source position.
-                    var fog1 = ta.SpawnMobj(
-                        x: oldX,
-                        y: oldY,
-                        z: oldZ,
-                        type: MobjType.Tfog
-                    );
-                    world.StartSound(fog1, Sfx.TELEPT, SfxType.Misc);
+                // Spawn teleport fog at source position.
+                var fog1 = ta.SpawnMobj(
+                    x: oldX,
+                    y: oldY,
+                    z: oldZ,
+                    type: MobjType.Tfog
+                );
+                world.StartSound(fog1, Sfx.TELEPT, SfxType.Misc);
 
-                    // Destination position.
-                    var angle = dest.Angle;
-                    var fog2 = ta.SpawnMobj(
-                        x: dest.X + 20 * Trig.Cos(angle),
-                        y: dest.Y + 20 * Trig.Sin(angle),
-                        z: thing.Z,
-                        type: MobjType.Tfog
-                    );
-                    world.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
+                // Destination position.
+                var angle = dest.Angle;
+                var fog2 = ta.SpawnMobj(
+                    x: dest.X + 20 * Trig.Cos(angle),
+                    y: dest.Y + 20 * Trig.Sin(angle),
+                    z: thing.Z,
+                    type: MobjType.Tfog
+                );
+                world.StartSound(fog2, Sfx.TELEPT, SfxType.Misc);
 
-                    // Don't move for a bit.
-                    if (thing.Player is not null)
-                        thing.ReactionTime = 18;
+                // Don't move for a bit.
+                if (thing.Player is not null)
+                    thing.ReactionTime = 18;
 
-                    thing.Angle = dest.Angle;
-                    thing.MomX = thing.MomY = thing.MomZ = Fixed.Zero;
+                thing.Angle = dest.Angle;
+                thing.MomX = thing.MomY = thing.MomZ = Fixed.Zero;
 
-                    thing.DisableFrameInterpolationForOneFrame();
-                    thing.Player?.DisableFrameInterpolationForOneFrame();
+                thing.DisableFrameInterpolationForOneFrame();
+                thing.Player?.DisableFrameInterpolationForOneFrame();
 
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -1464,18 +1461,11 @@ public sealed class SectorAction
             if (sector.Tag != line.Tag) continue;
             // bright = 0 means to search for highest light level surrounding sector.
             if (bright == 0)
-            {
-                bright = sector.Lines
-                               .Select(sectorLine => GetNextSector(sectorLine, sector))
-                               .OfType<Sector>().Select(target => target.LightLevel)
-                               .Prepend(bright)
-                               .Max();
-            }
+                bright = LightingFactory.FindMaxSurroundingLight(sector, bright);
 
             sector.LightLevel = bright;
         }
     }
-
 
     public void StartLightStrobing(LineDef line)
     {
@@ -1489,7 +1479,7 @@ public sealed class SectorAction
             if (sector.SpecialData is not null)
                 continue;
 
-            world.LightingChange.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, false);
+            LightingFactory.SpawnStrobeFlash(world, sector, StrobeFlash.SlowDark, false);
         }
     }
 

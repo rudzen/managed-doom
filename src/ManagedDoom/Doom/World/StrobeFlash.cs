@@ -39,9 +39,7 @@ public sealed class StrobeFlash : Thinker
     public override void Run()
     {
         if (--Count > 0)
-        {
             return;
-        }
 
         if (Sector.LightLevel == MinLight)
         {

@@ -85,7 +85,6 @@ public sealed class TextureLookup : ITextureLookup
     }
 
     public Texture this[int num] => textures[num];
-    public Texture this[string name] => nameToTexture[name];
     public Texture this[ReadOnlySpan<char> name] => nameToTextureLookup[name];
     public int Count => textures.Count;
     public int[] SwitchList { get; }

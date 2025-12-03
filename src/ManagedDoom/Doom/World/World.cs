@@ -65,7 +65,6 @@ public sealed class World
         ItemPickup = new ItemPickup(this);
         WeaponBehavior = new WeaponBehavior(this);
         MonsterBehavior = new MonsterBehavior(this);
-        LightingChange = new LightingChange(this);
         StatusBar = new StatusBar();
         AutoMap = new AutoMap(this);
         cheat = new Cheat(this);
@@ -153,8 +152,6 @@ public sealed class World
     public WeaponBehavior WeaponBehavior { get; }
 
     public MonsterBehavior MonsterBehavior { get; }
-
-    public LightingChange LightingChange { get; }
 
     public StatusBar StatusBar { get; }
 

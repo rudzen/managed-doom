@@ -75,37 +75,36 @@ public sealed class Specials
     public void SpawnSpecials()
     {
         // Init special sectors.
-        var lc = world.LightingChange;
         var sa = world.SectorAction;
         foreach (var sector in world.Map.Sectors)
         {
             if (sector.Special == SectorSpecial.Normal)
                 continue;
             if (sector.Special == SectorSpecial.FlickeringLightsSpawn)
-                lc.SpawnLightFlash(sector);
+                LightingFactory.SpawnLightFlash(world, sector);
             else if (sector.Special == SectorSpecial.StrobeFastSpawn)
-                lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, false);
+                LightingFactory.SpawnStrobeFlash(world, sector, StrobeFlash.FastDark, false);
             else if (sector.Special == SectorSpecial.StrobeSlowSpawn)
-                lc.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, false);
+                LightingFactory.SpawnStrobeFlash(world, sector, StrobeFlash.SlowDark, false);
             else if (sector.Special == SectorSpecial.StrobeFastDeathSlimeSpawn)
             {
-                lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, false);
+                LightingFactory.SpawnStrobeFlash(world, sector, StrobeFlash.FastDark, false);
                 sector.Special = SectorSpecial.StrobeFastDeathSlimeSpawn;
             }
             else if (sector.Special == SectorSpecial.GlowingLightSpawn)
-                lc.SpawnGlowingLight(sector);
+                LightingFactory.SpawnGlowingLight(world, sector);
             else if (sector.Special == SectorSpecial.SecretSectorSpawn)
                 world.TotalSecrets++;
             else if (sector.Special == SectorSpecial.DoorCloseIn30SecondsSpawn)
                 sa.SpawnDoorCloseIn30(sector);
             else if (sector.Special == SectorSpecial.SyncStrobeSlowSpawn)
-                lc.SpawnStrobeFlash(sector, StrobeFlash.SlowDark, true);
+                LightingFactory.SpawnStrobeFlash(world, sector, StrobeFlash.SlowDark, true);
             else if (sector.Special == SectorSpecial.SyncStrobeFastSpawn)
-                lc.SpawnStrobeFlash(sector, StrobeFlash.FastDark, true);
+                LightingFactory.SpawnStrobeFlash(world, sector, StrobeFlash.FastDark, true);
             else if (sector.Special == SectorSpecial.DoorRaiseIn5MinutesSpawn)
                 sa.SpawnDoorRaiseIn5Mins(sector);
             else if (sector.Special == SectorSpecial.FireFlickerSpawn)
-                lc.SpawnFireFlicker(sector);
+                LightingFactory.SpawnFireFlicker(world, sector);
         }
 
         scrollLines = [.. world

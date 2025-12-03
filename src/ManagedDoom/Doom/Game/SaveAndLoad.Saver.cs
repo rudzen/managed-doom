@@ -359,14 +359,10 @@ public static partial class SaveAndLoad
         }
 
         for (var i = 0; i < player.Ammo.Length; i++)
-        {
             Write(data, p + 156 + 4 * i, player.Ammo[i]);
-        }
 
         for (var i = 0; i < player.MaxAmmo.Length; i++)
-        {
             Write(data, p + 172 + 4 * i, player.MaxAmmo[i]);
-        }
 
         Write(data, p + 188, player.AttackDown.AsInt());
         Write(data, p + 192, player.UseDown.AsInt());

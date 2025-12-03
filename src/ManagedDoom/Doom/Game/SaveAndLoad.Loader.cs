@@ -415,14 +415,18 @@ public static partial class SaveAndLoad
         // read cards
         for (var i = 0; i < CardTypeExtensions.CardTypes.Length; i++)
         {
-            if (BitConverter.ToInt32(data[(p + 68 + 4 * i)..]) != 0)
+            var dataIndex = p + 68 + 4 * i;
+            if (BitConverter.ToInt32(data[dataIndex..]) != 0)
                 player.Cards |= CardTypeExtensions.CardTypes[i];
         }
 
         player.Backpack = BitConverter.ToInt32(data[(p + 92)..]) != 0;
 
         for (var i = 0; i < player.Frags.Length; i++)
-            player.Frags[i] = BitConverter.ToInt32(data[(p + 96 + 4 * i)..]);
+        {
+            var dataIndex = p + 96 + 4 * i;
+            player.Frags[i] = BitConverter.ToInt32(data[dataIndex..]);
+        }
 
         player.ReadyWeapon = (WeaponTypes)BitConverter.ToInt32(data[(p + 112)..]);
         player.PendingWeapon = (WeaponTypes)BitConverter.ToInt32(data[(p + 116)..]);

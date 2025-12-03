@@ -26,6 +26,5 @@ public enum Direction
     Southwest,
     South,
     Southeast,
-    None,
-    Count
+    None
 }

@@ -22,23 +22,9 @@ namespace ManagedDoom.Doom.Map;
 
 public sealed class Sector
 {
-    // 0 = untraversed, 1, 2 = sndlines - 1.
-
-    // Thing that made a sound (or null).
-
-    // Mapblock bounding box for height changes.
-
-    // Origin for any sounds played by the sector.
-
-    // If == validcount, already checked.
-
-    // List of mobjs in sector.
-
-    // Thinker for reversable actions.
-
     // For frame interpolation.
-    private Fixed oldFloorHeight;
-    private Fixed oldCeilingHeight;
+    public Fixed oldFloorHeight;
+    public Fixed oldCeilingHeight;
 
     public Sector(
         int number,
@@ -73,30 +59,64 @@ public sealed class Sector
     public int LightLevel { get; set; }
     public SectorSpecial Special { get; set; }
     public int Tag { get; set; }
+
+    /// <summary>
+    /// 0 = untraversed, 1, 2 = sndlines - 1.
+    /// </summary>
     public int SoundTraversed { get; set; }
+
+    /// <summary>
+    /// Thing that made a sound (or null).
+    /// </summary>
     public Mobj? SoundTarget { get; set; }
+
+    /// <summary>
+    /// Mapblock bounding box for height changes.
+    /// </summary>
     public int[] BlockBox { get; set; } = null!;
+
+    /// <summary>
+    /// Origin for any sounds played by the sector.
+    /// </summary>
     public Mobj SoundOrigin { get; set; } = null!;
+
+    /// <summary>
+    /// If == validcount, already checked.
+    /// </summary>
     public int ValidCount { get; set; }
+
+    /// <summary>
+    /// List of mobjs in sector.
+    /// </summary>
     public List<Mobj> ThingList { get; }
+
+    /// <summary>
+    /// Thinker for reversable actions.
+    /// </summary>
     public Thinker? SpecialData { get; set; }
+
     public LineDef[] Lines { get; set; } = null!;
 
-    public void UpdateFrameInterpolationInfo()
-    {
-        oldFloorHeight = FloorHeight;
-        oldCeilingHeight = CeilingHeight;
-    }
-
-    public Fixed GetInterpolatedFloorHeight(Fixed frameFrac) => oldFloorHeight + frameFrac * (FloorHeight - oldFloorHeight);
-
-    public Fixed GetInterpolatedCeilingHeight(Fixed frameFrac) => oldCeilingHeight + frameFrac * (CeilingHeight - oldCeilingHeight);
-
-    public void DisableFrameInterpolationForOneFrame()
-    {
-        oldFloorHeight = FloorHeight;
-        oldCeilingHeight = CeilingHeight;
-    }
-
     public List<Mobj>.Enumerator GetEnumerator() => ThingList.GetEnumerator();
+}
+
+public static class SectorExtensions
+{
+    extension(Sector sector)
+    {
+        public void UpdateFrameInterpolationInfo()
+        {
+            sector.oldFloorHeight = sector.FloorHeight;
+            sector.oldCeilingHeight = sector.CeilingHeight;
+        }
+
+        public Fixed GetInterpolatedFloorHeight(Fixed frameFrac) => sector.oldFloorHeight + frameFrac * (sector.FloorHeight - sector.oldFloorHeight);
+        public Fixed GetInterpolatedCeilingHeight(Fixed frameFrac) => sector.oldCeilingHeight + frameFrac * (sector.CeilingHeight - sector.oldCeilingHeight);
+
+        public void DisableFrameInterpolationForOneFrame()
+        {
+            sector.oldFloorHeight = sector.FloorHeight;
+            sector.oldCeilingHeight = sector.CeilingHeight;
+        }
+    }
 }

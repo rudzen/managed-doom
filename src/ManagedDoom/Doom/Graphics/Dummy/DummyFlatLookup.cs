@@ -68,7 +68,6 @@ public sealed class DummyFlatLookup : IFlatLookup
 
     public int Count => flats.Length;
     public Flat this[int num] => flats[num];
-    public Flat this[string name] => nameToFlat[name];
     public Flat this[ReadOnlySpan<char> name] => nameToFlatLookup[name];
     public int SkyFlatNumber { get; }
     public Flat SkyFlat { get; }

@@ -28,7 +28,7 @@ namespace ManagedDoom.Doom.World;
 
 public sealed class Cheat(World world)
 {
-    private sealed record CheatInfo(string Code, Action<Cheat, string> Action, bool AvailableOnNightmare);
+    private sealed record CheatInfo(string Code, Action<Cheat, ReadOnlySpan<char>> Action, bool AvailableOnNightmare);
 
     private static readonly CheatInfo[] list =
     [
@@ -197,7 +197,7 @@ public sealed class Cheat(World world)
         player.SendMessage(DoomInfo.Strings.STSTR_BEHOLD);
     }
 
-    private void DoPowerUp(string typed)
+    private void DoPowerUp(ReadOnlySpan<char> typed)
     {
         switch (typed[^1])
         {
@@ -320,12 +320,11 @@ public sealed class Cheat(World world)
         player.SendMessage($"{count} monsters killed");
     }
 
-    private void ChangeLevel(string typed)
+    private void ChangeLevel(ReadOnlySpan<char> typed)
     {
-        var typedSpan = typed.AsSpan();
         if (world.Options.GameMode == GameMode.Commercial)
         {
-            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 2), out var map))
+            if (!int.TryParse(typed.Slice(typed.Length - 2, 2), out var map))
                 return;
 
             var skill = world.Options.Skill;
@@ -333,10 +332,10 @@ public sealed class Cheat(World world)
         }
         else
         {
-            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 1), out var episode))
+            if (!int.TryParse(typed.Slice(typed.Length - 2, 1), out var episode))
                 return;
 
-            if (!int.TryParse(typedSpan.Slice(typed.Length - 1, 1), out var map))
+            if (!int.TryParse(typed.Slice(typed.Length - 1, 1), out var map))
                 return;
 
             var skill = world.Options.Skill;
@@ -344,24 +343,23 @@ public sealed class Cheat(World world)
         }
     }
 
-    private void ChangeMusic(string typed)
+    private void ChangeMusic(ReadOnlySpan<char> typed)
     {
-        var typedSpan = typed.AsSpan();
         var options = GameOptions.CreateDefault();
         options.GameMode = world.Options.GameMode;
         if (world.Options.GameMode == GameMode.Commercial)
         {
-            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 2), out var map))
+            if (!int.TryParse(typed.Slice(typed.Length - 2, 2), out var map))
                 return;
 
             options.Map = map;
         }
         else
         {
-            if (!int.TryParse(typedSpan.Slice(typed.Length - 2, 1), out var episode))
+            if (!int.TryParse(typed.Slice(typed.Length - 2, 1), out var episode))
                 return;
 
-            if (!int.TryParse(typedSpan.Slice(typed.Length - 1, 1), out var map))
+            if (!int.TryParse(typed.Slice(typed.Length - 1, 1), out var map))
                 return;
 
             options.Episode = episode;

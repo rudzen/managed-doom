@@ -533,9 +533,10 @@ public sealed class PlayerBehavior(World world)
     public void DropWeapon(Player player)
     {
         SetPlayerSprite(
-            player,
-            PlayerSprite.Weapon,
-            player.ReadyWeapon.WeaponInfo().DownState);
+            player: player,
+            position: PlayerSprite.Weapon,
+            state: player.ReadyWeapon.WeaponInfo().DownState
+        );
     }
 
 
@@ -543,19 +544,19 @@ public sealed class PlayerBehavior(World world)
     // Miscellaneous
     ////////////////////////////////////////////////////////////
 
+    private static readonly Sfx[] PlayerScreamSounds = [
+        Sfx.PLDETH, // Default death sound.
+        Sfx.PDIEHI
+    ];
+
     /// <summary>
     /// Play the player's death sound.
     /// </summary>
     public void PlayerScream(Mobj player)
     {
-        // Default death sound.
-        var sound = Sfx.PLDETH;
-
-        if (world.Options.GameMode == GameMode.Commercial && player.Health < -50)
-        {
-            // If the player dies less than -50% without gibbing.
-            sound = Sfx.PDIEHI;
-        }
+        // If the player dies less than -50% without gibbing.
+        var index = (world.Options.GameMode == GameMode.Commercial && player.Health < -50).AsByte();
+        var sound = PlayerScreamSounds[index];
 
         world.StartSound(player, sound, SfxType.Voice);
     }
