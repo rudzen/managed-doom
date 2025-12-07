@@ -51,7 +51,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton(_ => new CommandLineArgs(args));
 
               // configuration
-              services.AddSingleton(_ => new DoomConfig(ConfigUtilities.GetConfigPath()));
+              services.AddSingleton(_ => new DoomConfig(ConfigUtilities.GetConfigPath));
 
               // game fundamentals
               services.AddSingleton<SilkConfig>();
@@ -62,7 +62,7 @@ await Host.CreateDefaultBuilder(args)
               services.AddSingleton<DrawScreen>();
               services.AddSingleton<Renderer>();
               services.AddSingleton<MenuRenderer>();
-              services.AddSingleton<IThreeDeeRenderer, ThreeDeeRenderer>();
+              services.AddSingleton<ThreeDeeRenderer>();
               services.AddSingleton<StatusBarRenderer>();
               services.AddSingleton<IntermissionRenderer>();
               services.AddSingleton<OpeningSequenceRenderer>();

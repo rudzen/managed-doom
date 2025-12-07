@@ -69,7 +69,7 @@ public sealed class NullVideo : IVideo
 
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
+        // GC.SuppressFinalize(this);
         // TODO release managed resources here
     }
 }

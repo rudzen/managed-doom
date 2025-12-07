@@ -160,11 +160,7 @@ public sealed partial class SilkDoom
         try
         {
             var frameFrac = Fixed.FromInt(frameCount % fpsScale + 1) / fpsScale;
-            video!.Render(doom!, frameFrac, in frameTimesRender);
-            // if (frameCount == 0)
-            // {
-            //     frameTimesRender = 0;
-            // }
+            video?.Render(doom!, frameFrac, in frameTimesRender);
         }
         catch (Exception e)
         {
@@ -192,7 +188,7 @@ public sealed partial class SilkDoom
         }
 
         if (!args.TimeDemo.Present)
-            silkConfig.DoomConfig.Save(ConfigUtilities.GetConfigPath());
+            silkConfig.DoomConfig.Save(ConfigUtilities.GetConfigPath);
     }
 
     public void KeyDown(Key key)

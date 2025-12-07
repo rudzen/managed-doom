@@ -62,7 +62,7 @@ public sealed class Renderer
 
     private readonly DrawScreen screen;
     private readonly StatusBarRenderer statusBarRenderer;
-    private readonly IThreeDeeRenderer threeDeeRenderer;
+    private readonly ThreeDeeRenderer threeDeeRenderer;
 
     private readonly int wipeBandWidth;
     private readonly byte[] wipeBuffer;
@@ -72,7 +72,7 @@ public sealed class Renderer
         GameContent content,
         DrawScreen drawScreen,
         MenuRenderer menuRenderer,
-        IThreeDeeRenderer threeDeeRenderer,
+        ThreeDeeRenderer threeDeeRenderer,
         StatusBarRenderer statusBarRenderer,
         IntermissionRenderer intermissionRenderer,
         OpeningSequenceRenderer openingSequenceRenderer,

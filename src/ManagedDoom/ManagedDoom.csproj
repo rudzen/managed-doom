@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
+        <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))</SourceRevisionId>
     </PropertyGroup>
 
     <PropertyGroup>

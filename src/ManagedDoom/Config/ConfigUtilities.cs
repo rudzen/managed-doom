@@ -36,10 +36,7 @@ public static class ConfigUtilities
 
     public static string GetExeDirectory => Path.GetDirectoryName(Environment.ProcessPath)!;
 
-    public static string GetConfigPath()
-    {
-        return Path.Combine(GetExeDirectory, "managed-doom.json");
-    }
+    public static string GetConfigPath => Path.Combine(GetExeDirectory, "managed-doom.json");
 
     private static string GetDefaultIwadPath()
     {

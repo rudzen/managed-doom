@@ -28,7 +28,7 @@ using ManagedDoom.Silk;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
 
-public sealed class ThreeDeeRenderer : IThreeDeeRenderer
+public sealed class ThreeDeeRenderer
 {
     public const int MaxScreenSize = 9;
 
