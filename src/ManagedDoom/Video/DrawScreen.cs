@@ -27,7 +27,7 @@ namespace ManagedDoom.Video;
 
 public sealed class DrawScreen
 {
-    private readonly Patch?[] chars;
+    private readonly Patch[] chars;
 
     public DrawScreen(GameContent gameContent, SilkConfig silkConfig)
     {

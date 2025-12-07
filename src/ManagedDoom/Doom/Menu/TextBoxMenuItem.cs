@@ -22,7 +22,7 @@ namespace ManagedDoom.Doom.Menu;
 public sealed class TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY) : MenuItem(skullX, skullY, null)
 {
     private StringBuilder text = new();
-    private TextInput? edit;
+    private TextInput edit;
 
     public string Text => edit?.Text.ToString() ?? text.ToString();
     public int ItemX { get; } = itemX;
@@ -45,7 +45,7 @@ public sealed class TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY
         return edit;
     }
 
-    public void SetText(string? inputText)
+    public void SetText(string inputText)
     {
         if (string.IsNullOrEmpty(inputText))
             return;

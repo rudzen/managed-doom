@@ -36,16 +36,16 @@ public sealed class ThingMovement(World world)
     private static readonly Fixed maxMove = Fixed.FromInt(30);
     private static readonly Fixed gravity = Fixed.One;
 
-    private Mobj? currentThing;
+    private Mobj currentThing;
     private MobjFlags currentFlags;
     private Fixed currentX;
     private Fixed currentY;
     private readonly Fixed[] currentBox = new Fixed[4];
 
-    private LineDef? currentCeilingLine;
+    private LineDef currentCeilingLine;
 
     public int crossedSpecialCount;
-    public readonly LineDef[]? crossedSpecials = new LineDef[MaxSpecialCrossCount];
+    public readonly LineDef[] crossedSpecials = new LineDef[MaxSpecialCrossCount];
 
     /// <summary>
     /// Links a thing into both a block and a subsector based on
@@ -189,7 +189,7 @@ public sealed class ThingMovement(World world)
         // Check for skulls slamming into things.
         if ((currentThing.Flags & MobjFlags.SkullFly) != 0)
         {
-            var damage = ((world.Random.Next() % 8) + 1) * currentThing.Info.Damage;
+            var damage = (world.Random.Next() % 8 + 1) * currentThing.Info.Damage;
 
             world.ThingInteraction.DamageMobj(thing, currentThing, currentThing, damage);
 
@@ -235,7 +235,7 @@ public sealed class ThingMovement(World world)
                 return (thing.Flags & MobjFlags.Solid) == 0;
 
             // Damage / explode.
-            var damage = ((world.Random.Next() % 8) + 1) * currentThing.Info.Damage;
+            var damage = (world.Random.Next() % 8 + 1) * currentThing.Info.Damage;
             world.ThingInteraction.DamageMobj(thing, currentThing, currentThing.Target, damage);
 
             // Don't traverse anymore.
@@ -542,7 +542,7 @@ public sealed class ThingMovement(World world)
             (player == null || player.Command is { ForwardMove: 0, SideMove: 0 }))
         {
             // If in a walking frame, stop moving.
-            if (player != null && (player.Mobj!.State.Number - (int)MobjState.PlayRun1) < 4)
+            if (player != null && player.Mobj!.State.Number - (int)MobjState.PlayRun1 < 4)
                 player.Mobj.SetState(MobjState.Play);
 
             thing.MomX = Fixed.Zero;
@@ -579,11 +579,11 @@ public sealed class ThingMovement(World world)
                     thing.X - thing.Target.X,
                     thing.Y - thing.Target.Y);
 
-                var delta = (thing.Target.Z + (thing.Height >> 1)) - thing.Z;
+                var delta = thing.Target.Z + (thing.Height >> 1) - thing.Z;
 
                 if (delta < Fixed.Zero && dist < -(delta * 3))
                     thing.Z -= FloatSpeed;
-                else if (delta > Fixed.Zero && dist < (delta * 3))
+                else if (delta > Fixed.Zero && dist < delta * 3)
                     thing.Z += FloatSpeed;
             }
         }
@@ -610,7 +610,7 @@ public sealed class ThingMovement(World world)
                     // Squat down.
                     // Decrease view height for a moment after hitting the ground (hard),
                     // and utter appropriate sound.
-                    thing.Player.DeltaViewHeight = (thing.MomZ >> 3);
+                    thing.Player.DeltaViewHeight = thing.MomZ >> 3;
                     world.StartSound(thing, Sfx.OOF, SfxType.Voice);
                 }
 

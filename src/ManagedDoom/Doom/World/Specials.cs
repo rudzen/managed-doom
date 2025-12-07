@@ -213,7 +213,7 @@ public sealed class Specials
         {
             for (var i = anim.BasePic; i < anim.BasePic + anim.NumPics; i++)
             {
-                var pic = anim.BasePic + ((world.LevelTime / anim.Speed + i) % anim.NumPics);
+                var pic = anim.BasePic + (world.LevelTime / anim.Speed + i) % anim.NumPics;
                 if (anim.IsTexture)
                     TextureTranslation[i] = pic;
                 else

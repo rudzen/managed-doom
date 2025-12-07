@@ -33,7 +33,7 @@ public sealed class LightningRender
 
     private readonly byte[][][] diminishingScaleLight;
     private readonly byte[][][] diminishingZLight;
-    private readonly byte[][][]? fixedLight;
+    private readonly byte[][][] fixedLight;
 
     public LightningRender(int screenWidth, ColorMap colorMap)
     {
@@ -55,7 +55,7 @@ public sealed class LightningRender
         // Calculate the light levels to use for each level / distance combination.
         for (var i = 0; i < lightLevelCount; i++)
         {
-            var start = ((lightLevelCount - 1 - i) * 2) * colorMapCount / lightLevelCount;
+            var start = (lightLevelCount - 1 - i) * 2 * colorMapCount / lightLevelCount;
             for (var j = 0; j < maxZLight; j++)
             {
                 var scale = Fixed.FromInt(320 / 2) / new Fixed((j + 1) << zLightShift);
@@ -87,7 +87,7 @@ public sealed class LightningRender
         // Calculate the light levels to use for each level / scale combination.
         for (var i = 0; i < lightLevelCount; i++)
         {
-            var start = ((lightLevelCount - 1 - i) * 2) * colorMapCount / lightLevelCount;
+            var start = (lightLevelCount - 1 - i) * 2 * colorMapCount / lightLevelCount;
             for (var j = 0; j < MaxScaleLight; j++)
             {
                 var level = start - j * 320 / windowWidth / distMap;

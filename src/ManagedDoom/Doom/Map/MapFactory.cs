@@ -165,8 +165,8 @@ public static class MapFactory
 
         var lineDef = lines[lineNumber];
 
-        SideDef? frontSide;
-        SideDef? backSide;
+        SideDef frontSide;
+        SideDef backSide;
 
         if (side == 0)
         {

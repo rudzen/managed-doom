@@ -210,7 +210,7 @@ public sealed class PlayerBehavior(World world)
         player.Mobj!.Angle += new Angle(cmd.AngleTurn << 16);
 
         // Do not let the player control movement if not onground.
-        onGround = (player.Mobj.Z <= player.Mobj.FloorZ);
+        onGround = player.Mobj.Z <= player.Mobj.FloorZ;
 
         if (onGround)
         {
@@ -252,7 +252,7 @@ public sealed class PlayerBehavior(World world)
 
         var angle = (Trig.FineAngleCount / 20 * world.LevelTime) & Trig.FineMask;
 
-        var bob = (player.Bob / 2) * Trig.Sin(angle);
+        var bob = player.Bob / 2 * Trig.Sin(angle);
 
         // Move viewheight.
         if (player.PlayerState == PlayerState.Live)

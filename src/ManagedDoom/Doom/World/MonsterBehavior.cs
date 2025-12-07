@@ -348,7 +348,7 @@ public sealed class MonsterBehavior
         }
         else
         {
-            for (var dir = Direction.Southeast; dir != (Direction.East - 1); dir--)
+            for (var dir = Direction.Southeast; dir != Direction.East - 1; dir--)
             {
                 if (dir == turnAround)
                     continue;
@@ -621,7 +621,7 @@ public sealed class MonsterBehavior
 
         var random = world.Random;
         angle += new Angle((random.Next() - random.Next()) << 20);
-        var damage = ((random.Next() % 5) + 1) * 3;
+        var damage = (random.Next() % 5 + 1) * 3;
 
         world.Hitscan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
     }
@@ -644,7 +644,7 @@ public sealed class MonsterBehavior
         for (var i = 0; i < 3; i++)
         {
             var angle = center + new Angle((random.Next() - random.Next()) << 20);
-            var damage = ((random.Next() % 5) + 1) * 3;
+            var damage = (random.Next() % 5 + 1) * 3;
 
             hitScan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
         }
@@ -664,7 +664,7 @@ public sealed class MonsterBehavior
 
         var random = world.Random;
         var angle = center + new Angle((random.Next() - random.Next()) << 20);
-        var damage = ((random.Next() % 5) + 1) * 3;
+        var damage = (random.Next() % 5 + 1) * 3;
 
         world.Hitscan.LineAttack(actor, angle, WeaponBehavior.MissileRange, slope, damage);
     }
@@ -711,7 +711,7 @@ public sealed class MonsterBehavior
 
         if (CheckMeleeRange(actor))
         {
-            var damage = ((world.Random.Next() % 10) + 1) * 4;
+            var damage = (world.Random.Next() % 10 + 1) * 4;
             world.ThingInteraction.DamageMobj(actor.Target, actor, actor, damage);
         }
     }
@@ -1199,7 +1199,7 @@ public sealed class MonsterBehavior
         if (!CheckMeleeRange(actor))
             return;
 
-        var damage = ((world.Random.Next() % 10) + 1) * 6;
+        var damage = (world.Random.Next() % 10 + 1) * 6;
         world.StartSound(actor, Sfx.SKEPCH, SfxType.Weapon);
         world.ThingInteraction.DamageMobj(actor.Target, actor, actor, damage);
     }
@@ -1532,7 +1532,7 @@ public sealed class MonsterBehavior
     public void BrainSpit(Mobj actor)
     {
         easy ^= true;
-        if (world.Options.Skill <= GameSkill.Easy && (!easy))
+        if (world.Options.Skill <= GameSkill.Easy && !easy)
             return;
 
         // If the game is reconstructed from a savedata, brain targets might be cleared.
@@ -1547,7 +1547,7 @@ public sealed class MonsterBehavior
         // Spawn brain missile.
         var missile = world.ThingAllocation.SpawnMissile(actor, target, MobjType.Spawnshot);
         missile.Target = target;
-        missile.ReactionTime = ((target.Y - actor.Y).Data / missile.MomY.Data) / missile.State.Tics;
+        missile.ReactionTime = (target.Y - actor.Y).Data / missile.MomY.Data / missile.State.Tics;
 
         world.StartSound(actor, Sfx.BOSPIT, SfxType.Diffuse);
     }

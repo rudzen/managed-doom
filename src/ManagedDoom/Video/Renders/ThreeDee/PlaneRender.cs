@@ -27,7 +27,7 @@ public sealed class PlaneRender(int screenWidth, int screenHeight)
     public Fixed PlaneBaseXScale { get; private set; }
     public Fixed PlaneBaseYScale { get; private set; }
 
-    public Sector? CeilingPrevSector { get; set; }
+    public Sector CeilingPrevSector { get; set; }
     public int CeilingPrevX { get; set; }
     public int CeilingPrevY1 { get; set; }
     public int CeilingPrevY2 { get; set; }
@@ -37,7 +37,7 @@ public sealed class PlaneRender(int screenWidth, int screenHeight)
     public Fixed[] CeilingYStep { get; } = new Fixed[screenHeight];
     public byte[][] CeilingLights { get; } = new byte[screenHeight][];
 
-    public Sector? FloorPrevSector { get; set; }
+    public Sector FloorPrevSector { get; set; }
     public int FloorPrevX { get; set; }
     public int FloorPrevY1 { get; set; }
     public int FloorPrevY2 { get; set; }

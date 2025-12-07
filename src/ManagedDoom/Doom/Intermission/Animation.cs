@@ -65,8 +65,8 @@ public sealed class Animation
         nextTic = type switch
         {
             // Specify the next time to draw it.
-            AnimationType.Always => bgCount + 1 + (im.Random.Next() % period),
-            AnimationType.Random => bgCount + 1 + (im.Random.Next() % data),
+            AnimationType.Always => bgCount + 1 + im.Random.Next() % period,
+            AnimationType.Random => bgCount + 1 + im.Random.Next() % data,
             AnimationType.Level  => bgCount + 1,
             _                    => nextTic
         };
@@ -90,7 +90,7 @@ public sealed class Animation
             if (PatchNumber == frameCount)
             {
                 PatchNumber = -1;
-                nextTic = bgCount + (im.Random.Next() % data);
+                nextTic = bgCount + im.Random.Next() % data;
             }
             else
                 nextTic = bgCount + period;

@@ -180,7 +180,7 @@ public sealed class StatusBarRenderer
 
         weapons = new MultIconWidget[6];
         for (var i = 0; i < weapons.Length; i++)
-            weapons[i] = new MultIconWidget(armsX + (i % 3) * armsSpaceX, armsY + (i / 3) * armsSpaceY, patches.Arms[i]);
+            weapons[i] = new MultIconWidget(armsX + i % 3 * armsSpaceX, armsY + i / 3 * armsSpaceY, patches.Arms[i]);
 
         frags = new NumberWidget(fragsX, fragsY, fragsWidth, patches.TallNumbers);
 

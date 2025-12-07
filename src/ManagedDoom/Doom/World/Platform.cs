@@ -20,6 +20,23 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
+public enum PlatformType : byte
+{
+    PerpetualRaise,
+    DownWaitUpStay,
+    RaiseAndChange,
+    RaiseToNearestAndChange,
+    BlazeDwus
+}
+
+public enum PlatformState : byte
+{
+    Up,
+    Down,
+    Waiting,
+    InStasis
+}
+
 public sealed class Platform : Thinker
 {
     public Sector Sector { get; set; } = null!;

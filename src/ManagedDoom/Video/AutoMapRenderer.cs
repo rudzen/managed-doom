@@ -32,14 +32,14 @@ public sealed class AutoMapRenderer
     private const float Tr = 16;
 
     // For use if I do walls with outsides / insides.
-    private const int Reds = (256 - 5 * 16);
+    private const int Reds = 256 - 5 * 16;
     private const int RedRange = 16;
-    private const int Greens = (7 * 16);
-    private const int Grays = (6 * 16);
-    private const int Browns = (4 * 16);
-    private const int Yellows = (256 - 32 + 7);
+    private const int Greens = 7 * 16;
+    private const int Grays = 6 * 16;
+    private const int Browns = 4 * 16;
+    private const int Yellows = 256 - 32 + 7;
     private const int Black = 0;
-    private const int White = (256 - 47);
+    private const int White = 256 - 47;
 
     // Automap colors.
     private const int Background = Black;
@@ -222,7 +222,7 @@ public sealed class AutoMapRenderer
 
         if (!options.NetGame)
         {
-            DrawCharacter(consolePlayer.Mobj, playerArrow, White);
+            DrawCharacter(consolePlayer.Mobj!, playerArrow, White);
             return;
         }
 
@@ -256,7 +256,7 @@ public sealed class AutoMapRenderer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void DrawCharacter(Mobj mobj, float[] data, int color)
+    private void DrawCharacter(Mobj mobj, ReadOnlySpan<float> data, int color)
     {
         var pos = ToScreenPos(mobj.X, mobj.Y);
         var sin = (float)Math.Sin(mobj.Angle.ToRadian());

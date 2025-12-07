@@ -27,6 +27,14 @@ using ManagedDoom.Extensions;
 
 namespace ManagedDoom.Doom.World;
 
+
+public enum SectorActionResult
+{
+    Ok,
+    Crushed,
+    PastDestination
+}
+
 public sealed class SectorAction
 {
     //
@@ -301,7 +309,7 @@ public sealed class SectorAction
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Sector? GetNextSector(LineDef line, Sector sector)
+    public static Sector GetNextSector(LineDef line, Sector sector)
     {
         if ((line.Flags & LineFlags.TwoSided) == 0)
             return null;
@@ -854,7 +862,7 @@ public sealed class SectorAction
 
 
     private const int maxPlatformCount = 60;
-    private readonly Platform?[] activePlatforms = new Platform[maxPlatformCount];
+    private readonly Platform[] activePlatforms = new Platform[maxPlatformCount];
 
     private void ActivateInStasis(int tag)
     {
@@ -1147,7 +1155,7 @@ public sealed class SectorAction
 
                 foreach (var sectorLine in sector.Lines.AsSpan())
                 {
-                    if (((sectorLine).Flags & LineFlags.TwoSided) == 0)
+                    if ((sectorLine.Flags & LineFlags.TwoSided) == 0)
                         continue;
 
                     var target = sectorLine.FrontSector;
@@ -1272,7 +1280,7 @@ public sealed class SectorAction
 
     private const int maxCeilingCount = 30;
 
-    private readonly CeilingMove?[] activeCeilings = new CeilingMove[maxCeilingCount];
+    private readonly CeilingMove[] activeCeilings = new CeilingMove[maxCeilingCount];
 
     public void AddActiveCeiling(CeilingMove ceiling)
     {
@@ -1286,7 +1294,7 @@ public sealed class SectorAction
         }
     }
 
-    public void RemoveActiveCeiling(CeilingMove? ceiling)
+    public void RemoveActiveCeiling(CeilingMove ceiling)
     {
         for (var i = 0; i < activeCeilings.Length; i++)
         {
@@ -1300,7 +1308,7 @@ public sealed class SectorAction
         }
     }
 
-    public bool CheckActiveCeiling(CeilingMove? ceiling)
+    public bool CheckActiveCeiling(CeilingMove ceiling)
     {
         return ceiling is not null && activeCeilings.Any(t => t == ceiling);
     }

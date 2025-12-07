@@ -31,7 +31,7 @@ public sealed class OpeningSequence
     private int timer;
 
     private readonly TicCommand[] ticCommands;
-    private Demo? demo;
+    private Demo demo;
 
     private bool reset;
 
@@ -53,7 +53,7 @@ public sealed class OpeningSequence
     }
 
     public OpeningSequenceState State { get; private set; }
-    public DoomGame? DemoGame { get; private set; }
+    public DoomGame DemoGame { get; private set; }
 
     public void Reset()
     {

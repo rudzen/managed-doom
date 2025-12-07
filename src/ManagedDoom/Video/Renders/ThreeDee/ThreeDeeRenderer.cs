@@ -131,7 +131,7 @@ public sealed class ThreeDeeRenderer
     // Camera view
     ////////////////////////////////////////////////////////////
 
-    private World? world;
+    private World world;
 
     private Fixed viewX;
     private Fixed viewY;
@@ -1924,7 +1924,7 @@ public sealed class ThreeDeeRenderer
         var trX = thingX - viewX;
         var trY = thingY - viewY;
 
-        var gxt = (trX * viewCos);
+        var gxt = trX * viewCos;
         var gyt = -(trY * viewSin);
 
         var tz = gxt - gyt;
@@ -1940,7 +1940,7 @@ public sealed class ThreeDeeRenderer
         var tx = -(gyt + gxt);
 
         // Too far off the side?
-        if (Fixed.Abs(tx) > (tz << 2))
+        if (Fixed.Abs(tx) > tz << 2)
             return;
 
         var spriteDef = sprites[thing.Sprite];
@@ -1966,14 +1966,14 @@ public sealed class ThreeDeeRenderer
 
         // Calculate edges of the shape.
         tx -= Fixed.FromInt(lump.LeftOffset);
-        var x1 = (windowSettings.CenterXFrac + (tx * xScale)).Data >> Fixed.FracBits;
+        var x1 = (windowSettings.CenterXFrac + tx * xScale).Data >> Fixed.FracBits;
 
         // Off the right side?
         if (x1 > windowSettings.WindowWidth)
             return;
 
         tx += Fixed.FromInt(lump.Width);
-        var x2 = ((windowSettings.CenterXFrac + (tx * xScale)).Data >> Fixed.FracBits) - 1;
+        var x2 = ((windowSettings.CenterXFrac + tx * xScale).Data >> Fixed.FracBits) - 1;
 
         // Off the left side?
         if (x2 < 0)
@@ -2129,7 +2129,7 @@ public sealed class ThreeDeeRenderer
                 DrawMaskedFuzzColumn(
                     sprite.Patch.Columns[textureColumn],
                     x,
-                    windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
+                    windowSettings.CenterYFrac - sprite.TextureAlt * sprite.Scale,
                     sprite.Scale,
                     upperClips[x],
                     lowerClips[x]);
@@ -2148,7 +2148,7 @@ public sealed class ThreeDeeRenderer
                     translation,
                     sprite.ColorMap,
                     x,
-                    windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
+                    windowSettings.CenterYFrac - sprite.TextureAlt * sprite.Scale,
                     sprite.Scale,
                     Fixed.Abs(sprite.InvScale),
                     sprite.TextureAlt,
@@ -2167,7 +2167,7 @@ public sealed class ThreeDeeRenderer
                     sprite.Patch.Columns[textureColumn],
                     sprite.ColorMap,
                     x,
-                    windowSettings.CenterYFrac - (sprite.TextureAlt * sprite.Scale),
+                    windowSettings.CenterYFrac - sprite.TextureAlt * sprite.Scale,
                     sprite.Scale,
                     Fixed.Abs(sprite.InvScale),
                     sprite.TextureAlt,
@@ -2252,7 +2252,7 @@ public sealed class ThreeDeeRenderer
                 DrawMaskedFuzzColumn(
                     vis.Patch.Columns[textureColumn],
                     x,
-                    windowSettings.CenterYFrac - (vis.TextureAlt * vis.Scale),
+                    windowSettings.CenterYFrac - vis.TextureAlt * vis.Scale,
                     vis.Scale,
                     -1,
                     windowSettings.WindowHeight);
@@ -2269,7 +2269,7 @@ public sealed class ThreeDeeRenderer
                     vis.Patch.Columns[textureColumn],
                     vis.ColorMap,
                     x,
-                    windowSettings.CenterYFrac - (vis.TextureAlt * vis.Scale),
+                    windowSettings.CenterYFrac - vis.TextureAlt * vis.Scale,
                     vis.Scale,
                     Fixed.Abs(vis.InvScale),
                     vis.TextureAlt,

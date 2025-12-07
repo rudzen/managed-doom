@@ -184,7 +184,7 @@ public sealed class SpriteLookup : ISpriteLookup
 
     private sealed class SpriteInfo
     {
-        public Patch?[] Patches { get; } = new Patch?[8];
+        public Patch[] Patches { get; } = new Patch[8];
         public bool[] Flip { get; } = new bool[8];
 
         public void CheckCompletion()

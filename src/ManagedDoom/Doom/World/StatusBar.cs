@@ -208,7 +208,7 @@ public static class StatusBarExtensions
             // Look left or look right if the facecount has timed out.
             if (statusBar.faceCount == 0)
             {
-                statusBar.FaceIndex = CalcPainOffset(statusBar, consolePlayer.Health) + (statusBar.randomNumber % 3);
+                statusBar.FaceIndex = CalcPainOffset(statusBar, consolePlayer.Health) + statusBar.randomNumber % 3;
                 statusBar.faceCount = Face.StraightFaceDuration;
                 statusBar.priority = 0;
             }
@@ -225,7 +225,7 @@ public static class StatusBarExtensions
 
             if (health != statusBar.oldHealth)
             {
-                statusBar.lastPainOffset = Face.Stride * (((100 - health) * Face.PainFaceCount) / 101);
+                statusBar.lastPainOffset = Face.Stride * ((100 - health) * Face.PainFaceCount / 101);
                 statusBar.oldHealth = health;
             }
 
@@ -252,11 +252,11 @@ public static class Face
     public const int GodIndex = PainFaceCount * Stride;
     public const int DeadIndex = GodIndex + 1;
 
-    public const int EvilGrinDuration = (2 * GameConst.TicRate);
-    public const int StraightFaceDuration = (GameConst.TicRate / 2);
-    public const int TurnDuration = (1 * GameConst.TicRate);
-    public const int OuchDuration = (1 * GameConst.TicRate);
-    public const int RampageDelay = (2 * GameConst.TicRate);
+    public const int EvilGrinDuration = 2 * GameConst.TicRate;
+    public const int StraightFaceDuration = GameConst.TicRate / 2;
+    public const int TurnDuration = 1 * GameConst.TicRate;
+    public const int OuchDuration = 1 * GameConst.TicRate;
+    public const int RampageDelay = 2 * GameConst.TicRate;
 
     public const int MuchPain = 20;
 }

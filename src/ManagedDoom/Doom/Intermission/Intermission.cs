@@ -95,7 +95,7 @@ public sealed class Intermission
     public int[] DeathmatchTotals { get; }
     public bool DoFrags { get; private set; }
     public DoomRandom Random { get; private set; }
-    public Animation[]? Animations { get; private set; }
+    public Animation[] Animations { get; private set; }
     public bool ShowYouAreHere { get; private set; }
 
     ////////////////////////////////////////////////////////////
@@ -251,9 +251,9 @@ public sealed class Intermission
         if (accelerateStage && spState != 10)
         {
             accelerateStage = false;
-            killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
-            itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
-            secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
+            killCount[0] = scores[0].KillCount * 100 / Info.MaxKillCount;
+            itemCount[0] = scores[0].ItemCount * 100 / Info.MaxItemCount;
+            secretCount[0] = scores[0].SecretCount * 100 / Info.MaxSecretCount;
             TimeCount = scores[0].Time / GameConst.TicRate;
             ParCount = Info.ParTime / GameConst.TicRate;
             StartSound(Sfx.BAREXP);
@@ -267,9 +267,9 @@ public sealed class Intermission
             if ((bgCount & 3) == 0)
                 StartSound(Sfx.PISTOL);
 
-            if (killCount[0] >= (scores[0].KillCount * 100) / Info.MaxKillCount)
+            if (killCount[0] >= scores[0].KillCount * 100 / Info.MaxKillCount)
             {
-                killCount[0] = (scores[0].KillCount * 100) / Info.MaxKillCount;
+                killCount[0] = scores[0].KillCount * 100 / Info.MaxKillCount;
                 StartSound(Sfx.BAREXP);
                 spState++;
             }
@@ -281,9 +281,9 @@ public sealed class Intermission
             if ((bgCount & 3) == 0)
                 StartSound(Sfx.PISTOL);
 
-            if (itemCount[0] >= (scores[0].ItemCount * 100) / Info.MaxItemCount)
+            if (itemCount[0] >= scores[0].ItemCount * 100 / Info.MaxItemCount)
             {
-                itemCount[0] = (scores[0].ItemCount * 100) / Info.MaxItemCount;
+                itemCount[0] = scores[0].ItemCount * 100 / Info.MaxItemCount;
                 StartSound(Sfx.BAREXP);
                 spState++;
             }
@@ -295,9 +295,9 @@ public sealed class Intermission
             if ((bgCount & 3) == 0)
                 StartSound(Sfx.PISTOL);
 
-            if (secretCount[0] >= (scores[0].SecretCount * 100) / Info.MaxSecretCount)
+            if (secretCount[0] >= scores[0].SecretCount * 100 / Info.MaxSecretCount)
             {
-                secretCount[0] = (scores[0].SecretCount * 100) / Info.MaxSecretCount;
+                secretCount[0] = scores[0].SecretCount * 100 / Info.MaxSecretCount;
                 StartSound(Sfx.BAREXP);
                 spState++;
             }
@@ -363,9 +363,9 @@ public sealed class Intermission
                 if (!Options.Players[i].InGame)
                     continue;
 
-                killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
-                itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
-                secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
+                killCount[i] = scores[i].KillCount * 100 / Info.MaxKillCount;
+                itemCount[i] = scores[i].ItemCount * 100 / Info.MaxItemCount;
+                secretCount[i] = scores[i].SecretCount * 100 / Info.MaxSecretCount;
             }
 
             StartSound(Sfx.BAREXP);
@@ -386,8 +386,8 @@ public sealed class Intermission
                     continue;
 
                 killCount[i] += 2;
-                if (killCount[i] >= (scores[i].KillCount * 100) / Info.MaxKillCount)
-                    killCount[i] = (scores[i].KillCount * 100) / Info.MaxKillCount;
+                if (killCount[i] >= scores[i].KillCount * 100 / Info.MaxKillCount)
+                    killCount[i] = scores[i].KillCount * 100 / Info.MaxKillCount;
                 else
                     stillTicking = true;
             }
@@ -411,8 +411,8 @@ public sealed class Intermission
                     continue;
 
                 itemCount[i] += 2;
-                if (itemCount[i] >= (scores[i].ItemCount * 100) / Info.MaxItemCount)
-                    itemCount[i] = (scores[i].ItemCount * 100) / Info.MaxItemCount;
+                if (itemCount[i] >= scores[i].ItemCount * 100 / Info.MaxItemCount)
+                    itemCount[i] = scores[i].ItemCount * 100 / Info.MaxItemCount;
                 else
                     stillTicking = true;
             }
@@ -436,8 +436,8 @@ public sealed class Intermission
                     continue;
 
                 secretCount[i] += 2;
-                if (secretCount[i] >= (scores[i].SecretCount * 100) / Info.MaxSecretCount)
-                    secretCount[i] = (scores[i].SecretCount * 100) / Info.MaxSecretCount;
+                if (secretCount[i] >= scores[i].SecretCount * 100 / Info.MaxSecretCount)
+                    secretCount[i] = scores[i].SecretCount * 100 / Info.MaxSecretCount;
                 else
                     stillTicking = true;
             }

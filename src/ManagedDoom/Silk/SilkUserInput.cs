@@ -35,12 +35,12 @@ public sealed class SilkUserInput : IUserInput
     private readonly ConfigValues config;
     private readonly IWindow window;
 
-    private IInputContext? input;
+    private IInputContext input;
     private readonly IKeyboard keyboard;
 
     private int turnHeld;
 
-    private readonly IMouse? mouse;
+    private readonly IMouse mouse;
     private bool mouseGrabbed;
     private Vector2 mouseXy;
     private Vector2 mousePrevXy;

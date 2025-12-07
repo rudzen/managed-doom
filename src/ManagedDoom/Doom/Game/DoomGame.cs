@@ -35,7 +35,7 @@ public sealed class DoomGame
 
     private int loadGameSlotNumber;
     private int saveGameSlotNumber;
-    private string? saveGameDescription;
+    private string saveGameDescription;
 
     private enum GameAction
     {
@@ -67,7 +67,7 @@ public sealed class DoomGame
 
     public World.World World { get; private set; }
 
-    public Intermission.Intermission? Intermission { get; private set; }
+    public Intermission.Intermission Intermission { get; private set; }
 
     public Finale Finale { get; private set; }
 

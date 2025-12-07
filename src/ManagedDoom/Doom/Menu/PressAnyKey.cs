@@ -20,7 +20,7 @@ using ManagedDoom.Doom.Event;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class PressAnyKey(DoomMenu menu, string text, Action? action) : MenuDef(menu)
+public sealed class PressAnyKey(DoomMenu menu, string text, Action action) : MenuDef(menu)
 {
     private readonly string[] text = text.Split('\n');
 

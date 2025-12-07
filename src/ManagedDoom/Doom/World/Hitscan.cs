@@ -46,7 +46,7 @@ public sealed class Hitscan
         shootTraverseFunc = ShootTraverse;
     }
 
-    public Mobj? LineTarget { get; private set; }
+    public Mobj LineTarget { get; private set; }
 
     // Slopes to top and bottom of target.
 
@@ -276,7 +276,7 @@ public sealed class Hitscan
     /// Find a target on the aiming line.
     /// Sets LineTaget when a target is aimed at.
     /// </summary>
-    public Fixed AimLineAttack(Mobj? shooter, Angle angle, Fixed range)
+    public Fixed AimLineAttack(Mobj shooter, Angle angle, Fixed range)
     {
         shooter = world.SubstNullMobj(shooter);
 

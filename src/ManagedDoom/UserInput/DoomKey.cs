@@ -243,7 +243,7 @@ public static class DoomKeyEx
         };
         KeyMap = keyMap.ToFrozenDictionary();
         KeyMapLookup = KeyMap.GetAlternateLookup<ReadOnlySpan<char>>();
-        ReverseKeyMap = KeyMap.ToFrozenDictionary(pair => (pair.Value), pair => pair.Key);
+        ReverseKeyMap = KeyMap.ToFrozenDictionary(pair => pair.Value, pair => pair.Key);
     }
 
     public static char GetChar(this DoomKey key)

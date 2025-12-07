@@ -23,7 +23,7 @@ public sealed record Seg(
     Vertex Vertex2,
     Fixed Offset,
     Angle Angle,
-    SideDef? SideDef,
-    LineDef? LineDef,
-    Sector? FrontSector,
-    Sector? BackSector);
+    SideDef SideDef,
+    LineDef LineDef,
+    Sector FrontSector,
+    Sector BackSector);

@@ -28,7 +28,7 @@ public sealed class ThingInteraction
     private readonly World world;
     private int bombDamage;
 
-    private Mobj? bombSource;
+    private Mobj bombSource;
     private Mobj bombSpot;
 
     public ThingInteraction(World world)
@@ -39,7 +39,7 @@ public sealed class ThingInteraction
     /// <summary>
     /// Called when the target is killed.
     /// </summary>
-    private void KillMobj(Mobj? source, Mobj target)
+    private void KillMobj(Mobj source, Mobj target)
     {
         target.Flags &= ~(MobjFlags.Shootable | MobjFlags.Float | MobjFlags.SkullFly);
 
@@ -128,7 +128,7 @@ public sealed class ThingInteraction
     /// Source can be null for slime, barrel explosions and other
     /// environmental stuff.
     /// </summary>
-    public void DamageMobj(Mobj target, Mobj? inflictor, Mobj? source, int damage)
+    public void DamageMobj(Mobj target, Mobj inflictor, Mobj source, int damage)
     {
         var targetFlags = target.Flags;
 
@@ -230,7 +230,7 @@ public sealed class ThingInteraction
             return;
         }
 
-        if ((world.Random.Next() < target.Info.PainChance) &&
+        if (world.Random.Next() < target.Info.PainChance &&
             (targetFlags & MobjFlags.SkullFly) == 0)
         {
             // Fight back!
@@ -310,7 +310,7 @@ public sealed class ThingInteraction
     /// <summary>
     /// Source is the creature that caused the explosion at spot.
     /// </summary>
-    public void RadiusAttack(Mobj spot, Mobj? source, int damage)
+    public void RadiusAttack(Mobj spot, Mobj source, int damage)
     {
         var bm = world.Map.BlockMap;
 

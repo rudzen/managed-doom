@@ -54,7 +54,7 @@ public sealed class AudioFactory
 
     public IMusic GetMusic() => music;
 
-    private static SilkMusic? GetMusicInstance(ConfigValues configValues, GameContent content, AudioDevice device)
+    private static SilkMusic GetMusicInstance(ConfigValues configValues, GameContent content, AudioDevice device)
     {
         var sfPath = Path.Combine(ConfigUtilities.GetExeDirectory, configValues.AudioSoundfont);
         if (File.Exists(sfPath))

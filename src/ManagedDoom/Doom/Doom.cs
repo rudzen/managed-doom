@@ -65,9 +65,9 @@ public sealed class Doom
         CommandLineArgs args,
         SilkConfig silkConfig,
         GameContent content,
-        IVideo? video,
+        IVideo video,
         AudioFactory audioFactory,
-        IUserInput? userInput)
+        IUserInput userInput)
     {
         video ??= NullVideo.GetInstance();
         userInput ??= NullUserInput.GetInstance();
@@ -473,7 +473,7 @@ public sealed class Doom
 
     public OpeningSequence Opening { get; }
 
-    public DemoPlayback? DemoPlayback { get; private set; }
+    public DemoPlayback DemoPlayback { get; private set; }
 
     public GameOptions Options { get; }
 
@@ -485,5 +485,5 @@ public sealed class Doom
 
     public bool Wiping { get; private set; }
 
-    public string? QuitMessage { get; private set; }
+    public string QuitMessage { get; private set; }
 }

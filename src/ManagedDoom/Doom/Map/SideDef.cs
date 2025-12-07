@@ -26,7 +26,7 @@ public sealed class SideDef
         int topTexture,
         int bottomTexture,
         int middleTexture,
-        Sector? sector)
+        Sector sector)
     {
         this.TextureOffset = textureOffset;
         this.RowOffset = rowOffset;
@@ -46,5 +46,5 @@ public sealed class SideDef
 
     public int MiddleTexture { get; set; }
 
-    public Sector? Sector { get; }
+    public Sector Sector { get; }
 }

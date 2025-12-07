@@ -20,7 +20,7 @@ namespace ManagedDoom.Doom.Menu;
 
 public sealed class SimpleMenuItem : MenuItem
 {
-    private readonly Func<bool>? selectable;
+    private readonly Func<bool> selectable;
 
     public SimpleMenuItem(
         string name,
@@ -28,8 +28,8 @@ public sealed class SimpleMenuItem : MenuItem
         int skullY,
         int itemX,
         int itemY,
-        Action? action,
-        MenuDef? next)
+        Action action,
+        MenuDef next)
         : base(skullX, skullY, next)
     {
         this.Name = name;
@@ -45,9 +45,9 @@ public sealed class SimpleMenuItem : MenuItem
         int skullY,
         int itemX,
         int itemY,
-        Action? action,
-        MenuDef? next,
-        Func<bool>? selectable)
+        Action action,
+        MenuDef next,
+        Func<bool> selectable)
         : base(skullX, skullY, next)
     {
         this.Name = name;
@@ -63,7 +63,7 @@ public sealed class SimpleMenuItem : MenuItem
 
     public int ItemY { get; }
 
-    public Action? Action { get; }
+    public Action Action { get; }
 
     public bool Selectable => selectable == null || selectable();
 }

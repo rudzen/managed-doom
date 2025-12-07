@@ -21,7 +21,7 @@ public readonly record struct Arg(bool Present);
 public readonly record struct Arg<T>
 {
     public readonly bool Present;
-    public readonly T? Value;
+    public readonly T Value;
 
     public Arg(T value, bool present) : this()
     {

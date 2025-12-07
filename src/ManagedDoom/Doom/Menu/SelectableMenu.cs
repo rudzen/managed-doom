@@ -29,7 +29,7 @@ public sealed class SelectableMenu : MenuDef
 
     private int index;
 
-    private TextInput? textInput;
+    private TextInput textInput;
 
     public SelectableMenu(
         DoomMenu menu,

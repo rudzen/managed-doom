@@ -204,8 +204,8 @@ public sealed class VisibilityCheck(World world)
         // Now look from eyes of t1 to any part of t2.
 
         sightZStart = looker.Z + looker.Height - (looker.Height >> 2);
-        topSlope = (target.Z + target.Height) - sightZStart;
-        bottomSlope = (target.Z) - sightZStart;
+        topSlope = target.Z + target.Height - sightZStart;
+        bottomSlope = target.Z - sightZStart;
 
         trace.X = looker.X;
         trace.Y = looker.Y;

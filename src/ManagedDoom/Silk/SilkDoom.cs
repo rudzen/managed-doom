@@ -40,15 +40,15 @@ public sealed partial class SilkDoom
     private readonly Renderer renderer;
 
     private readonly IWindow window;
-    private GL? openGl;
+    private GL openGl;
 
-    private SilkVideo? video;
+    private SilkVideo video;
 
     private readonly AudioFactory audioFactory;
 
-    private IUserInput? userInput;
+    private IUserInput userInput;
 
-    private Doom.Doom? doom;
+    private Doom.Doom doom;
 
     private int fpsScale;
     private int frameCount;
@@ -92,9 +92,9 @@ public sealed partial class SilkDoom
         }
     }
 
-    public string? QuitMessage => doom!.QuitMessage;
+    public string QuitMessage => doom!.QuitMessage;
 
-    public Exception? Exception { get; private set; }
+    public Exception Exception { get; private set; }
 
     private void InitializeOpenGl()
     {

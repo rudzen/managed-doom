@@ -40,18 +40,18 @@ public enum OutputType : byte
 public sealed class Sound : IDisposable
 {
     public OutputType SoundType { get; init; }
-    public Mobj? Listener { get; set; }
+    public Mobj Listener { get; set; }
 
     public int MaxVolume { get; set; }
     public int Volume { get; set; }
 
     // only for silk-sound
-    public AudioClip?[]? buffers;
+    public AudioClip[] buffers;
     public float[] amplitudes;
-    public DoomRandom? random;
-    public AudioChannel?[]? channels;
+    public DoomRandom random;
+    public AudioChannel[] channels;
     public ChannelInfo[] infos { get; set; }
-    public AudioChannel? uiChannel;
+    public AudioChannel uiChannel;
     public Sfx uiReserved;
     public float masterVolumeDecay;
     public long lastUpdate;
@@ -216,7 +216,7 @@ public static class SoundExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static float GetPitch(DoomRandom? random, SfxType type, Sfx sfx)
+    private static float GetPitch(DoomRandom random, SfxType type, Sfx sfx)
     {
         if (random is null)
             return 1.0F;
@@ -526,7 +526,7 @@ public sealed class ChannelInfo
     public Sfx Playing { get; set; }
     public float Priority { get; set; }
 
-    public Mobj? Source { get; set; }
+    public Mobj Source { get; set; }
     public SfxType Type { get; set; }
     public int Volume { get; set; }
     public Fixed LastX { get; set; }

@@ -32,16 +32,16 @@ public sealed class SilkVideo : IVideo
 {
     private readonly Renderer renderer;
 
-    private GraphicsDevice? device;
+    private GraphicsDevice device;
 
     private readonly int textureWidth;
     private readonly int textureHeight;
 
     private readonly byte[] textureData;
-    private Texture2D? texture;
+    private Texture2D texture;
 
-    private TextureBatcher? textureBatcher;
-    private SimpleShaderProgram? shader;
+    private TextureBatcher textureBatcher;
+    private SimpleShaderProgram shader;
 
     private int silkWindowWidth;
     private int silkWindowHeight;

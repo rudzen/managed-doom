@@ -16,11 +16,11 @@
 
 namespace ManagedDoom.Doom.Menu;
 
-public abstract class MenuItem(int skullX, int skullY, MenuDef? next)
+public abstract class MenuItem(int skullX, int skullY, MenuDef next)
 {
     public int SkullX { get; } = skullX;
 
     public int SkullY { get; } = skullY;
 
-    public MenuDef? Next { get; } = next;
+    public MenuDef Next { get; } = next;
 }

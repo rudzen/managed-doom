@@ -191,17 +191,17 @@ public sealed class Mobj : Thinker
 
     public int MoveCount { get; set; }
 
-    public Mobj? Target { get; set; }
+    public Mobj Target { get; set; }
 
     public int ReactionTime { get; set; }
 
     public int Threshold { get; set; }
 
-    public Player? Player { get; set; }
+    public Player Player { get; set; }
 
     public int LastLook { get; set; }
 
-    public MapThing? SpawnPoint { get; set; }
+    public MapThing SpawnPoint { get; set; }
 
     public Mobj Tracer { get; set; }
 

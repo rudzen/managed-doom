@@ -21,6 +21,14 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
+[Flags]
+public enum PathTraverseFlags
+{
+    AddLines = 1,
+    AddThings = 2,
+    EarlyOut = 4
+}
+
 public sealed class PathTraversal
 {
     private readonly Intercept[] intercepts;
@@ -178,7 +186,7 @@ public sealed class PathTraversal
     {
         var count = interceptCount;
 
-        Intercept? intercept = null;
+        Intercept intercept = null;
 
         while (count-- > 0)
         {
@@ -273,7 +281,7 @@ public sealed class PathTraversal
             stepY = Fixed.FromInt(256);
         }
 
-        var interceptY = new Fixed(y1.Data >> BlockMap.BlockToFracShift) + (partial * stepY);
+        var interceptY = new Fixed(y1.Data >> BlockMap.BlockToFracShift) + partial * stepY;
 
 
         if (blockY2 > blockY1)
@@ -295,7 +303,7 @@ public sealed class PathTraversal
             stepX = Fixed.FromInt(256);
         }
 
-        var interceptX = new Fixed(x1.Data >> BlockMap.BlockToFracShift) + (partial * stepX);
+        var interceptX = new Fixed(x1.Data >> BlockMap.BlockToFracShift) + partial * stepX;
 
         // Step through map blocks.
         // Count is present to prevent a round off error from skipping the break.
@@ -327,7 +335,7 @@ public sealed class PathTraversal
                 interceptY += stepY;
                 bx += blockStepX;
             }
-            else if ((interceptX.ToIntFloor()) == bx)
+            else if (interceptX.ToIntFloor() == bx)
             {
                 interceptX += stepX;
                 by += blockStepY;

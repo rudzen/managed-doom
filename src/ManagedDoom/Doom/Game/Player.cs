@@ -77,7 +77,7 @@ public sealed class Player
 
     public bool InGame { get; set; }
 
-    public Mobj? Mobj { get; set; }
+    public Mobj Mobj { get; set; }
 
     public PlayerState PlayerState { get; set; }
 
@@ -183,7 +183,7 @@ public sealed class Player
     /// <summary>
     /// Hint messages.
     /// </summary>
-    public string? Message { get; set; }
+    public string Message { get; set; }
 
     /// <summary>
     /// Hint message time to live.
@@ -203,7 +203,7 @@ public sealed class Player
     /// <summary>
     /// Who did damage (null for floors / ceilings)
     /// </summary>
-    public Mobj? Attacker { get; set; }
+    public Mobj Attacker { get; set; }
 
     /// <summary>
     /// So gun flashes light up areas.

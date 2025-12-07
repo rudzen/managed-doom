@@ -32,7 +32,7 @@ public sealed class SaveMenu : MenuDef
     private int index;
     private TextBoxMenuItem choice;
 
-    private TextInput? textInput;
+    private TextInput textInput;
 
     public SaveMenu(
         DoomMenu menu,

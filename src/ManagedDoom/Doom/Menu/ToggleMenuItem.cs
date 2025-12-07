@@ -35,7 +35,7 @@ public sealed class ToggleMenuItem(
 
     private int stateNumber;
 
-    private readonly Func<int>? reset = reset;
+    private readonly Func<int> reset = reset;
 
     public string Name { get; } = name;
     public int ItemX { get; } = itemX;

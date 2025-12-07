@@ -68,7 +68,7 @@ public sealed class Sector
     /// <summary>
     /// Thing that made a sound (or null).
     /// </summary>
-    public Mobj? SoundTarget { get; set; }
+    public Mobj SoundTarget { get; set; }
 
     /// <summary>
     /// Mapblock bounding box for height changes.
@@ -93,7 +93,7 @@ public sealed class Sector
     /// <summary>
     /// Thinker for reversable actions.
     /// </summary>
-    public Thinker? SpecialData { get; set; }
+    public Thinker SpecialData { get; set; }
 
     public LineDef[] Lines { get; set; } = null!;
 

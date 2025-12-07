@@ -55,13 +55,13 @@ public sealed class VisSprite : IComparer<VisSprite>, IComparable<VisSprite>
     // to avoid reverse iteration, x - y is used instead of y - x
     // if y - x is used, the sprites should be iterated in reverse order
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int Compare(VisSprite? x, VisSprite? y)
+    public int Compare(VisSprite x, VisSprite y)
     {
         return x!.Scale.Data - y!.Scale.Data;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int CompareTo(VisSprite? other)
+    public int CompareTo(VisSprite other)
     {
         return Scale.Data - other!.Scale.Data;
     }

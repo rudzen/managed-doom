@@ -41,7 +41,7 @@ public sealed class World
 
     private readonly Cheat cheat;
 
-    public World(GameContent resources, GameOptions options, DoomGame? game)
+    public World(GameContent resources, GameOptions options, DoomGame game)
     {
         this.Options = options;
         this.Game = game;
@@ -117,7 +117,7 @@ public sealed class World
 
     public GameOptions Options { get; }
 
-    public DoomGame? Game { get; }
+    public DoomGame Game { get; }
 
     public DoomRandom Random { get; }
 
@@ -309,7 +309,7 @@ public sealed class World
     /// so that we can avoid crash.
     /// This safeguard is imported from Chocolate Doom.
     /// </summary>
-    public Mobj SubstNullMobj(Mobj? mobj)
+    public Mobj SubstNullMobj(Mobj mobj)
     {
         if (mobj is not null)
             return mobj;

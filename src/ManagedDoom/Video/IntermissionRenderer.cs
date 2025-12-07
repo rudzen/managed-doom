@@ -141,7 +141,7 @@ public sealed class IntermissionRenderer
         return cache.GetHeight(name);
     }
 
-    public void Render(Intermission? im)
+    public void Render(Intermission im)
     {
         switch (im!.State)
         {
@@ -189,7 +189,7 @@ public sealed class IntermissionRenderer
         DrawFinishedLevelName(im);
 
         // Line height.
-        var lineHeight = (3 * numbers[0].Height) / 2;
+        var lineHeight = 3 * numbers[0].Height / 2;
 
         DrawPatch(
             "WIOSTK", // KILLS
@@ -462,7 +462,7 @@ public sealed class IntermissionRenderer
         }
 
         // Draw next level name.
-        if ((im.Options.GameMode != GameMode.Commercial) || im.Info.NextLevel != 30)
+        if (im.Options.GameMode != GameMode.Commercial || im.Info.NextLevel != 30)
         {
             DrawEnteringLevelName(im);
         }
@@ -489,7 +489,7 @@ public sealed class IntermissionRenderer
             y);
 
         // Draw "Finished!".
-        y += (5 * GetHeight(levelName)) / 4;
+        y += 5 * GetHeight(levelName) / 4;
 
         DrawPatch(
             "WIF",
@@ -518,7 +518,7 @@ public sealed class IntermissionRenderer
             y);
 
         // Draw level name.
-        y += (5 * GetHeight(levelName)) / 4;
+        y += 5 * GetHeight(levelName) / 4;
 
         DrawPatch(
             levelName,
@@ -595,7 +595,7 @@ public sealed class IntermissionRenderer
 
                 do
                 {
-                    var n = (t / div) % 60;
+                    var n = t / div % 60;
                     x = DrawNumber(x, y, n, 2) - colon.Width;
                     div *= 60;
 

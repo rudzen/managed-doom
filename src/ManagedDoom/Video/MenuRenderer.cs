@@ -26,7 +26,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
 {
     private const string emptyText = "EMPTY SLOT";
 
-    private static readonly char[]? cursor = ['_'];
+    private static readonly char[] cursor = ['_'];
     private static readonly string[] skullLoadLookup = ["M_SKULL2", "M_SKULL1"];
 
     public void Render(DoomMenu menu)

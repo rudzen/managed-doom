@@ -34,7 +34,7 @@ public sealed class SilkMusic : IMusic
     private readonly ConfigValues config;
     private readonly Wad wad;
 
-    private MusStream? stream;
+    private MusStream stream;
     private Bgm current;
 
     public SilkMusic(ConfigValues config, GameContent content, AudioDevice device, string sfPath)
@@ -119,7 +119,7 @@ public sealed class SilkMusic : IMusic
 
         private readonly Synthesizer synthesizer;
 
-        private AudioStream? audioStream;
+        private AudioStream audioStream;
 
         private readonly float[] left;
         private readonly float[] right;
@@ -541,7 +541,7 @@ public sealed class SilkMusic : IMusic
         public static byte[] MidiHeader => "MThd"u8.ToArray();
 
         private readonly MidiFile midi = new(new MemoryStream(data));
-        private MidiFileSequencer? sequencer;
+        private MidiFileSequencer sequencer;
 
         public void RenderWaveform(Synthesizer synthesizer, Span<float> left, Span<float> right)
         {

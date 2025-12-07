@@ -35,9 +35,9 @@ namespace ManagedDoom.Doom;
 
 public static class DeHackEd
 {
-    private sealed record SourcePointTable(Action<World.World, Player, PlayerSpriteDef>? PlayerAction, Action<World.World, Mobj>? MobjAction);
+    private sealed record SourcePointTable(Action<World.World, Player, PlayerSpriteDef> PlayerAction, Action<World.World, Mobj> MobjAction);
 
-    private static SourcePointTable[]? sourcePointerTable;
+    private static SourcePointTable[] sourcePointerTable;
 
     public static void Initialize(CommandLineArgs args, Wad.Wad wad)
     {
@@ -50,7 +50,7 @@ public static class DeHackEd
 
     private static void ReadFiles(params string[] fileNames)
     {
-        string? lastFileName = null;
+        string lastFileName = null;
         try
         {
             var start = Stopwatch.GetTimestamp();
@@ -381,8 +381,8 @@ public static class DeHackEd
 
     private static void ProcessBexStringsBlock(List<string> data)
     {
-        string? name = null;
-        StringBuilder? sb = null;
+        string name = null;
+        StringBuilder sb = null;
         var dataSpan = CollectionsMarshal.AsSpan(data)[1..];
         foreach (var line in dataSpan)
         {

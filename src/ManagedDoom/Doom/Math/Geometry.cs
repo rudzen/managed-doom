@@ -51,7 +51,7 @@ public static class Geometry
         // The code below to avoid division by zero is based on Chocolate Doom's implementation.
         var frac = dx != Fixed.Zero ? dy / dx : Fixed.Zero;
 
-        var angle = (Trig.TanToAngle((uint)frac.Data >> FracToSlopeShift) + Angle.Ang90);
+        var angle = Trig.TanToAngle((uint)frac.Data >> FracToSlopeShift) + Angle.Ang90;
 
         // Use as cosine.
         var dist = dx / Trig.Sin(angle);
@@ -363,8 +363,8 @@ public static class Geometry
             return y <= line.Y ? (line.Dx < Fixed.Zero).AsInt() : (line.Dx > Fixed.Zero).AsInt();
         }
 
-        var dx = (x - line.X);
-        var dy = (y - line.Y);
+        var dx = x - line.X;
+        var dy = y - line.Y;
 
         var left = new Fixed((line.Dy.Data >> Fixed.FracBits) * (dx.Data >> Fixed.FracBits));
         var right = new Fixed((dy.Data >> Fixed.FracBits) * (line.Dx.Data >> Fixed.FracBits));

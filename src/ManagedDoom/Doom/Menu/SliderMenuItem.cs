@@ -25,7 +25,7 @@ public sealed class SliderMenuItem(
     int itemX,
     int itemY,
     int sliderLength,
-    Func<int>? reset,
+    Func<int> reset,
     Action<int> action)
     : MenuItem(skullX, skullY, null)
 {
