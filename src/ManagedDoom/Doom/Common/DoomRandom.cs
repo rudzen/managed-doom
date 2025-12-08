@@ -14,11 +14,13 @@
 // GNU General Public License for more details.
 //
 
+using System.Runtime.CompilerServices;
+
 namespace ManagedDoom.Doom.Common;
 
 public sealed class DoomRandom
 {
-    private static readonly int[] table =
+    private static readonly byte[] table =
     [
         0, 8, 109, 220, 222, 241, 149, 107, 75, 248, 254, 140, 16, 66,
         74, 21, 211, 47, 80, 242, 154, 27, 205, 128, 161, 89, 77, 36,
@@ -41,26 +43,19 @@ public sealed class DoomRandom
         120, 163, 236, 249
     ];
 
-    private int index;
+    private byte index;
 
-    public DoomRandom()
-    {
-        index = 0;
-    }
+    public DoomRandom() => index = byte.MinValue;
 
-    public DoomRandom(long seed)
-    {
-        index = (int)(seed & 0xff);
-    }
+    public DoomRandom(long seed) => index = (byte)(seed & byte.MaxValue);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Next()
     {
-        index = (index + 1) & 0xff;
+        const byte next = 1;
+        index = (byte)((index + next) & byte.MaxValue);
         return table[index];
     }
 
-    public void Clear()
-    {
-        index = 0;
-    }
+    public void Clear() => index = 0;
 }
