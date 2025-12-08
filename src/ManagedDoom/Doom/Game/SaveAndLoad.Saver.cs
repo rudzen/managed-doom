@@ -106,63 +106,61 @@ public static partial class SaveAndLoad
         // Read in saved thinkers.
         foreach (var thinker in thinkers)
         {
-            if (thinker is Mobj mobj)
+            if (thinker is not Mobj mobj) continue;
+            data[ptr++] = (byte)ThinkerClass.Mobj;
+            ptr = PadPointer(ptr);
+
+            WriteThinkerState(data, ptr + 8, mobj.ThinkerState);
+            Write(data, ptr + 12, mobj.X.Data);
+            Write(data, ptr + 16, mobj.Y.Data);
+            Write(data, ptr + 20, mobj.Z.Data);
+            Write(data, ptr + 32, mobj.Angle.Data);
+            Write(data, ptr + 36, (int)mobj.Sprite);
+            Write(data, ptr + 40, mobj.Frame);
+            Write(data, ptr + 56, mobj.FloorZ.Data);
+            Write(data, ptr + 60, mobj.CeilingZ.Data);
+            Write(data, ptr + 64, mobj.Radius.Data);
+            Write(data, ptr + 68, mobj.Height.Data);
+            Write(data, ptr + 72, mobj.MomX.Data);
+            Write(data, ptr + 76, mobj.MomY.Data);
+            Write(data, ptr + 80, mobj.MomZ.Data);
+            Write(data, ptr + 88, (int)mobj.Type);
+            Write(data, ptr + 96, mobj.Tics);
+            Write(data, ptr + 100, mobj.State.Number);
+            Write(data, ptr + 104, (int)mobj.Flags);
+            Write(data, ptr + 108, mobj.Health);
+            Write(data, ptr + 112, (int)mobj.MoveDir);
+            Write(data, ptr + 116, mobj.MoveCount);
+            Write(data, ptr + 124, mobj.ReactionTime);
+            Write(data, ptr + 128, mobj.Threshold);
+            if (mobj.Player == null)
             {
-                data[ptr++] = (byte)ThinkerClass.Mobj;
-                ptr = PadPointer(ptr);
-
-                WriteThinkerState(data, ptr + 8, mobj.ThinkerState);
-                Write(data, ptr + 12, mobj.X.Data);
-                Write(data, ptr + 16, mobj.Y.Data);
-                Write(data, ptr + 20, mobj.Z.Data);
-                Write(data, ptr + 32, mobj.Angle.Data);
-                Write(data, ptr + 36, (int)mobj.Sprite);
-                Write(data, ptr + 40, mobj.Frame);
-                Write(data, ptr + 56, mobj.FloorZ.Data);
-                Write(data, ptr + 60, mobj.CeilingZ.Data);
-                Write(data, ptr + 64, mobj.Radius.Data);
-                Write(data, ptr + 68, mobj.Height.Data);
-                Write(data, ptr + 72, mobj.MomX.Data);
-                Write(data, ptr + 76, mobj.MomY.Data);
-                Write(data, ptr + 80, mobj.MomZ.Data);
-                Write(data, ptr + 88, (int)mobj.Type);
-                Write(data, ptr + 96, mobj.Tics);
-                Write(data, ptr + 100, mobj.State.Number);
-                Write(data, ptr + 104, (int)mobj.Flags);
-                Write(data, ptr + 108, mobj.Health);
-                Write(data, ptr + 112, (int)mobj.MoveDir);
-                Write(data, ptr + 116, mobj.MoveCount);
-                Write(data, ptr + 124, mobj.ReactionTime);
-                Write(data, ptr + 128, mobj.Threshold);
-                if (mobj.Player == null)
-                {
-                    Write(data, ptr + 132, 0);
-                }
-                else
-                {
-                    Write(data, ptr + 132, mobj.Player.Number + 1);
-                }
-
-                Write(data, ptr + 136, mobj.LastLook);
-                if (mobj.SpawnPoint == null)
-                {
-                    Write(data, ptr + 140, (short)0);
-                    Write(data, ptr + 142, (short)0);
-                    Write(data, ptr + 144, (short)0);
-                    Write(data, ptr + 146, (short)0);
-                    Write(data, ptr + 148, (short)0);
-                }
-                else
-                {
-                    Write(data, ptr + 140, (short)mobj.SpawnPoint.X.ToIntFloor());
-                    Write(data, ptr + 142, (short)mobj.SpawnPoint.Y.ToIntFloor());
-                    Write(data, ptr + 144, (short)System.Math.Round(mobj.SpawnPoint.Angle.ToDegree()));
-                    Write(data, ptr + 146, (short)mobj.SpawnPoint.Type);
-                    Write(data, ptr + 148, (short)mobj.SpawnPoint.Flags);
-                }
-
-                ptr += 154;
+                Write(data, ptr + 132, 0);
             }
+            else
+            {
+                Write(data, ptr + 132, mobj.Player.Number + 1);
+            }
+
+            Write(data, ptr + 136, mobj.LastLook);
+            if (mobj.SpawnPoint == null)
+            {
+                Write(data, ptr + 140, (short)0);
+                Write(data, ptr + 142, (short)0);
+                Write(data, ptr + 144, (short)0);
+                Write(data, ptr + 146, (short)0);
+                Write(data, ptr + 148, (short)0);
+            }
+            else
+            {
+                Write(data, ptr + 140, (short)mobj.SpawnPoint.X.ToIntFloor());
+                Write(data, ptr + 142, (short)mobj.SpawnPoint.Y.ToIntFloor());
+                Write(data, ptr + 144, (short)System.Math.Round(mobj.SpawnPoint.Angle.ToDegree()));
+                Write(data, ptr + 146, (short)mobj.SpawnPoint.Type);
+                Write(data, ptr + 148, (short)mobj.SpawnPoint.Flags);
+            }
+
+            ptr += 154;
         }
 
         data[ptr++] = (byte)ThinkerClass.End;

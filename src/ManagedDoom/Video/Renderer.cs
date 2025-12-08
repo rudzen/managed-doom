@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 using ManagedDoom.Config;
 using ManagedDoom.Doom;
 using ManagedDoom.Doom.Game;
@@ -306,12 +307,41 @@ public sealed class Renderer
     public void InitializeWipe() => screen.Data.AsSpan().CopyTo(wipeBuffer);
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private void WriteData(ReadOnlySpan<uint> colors, Span<byte> destination)
+    private unsafe void WriteData(ReadOnlySpan<uint> colors, Span<byte> destination)
     {
         var screenData = screen.Data.AsSpan();
         var p = MemoryMarshal.Cast<byte, uint>(destination);
-        for (var i = 0; i < p.Length; i++)
-            p[i] = colors[screenData[i]];
+
+        if (Avx2.IsSupported)
+        {
+            fixed (uint* colorsPtr = colors)
+            fixed (byte* screenPtr = screenData)
+            fixed (uint* destPtr = p)
+            {
+                var vecCount = p.Length / 8; // Process 8 uint values (256 bits) at a time
+                var i = 0;
+
+                for (; i < vecCount; i++)
+                {
+                    var offset = i * 8;
+                    // Load 8 bytes (palette indices) and convert to 32-bit integers
+                    var indices = Avx2.ConvertToVector256Int32(screenPtr + offset);
+                    // Gather 8 uint color values using the indices
+                    var result = Avx2.GatherVector256(colorsPtr, indices, 4);
+                    // Store the result
+                    Avx.Store(destPtr + offset, result);
+                }
+
+                // Handle remaining elements
+                for (i = vecCount * 8; i < p.Length; i++)
+                    destPtr[i] = colorsPtr[screenPtr[i]];
+            }
+        }
+        else
+        {
+            for (var i = 0; i < p.Length; i++)
+                p[i] = colors[screenData[i]];
+        }
     }
 
     private static int GetPaletteNumber(Player player)

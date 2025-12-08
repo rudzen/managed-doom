@@ -19,7 +19,7 @@ using System;
 namespace ManagedDoom.Doom.Map;
 
 [Flags]
-public enum ThingFlags
+public enum ThingFlags : short
 {
     Easy = 1,
     Normal = 2,

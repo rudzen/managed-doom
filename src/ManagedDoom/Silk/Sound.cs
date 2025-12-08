@@ -506,14 +506,35 @@ public static class SoundExtensions
             return (float)max / 128;
 
         var count = Math.Min(sampleRate / 5, sampleCount);
-        for (var t = 0; t < count; t++)
-        {
-            var a = samples[t] - 128;
-            if (a < 0)
-                a = -a;
 
-            if (a > max)
-                max = a;
+        if (Vector.IsHardwareAccelerated && count >= Vector<byte>.Count)
+        {
+            var maxVec = Vector<byte>.Zero;
+            var offset128 = new Vector<byte>(128);
+
+            for (var t = 0; t < count - Vector<byte>.Count; t += Vector<byte>.Count)
+            {
+                var vec = new Vector<byte>(samples.Slice(t, Vector<byte>.Count));
+                var abs = Vector.Abs(Vector.Subtract(vec, offset128));
+                maxVec = Vector.Max(maxVec, abs);
+            }
+
+            // Horizontal max reduction
+            max = 0;
+            for (var i = 0; i < Vector<byte>.Count; i++)
+                max = Math.Max(max, maxVec[i]);
+        }
+        else
+        {
+            for (var t = 0; t < count; t++)
+            {
+                var a = samples[t] - 128;
+                if (a < 0)
+                    a = -a;
+
+                if (a > max)
+                    max = a;
+            }
         }
 
         return (float)max / 128;

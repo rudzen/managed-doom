@@ -14,6 +14,7 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -27,7 +28,10 @@ public sealed class Thinkers
     private readonly List<Thinker> thinkers = new(1024);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Add(Thinker thinker) => thinkers.Add(thinker);
+    public void Add(Thinker thinker)
+    {
+        thinkers.Add(thinker);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Remove(Thinker thinker) => thinker.ThinkerState = ThinkerState.Removed;
