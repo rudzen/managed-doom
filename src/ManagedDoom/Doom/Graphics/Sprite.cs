@@ -16,6 +16,12 @@
 
 namespace ManagedDoom.Doom.Graphics;
 
+public enum SpriteLookupType : byte
+{
+    Regular,
+    Dummy
+}
+
 // @formatter:off
 public enum Sprite
 {
@@ -51,7 +57,7 @@ public sealed record SpriteFrame(bool Rotate, Patch[] Patches, bool[] Flip);
 /// <param name="Flip"></param>
 public sealed record SpriteInfo(Patch[] Patches, bool[] Flip);
 
-public sealed record SpriteLookup(SpriteDef[] SpriteDefs) : ISpriteLookup
+public sealed record SpriteLookup(SpriteDef[] SpriteDefs, SpriteLookupType Type)
 {
     public SpriteDef this[Sprite sprite] => SpriteDefs[(int)sprite];
 }

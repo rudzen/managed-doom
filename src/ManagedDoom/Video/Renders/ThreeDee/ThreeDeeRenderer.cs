@@ -35,7 +35,7 @@ public sealed class ThreeDeeRenderer
     private readonly ColorMap colorMap;
     private readonly ITextureLookup textures;
     private readonly IFlatLookup flats;
-    private readonly ISpriteLookup sprites;
+    private readonly SpriteLookup sprites;
 
     private readonly DrawScreen screen;
     private readonly int screenWidth;

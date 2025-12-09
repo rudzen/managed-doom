@@ -29,7 +29,7 @@ public sealed class GameContent
         ColorMap = GraphicsFactory.CreateColorMap(Wad);
         Textures = new DummyTextureLookup(Wad);
         Flats = new DummyFlatLookup(Wad);
-        Sprites = new DummySpriteLookup(Wad);
+        Sprites = GraphicsFactory.CreateSpriteLookup(Wad, SpriteLookupType.Dummy);
         Animations = GraphicsFactory.CreateTextureAnimations(Textures, Flats);
     }
 
@@ -57,7 +57,7 @@ public sealed class GameContent
 
     public IFlatLookup Flats { get; }
 
-    public ISpriteLookup Sprites { get; }
+    public SpriteLookup Sprites { get; }
 
     public TextureAnimationInfo[] Animations { get; }
 

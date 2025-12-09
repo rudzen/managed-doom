@@ -25,7 +25,7 @@ public sealed class FinaleRenderer(GameContent gameContent, PatchCache patchCach
 {
     private readonly int scale = screen.Width / 320;
     private readonly IFlatLookup flats = gameContent.Flats;
-    private readonly ISpriteLookup sprites = gameContent.Sprites;
+    private readonly SpriteLookup sprites = gameContent.Sprites;
 
     public void Render(Finale finale)
     {
