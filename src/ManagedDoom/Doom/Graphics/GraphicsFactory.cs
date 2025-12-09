@@ -40,21 +40,19 @@ public static class GraphicsFactory
         for (var i = 0; i < (int)Sprite.Count; i++)
             temp.TryAdd(DoomInfo.SpriteNames[i], []);
 
-        SpriteDef[] spriteDefs;
+        List<SpriteInfo> list;
+        int count;
 
         if (type == SpriteLookupType.Regular)
         {
             var cache = new Dictionary<int, Patch>();
-            var sprites = EnumerateSprites(wad);
-            var spritesSpan = CollectionsMarshal.AsSpan(sprites);
 
-            foreach (var lumpNumber in spritesSpan)
+            foreach (var (lumpNumber, lumpInfo) in EnumerateSprites(wad))
             {
-                var lumpInfo = wad.LumpInfos[lumpNumber];
                 var lumpName = lumpInfo.Name.AsSpan();
                 var name = lumpName[..4];
 
-                if (!tempLookup.TryGetValue(name, out var list))
+                if (!tempLookup.TryGetValue(name, out list))
                     continue;
 
                 var frameIndex = lumpName[4] - 'A';
@@ -64,24 +62,25 @@ public static class GraphicsFactory
                     list.Add(new SpriteInfo(new Patch[8], new bool[8]));
 
                 var patch = CachedRead(lumpNumber, wad, cache);
+                var spriteInfo = list[frameIndex];
 
                 if (rotationIndex == 0)
                 {
                     for (var i = 0; i < 8; i++)
                     {
-                        if (list[frameIndex].Patches[i] == null)
+                        if (spriteInfo.Patches[i] == null)
                         {
-                            list[frameIndex].Patches[i] = patch;
+                            spriteInfo.Patches[i] = patch;
                             list[frameIndex].Flip[i] = false;
                         }
                     }
                 }
                 else
                 {
-                    if (list[frameIndex].Patches[rotationIndex - 1] == null)
+                    if (spriteInfo.Patches[rotationIndex - 1] == null)
                     {
-                        list[frameIndex].Patches[rotationIndex - 1] = patch;
-                        list[frameIndex].Flip[rotationIndex - 1] = false;
+                        spriteInfo.Patches[rotationIndex - 1] = patch;
+                        spriteInfo.Flip[rotationIndex - 1] = false;
                     }
                 }
 
@@ -93,68 +92,40 @@ public static class GraphicsFactory
                     while (list.Count < frameIndex + 1)
                         list.Add(new SpriteInfo(new Patch[8], new bool[8]));
 
+                    spriteInfo = list[frameIndex];
+
                     if (rotationIndex == 0)
                     {
                         for (var i = 0; i < 8; i++)
                         {
-                            if (list[frameIndex].Patches[i] == null)
+                            if (spriteInfo.Patches[i] == null)
                             {
-                                list[frameIndex].Patches[i] = patch;
-                                list[frameIndex].Flip[i] = true;
+                                spriteInfo.Patches[i] = patch;
+                                spriteInfo.Flip[i] = true;
                             }
                         }
                     }
                     else
                     {
-                        if (list[frameIndex].Patches[rotationIndex - 1] == null)
+                        if (spriteInfo.Patches[rotationIndex - 1] == null)
                         {
-                            list[frameIndex].Patches[rotationIndex - 1] = patch;
-                            list[frameIndex].Flip[rotationIndex - 1] = true;
+                            spriteInfo.Patches[rotationIndex - 1] = patch;
+                            spriteInfo.Flip[rotationIndex - 1] = true;
                         }
                     }
                 }
             }
 
-            spriteDefs = new SpriteDef[(int)Sprite.Count];
-
-            try
-            {
-                for (var i = 0; i < spriteDefs.Length; i++)
-                {
-                    var list = temp[DoomInfo.SpriteNames[i]];
-
-                    var frames = new SpriteFrame[list.Count];
-                    for (var j = 0; j < frames.Length; j++)
-                    {
-                        var currentList = list[j];
-                        currentList.Patches.CheckCompletion();
-                        var hasRotation = currentList.Patches.HasRotation();
-
-                        var frame = new SpriteFrame(hasRotation, currentList.Patches, currentList.Flip);
-                        frames[j] = frame;
-                    }
-
-                    spriteDefs[i] = new SpriteDef(frames);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Failed");
-                ExceptionDispatchInfo.Throw(e);
-            }
-
-            var end = Stopwatch.GetElapsedTime(start);
-            Console.WriteLine($"OK ({cache.Count} sprites) [{end}]");
+            count = cache.Count;
         }
         else // dummy
         {
-            foreach (var lumpNumber in EnumerateSprites(wad))
+            foreach (var (_, lump) in EnumerateSprites(wad))
             {
-                var lump = wad.LumpInfos[lumpNumber];
                 var lumpName = lump.Name.AsSpan();
                 var namePrefix = lumpName[..4];
 
-                if (!tempLookup.TryGetValue(namePrefix, out var list))
+                if (!tempLookup.TryGetValue(namePrefix, out list))
                     continue;
 
                 var frame = lumpName[4] - 'A';
@@ -209,36 +180,48 @@ public static class GraphicsFactory
                 }
             }
 
-            spriteDefs = new SpriteDef[(int)Sprite.Count];
-            for (var i = 0; i < spriteDefs.Length; i++)
+            count = (int)Sprite.Count;
+        }
+
+        var spriteDefs = new SpriteDef[(int)Sprite.Count];
+        for (var i = 0; i < spriteDefs.Length; i++)
+        {
+            list = tempLookup[DoomInfo.SpriteNames[i]];
+
+            var frames = new SpriteFrame[list.Count];
+            for (var j = 0; j < frames.Length; j++)
             {
-                var list = tempLookup[DoomInfo.SpriteNames[i]];
+                var currentList = list[j];
+                var completion = currentList.Patches.CheckCompletion();
 
-                var frames = new SpriteFrame[list.Count];
-                for (var j = 0; j < frames.Length; j++)
+                if (!completion)
                 {
-                    var currentList = list[j];
-                    currentList.Patches.CheckCompletion();
-                    var hasRotation = currentList.Patches.HasRotation();
-
-                    var frame = new SpriteFrame(hasRotation, currentList.Patches, currentList.Flip);
-                    frames[j] = frame;
+                    Console.WriteLine("Failed");
+                    ExceptionDispatchInfo.Throw(new Exception("Missing sprite!"));
                 }
 
-                spriteDefs[i] = new SpriteDef(frames);
+                var hasRotation = currentList.Patches.HasRotation();
+
+                var frame = new SpriteFrame(hasRotation, currentList.Patches, currentList.Flip);
+                frames[j] = frame;
             }
+
+            spriteDefs[i] = new SpriteDef(frames);
         }
+
+        var end = Stopwatch.GetElapsedTime(start);
+        Console.WriteLine($"OK ({count} sprites) [{end}]");
 
         return new SpriteLookup(spriteDefs, type);
 
-        static List<int> EnumerateSprites(Wad.Wad wad)
+        static IEnumerable<(int, LumpInfo)> EnumerateSprites(Wad.Wad wad)
         {
             var spriteSection = false;
-            var result = new List<int>(2024);
 
             for (var lump = wad.LumpInfos.Length - 1; lump >= 0; lump--)
             {
-                var name = wad.LumpInfos[lump].Name.AsSpan();
+                var lumpInfo = wad.LumpInfos[lump];
+                var name = lumpInfo.Name.AsSpan();
 
                 if (name.StartsWith('S'))
                 {
@@ -257,12 +240,10 @@ public static class GraphicsFactory
 
                 if (spriteSection)
                 {
-                    if (wad.LumpInfos[lump].Data!.Length > 0)
-                        result.Add(lump);
+                    if (lumpInfo.Data!.Length > 0)
+                        yield return (lump, lumpInfo);
                 }
             }
-
-            return result;
         }
 
         static Patch CachedRead(int lump, Wad.Wad wad, Dictionary<int, Patch> cache)

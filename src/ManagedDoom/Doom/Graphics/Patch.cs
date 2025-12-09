@@ -65,12 +65,13 @@ public static class PatchExtensions
 {
     extension(Patch[] patches)
     {
-        public void CheckCompletion()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool CheckCompletion()
         {
-            if (patches.Any(x => x == null))
-                throw new Exception("Missing sprite!");
+            return patches.All(x => x != null);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasRotation()
         {
             var zero = patches[0];
