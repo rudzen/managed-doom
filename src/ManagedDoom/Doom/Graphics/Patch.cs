@@ -14,7 +14,9 @@
 // GNU General Public License for more details.
 //
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Game;
@@ -57,4 +59,22 @@ public sealed class PatchCache(GameContent content)
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetHeight(string name) => this[name].Height;
+}
+
+public static class PatchExtensions
+{
+    extension(Patch[] patches)
+    {
+        public void CheckCompletion()
+        {
+            if (patches.Any(x => x == null))
+                throw new Exception("Missing sprite!");
+        }
+
+        public bool HasRotation()
+        {
+            var zero = patches[0];
+            return zero != patches[1] || zero != patches[2] || zero != patches[3] || zero != patches[4] || zero != patches[5] || zero != patches[6] || zero != patches[7];
+        }
+    }
 }

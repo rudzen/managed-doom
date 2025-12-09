@@ -2013,9 +2013,14 @@ public sealed class ThreeDeeRenderer
 
         if (lightningRender.FixedColorMap == 0)
         {
-            vis.ColorMap = (thing.Frame & 0x8000) == 0
-                ? spriteLights[Math.Min(xScale.Data >> LightningRender.scaleLightShift, lightningRender.MaxScaleLight - 1)]
-                : colorMap.FullBright;
+            if ((thing.Frame & 0x8000) == 0)
+            {
+                var lightIndex = Math.Min(xScale.Data >> LightningRender.scaleLightShift, lightningRender.MaxScaleLight - 1);
+                var spriteLight = spriteLights[lightIndex];
+                vis.ColorMap = spriteLight;
+            }
+            else
+                vis.ColorMap = colorMap.FullBright;
         }
         else
             vis.ColorMap = colorMap[lightningRender.FixedColorMap];

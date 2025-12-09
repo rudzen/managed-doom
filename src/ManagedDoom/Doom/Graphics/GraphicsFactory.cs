@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Wad;
@@ -27,6 +28,164 @@ namespace ManagedDoom.Doom.Graphics;
 
 public static class GraphicsFactory
 {
+    public static SpriteLookup CreateSpriteLookup(Wad.Wad wad)
+    {
+        Console.Write("Load sprites: ");
+        var start = Stopwatch.GetTimestamp();
+
+        var temp = new Dictionary<string, List<SpriteInfo>>();
+        var tempLookup = temp.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        for (var i = 0; i < (int)Sprite.Count; i++)
+            temp.TryAdd(DoomInfo.SpriteNames[i], []);
+
+        var cache = new Dictionary<int, Patch>();
+        var sprites = EnumerateSprites(wad);
+        var spritesSpan = CollectionsMarshal.AsSpan(sprites);
+
+        foreach (var lumpNumber in spritesSpan)
+        {
+            var lumpInfo = wad.LumpInfos[lumpNumber];
+            var lumpName = lumpInfo.Name.AsSpan();
+            var name = lumpName[..4];
+
+            if (!tempLookup.TryGetValue(name, out var list))
+                continue;
+
+            var frameIndex = lumpName[4] - 'A';
+            var rotationIndex = lumpName[5] - '0';
+
+            while (list.Count < frameIndex + 1)
+                list.Add(new SpriteInfo(new Patch[8], new bool[8]));
+
+            var patch = CachedRead(lumpNumber, wad, cache);
+
+            if (rotationIndex == 0)
+            {
+                for (var i = 0; i < 8; i++)
+                {
+                    if (list[frameIndex].Patches[i] == null)
+                    {
+                        list[frameIndex].Patches[i] = patch;
+                        list[frameIndex].Flip[i] = false;
+                    }
+                }
+            }
+            else
+            {
+                if (list[frameIndex].Patches[rotationIndex - 1] == null)
+                {
+                    list[frameIndex].Patches[rotationIndex - 1] = patch;
+                    list[frameIndex].Flip[rotationIndex - 1] = false;
+                }
+            }
+
+            if (lumpName.Length == 8)
+            {
+                frameIndex = lumpName[6] - 'A';
+                rotationIndex = lumpName[7] - '0';
+
+                while (list.Count < frameIndex + 1)
+                    list.Add(new SpriteInfo(new Patch[8], new bool[8]));
+
+                if (rotationIndex == 0)
+                {
+                    for (var i = 0; i < 8; i++)
+                    {
+                        if (list[frameIndex].Patches[i] == null)
+                        {
+                            list[frameIndex].Patches[i] = patch;
+                            list[frameIndex].Flip[i] = true;
+                        }
+                    }
+                }
+                else
+                {
+                    if (list[frameIndex].Patches[rotationIndex - 1] == null)
+                    {
+                        list[frameIndex].Patches[rotationIndex - 1] = patch;
+                        list[frameIndex].Flip[rotationIndex - 1] = true;
+                    }
+                }
+            }
+        }
+
+        var spriteDefs = new SpriteDef[(int)Sprite.Count];
+
+        try
+        {
+            for (var i = 0; i < spriteDefs.Length; i++)
+            {
+                var list = temp[DoomInfo.SpriteNames[i]];
+
+                var frames = new SpriteFrame[list.Count];
+                for (var j = 0; j < frames.Length; j++)
+                {
+                    var currentList = list[j];
+                    currentList.Patches.CheckCompletion();
+                    var hasRotation = currentList.Patches.HasRotation();
+
+                    var frame = new SpriteFrame(hasRotation, currentList.Patches, currentList.Flip);
+                    frames[j] = frame;
+                }
+
+                spriteDefs[i] = new SpriteDef(frames);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
+
+        var end = Stopwatch.GetElapsedTime(start);
+        Console.WriteLine($"OK ({cache.Count} sprites) [{end}]");
+
+        return new SpriteLookup(spriteDefs);
+
+        static List<int> EnumerateSprites(Wad.Wad wad)
+        {
+            var spriteSection = false;
+            var result = new List<int>(2024);
+
+            for (var lump = wad.LumpInfos.Length - 1; lump >= 0; lump--)
+            {
+                var name = wad.LumpInfos[lump].Name.AsSpan();
+
+                if (name.StartsWith('S'))
+                {
+                    if (name.EndsWith("_END"))
+                    {
+                        spriteSection = true;
+                        continue;
+                    }
+
+                    if (name.EndsWith("_START"))
+                    {
+                        spriteSection = false;
+                        continue;
+                    }
+                }
+
+                if (spriteSection)
+                {
+                    if (wad.LumpInfos[lump].Data!.Length > 0)
+                        result.Add(lump);
+                }
+            }
+
+            return result;
+        }
+
+        static Patch CachedRead(int lump, Wad.Wad wad, Dictionary<int, Patch> cache)
+        {
+            ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, lump, out var exists);
+            if (exists) return value!;
+            var name = wad.LumpInfos[lump].Name;
+            return value = CreatePatch(name, wad.ReadLump(lump));
+        }
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ColorMap CreateColorMap(Wad.Wad wad)
     {

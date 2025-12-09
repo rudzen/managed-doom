@@ -79,39 +79,6 @@ public sealed class CommandLineArgs
         NoMusic = new Arg(args.Contains("-nomusic"));
 
         NoDeh = new Arg(args.Contains("-nodeh"));
-
-        // Check for drag & drop (this implementation is deprecated).
-
-        // if (args.Length > 0 && args.All(arg => arg.FirstOrDefault() != '-'))
-        // {
-        //     var iwadPath = string.Empty;
-        //     var pwadPaths = new List<string>();
-        //     var dehPaths = new List<string>();
-        //
-        //     foreach (var path in args)
-        //     {
-        //         var extension = Path.GetExtension(path);
-        //
-        //         if (string.Equals(extension, ".wad", StringComparison.OrdinalIgnoreCase))
-        //         {
-        //             if (ConfigUtilities.IsIwad(path))
-        //                 iwadPath = path;
-        //             else
-        //                 pwadPaths.Add(path);
-        //         }
-        //         else if (string.Equals(extension, ".deh", StringComparison.OrdinalIgnoreCase))
-        //             dehPaths.Add(path);
-        //     }
-        //
-        //     if (!string.IsNullOrEmpty(iwadPath))
-        //         Iwad = new Arg<string>(iwadPath);
-        //
-        //     if (pwadPaths.Count > 0)
-        //         File = new Arg<string[]>([.. pwadPaths]);
-        //
-        //     if (dehPaths.Count > 0)
-        //         Deh = new Arg<string[]>([.. dehPaths]);
-        // }
     }
 
     private static Arg<string[]> Check(ReadOnlySpan<string> args, string value)

@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using ManagedDoom.Doom.Math;
 using ManagedDoom.Video.Renders.ThreeDee;
 

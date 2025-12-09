@@ -43,7 +43,7 @@ public sealed class GameContent
         ColorMap = GraphicsFactory.CreateColorMap(Wad);
         Textures = new TextureLookup(Wad);
         Flats = new FlatLookup(Wad);
-        Sprites = new SpriteLookup(Wad);
+        Sprites = GraphicsFactory.CreateSpriteLookup(Wad);
         Animations = GraphicsFactory.CreateTextureAnimations(Textures, Flats);
     }
 

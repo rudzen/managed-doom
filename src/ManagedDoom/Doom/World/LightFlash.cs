@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
