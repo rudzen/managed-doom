@@ -24,7 +24,7 @@ public sealed class GameContent
 {
     private GameContent(string[] wadPaths)
     {
-        Wad = new Wad.Wad(wadPaths);
+        Wad = new Wad(wadPaths);
         Palette = GraphicsFactory.CreatePalette(Wad);
         ColorMap = GraphicsFactory.CreateColorMap(Wad);
         Textures = new DummyTextureLookup(Wad);
@@ -35,7 +35,7 @@ public sealed class GameContent
 
     public GameContent(CommandLineArgs args)
     {
-        Wad = new Wad.Wad(ConfigUtilities.GetWadPaths(args));
+        Wad = new Wad(ConfigUtilities.GetWadPaths(args));
 
         DeHackEd.Initialize(args, Wad);
 
@@ -47,7 +47,7 @@ public sealed class GameContent
         Animations = GraphicsFactory.CreateTextureAnimations(Textures, Flats);
     }
 
-    public Wad.Wad Wad { get; }
+    public Wad Wad { get; }
 
     public Palette Palette { get; }
 

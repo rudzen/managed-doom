@@ -16,10 +16,10 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Video.Renders.ThreeDee;
 

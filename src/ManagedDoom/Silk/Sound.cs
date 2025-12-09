@@ -22,11 +22,11 @@ using System.Runtime.ExceptionServices;
 using DrippyAL;
 using ManagedDoom.Audio;
 using ManagedDoom.Config;
+using ManagedDoom.Doom;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Math;
-using ManagedDoom.Doom.Wad;
 using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Silk;

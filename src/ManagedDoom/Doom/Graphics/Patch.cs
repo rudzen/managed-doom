@@ -14,7 +14,6 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -36,7 +35,7 @@ public sealed record Patch(
 
 public sealed class PatchCache(GameContent content)
 {
-    private readonly Wad.Wad wad = content.Wad;
+    private readonly Wad wad = content.Wad;
     private readonly Dictionary<string, Patch> cache = new(32);
 
     public Patch this[string name]

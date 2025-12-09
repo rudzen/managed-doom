@@ -19,7 +19,7 @@ using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Doom.Graphics;
 
-public sealed class Palette
+public sealed record Palette(byte[] Data, uint[][] Palettes)
 {
     public const int DamageStart = 1;
     public const int DamageCount = 8;
@@ -29,20 +29,15 @@ public sealed class Palette
 
     public const int IronFeet = 13;
 
-    private readonly byte[] data;
+    public static Palette Empty => new([], Array.Empty<uint[]>());
 
-    private readonly uint[][] palettes;
+    public uint[] this[int paletteNumber] => Palettes[paletteNumber];
+}
 
-    public Palette(byte[] paletteData, uint[][] palettes)
-    {
-        this.data = paletteData;
-        this.palettes = palettes;
-    }
-
-    public uint[] this[int paletteNumber] => palettes[paletteNumber];
-
+public static class PaletteExtensions
+{
     [SkipLocalsInit]
-    public void ResetColors(in double p)
+    public static void ResetColors(this Palette palette, in double p)
     {
         // build lookup table for corrected byte values (0..255) for this p
         Span<byte> lut = stackalloc byte[256];
@@ -53,14 +48,14 @@ public sealed class Palette
         }
 
         const uint alpha = 255u << 24;
-        var palettesCount = palettes.Length;
-        var dataSpanAll = data.AsSpan();
+        var palettesCount = palette.Palettes.Length;
+        var dataSpanAll = palette.Data.AsSpan();
 
         for (var pi = 0; pi < palettesCount; pi++)
         {
             var paletteOffset = 3 * 256 * pi;
             var src = dataSpanAll.Slice(paletteOffset, 3 * 256);
-            var dest = palettes[pi].AsSpan();
+            var dest = palette.Palettes[pi].AsSpan();
 
             for (var j = 0; j < 256; j++)
             {
@@ -75,5 +70,5 @@ public sealed class Palette
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static double CorrectionCurve(in double x, in double p) => System.Math.Pow(x, p);
+    public static double CorrectionCurve(in double x, in double p) => System.Math.Pow(x, p);
 }

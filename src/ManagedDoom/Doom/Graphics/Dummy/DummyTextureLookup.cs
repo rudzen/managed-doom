@@ -33,7 +33,7 @@ public sealed class DummyTextureLookup : ITextureLookup
     private readonly FrozenDictionary<string, int> nameToNumber;
     private readonly FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
-    public DummyTextureLookup(Wad.Wad wad)
+    public DummyTextureLookup(Wad wad)
     {
         var nameToTextureLocal = new Dictionary<string, Texture>(512);
         var nameToTextureLookupLocal = nameToTextureLocal.GetAlternateLookup<ReadOnlySpan<char>>();

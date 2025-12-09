@@ -26,7 +26,7 @@ namespace ManagedDoom.Doom.Map;
 /// </summary>
 public static class MapFactory
 {
-    public static Vertex[] CreateVertices(Wad.Wad wad, int lump)
+    public static Vertex[] CreateVertices(Wad wad, int lump)
     {
         const int dataSize = 4;
 
@@ -56,23 +56,23 @@ public static class MapFactory
         return new Vertex(Fixed.FromInt(x), Fixed.FromInt(y));
     }
 
-    public static Subsector[] CreateSubSectors(Wad.Wad wad, int lump, Seg[] segments)
+    public static Subsector[] CreateSubSectors(Wad wad, int lump, Seg[] segments)
     {
-        const int DataSize = 4;
+        const int dataSize = 4;
 
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
+        if (lumpSize % dataSize != 0)
             throw new Exception();
 
         var lumpData = wad.GetLumpData(lump);
 
-        var count = lumpSize / DataSize;
+        var count = lumpSize / dataSize;
         var subSectors = new Subsector[count];
 
         for (var i = 0; i < subSectors.Length; i++)
         {
-            var offset = DataSize * i;
-            subSectors[i] = CreateSubSector(lumpData.Slice(offset, DataSize), segments);
+            var offset = dataSize * i;
+            subSectors[i] = CreateSubSector(lumpData.Slice(offset, dataSize), segments);
         }
 
         return subSectors;
@@ -89,7 +89,7 @@ public static class MapFactory
             firstSegNumber);
     }
 
-    public static SideDef[] CreateSideDefs(Wad.Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
+    public static SideDef[] CreateSideDefs(Wad wad, int lump, ITextureLookup textures, ReadOnlySpan<Sector> sectors)
     {
         const int dataSize = 30;
 
@@ -129,7 +129,7 @@ public static class MapFactory
             sectorNum != -1 ? sectors[sectorNum] : null);
     }
 
-    public static Seg[] CreateSegs(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, LineDef[] lines)
+    public static Seg[] CreateSegs(Wad wad, int lump, ReadOnlySpan<Vertex> vertices, LineDef[] lines)
     {
         const int dataSize = 12;
 
@@ -190,28 +190,28 @@ public static class MapFactory
             BackSector: (lineDef.Flags & LineFlags.TwoSided) != 0 ? backSide?.Sector : null);
     }
 
-    public static Reject CreateReject(Wad.Wad wad, int lump, Sector[] sectors)
+    public static Reject CreateReject(Wad wad, int lump, Sector[] sectors)
     {
         // TODO (rudzen) : add a clever way to ready this lump with auto resize of buffer
         return new Reject(wad.ReadLump(lump), sectors.Length);
     }
 
-    public static Sector[] CreateSectors(Wad.Wad wad, int lump, IFlatLookup flats)
+    public static Sector[] CreateSectors(Wad wad, int lump, IFlatLookup flats)
     {
-        const int DataSize = 26;
+        const int dataSize = 26;
 
         var lumpSize = wad.GetLumpSize(lump);
-        if (lumpSize % DataSize != 0)
+        if (lumpSize % dataSize != 0)
             throw new Exception();
 
         var lumpData = wad.GetLumpData(lump);
 
-        var count = lumpSize / DataSize;
+        var count = lumpSize / dataSize;
         var sectors = new Sector[count];
 
         for (var i = 0; i < sectors.Length; i++)
         {
-            var offset = DataSize * i;
+            var offset = dataSize * i;
             sectors[i] = CreateSector(lumpData[offset..], i, flats);
         }
 
@@ -239,7 +239,7 @@ public static class MapFactory
             tag);
     }
 
-    public static Node[] CreateNodes(Wad.Wad wad, int lump)
+    public static Node[] CreateNodes(Wad wad, int lump)
     {
         const int dataSize = 28;
 
@@ -296,7 +296,7 @@ public static class MapFactory
     }
 
 
-    public static BlockMap CreateBlockMap(Wad.Wad wad, int lump, LineDef[] lines)
+    public static BlockMap CreateBlockMap(Wad wad, int lump, LineDef[] lines)
     {
         var lumpSize = wad.GetLumpSize(lump);
         var lumpData = wad.GetLumpData(lump);
@@ -322,7 +322,7 @@ public static class MapFactory
             lines);
     }
 
-    public static MapThing[] CreateMapThings(Wad.Wad wad, int lump)
+    public static MapThing[] CreateMapThings(Wad wad, int lump)
     {
         const int dataSize = 10;
 
@@ -361,7 +361,7 @@ public static class MapFactory
         );
     }
 
-    public static LineDef[] CreateLineDefs(Wad.Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
+    public static LineDef[] CreateLineDefs(Wad wad, int lump, ReadOnlySpan<Vertex> vertices, ReadOnlySpan<SideDef> sides)
     {
         const int dataSize = 14;
 

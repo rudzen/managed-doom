@@ -39,7 +39,7 @@ public static class DeHackEd
 
     private static SourcePointTable[] sourcePointerTable;
 
-    public static void Initialize(CommandLineArgs args, Wad.Wad wad)
+    public static void Initialize(CommandLineArgs args, Wad wad)
     {
         if (args.Deh.Present)
             ReadFiles(args.Deh.Value!);
@@ -75,7 +75,7 @@ public static class DeHackEd
         }
     }
 
-    private static void ReadDeHackEdLump(Wad.Wad wad)
+    private static void ReadDeHackEdLump(Wad wad)
     {
         var start = Stopwatch.GetTimestamp();
         var lump = wad.GetLumpNumber("DEHACKED");

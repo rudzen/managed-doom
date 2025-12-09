@@ -23,13 +23,12 @@ using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Graphics.Dummy;
 using ManagedDoom.Doom.Info;
-using ManagedDoom.Doom.Wad;
 
 namespace ManagedDoom.Doom.Graphics;
 
 public static class GraphicsFactory
 {
-    public static SpriteLookup CreateSpriteLookup(Wad.Wad wad, SpriteLookupType type = SpriteLookupType.Regular)
+    public static SpriteLookup CreateSpriteLookup(Wad wad, SpriteLookupType type = SpriteLookupType.Regular)
     {
         Console.Write("Load sprites: ");
         var start = Stopwatch.GetTimestamp();
@@ -214,7 +213,7 @@ public static class GraphicsFactory
 
         return new SpriteLookup(spriteDefs, type);
 
-        static IEnumerable<(int, LumpInfo)> EnumerateSprites(Wad.Wad wad)
+        static IEnumerable<(int, LumpInfo)> EnumerateSprites(Wad wad)
         {
             var spriteSection = false;
 
@@ -246,7 +245,7 @@ public static class GraphicsFactory
             }
         }
 
-        static Patch CachedRead(int lump, Wad.Wad wad, Dictionary<int, Patch> cache)
+        static Patch CachedRead(int lump, Wad wad, Dictionary<int, Patch> cache)
         {
             ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(cache, lump, out var exists);
             if (exists) return value!;
@@ -256,7 +255,7 @@ public static class GraphicsFactory
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ColorMap CreateColorMap(Wad.Wad wad)
+    public static ColorMap CreateColorMap(Wad wad)
     {
         const string lump = "COLORMAP";
         const int blockSize = 256;
@@ -297,7 +296,7 @@ public static class GraphicsFactory
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Palette CreatePalette(Wad.Wad wad)
+    public static Palette CreatePalette(Wad wad)
     {
         try
         {
@@ -322,7 +321,7 @@ public static class GraphicsFactory
             ExceptionDispatchInfo.Throw(e);
         }
 
-        return null!;
+        return Palette.Empty;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -506,7 +505,7 @@ public static class GraphicsFactory
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Patch CreatePatch(Wad.Wad wad, string name)
+    public static Patch CreatePatch(Wad wad, string name)
     {
         return CreatePatch(name, wad.ReadLump(name));
     }

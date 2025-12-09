@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using ManagedDoom.Doom;
 using ManagedDoom.Doom.Graphics.Dummy;
 using ManagedDoom.Doom.Map;
-using ManagedDoom.Doom.Wad;
+
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
 namespace ManagedDoom.Tests.UnitTests;

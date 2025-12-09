@@ -49,7 +49,7 @@ public sealed class TextureLookup : ITextureLookup
     private readonly FrozenDictionary<string, int> nameToNumber;
     private readonly FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
-    public TextureLookup(Wad.Wad wad)
+    public TextureLookup(Wad wad)
     {
         var patches = LoadPatches(wad);
 
@@ -121,7 +121,7 @@ public sealed class TextureLookup : ITextureLookup
     }
 
 
-    private static Patch[] LoadPatches(Wad.Wad wad)
+    private static Patch[] LoadPatches(Wad wad)
     {
         var patchNames = LoadPatchNames(wad);
         var patches = new Patch[patchNames.Length];
@@ -142,7 +142,7 @@ public sealed class TextureLookup : ITextureLookup
         return patches;
     }
 
-    private static string[] LoadPatchNames(Wad.Wad wad)
+    private static string[] LoadPatchNames(Wad wad)
     {
         const string lumpName = "PNAMES";
         var lumpNumber = wad.GetLumpNumber(lumpName);

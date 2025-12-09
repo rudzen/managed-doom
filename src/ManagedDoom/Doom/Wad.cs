@@ -27,7 +27,12 @@ using System.Runtime.InteropServices;
 using ManagedDoom.Doom.Common;
 using ManagedDoom.Doom.Game;
 
-namespace ManagedDoom.Doom.Wad;
+namespace ManagedDoom.Doom;
+
+public sealed record LumpInfo(string Name, byte[] Data)
+{
+    public const int DataSize = 16;
+}
 
 public sealed class Wad
 {

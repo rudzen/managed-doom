@@ -40,7 +40,7 @@ public sealed class FlatLookup : IFlatLookup
     private FrozenDictionary<string, int> nameToNumber;
     private FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
-    public FlatLookup(Wad.Wad wad)
+    public FlatLookup(Wad wad)
     {
         var fStartCount = CountLump(wad, "F_START");
         var fEndCount = CountLump(wad, "F_END");
@@ -80,7 +80,7 @@ public sealed class FlatLookup : IFlatLookup
     public int SkyFlatNumber { get; private set; }
     public Flat SkyFlat { get; private set; }
 
-    private void InitStandard(Wad.Wad wad)
+    private void InitStandard(Wad wad)
     {
         try
         {
@@ -131,7 +131,7 @@ public sealed class FlatLookup : IFlatLookup
         }
     }
 
-    private void InitDeuTexMerge(Wad.Wad wad)
+    private void InitDeuTexMerge(Wad wad)
     {
         try
         {
@@ -215,5 +215,5 @@ public sealed class FlatLookup : IFlatLookup
     IEnumerator IEnumerable.GetEnumerator() => flats.GetEnumerator();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int CountLump(Wad.Wad wad, string name) => wad.LumpInfos.Count(lump => lump.Name == name);
+    private static int CountLump(Wad wad, string name) => wad.LumpInfos.Count(lump => lump.Name == name);
 }

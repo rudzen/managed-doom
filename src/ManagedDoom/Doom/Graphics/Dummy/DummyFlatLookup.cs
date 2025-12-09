@@ -31,7 +31,7 @@ public sealed class DummyFlatLookup : IFlatLookup
     private readonly FrozenDictionary<string, int> nameToNumber;
     private readonly FrozenDictionary<string, int>.AlternateLookup<ReadOnlySpan<char>> nameToNumberLookup;
 
-    public DummyFlatLookup(Wad.Wad wad)
+    public DummyFlatLookup(Wad wad)
     {
         var firstFlat = wad.GetLumpNumber("F_START") + 1;
         var lastFlat = wad.GetLumpNumber("F_END") - 1;

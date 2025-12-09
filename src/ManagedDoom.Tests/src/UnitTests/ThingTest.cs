@@ -1,5 +1,5 @@
-﻿using ManagedDoom.Doom.Map;
-using ManagedDoom.Doom.Wad;
+﻿using ManagedDoom.Doom;
+using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Tests.UnitTests;
 

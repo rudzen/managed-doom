@@ -1,4 +1,4 @@
-﻿using ManagedDoom.Doom.Wad;
+﻿using ManagedDoom.Doom;
 
 namespace ManagedDoom.Tests.UnitTests;
 

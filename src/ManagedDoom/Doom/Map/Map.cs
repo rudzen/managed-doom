@@ -55,7 +55,7 @@ public static class MapExtensions
         return Create(resources.Wad, resources.Textures, resources.Flats, resources.Animations, world);
     }
 
-    private static Map Create(Wad.Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimationInfo[] animations, World.World world)
+    private static Map Create(Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimationInfo[] animations, World.World world)
     {
         try
         {

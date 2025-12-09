@@ -1,6 +1,6 @@
-﻿using ManagedDoom.Doom.Graphics.Dummy;
+﻿using ManagedDoom.Doom;
+using ManagedDoom.Doom.Graphics.Dummy;
 using ManagedDoom.Doom.Map;
-using ManagedDoom.Doom.Wad;
 using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Tests.UnitTests;
