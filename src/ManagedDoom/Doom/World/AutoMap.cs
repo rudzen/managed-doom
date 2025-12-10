@@ -26,6 +26,13 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.World;
 
+public enum AutoMapState : byte
+{
+    None,
+    AllMap,
+    AllThings
+}
+
 public sealed class AutoMap
 {
     private readonly World world;

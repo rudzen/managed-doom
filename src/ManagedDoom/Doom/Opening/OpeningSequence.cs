@@ -19,6 +19,13 @@ using ManagedDoom.Doom.Game;
 
 namespace ManagedDoom.Doom.Opening;
 
+public enum OpeningSequenceState : byte
+{
+    Title,
+    Credit,
+    Demo
+}
+
 public sealed class OpeningSequence
 {
     private readonly GameContent content;

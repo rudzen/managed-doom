@@ -20,6 +20,16 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
+public enum CeilingMoveType
+{
+    LowerToFloor,
+    RaiseToHighest,
+    LowerAndCrush,
+    CrushAndRaise,
+    FastCrushAndRaise,
+    SilentCrushAndRaise
+}
+
 public sealed class CeilingMove : Thinker
 {
     /// <summary>

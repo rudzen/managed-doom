@@ -18,6 +18,13 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
+public enum ButtonPosition
+{
+    Top,
+    Middle,
+    Bottom
+}
+
 public sealed class Button
 {
     public LineDef Line { get; set; }

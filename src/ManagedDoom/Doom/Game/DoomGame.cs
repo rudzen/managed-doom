@@ -29,6 +29,8 @@ namespace ManagedDoom.Doom.Game;
 
 public sealed class DoomGame
 {
+    private static readonly UpdateResult[] WipeUpdateResult = [UpdateResult.None, UpdateResult.NeedWipe];
+
     private readonly GameContent content;
 
     private GameAction gameAction;
@@ -271,7 +273,7 @@ public sealed class DoomGame
 
         GameTic++;
 
-        return result == UpdateResult.NeedWipe ? UpdateResult.NeedWipe : UpdateResult.None;
+        return WipeUpdateResult[(result == UpdateResult.NeedWipe).AsByte()];
     }
 
 
