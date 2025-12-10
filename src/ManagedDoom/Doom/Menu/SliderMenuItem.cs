@@ -18,29 +18,26 @@ using System;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class SliderMenuItem(
-    string name,
-    int skullX,
-    int skullY,
-    int itemX,
-    int itemY,
-    int sliderLength,
-    Func<int> reset,
-    Action<int> action)
-    : MenuItem(skullX, skullY, null)
+public sealed record SliderMenuItem(
+    string Name,
+    int SkullX,
+    int SkullY,
+    int ItemX,
+    int ItemY,
+    int SliderLength,
+    Func<int> OnReset,
+    Action<int> action,
+    MenuDef Next = null)
+    : IMenuItem
 {
-    public string Name { get; } = name;
-    public int ItemX { get; } = itemX;
-    public int ItemY { get; } = itemY;
     public int SliderX => ItemX;
     public int SliderY => ItemY + 16;
-    public int SliderLength { get; } = sliderLength;
     public int SliderPosition { get; private set; }
 
     public void Reset()
     {
-        if (reset is not null)
-            SliderPosition = reset();
+        if (OnReset is not null)
+            SliderPosition = OnReset();
     }
 
     public void Up()

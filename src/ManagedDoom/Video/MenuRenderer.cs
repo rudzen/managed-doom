@@ -114,7 +114,7 @@ public sealed class MenuRenderer(PatchCache patchCache, DrawScreen screen)
         DrawMenuPatch(skull, choice.SkullX, choice.SkullY);
     }
 
-    private void DrawMenuItem(DoomMenu menu, MenuItem item)
+    private void DrawMenuItem(DoomMenu menu, IMenuItem item)
     {
         switch (item)
         {

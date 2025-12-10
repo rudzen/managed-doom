@@ -25,7 +25,7 @@ public sealed class SelectableMenu : MenuDef
 {
     private readonly int[] titleX;
     private readonly int[] titleY;
-    private readonly MenuItem[] items;
+    private readonly IMenuItem[] items;
 
     private int index;
 
@@ -35,7 +35,7 @@ public sealed class SelectableMenu : MenuDef
         DoomMenu menu,
         string name, int titleX, int titleY,
         int firstChoice,
-        params MenuItem[] items) : base(menu)
+        params IMenuItem[] items) : base(menu)
     {
         this.Name = [name];
         this.titleX = [titleX];
@@ -51,7 +51,7 @@ public sealed class SelectableMenu : MenuDef
         string name1, int titleX1, int titleY1,
         string name2, int titleX2, int titleY2,
         int firstChoice,
-        params MenuItem[] items) : base(menu)
+        params IMenuItem[] items) : base(menu)
     {
         this.Name = [name1, name2];
         this.titleX = [titleX1, titleX2];
@@ -65,8 +65,8 @@ public sealed class SelectableMenu : MenuDef
     public string[] Name { get; }
     public ReadOnlySpan<int> TitleX => titleX;
     public ReadOnlySpan<int> TitleY => titleY;
-    public ReadOnlySpan<MenuItem> Items => items;
-    public MenuItem Choice { get; private set; }
+    public ReadOnlySpan<IMenuItem> Items => items;
+    public IMenuItem Choice { get; private set; }
 
     public override void Open()
     {

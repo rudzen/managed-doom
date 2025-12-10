@@ -19,14 +19,17 @@ using System.Text;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class TextBoxMenuItem(int skullX, int skullY, int itemX, int itemY) : MenuItem(skullX, skullY, null)
+public sealed record TextBoxMenuItem(
+    int SkullX,
+    int SkullY,
+    int ItemX,
+    int ItemY,
+    MenuDef Next = null) : IMenuItem
 {
     private StringBuilder text = new();
     private TextInput edit;
 
     public string Text => edit?.Text.ToString() ?? text.ToString();
-    public int ItemX { get; } = itemX;
-    public int ItemY { get; } = itemY;
     public bool Editing => edit is not null;
 
     public TextInput Edit(Action finished)

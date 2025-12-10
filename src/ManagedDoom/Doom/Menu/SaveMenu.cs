@@ -54,8 +54,8 @@ public sealed class SaveMenu : MenuDef
     public ReadOnlySpan<string> Name => name;
     public ReadOnlySpan<int> TitleX => titleX;
     public ReadOnlySpan<int> TitleY => titleY;
-    public ReadOnlySpan<MenuItem> Items => items;
-    public MenuItem Choice => choice;
+    public ReadOnlySpan<IMenuItem> Items => items;
+    public IMenuItem Choice => choice;
     public int LastSaveSlot { get; private set; }
 
     public override void Open()

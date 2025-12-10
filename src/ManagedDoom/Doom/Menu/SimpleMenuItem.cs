@@ -18,52 +18,16 @@ using System;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class SimpleMenuItem : MenuItem
+public sealed record SimpleMenuItem(
+    string Name,
+    int SkullX,
+    int SkullY,
+    int ItemX,
+    int ItemY,
+    Action Action,
+    MenuDef Next,
+    Func<bool> OnSelectable = null
+) : IMenuItem
 {
-    private readonly Func<bool> selectable;
-
-    public SimpleMenuItem(
-        string name,
-        int skullX,
-        int skullY,
-        int itemX,
-        int itemY,
-        Action action,
-        MenuDef next)
-        : base(skullX, skullY, next)
-    {
-        this.Name = name;
-        this.ItemX = itemX;
-        this.ItemY = itemY;
-        this.Action = action;
-        this.selectable = null;
-    }
-
-    public SimpleMenuItem(
-        string name,
-        int skullX,
-        int skullY,
-        int itemX,
-        int itemY,
-        Action action,
-        MenuDef next,
-        Func<bool> selectable)
-        : base(skullX, skullY, next)
-    {
-        this.Name = name;
-        this.ItemX = itemX;
-        this.ItemY = itemY;
-        this.Action = action;
-        this.selectable = selectable;
-    }
-
-    public string Name { get; }
-
-    public int ItemX { get; }
-
-    public int ItemY { get; }
-
-    public Action Action { get; }
-
-    public bool Selectable => selectable == null || selectable();
+    public bool Selectable => OnSelectable is null || OnSelectable();
 }

@@ -18,35 +18,30 @@ using System;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class ToggleMenuItem(
-    string name,
-    int skullX,
-    int skullY,
-    int itemX,
-    int itemY,
+public sealed record ToggleMenuItem(
+    string Name,
+    int SkullX,
+    int SkullY,
+    int ItemX,
+    int ItemY,
     string state1,
     string state2,
-    int stateX,
-    Func<int> reset,
-    Action<int> action)
-    : MenuItem(skullX, skullY, null)
+    int StateX,
+    Func<int> OnReset,
+    Action<int> action,
+    MenuDef Next = null)
+    : IMenuItem
 {
     private readonly string[] states = [state1, state2];
 
     private int stateNumber;
 
-    private readonly Func<int> reset = reset;
-
-    public string Name { get; } = name;
-    public int ItemX { get; } = itemX;
-    public int ItemY { get; } = itemY;
     public string State => states[stateNumber];
-    public int StateX { get; } = stateX;
 
     public void Reset()
     {
-        if (reset != null)
-            stateNumber = reset();
+        if (OnReset != null)
+            stateNumber = OnReset();
     }
 
     public void Up()
