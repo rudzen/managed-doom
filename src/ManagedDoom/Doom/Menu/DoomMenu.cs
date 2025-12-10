@@ -277,7 +277,7 @@ public sealed class DoomMenu
 
     public Doom Doom { get; }
     public GameOptions Options => Doom.Options;
-    public MenuDef Current { get; private set; }
+    public IMenuDef Current { get; private set; }
     public bool Active { get; private set; }
     public int Tics { get; private set; }
     public string[] SaveSlots { get; }
@@ -327,7 +327,7 @@ public sealed class DoomMenu
             Doom.PauseGame();
     }
 
-    public void SetCurrent(MenuDef next)
+    public void SetCurrent(IMenuDef next)
     {
         Current = next;
         Current.Open();

@@ -21,7 +21,7 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class SelectableMenu : MenuDef
+public sealed class SelectableMenu : IMenuDef
 {
     private readonly int[] titleX;
     private readonly int[] titleY;
@@ -35,8 +35,9 @@ public sealed class SelectableMenu : MenuDef
         DoomMenu menu,
         string name, int titleX, int titleY,
         int firstChoice,
-        params IMenuItem[] items) : base(menu)
+        params IMenuItem[] items)
     {
+        this.Menu = menu;
         this.Name = [name];
         this.titleX = [titleX];
         this.titleY = [titleY];
@@ -51,8 +52,9 @@ public sealed class SelectableMenu : MenuDef
         string name1, int titleX1, int titleY1,
         string name2, int titleX2, int titleY2,
         int firstChoice,
-        params IMenuItem[] items) : base(menu)
+        params IMenuItem[] items)
     {
+        this.Menu = menu;
         this.Name = [name1, name2];
         this.titleX = [titleX1, titleX2];
         this.titleY = [titleY1, titleY2];
@@ -68,7 +70,9 @@ public sealed class SelectableMenu : MenuDef
     public ReadOnlySpan<IMenuItem> Items => items;
     public IMenuItem Choice { get; private set; }
 
-    public override void Open()
+    public DoomMenu Menu { get; }
+
+    public void Open()
     {
         foreach (var item in items)
         {
@@ -82,6 +86,10 @@ public sealed class SelectableMenu : MenuDef
                     break;
             }
         }
+    }
+
+    public void Update()
+    {
     }
 
     private void Up()
@@ -102,7 +110,7 @@ public sealed class SelectableMenu : MenuDef
         Choice = items[index];
     }
 
-    public override bool DoEvent(DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

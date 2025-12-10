@@ -24,7 +24,7 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
+public sealed class QuitConfirm : IMenuDef
 {
     private static Sfx[] doomQuitSoundList =>
     [
@@ -54,10 +54,19 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
     private string[] text = [];
 
     private int endCount = -1;
+    private readonly Doom app;
+
+    public QuitConfirm(DoomMenu menu, Doom app)
+    {
+        this.Menu = menu;
+        this.app = app;
+    }
 
     public ReadOnlySpan<string> Text => text;
 
-    public override void Open()
+    public DoomMenu Menu { get; }
+
+    public void Open()
     {
         DoomString[] list;
 
@@ -70,7 +79,7 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
         text = (list[listIndex] + "\n\n" + DoomInfo.Strings.PRESSYN).Split('\n');
     }
 
-    public override bool DoEvent(DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (endCount != -1)
             return true;
@@ -100,7 +109,7 @@ public sealed class QuitConfirm(DoomMenu menu, Doom app) : MenuDef(menu)
         return true;
     }
 
-    public override void Update()
+    public void Update()
     {
         if (endCount != -1)
             endCount++;

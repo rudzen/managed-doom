@@ -22,7 +22,7 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class SaveMenu : MenuDef
+public sealed class SaveMenu : IMenuDef
 {
     private readonly string[] name;
     private readonly int[] titleX;
@@ -38,8 +38,9 @@ public sealed class SaveMenu : MenuDef
         DoomMenu menu,
         string name, int titleX, int titleY,
         int firstChoice,
-        params TextBoxMenuItem[] items) : base(menu)
+        params TextBoxMenuItem[] items)
     {
+        this.Menu = menu;
         this.name = [name];
         this.titleX = [titleX];
         this.titleY = [titleY];
@@ -58,7 +59,9 @@ public sealed class SaveMenu : MenuDef
     public IMenuItem Choice => choice;
     public int LastSaveSlot { get; private set; }
 
-    public override void Open()
+    public DoomMenu Menu { get; }
+
+    public void Open()
     {
         if (Menu.Doom.State != DoomState.Game ||
             Menu.Doom.Game.State != GameState.Level)
@@ -69,6 +72,10 @@ public sealed class SaveMenu : MenuDef
 
         for (var i = 0; i < items.Length; i++)
             items[i].SetText(Menu.SaveSlots[i]);
+    }
+
+    public void Update()
+    {
     }
 
     private void Up()
@@ -89,7 +96,7 @@ public sealed class SaveMenu : MenuDef
         choice = items[index];
     }
 
-    public override bool DoEvent(DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

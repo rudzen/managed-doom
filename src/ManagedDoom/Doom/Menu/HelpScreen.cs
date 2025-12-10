@@ -22,23 +22,30 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class HelpScreen : MenuDef
+public sealed class HelpScreen : IMenuDef
 {
     private readonly int pageCount;
 
-    public HelpScreen(DoomMenu menu) : base(menu)
+    public HelpScreen(DoomMenu menu)
     {
+        Menu = menu;
         pageCount = (menu.Options.GameMode == GameMode.Shareware).AsByte() + 1;
     }
 
+    public DoomMenu Menu { get; }
+
     public int Page { get; private set; }
 
-    public override void Open()
+    public void Open()
     {
         Page = pageCount - 1;
     }
 
-    public override bool DoEvent(DoomEvent e)
+    public void Update()
+    {
+    }
+
+    public bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

@@ -21,11 +21,28 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class YesNoConfirm(DoomMenu menu, string text, Action action) : MenuDef(menu)
+public sealed class YesNoConfirm : IMenuDef
 {
-    private readonly string[] text = text.Split('\n');
+    private readonly string[] text;
+    private readonly Action action;
 
-    public override bool DoEvent(DoomEvent e)
+    public YesNoConfirm(DoomMenu menu, string text, Action action)
+    {
+        this.Menu = menu;
+        this.action = action;
+        this.text = text.Split('\n');
+    }
+
+    public DoomMenu Menu { get; }
+    public void Open()
+    {
+    }
+
+    public void Update()
+    {
+    }
+
+    public bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

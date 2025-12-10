@@ -22,5 +22,5 @@ public interface IMenuItem
 
     int SkullY { get; }
 
-    MenuDef Next { get; }
+    IMenuDef Next { get; }
 }

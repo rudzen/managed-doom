@@ -24,7 +24,7 @@ public sealed record TextBoxMenuItem(
     int SkullY,
     int ItemX,
     int ItemY,
-    MenuDef Next = null) : IMenuItem
+    IMenuDef Next = null) : IMenuItem
 {
     private StringBuilder text = new();
     private TextInput edit;

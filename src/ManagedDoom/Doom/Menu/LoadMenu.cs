@@ -21,7 +21,7 @@ using ManagedDoom.UserInput;
 
 namespace ManagedDoom.Doom.Menu;
 
-public sealed class LoadMenu : MenuDef
+public sealed class LoadMenu : IMenuDef
 {
     private readonly string[] name;
     private readonly int[] titleX;
@@ -37,8 +37,9 @@ public sealed class LoadMenu : MenuDef
         int titleX,
         int titleY,
         int firstChoice,
-        params TextBoxMenuItem[] items) : base(menu)
+        params TextBoxMenuItem[] items)
     {
+        this.Menu = menu;
         this.name = [name];
         this.titleX = [titleX];
         this.titleY = [titleY];
@@ -48,16 +49,21 @@ public sealed class LoadMenu : MenuDef
         choice = items[index];
     }
 
+    public DoomMenu Menu { get; }
     public ReadOnlySpan<string> Name => name;
     public ReadOnlySpan<int> TitleX => titleX;
     public ReadOnlySpan<int> TitleY => titleY;
     public ReadOnlySpan<IMenuItem> Items => items;
     public IMenuItem Choice => choice;
 
-    public override void Open()
+    public void Open()
     {
         for (var i = 0; i < items.Length; i++)
             items[i].SetText(Menu.SaveSlots[i]);
+    }
+
+    public void Update()
+    {
     }
 
     private void Up()
@@ -78,7 +84,7 @@ public sealed class LoadMenu : MenuDef
         choice = items[index];
     }
 
-    public override bool DoEvent(DoomEvent e)
+    public bool DoEvent(DoomEvent e)
     {
         if (e.Type != EventType.KeyDown)
             return true;

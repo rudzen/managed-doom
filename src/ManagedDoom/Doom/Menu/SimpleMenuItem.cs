@@ -25,7 +25,7 @@ public sealed record SimpleMenuItem(
     int ItemX,
     int ItemY,
     Action Action,
-    MenuDef Next,
+    IMenuDef Next,
     Func<bool> OnSelectable = null
 ) : IMenuItem
 {

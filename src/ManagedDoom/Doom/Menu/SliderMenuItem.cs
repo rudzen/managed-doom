@@ -27,7 +27,7 @@ public sealed record SliderMenuItem(
     int SliderLength,
     Func<int> OnReset,
     Action<int> action,
-    MenuDef Next = null)
+    IMenuDef Next = null)
     : IMenuItem
 {
     public int SliderX => ItemX;

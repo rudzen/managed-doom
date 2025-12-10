@@ -29,7 +29,7 @@ public sealed record ToggleMenuItem(
     int StateX,
     Func<int> OnReset,
     Action<int> action,
-    MenuDef Next = null)
+    IMenuDef Next = null)
     : IMenuItem
 {
     private readonly string[] states = [state1, state2];
