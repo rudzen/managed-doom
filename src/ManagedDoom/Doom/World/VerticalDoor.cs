@@ -20,16 +20,34 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class VerticalDoor(World world) : Thinker
+public sealed class VerticalDoor : IThinker
 {
-    // 1 = up, 0 = waiting at top, -1 = down.
+    public VerticalDoorType Type { get; set; }
+    public Sector Sector { get; set; }
+    public Fixed TopHeight { get; set; }
+    public Fixed Speed { get; set; }
 
-    // Tics to wait at the top.
+    /// <summary>
+    /// 1 = up, 0 = waiting at top, -1 = down.
+    /// </summary>
+    public int Direction { get; set; }
 
-    // When it reaches 0, start going down
-    // (keep in case a door going down is reset).
+    /// <summary>
+    /// Tics to wait at the top.
+    /// </summary>
+    public int TopWait { get; set; }
 
-    public override void Run(World world)
+    /// <summary>
+    /// When it reaches 0, start going down
+    /// </summary>
+    public int TopCountDown { get; set; }
+
+    /// <summary>
+    /// (keep in case a door going down is reset).
+    /// </summary>
+    public ThinkerState ThinkerState { get; set; }
+
+    public void Run(World world)
     {
         var sa = world.SectorAction;
 
@@ -164,18 +182,4 @@ public sealed class VerticalDoor(World world) : Thinker
                 break;
         }
     }
-
-    public VerticalDoorType Type { get; set; }
-
-    public Sector Sector { get; set; }
-
-    public Fixed TopHeight { get; set; }
-
-    public Fixed Speed { get; set; }
-
-    public int Direction { get; set; }
-
-    public int TopWait { get; set; }
-
-    public int TopCountDown { get; set; }
 }

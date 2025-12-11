@@ -542,7 +542,7 @@ public sealed class SectorAction
         }
 
         // New door thinker.
-        var newDoor = new VerticalDoor(world);
+        var newDoor = new VerticalDoor();
         world.Thinkers.Add(newDoor);
         sector.SpecialData = newDoor;
         newDoor.Sector = sector;
@@ -601,7 +601,7 @@ public sealed class SectorAction
             result = true;
 
             // New door thinker.
-            var door = new VerticalDoor(world);
+            var door = new VerticalDoor();
             world.Thinkers.Add(door);
             sector.SpecialData = door;
             door.Sector = sector;
@@ -1568,7 +1568,7 @@ public sealed class SectorAction
 
     public void SpawnDoorCloseIn30(Sector sector)
     {
-        var door = new VerticalDoor(world);
+        var door = new VerticalDoor();
 
         world.Thinkers.Add(door);
 
@@ -1584,7 +1584,7 @@ public sealed class SectorAction
 
     public void SpawnDoorRaiseIn5Mins(Sector sector)
     {
-        var door = new VerticalDoor(world);
+        var door = new VerticalDoor();
 
         world.Thinkers.Add(door);
 

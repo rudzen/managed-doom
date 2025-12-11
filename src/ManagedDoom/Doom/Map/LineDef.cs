@@ -74,6 +74,6 @@ public sealed class LineDef
     public Sector FrontSector { get; }
     public Sector BackSector { get; }
     public int ValidCount { get; set; }
-    public Thinker SpecialData { get; set; } = null!;
+    public IThinker SpecialData { get; set; } = null!;
     public Mobj SoundOrigin { get; set; } = null!;
 }

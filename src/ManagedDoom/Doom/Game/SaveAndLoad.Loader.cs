@@ -220,7 +220,7 @@ public static partial class SaveAndLoad
             }
             else if (thinkClass == SpecialClass.Door)
             {
-                ptr += LoadVerticalDoor(world, data[ptr..], out var doorMove);
+                ptr += LoadVerticalDoor(world.Map.Sectors, data[ptr..], out var doorMove);
                 thinkers.Add(doorMove);
             }
             else if (thinkClass == SpecialClass.Floor)
@@ -275,15 +275,15 @@ public static partial class SaveAndLoad
         return dataSize;
     }
 
-    private static int LoadVerticalDoor(World.World world, ReadOnlySpan<byte> data, out VerticalDoor verticalDoor)
+    private static int LoadVerticalDoor(ReadOnlySpan<Sector> mapSectors, ReadOnlySpan<byte> data, out VerticalDoor verticalDoor)
     {
         const int dataSize = 40;
         var doorData = data[..dataSize];
 
-        verticalDoor = new VerticalDoor(world);
+        verticalDoor = new VerticalDoor();
         verticalDoor.ThinkerState = ReadThinkerState(doorData.Slice(8, 4));
         verticalDoor.Type = (VerticalDoorType)BitConverter.ToInt32(doorData.Slice(12, 4));
-        verticalDoor.Sector = world.Map.Sectors[BitConverter.ToInt32(doorData.Slice(16, 4))];
+        verticalDoor.Sector = mapSectors[BitConverter.ToInt32(doorData.Slice(16, 4))];
         verticalDoor.TopHeight = new Fixed(BitConverter.ToInt32(doorData.Slice(20, 4)));
         verticalDoor.Speed = new Fixed(BitConverter.ToInt32(doorData.Slice(24, 4)));
         verticalDoor.Direction = BitConverter.ToInt32(doorData.Slice(28, 4));

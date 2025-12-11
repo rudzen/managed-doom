@@ -18,25 +18,21 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class StrobeFlash : Thinker
+public sealed class StrobeFlash : IThinker
 {
     public const int StrobeBright = 5;
     public const int FastDark = 15;
     public const int SlowDark = 35;
 
     public Sector Sector { get; set; }
-
     public int Count { get; set; }
-
     public int MinLight { get; set; }
-
     public int MaxLight { get; set; }
-
     public int DarkTime { get; set; }
-
     public int BrightTime { get; set; }
+    public ThinkerState ThinkerState { get; set; }
 
-    public override void Run(World _)
+    public void Run(World _)
     {
         if (--Count > 0)
             return;

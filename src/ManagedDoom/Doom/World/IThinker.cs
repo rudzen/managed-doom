@@ -16,11 +16,9 @@
 
 namespace ManagedDoom.Doom.World;
 
-public class Thinker
+public interface IThinker
 {
-    public ThinkerState ThinkerState { get; set; }
+    ThinkerState ThinkerState { get; set; }
 
-    public virtual void Run(World world)
-    {
-    }
+    void Run(World world);
 }

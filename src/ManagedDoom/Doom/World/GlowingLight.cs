@@ -18,7 +18,7 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class GlowingLight : Thinker
+public sealed class GlowingLight : IThinker
 {
     private const int GlowSpeed = 8;
 
@@ -29,8 +29,9 @@ public sealed class GlowingLight : Thinker
     public int MaxLight { get; set; }
 
     public int Direction { get; set; }
+    public ThinkerState ThinkerState { get; set; }
 
-    public override void Run(World world)
+    public void Run(World world)
     {
         switch (Direction)
         {

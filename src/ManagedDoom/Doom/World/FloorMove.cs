@@ -54,7 +54,7 @@ public enum FloorMoveType
     RaiseFloor512
 }
 
-public sealed class FloorMove : Thinker
+public sealed class FloorMove : IThinker
 {
     public FloorMoveType Type { get; set; }
     public bool Crush { get; set; }
@@ -64,8 +64,9 @@ public sealed class FloorMove : Thinker
     public int Texture { get; set; }
     public Fixed FloorDestHeight { get; set; }
     public Fixed Speed { get; set; }
+    public ThinkerState ThinkerState { get; set; }
 
-    public override void Run(World world)
+    public void Run(World world)
     {
         var sa = world.SectorAction;
 

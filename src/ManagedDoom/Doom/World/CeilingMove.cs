@@ -30,7 +30,7 @@ public enum CeilingMoveType
     SilentCrushAndRaise
 }
 
-public sealed class CeilingMove : Thinker
+public sealed class CeilingMove : IThinker
 {
     /// <summary>
     /// 1 = up, 0 = waiting, -1 = down.
@@ -49,8 +49,9 @@ public sealed class CeilingMove : Thinker
     public int Direction { get; set; }
     public int Tag { get; set; }
     public int OldDirection { get; set; }
+    public ThinkerState ThinkerState { get; set; }
 
-    public override void Run(World world)
+    public void Run(World world)
     {
         switch (Direction)
         {

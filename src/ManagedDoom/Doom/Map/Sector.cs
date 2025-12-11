@@ -93,7 +93,7 @@ public sealed class Sector
     /// <summary>
     /// Thinker for reversable actions.
     /// </summary>
-    public Thinker SpecialData { get; set; }
+    public IThinker SpecialData { get; set; }
 
     public LineDef[] Lines { get; set; } = null!;
 

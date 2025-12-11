@@ -24,16 +24,16 @@ namespace ManagedDoom.Doom.World;
 public sealed class Thinkers
 {
     // Pre-allocate for typical usage
-    private readonly List<Thinker> thinkers = new(1024);
+    private readonly List<IThinker> thinkers = new(1024);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Add(Thinker thinker)
+    public void Add(IThinker thinker)
     {
         thinkers.Add(thinker);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Remove(Thinker thinker) => thinker.ThinkerState = ThinkerState.Removed;
+    public static void Remove(IThinker thinker) => thinker.ThinkerState = ThinkerState.Removed;
 
     public void Run(World world)
     {
@@ -74,7 +74,7 @@ public sealed class Thinkers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ThinkerEnumerator GetEnumerator() => new(this);
 
-    public struct ThinkerEnumerator : IEnumerator<Thinker>
+    public struct ThinkerEnumerator : IEnumerator<IThinker>
     {
         private readonly Thinkers thinkers;
         private int index;
@@ -112,7 +112,7 @@ public sealed class Thinkers
         {
         }
 
-        public Thinker Current { get; private set; }
+        public IThinker Current { get; private set; }
 
         readonly object IEnumerator.Current => Current;
     }

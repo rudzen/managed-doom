@@ -23,7 +23,7 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class Mobj : Thinker
+public sealed class Mobj : IThinker
 {
     //
     // NOTES: mobj_t
@@ -205,7 +205,9 @@ public sealed class Mobj : Thinker
 
     public Mobj Tracer { get; set; }
 
-    public override void Run(World world)
+    public ThinkerState ThinkerState { get; set; }
+
+    public void Run(World world)
     {
         // Momentum movement.
         if (MomX != Fixed.Zero || MomY != Fixed.Zero ||

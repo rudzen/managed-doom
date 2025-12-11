@@ -37,31 +37,22 @@ public enum PlatformState : byte
     InStasis
 }
 
-public sealed class Platform : Thinker
+public sealed class Platform : IThinker
 {
     public Sector Sector { get; set; } = null!;
-
     public Fixed Speed { get; set; }
-
     public Fixed Low { get; set; }
-
     public Fixed High { get; set; }
-
     public int Wait { get; set; }
-
     public int Count { get; set; }
-
     public PlatformState Status { get; set; }
-
     public PlatformState OldStatus { get; set; }
-
     public bool Crush { get; set; }
-
     public int Tag { get; set; }
-
     public PlatformType Type { get; set; }
+    public ThinkerState ThinkerState { get; set; }
 
-    public override void Run(World world)
+    public void Run(World world)
     {
         var sa = world.SectorAction;
 

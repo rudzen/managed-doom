@@ -18,14 +18,15 @@ using ManagedDoom.Doom.Map;
 
 namespace ManagedDoom.Doom.World;
 
-public sealed class FireFlicker : Thinker
+public sealed class FireFlicker : IThinker
 {
     public Sector Sector { get; set; }
     public int Count { get; set; }
     public int MaxLight { get; set; }
     public int MinLight { get; set; }
+    public ThinkerState ThinkerState { get; set; }
 
-    public override void Run(World world)
+    public void Run(World world)
     {
         if (--Count > 0)
             return;
