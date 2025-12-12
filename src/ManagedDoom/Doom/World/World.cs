@@ -48,7 +48,7 @@ public sealed class World
         this.Random = options.Random;
         this.ConsolePlayer = options.Players[Options.ConsolePlayer];
 
-        Map = MapExtensions.Create(resources, this);
+        Map = MapFactory.CreateMap(resources, this);
 
         Thinkers = new Thinkers();
         Specials = new Specials(this);
@@ -112,7 +112,8 @@ public sealed class World
 
         dummy = new Mobj(this);
 
-        options.Music.StartMusic(MapExtensions.GetMapBgm(options), PlayMode.Loop);
+        var bgm = BgmExtensions.GetMapBgm(options.Map, options.GameMode, options.Episode);
+        options.Music.StartMusic(bgm, PlayMode.Loop);
     }
 
     public GameOptions Options { get; }

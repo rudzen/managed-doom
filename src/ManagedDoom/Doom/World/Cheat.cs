@@ -379,7 +379,8 @@ public sealed class Cheat(World world)
             options.Map = map;
         }
 
-        world.Options.Music.StartMusic(MapExtensions.GetMapBgm(options), PlayMode.Loop);
+        var bgm = BgmExtensions.GetMapBgm(options.Map, options.GameMode, options.Episode);
+        world.Options.Music.StartMusic(bgm, PlayMode.Loop);
         world.ConsolePlayer.SendMessage(DoomInfo.Strings.STSTR_MUS);
     }
 }

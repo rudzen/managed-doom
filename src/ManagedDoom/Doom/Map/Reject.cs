@@ -14,38 +14,24 @@
 // GNU General Public License for more details.
 //
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace ManagedDoom.Doom.Map;
 
-public sealed class Reject
+public sealed record Reject(byte[] Data, int SectorCount);
+
+public static class RejectExtensions
 {
-    private readonly byte[] data;
-    private readonly int sectorCount;
-
-    public Reject(byte[] data, int sectorCount)
-    {
-        // If the reject table is too small, expand it to avoid crash.
-        // https://doomwiki.org/wiki/Reject#Reject_Overflow
-        var expectedLength = (sectorCount * sectorCount + 7) / 8;
-        if (data.Length < expectedLength)
-            Array.Resize(ref data, expectedLength);
-
-        this.data = data;
-        this.sectorCount = sectorCount;
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Check(Sector sector1, Sector sector2)
+    public static bool Check(this Reject reject, Sector sector1, Sector sector2)
     {
         var s1 = sector1.Number;
         var s2 = sector2.Number;
 
-        var p = s1 * sectorCount + s2;
+        var p = s1 * reject.SectorCount + s2;
         var byteIndex = p >> 3;
         var bitIndex = 1 << (p & 7);
 
-        return (data[byteIndex] & bitIndex) != 0;
+        return (reject.Data[byteIndex] & bitIndex) != 0;
     }
 }

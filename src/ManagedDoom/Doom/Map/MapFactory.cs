@@ -15,9 +15,16 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using ManagedDoom.Doom.Common;
+using ManagedDoom.Doom.Game;
 using ManagedDoom.Doom.Graphics;
+using ManagedDoom.Doom.Info;
 using ManagedDoom.Doom.Math;
+using ManagedDoom.Doom.World;
 
 namespace ManagedDoom.Doom.Map;
 
@@ -26,6 +33,158 @@ namespace ManagedDoom.Doom.Map;
 /// </summary>
 public static class MapFactory
 {
+    public static Map CreateMap(GameContent resources, World.World world)
+    {
+        return CreateMap(resources.Wad, resources.Textures, resources.Flats, resources.Animations, world);
+    }
+
+    private static Map CreateMap(Wad wad, ITextureLookup textures, IFlatLookup flats, TextureAnimationInfo[] animations, World.World world)
+    {
+        var start = Stopwatch.GetTimestamp();
+
+        var options = world.Options;
+
+        var name = wad.GameMode == GameMode.Commercial
+            ? $"MAP{options.Map:00}"
+            : $"E{options.Episode}M{options.Map}";
+
+        Console.Write($"Load map '{name}': ");
+
+        var map = wad.GetLumpNumber(name);
+
+        try
+        {
+            if (map == -1)
+                throw new Exception($"Map '{name}' was not found!");
+
+            var vertices = MapFactory.CreateVertices(wad, map + 4);
+            var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
+            var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
+            var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
+            var segs = MapFactory.CreateSegs(wad, map + 5, vertices, lines);
+            var subSectors = MapFactory.CreateSubSectors(wad, map + 6, segs);
+            var nodes = MapFactory.CreateNodes(wad, map + 7);
+            var things = MapFactory.CreateMapThings(wad, map + 1);
+            var blockMap = MapFactory.CreateBlockMap(wad, map + 10, lines);
+            var reject = MapFactory.CreateReject(wad, map + 9, sectors);
+
+            GroupMapLines(world, lines.AsSpan(), sectors.AsSpan(), blockMap);
+
+            var skyTexture = GetMapSkyTextureByMapName(name, textures);
+
+            var title = options.GameMode == GameMode.Commercial
+                ? DoomInfo.MapTitles.GetMapTitle(options.MissionPack, options.Map - 1)
+                : DoomInfo.MapTitles.GetMapTitle(options.Episode - 1, options.Map - 1);
+
+            var end = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine($"OK [{end}]");
+
+            return new Map(
+                Textures: textures,
+                Flats: flats,
+                Animations: animations,
+                Vertices: vertices,
+                Sectors: sectors,
+                Lines: lines,
+                Segs: segs,
+                Subsectors: subSectors,
+                Nodes: nodes,
+                Things: things,
+                BlockMap: blockMap,
+                Reject: reject,
+                SkyTexture: skyTexture,
+                Title: title
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed");
+            ExceptionDispatchInfo.Throw(e);
+        }
+
+        return null!;
+    }
+
+    [SkipLocalsInit]
+    private static void GroupMapLines(World.World world, ReadOnlySpan<LineDef> lines, ReadOnlySpan<Sector> sectors, BlockMap blockMap)
+    {
+        var sectorLines = new List<LineDef>(lines.Length);
+        var boundingBox = new Fixed[4];
+
+        foreach (var line in lines)
+        {
+            if (line.Special == 0) continue;
+            var x = (line.Vertex1.X + line.Vertex2.X) / 2;
+            var y = (line.Vertex1.Y + line.Vertex2.Y) / 2;
+            line.SoundOrigin = new Mobj(world)
+            {
+                X = x,
+                Y = y
+            };
+        }
+
+        foreach (var sector in sectors)
+        {
+            sectorLines.Clear();
+            boundingBox.Clear();
+
+            foreach (var line in lines)
+            {
+                if (line.FrontSector != sector && line.BackSector != sector)
+                    continue;
+
+                sectorLines.Add(line);
+
+                boundingBox.AddPoint(line.Vertex1);
+                boundingBox.AddPoint(line.Vertex2);
+            }
+
+            sector.Lines = [.. sectorLines];
+
+            // Set the degenmobj_t to the middle of the bounding box.
+            var x = (boundingBox[Box.Right] + boundingBox[Box.Left]) / 2;
+            var y = (boundingBox[Box.Top] + boundingBox[Box.Bottom]) / 2;
+            sector.SoundOrigin = new Mobj(world)
+            {
+                X = x,
+                Y = y
+            };
+
+            sector.BlockBox = new int[4];
+
+            // Adjust bounding box to map blocks.
+            var block = (boundingBox[Box.Top] - blockMap.OriginY + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = block >= blockMap.Height ? blockMap.Height - 1 : block;
+            sector.BlockBox[Box.Top] = block;
+
+            block = (boundingBox[Box.Bottom] - blockMap.OriginY - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = block < 0 ? 0 : block;
+            sector.BlockBox[Box.Bottom] = block;
+
+            block = (boundingBox[Box.Right] - blockMap.OriginX + GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = block >= blockMap.Width ? blockMap.Width - 1 : block;
+            sector.BlockBox[Box.Right] = block;
+
+            block = (boundingBox[Box.Left] - blockMap.OriginX - GameConst.MaxThingRadius).Data >> BlockMap.FracToBlockShift;
+            block = block < 0 ? 0 : block;
+            sector.BlockBox[Box.Left] = block;
+        }
+    }
+
+    private static Texture GetMapSkyTextureByMapName(string name, ITextureLookup textures)
+    {
+        if (name.Length == 4)
+            return textures[$"SKY{name[1]}"];
+
+        var number = int.Parse(name[3..]);
+        return number switch
+        {
+            <= 11 => textures["SKY1"],
+            <= 21 => textures["SKY2"],
+            _     => textures["SKY3"]
+        };
+    }
+
     public static Vertex[] CreateVertices(Wad wad, int lump)
     {
         const int dataSize = 4;
@@ -193,7 +352,20 @@ public static class MapFactory
     public static Reject CreateReject(Wad wad, int lump, Sector[] sectors)
     {
         // TODO (rudzen) : add a clever way to ready this lump with auto resize of buffer
-        return new Reject(wad.ReadLump(lump), sectors.Length);
+
+        var data = wad.ReadLump(lump);
+        var sectorCount = sectors.Length;
+
+        // If the reject table is too small, expand it to avoid crash.
+        // https://doomwiki.org/wiki/Reject#Reject_Overflow
+        var expectedLength = (sectorCount * sectorCount + 7) / 8;
+        if (data.Length < expectedLength)
+        {
+            Console.WriteLine($"Warning: Reject table is too small ({data.Length} bytes). Expanding to {expectedLength} bytes.");
+            Array.Resize(ref data, expectedLength);
+        }
+
+        return new Reject(data, sectorCount);
     }
 
     public static Sector[] CreateSectors(Wad wad, int lump, IFlatLookup flats)
