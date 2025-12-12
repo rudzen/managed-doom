@@ -26,4 +26,5 @@ public sealed record Seg(
     SideDef SideDef,
     LineDef LineDef,
     Sector FrontSector,
-    Sector BackSector);
+    Sector BackSector
+);

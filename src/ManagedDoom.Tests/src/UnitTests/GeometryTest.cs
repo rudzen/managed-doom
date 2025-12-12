@@ -20,7 +20,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             var frontSideY = -1 - 666 * random.NextDouble();
             var backSideY = -frontSideY;
 
-            var node = new Node(
+            var node = MapFactory.CreateNode(
                 Fixed.FromDouble(startX),
                 Fixed.Zero,
                 Fixed.FromDouble(endX - startX),
@@ -54,7 +54,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             var frontSideX = -1 - 666 * random.NextDouble();
             var backSideX = -frontSideX;
 
-            var node = new Node(
+            var node = MapFactory.CreateNode(
                 Fixed.Zero,
                 Fixed.FromDouble(startY),
                 Fixed.Zero,
@@ -94,7 +94,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 var ox = 666 * random.NextDouble() - 333;
                 var oy = 666 * random.NextDouble() - 333;
 
-                var node = new Node(
+                var node =MapFactory.CreateNode(
                     Fixed.FromDouble(ox + startX * Math.Cos(theta)),
                     Fixed.FromDouble(oy + startX * Math.Sin(theta)),
                     Fixed.FromDouble((endX - startX) * Math.Cos(theta)),
@@ -830,7 +830,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             var divLine = new DivLine();
             divLine.MakeFrom(line);
 
-            var node = new Node(
+            var node = MapFactory.CreateNode(
                 Fixed.FromDouble(startX),
                 Fixed.Zero,
                 Fixed.FromDouble(endX - startX),
@@ -877,7 +877,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
             var divLine = new DivLine();
             divLine.MakeFrom(line);
 
-            var node = new Node(
+            var node = MapFactory.CreateNode(
                 Fixed.Zero,
                 Fixed.FromDouble(startY),
                 Fixed.Zero,
@@ -935,7 +935,7 @@ public sealed class GeometryTest(WadPath wadPath) : IClassFixture<WadPath>
                 var divLine = new DivLine();
                 divLine.MakeFrom(line);
 
-                var node = new Node(
+                var node = MapFactory.CreateNode(
                     Fixed.FromDouble(ox + startX * Math.Cos(theta)),
                     Fixed.FromDouble(oy + startX * Math.Sin(theta)),
                     Fixed.FromDouble((endX - startX) * Math.Cos(theta)),

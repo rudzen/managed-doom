@@ -57,16 +57,16 @@ public static class MapFactory
             if (map == -1)
                 throw new Exception($"Map '{name}' was not found!");
 
-            var vertices = MapFactory.CreateVertices(wad, map + 4);
-            var sectors = MapFactory.CreateSectors(wad, map + 8, flats);
-            var sides = MapFactory.CreateSideDefs(wad, map + 3, textures, sectors);
-            var lines = MapFactory.CreateLineDefs(wad, map + 2, vertices, sides);
-            var segs = MapFactory.CreateSegs(wad, map + 5, vertices, lines);
-            var subSectors = MapFactory.CreateSubSectors(wad, map + 6, segs);
-            var nodes = MapFactory.CreateNodes(wad, map + 7);
-            var things = MapFactory.CreateMapThings(wad, map + 1);
-            var blockMap = MapFactory.CreateBlockMap(wad, map + 10, lines);
-            var reject = MapFactory.CreateReject(wad, map + 9, sectors);
+            var vertices = CreateVertices(wad, map + 4);
+            var sectors = CreateSectors(wad, map + 8, flats);
+            var sides = CreateSideDefs(wad, map + 3, textures, sectors);
+            var lines = CreateLineDefs(wad, map + 2, vertices, sides);
+            var segs = CreateSegs(wad, map + 5, vertices, lines);
+            var subSectors = CreateSubSectors(wad, map + 6, segs);
+            var nodes = CreateNodes(wad, map + 7);
+            var things = CreateMapThings(wad, map + 1);
+            var blockMap = CreateBlockMap(wad, map + 10, lines);
+            var reject = CreateReject(wad, map + 9, sectors);
 
             GroupMapLines(world, lines.AsSpan(), sectors.AsSpan(), blockMap);
 
@@ -435,38 +435,100 @@ public static class MapFactory
 
     private static Node CreateNode(ReadOnlySpan<byte> data)
     {
-        var x = BitConverter.ToInt16(data[..2]);
-        var y = BitConverter.ToInt16(data.Slice(2, 2));
-        var dx = BitConverter.ToInt16(data.Slice(4, 2));
-        var dy = BitConverter.ToInt16(data.Slice(6, 2));
-        var frontBoundingBoxTop = BitConverter.ToInt16(data.Slice(8, 2));
-        var frontBoundingBoxBottom = BitConverter.ToInt16(data.Slice(10, 2));
-        var frontBoundingBoxLeft = BitConverter.ToInt16(data.Slice(12, 2));
-        var frontBoundingBoxRight = BitConverter.ToInt16(data.Slice(14, 2));
-        var backBoundingBoxTop = BitConverter.ToInt16(data.Slice(16, 2));
-        var backBoundingBoxBottom = BitConverter.ToInt16(data.Slice(18, 2));
-        var backBoundingBoxLeft = BitConverter.ToInt16(data.Slice(20, 2));
-        var backBoundingBoxRight = BitConverter.ToInt16(data.Slice(22, 2));
+        var x = Fixed.FromInt(BitConverter.ToInt16(data[..2]));
+        var y = Fixed.FromInt(BitConverter.ToInt16(data.Slice(2, 2)));
+        var dx = Fixed.FromInt(BitConverter.ToInt16(data.Slice(4, 2)));
+        var dy = Fixed.FromInt(BitConverter.ToInt16(data.Slice(6, 2)));
+        var frontBoundingBoxTop = Fixed.FromInt(BitConverter.ToInt16(data.Slice(8, 2)));
+        var frontBoundingBoxBottom = Fixed.FromInt(BitConverter.ToInt16(data.Slice(10, 2)));
+        var frontBoundingBoxLeft = Fixed.FromInt(BitConverter.ToInt16(data.Slice(12, 2)));
+        var frontBoundingBoxRight = Fixed.FromInt(BitConverter.ToInt16(data.Slice(14, 2)));
+        var backBoundingBoxTop = Fixed.FromInt(BitConverter.ToInt16(data.Slice(16, 2)));
+        var backBoundingBoxBottom = Fixed.FromInt(BitConverter.ToInt16(data.Slice(18, 2)));
+        var backBoundingBoxLeft = Fixed.FromInt(BitConverter.ToInt16(data.Slice(20, 2)));
+        var backBoundingBoxRight = Fixed.FromInt(BitConverter.ToInt16(data.Slice(22, 2)));
         var frontChild = BitConverter.ToInt16(data.Slice(24, 2));
         var backChild = BitConverter.ToInt16(data.Slice(26, 2));
 
+        var frontBoundingBox = new[]
+        {
+            frontBoundingBoxTop,
+            frontBoundingBoxBottom,
+            frontBoundingBoxLeft,
+            frontBoundingBoxRight
+        };
+
+        var backBoundingBox = new[]
+        {
+            backBoundingBoxTop,
+            backBoundingBoxBottom,
+            backBoundingBoxLeft,
+            backBoundingBoxRight
+        };
+
         return new Node(
-            x: Fixed.FromInt(x),
-            y: Fixed.FromInt(y),
-            dx: Fixed.FromInt(dx),
-            dy: Fixed.FromInt(dy),
-            frontBoundingBoxTop: Fixed.FromInt(frontBoundingBoxTop),
-            frontBoundingBoxBottom: Fixed.FromInt(frontBoundingBoxBottom),
-            frontBoundingBoxLeft: Fixed.FromInt(frontBoundingBoxLeft),
-            frontBoundingBoxRight: Fixed.FromInt(frontBoundingBoxRight),
-            backBoundingBoxTop: Fixed.FromInt(backBoundingBoxTop),
-            backBoundingBoxBottom: Fixed.FromInt(backBoundingBoxBottom),
-            backBoundingBoxLeft: Fixed.FromInt(backBoundingBoxLeft),
-            backBoundingBoxRight: Fixed.FromInt(backBoundingBoxRight),
-            frontChild: frontChild,
-            backChild: backChild);
+            X: x,
+            Y: y,
+            Dx: dx,
+            Dy: dy,
+            BoundingBox: [frontBoundingBox, backBoundingBox],
+            Children: [frontChild, backChild]
+        );
     }
 
+    public static Node CreateNode(
+        Fixed x,
+        Fixed y,
+        Fixed dx,
+        Fixed dy,
+        Fixed frontBoundingBoxTop,
+        Fixed frontBoundingBoxBottom,
+        Fixed frontBoundingBoxLeft,
+        Fixed frontBoundingBoxRight,
+        Fixed backBoundingBoxTop,
+        Fixed backBoundingBoxBottom,
+        Fixed backBoundingBoxLeft,
+        Fixed backBoundingBoxRight,
+        int frontChild,
+        int backChild)
+    {
+        var frontBoundingBox = new[]
+        {
+            frontBoundingBoxTop,
+            frontBoundingBoxBottom,
+            frontBoundingBoxLeft,
+            frontBoundingBoxRight
+        };
+
+        var backBoundingBox = new[]
+        {
+            backBoundingBoxTop,
+            backBoundingBoxBottom,
+            backBoundingBoxLeft,
+            backBoundingBoxRight
+        };
+
+        Fixed[][] boundingBox =
+        [
+            frontBoundingBox,
+            backBoundingBox
+        ];
+
+        int[] children =
+        [
+            frontChild,
+            backChild
+        ];
+
+        return new Node(
+            X: x,
+            Y: y,
+            Dx: dx,
+            Dy: dy,
+            BoundingBox: boundingBox,
+            Children: children
+        );
+    }
 
     public static BlockMap CreateBlockMap(Wad wad, int lump, LineDef[] lines)
     {

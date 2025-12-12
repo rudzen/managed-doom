@@ -19,65 +19,8 @@ using ManagedDoom.Doom.Math;
 
 namespace ManagedDoom.Doom.Map;
 
-public sealed class Node
+public sealed record Node(Fixed X, Fixed Y, Fixed Dx, Fixed Dy, Fixed[][] BoundingBox, int[] Children)
 {
-    public Node(
-        Fixed x,
-        Fixed y,
-        Fixed dx,
-        Fixed dy,
-        Fixed frontBoundingBoxTop,
-        Fixed frontBoundingBoxBottom,
-        Fixed frontBoundingBoxLeft,
-        Fixed frontBoundingBoxRight,
-        Fixed backBoundingBoxTop,
-        Fixed backBoundingBoxBottom,
-        Fixed backBoundingBoxLeft,
-        Fixed backBoundingBoxRight,
-        int frontChild,
-        int backChild)
-    {
-        this.X = x;
-        this.Y = y;
-        this.Dx = dx;
-        this.Dy = dy;
-
-        var frontBoundingBox = new[]
-        {
-            frontBoundingBoxTop,
-            frontBoundingBoxBottom,
-            frontBoundingBoxLeft,
-            frontBoundingBoxRight
-        };
-
-        var backBoundingBox = new[]
-        {
-            backBoundingBoxTop,
-            backBoundingBoxBottom,
-            backBoundingBoxLeft,
-            backBoundingBoxRight
-        };
-
-        BoundingBox =
-        [
-            frontBoundingBox,
-            backBoundingBox
-        ];
-
-        Children =
-        [
-            frontChild,
-            backChild
-        ];
-    }
-
-    public Fixed X { get; }
-    public Fixed Y { get; }
-    public Fixed Dx { get; }
-    public Fixed Dy { get; }
-    public Fixed[][] BoundingBox { get; }
-    public int[] Children { get; }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsSubsector(int node) => (node & unchecked((int)0xFFFF8000)) != 0;
 
